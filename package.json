@@ -1,14 +1,37 @@
 {
   "name": "weave-gitops-tools",
-	"displayName": "GitOps",
-	"description": "Weave GitOps Tools",
+	"displayName": "Weave GitOps Tools",
+	"description": "Weave GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
 	"version": "0.1.0",
+	"publisher": "weave.works",
 	"engines": {
 		"vscode": "^1.59.0"
 	},
 	"categories": [
+		"Azure",
 		"Other"
 	],
+	"keywords": [
+		"weave",
+		"gitOps",
+		"wego",
+		"kubernetes",
+		"helm",
+		"aks"
+	],
+	"icon": "resources/icons/weave-gitops.png",
+	"license": "MPL-2.0",
+	"readme": "README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/weaveworks/vscode-gitops-tools"
+	},
+	"bugs": "https://github.com/weaveworks/vscode-gitops-tools/issues",
+	"homepage": "https://github.com/weaveworks/vscode-gitops-tools/README.md",
+	"galleryBanner": {
+		"color": "#333",
+		"theme": "dark"
+	},
 	"activationEvents": [
     "onCommand:weave.gitOps.hello"
 	],
