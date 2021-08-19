@@ -43,6 +43,29 @@
 				"title": "Hello",
 				"category": "GitOps"
 			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "weave-gitops",
+					"title": "Weave GitOps",
+					"icon": "resources/icons/weave-gitops.svg"
+				}
+			]
+		},
+		"views": {
+			"weave-gitops": [
+				{
+					"id": "weave.gitOps.tools.view",
+					"name": "Weave GitOps Tools"
+				}	
+			]
+		},
+		"viewsWelcome": [
+			{
+				"view": "weave.gitOps.tools.view",
+				"contents": "Loading Weave GitOps Tools ..."
+			}
 		]
 	},
 	"scripts": {
