@@ -19,7 +19,7 @@
 		"helm",
 		"aks"
 	],
-	"icon": "resources/icons/weave-gitops.png",
+	"icon": "resources/icons/weave-logo.png",
 	"license": "MPL-2.0",
 	"readme": "README.md",
 	"repository": {
@@ -49,7 +49,7 @@
 				{
 					"id": "weave-gitops",
 					"title": "Weave GitOps",
-					"icon": "resources/icons/weave-gitops.svg"
+					"icon": "resources/icons/weave-logo.png"
 				}
 			]
 		},
