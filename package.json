@@ -1,7 +1,7 @@
 {
-  "name": "weave-gitops-tools",
-	"displayName": "Weave GitOps Tools",
-	"description": "Weave GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
+  "name": "vscode-gitops-tools",
+	"displayName": "GitOps Tools",
+	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
 	"version": "0.1.0",
 	"publisher": "weave.works",
 	"engines": {
@@ -12,14 +12,13 @@
 		"Other"
 	],
 	"keywords": [
-		"weave",
 		"gitOps",
 		"wego",
 		"kubernetes",
 		"helm",
 		"aks"
 	],
-	"icon": "resources/icons/weave-logo.png",
+	"icon": "resources/icons/gitops-logo.png",
 	"license": "MPL-2.0",
 	"readme": "README.md",
 	"repository": {
@@ -33,13 +32,14 @@
 		"theme": "dark"
 	},
 	"activationEvents": [
-    "onCommand:weave.gitOps.hello"
+    "onCommand:gitops.hello",
+		"onView:gitops.views.tools"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "weave.gitOps.hello",
+				"command": "gitops.hello",
 				"title": "Hello",
 				"category": "GitOps"
 			}
@@ -47,24 +47,24 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "weave-gitops",
-					"title": "Weave GitOps",
-					"icon": "resources/icons/weave-logo.png"
+					"id": "gitops",
+					"title": "GitOps",
+					"icon": "resources/icons/gitops-logo.png"
 				}
 			]
 		},
 		"views": {
-			"weave-gitops": [
+			"gitops": [
 				{
-					"id": "weave.gitOps.tools.view",
-					"name": "Weave GitOps Tools"
+					"id": "gitops.views.tools",
+					"name": "Tools"
 				}	
 			]
 		},
 		"viewsWelcome": [
 			{
-				"view": "weave.gitOps.tools.view",
-				"contents": "Loading Weave GitOps Tools ..."
+				"view": "gitops.views.tools",
+				"contents": "Loading GitOps Tools ..."
 			}
 		]
 	},

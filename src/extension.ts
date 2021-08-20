@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {	
-	let disposable = vscode.commands.registerCommand('weave.gitOps.hello', () => {
-		vscode.window.showInformationMessage('Hello from Weave GitOps!');
+	let disposable = vscode.commands.registerCommand('gitops.hello', () => {
+		vscode.window.showInformationMessage('Hello from GitOps!');
 	});
 
 	context.subscriptions.push(disposable);
