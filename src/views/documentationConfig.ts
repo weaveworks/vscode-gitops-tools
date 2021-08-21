@@ -23,10 +23,6 @@ export const DocumentationLinks: Array<Link> = [
     url: 'https://docs.gitops.weave.works/docs/architecture'
   },
   {
-    title: 'Architecture',
-    url: 'https://docs.gitops.weave.works/docs/architecture'
-  },
-  {
     title: 'Troubleshooting',
     url: 'https://docs.gitops.weave.works/docs/troubleshooting'
   },
