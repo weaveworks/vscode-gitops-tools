@@ -1,11 +1,17 @@
-import * as vscode from 'vscode';
+import {
+	ExtensionContext,
+	window
+} 
+from 'vscode';
+import {Views} from './views/views';
+import {LinkTreeViewDataProvider} from './views/linkTreeViewDataProvider';
 
-export function activate(context: vscode.ExtensionContext) {	
-	let disposable = vscode.commands.registerCommand('gitops.hello', () => {
-		vscode.window.showInformationMessage('Hello from GitOps!');
+export function activate(context: ExtensionContext) {
+	// create documentation links sidebar view section
+	window.createTreeView(Views.DocumentationView, {
+		treeDataProvider: new LinkTreeViewDataProvider(),
+		showCollapseAll: false,
 	});
-
-	context.subscriptions.push(disposable);
 }
 
 export function deactivate() {}

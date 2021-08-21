@@ -32,18 +32,11 @@
 		"theme": "dark"
 	},
 	"activationEvents": [
-    "onCommand:gitops.hello",
-		"onView:gitops.views.tools"
+		"onView:gitops.views.tools",
+		"onView:gitops.views.documents"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "gitops.hello",
-				"title": "Hello",
-				"category": "GitOps"
-			}
-		],
 		"viewsContainers": {
 			"activitybar": [
 				{
@@ -58,13 +51,21 @@
 				{
 					"id": "gitops.views.tools",
 					"name": "Tools"
-				}	
+				},
+				{
+					"id": "gitops.views.documents",
+					"name": "GitOps Documentation"
+				}
 			]
 		},
 		"viewsWelcome": [
 			{
 				"view": "gitops.views.tools",
 				"contents": "Loading GitOps Tools ..."
+			},
+			{
+				"view": "gitops.views.documents",
+				"contents": "Loading GitOps Documentation ..."
 			}
 		]
 	},
