@@ -3,7 +3,7 @@
 	"displayName": "GitOps Tools",
 	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
 	"version": "0.1.0",
-	"publisher": "weave.works",
+	"publisher": "weaveworks",
 	"engines": {
 		"vscode": "^1.59.0"
 	},
