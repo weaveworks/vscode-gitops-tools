@@ -14,8 +14,8 @@ export class LinkTreeViewDataProvider extends TreeViewDataProvider {
       args.push(Uri.parse(link.url));
       let treeItem = new TreeViewItem(link.title, link.url, BuiltInCommands.Open, args);
       treeItem.setIcon({
-        light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', `link.svg`),
-        dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', `link.svg`)
+        light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', `link-external.svg`),
+        dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', `link-external.svg`)
       });
       treeItems.push(treeItem);
     });
