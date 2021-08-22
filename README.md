@@ -2,6 +2,22 @@
 
 VSCode GitOps Tools Extension
 
+# Dependencies
+
+GitOps extension depends on [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) extension which is automatically installed with this extension for building applications to run with Kubernetes clusters or troublishooting Kubernetes cluster deployments. You may need to invoke the following command line tools, depending on which features you use. You will need `kubectl` at the minimum, and `docker` if you plan on using this extension to build applications rather than only browse.
+
+- `kubectl`
+- `docker`
+- `helm`
+
+Optional tools:
+
+- `az` (Azure CLI - only if using the extension to create or register Azure clusters)
+- `minikube` (only if you want to use it)
+- `git` (only if using the 'sync working copy to repository' feature)
+
+We recommend you install these CLI tools on your system PATH before using GitOps extension. If these tools aren't on your system `PATH`, then some commands may not work. If the extension needs one of the core Kubernetes tools and it's missing, it will offer to install it for you.
+
 # Dev Build
 
 Use the following commands to build GitOps vscode extension locally for testing, debugging, and submitting pull requests (PRs):
