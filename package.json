@@ -81,7 +81,8 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"extensionDependencies": [
-		"redhat.vscode-yaml"
+		"redhat.vscode-yaml",
+		"ms-kubernetes-tools.vscode-kubernetes-tools"
 	],
 	"devDependencies": {
 		"@types/vscode": "^1.59.0",
