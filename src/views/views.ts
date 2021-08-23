@@ -1,3 +1,3 @@
 export enum Views {
-  DocumentationView = 'gitops.views.documents'
+  DocumentationView = 'gitops.views.documentation'
 }

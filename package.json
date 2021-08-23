@@ -53,8 +53,8 @@
 					"name": "Tools"
 				},
 				{
-					"id": "gitops.views.documents",
-					"name": "GitOps Documentation"
+					"id": "gitops.views.documentation",
+					"name": "Documentation"
 				}
 			]
 		},
@@ -64,8 +64,8 @@
 				"contents": "Loading GitOps Tools ..."
 			},
 			{
-				"view": "gitops.views.documents",
-				"contents": "Loading GitOps Documentation ..."
+				"view": "gitops.views.documentation",
+				"contents": "Loading Documentation Links ..."
 			}
 		]
 	},
