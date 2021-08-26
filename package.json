@@ -49,8 +49,8 @@
 		"views": {
 			"gitops": [
 				{
-					"id": "gitops.views.tools",
-					"name": "Tools"
+					"id": "gitops.views.clusters",
+					"name": "Clusters"
 				},
 				{
 					"id": "gitops.views.documentation",
@@ -60,12 +60,12 @@
 		},
 		"viewsWelcome": [
 			{
-				"view": "gitops.views.tools",
-				"contents": "Loading GitOps Tools ..."
+				"view": "gitops.views.clusters",
+				"contents": "Loading Clusters ..."
 			},
 			{
 				"view": "gitops.views.documentation",
-				"contents": "Loading Documentation Links ..."
+				"contents": "Loading Topics ..."
 			}
 		]
 	},
