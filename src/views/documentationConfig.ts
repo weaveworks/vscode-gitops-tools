@@ -1,4 +1,4 @@
-import {Link} from './link';
+import { Link } from './link';
 
 // links config for GitOps Documentation tree view
 export const DocumentationLinks: Array<Link> = [

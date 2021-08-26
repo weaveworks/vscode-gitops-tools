@@ -8,7 +8,7 @@ export class TreeViewItem extends TreeItem {
   children: TreeViewItem[] = [];
   private commandString: string | undefined;
 
-  constructor(label: string, tooltip: string, commandString: string, args: Array<any>) {
+  constructor(label: string, tooltip: string, commandString: string, args: Array<unknown>) {
     super(label, TreeItemCollapsibleState.None);
     this.tooltip = tooltip;
     this.commandString = commandString;

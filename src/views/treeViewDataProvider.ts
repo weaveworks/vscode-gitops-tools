@@ -4,7 +4,7 @@ import {
   TreeDataProvider,
   TreeItem
 } from 'vscode';
-import {TreeViewItem} from './treeViewItem';
+import { TreeViewItem } from './treeViewItem';
 
 export class TreeViewDataProvider implements TreeDataProvider<TreeItem> {
   private treeItems: TreeItem[] | null = null;

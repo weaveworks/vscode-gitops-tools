@@ -1,13 +1,13 @@
+import * as path from 'path';
 import {
   TreeItemCollapsibleState,
   Uri
 } from 'vscode';
-import {BuiltInCommands} from '../commands';
-import {TreeViewItem} from './treeViewItem';
-import {TreeViewDataProvider} from './treeViewDataProvider';
-import {DocumentationLinks} from './documentationConfig';
-import {Link} from './link';
-import * as path from 'path';
+import { BuiltInCommands } from '../commands';
+import { DocumentationLinks } from './documentationConfig';
+import { Link } from './link';
+import { TreeViewDataProvider } from './treeViewDataProvider';
+import { TreeViewItem } from './treeViewItem';
 
 export class LinkTreeViewDataProvider extends TreeViewDataProvider {
 
@@ -37,8 +37,8 @@ export class LinkTreeViewDataProvider extends TreeViewDataProvider {
    * @param showLinkIcon Optionally set link node icon.
    * @returns Link tree view item.
    */
-  private createLinkTreeViewItem(link: Link, showLinkIcon: boolean = true): TreeViewItem {
-    let args: Array<any> = [];
+  private createLinkTreeViewItem(link: Link, showLinkIcon = true): TreeViewItem {
+    let args: Array<Uri> = [];
     args.push(Uri.parse(link.url));
     let treeViewItem = new TreeViewItem(link.title, link.url, BuiltInCommands.Open, args);
     if (showLinkIcon) {
