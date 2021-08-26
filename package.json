@@ -117,5 +117,8 @@
 		"ts-loader": "^9.2.2",
 		"webpack": "^5.38.1",
 		"webpack-cli": "^4.7.0"
+	},
+	"dependencies": {
+		"vscode-kubernetes-tools-api": "^1.3.0"
 	}
 }
