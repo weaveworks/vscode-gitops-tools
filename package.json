@@ -32,8 +32,10 @@
 		"theme": "dark"
 	},
 	"activationEvents": [
-		"onView:gitops.views.tools",
-		"onView:gitops.views.documents"
+		"onView:gitops.views.clusters",
+		"onView:gitops.views.sources",
+		"onView:gitops.views.deployments",
+		"onView:gitops.views.documentation"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -53,6 +55,14 @@
 					"name": "Clusters"
 				},
 				{
+					"id": "gitops.views.sources",
+					"name": "Sources"
+				},
+				{
+					"id": "gitops.views.deployments",
+					"name": "Deployments"
+				},
+				{
 					"id": "gitops.views.documentation",
 					"name": "Documentation"
 				}
@@ -62,6 +72,14 @@
 			{
 				"view": "gitops.views.clusters",
 				"contents": "Loading Clusters ..."
+			},
+			{
+				"view": "gitops.views.sources",
+				"contents": "Loading Sources ..."
+			},
+			{
+				"view": "gitops.views.deployments",
+				"contents": "Loading Deployments ..."
 			},
 			{
 				"view": "gitops.views.documentation",
