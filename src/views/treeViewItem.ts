@@ -1,5 +1,5 @@
 import {
-  TreeItem, 
+  TreeItem,
   TreeItemCollapsibleState
 } from 'vscode';
 
@@ -16,7 +16,7 @@ export class TreeViewItem extends TreeItem {
       command: this.commandString,
       arguments: args,
       title: tooltip
-    }
+    };
   }
 
   makeCollapsible() {

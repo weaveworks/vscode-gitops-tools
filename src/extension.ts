@@ -1,7 +1,7 @@
 import {
 	ExtensionContext,
 	window
-} 
+}
 from 'vscode';
 import {Views} from './views/views';
 import {LinkTreeViewDataProvider} from './views/linkTreeViewDataProvider';

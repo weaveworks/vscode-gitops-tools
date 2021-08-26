@@ -1,7 +1,7 @@
 import {
-  Event, 
-  EventEmitter, 
-  TreeDataProvider, 
+  Event,
+  EventEmitter,
+  TreeDataProvider,
   TreeItem
 } from 'vscode';
 import {TreeViewItem} from './treeViewItem';
