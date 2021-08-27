@@ -1,5 +1,5 @@
-import * as path from 'path';
 import {
+  ThemeIcon,
   TreeItemCollapsibleState,
   Uri
 } from 'vscode';
@@ -40,12 +40,14 @@ export class LinkTreeViewDataProvider extends TreeViewDataProvider {
   private createLinkTreeViewItem(link: Link, showLinkIcon = true): TreeViewItem {
     let args: Array<Uri> = [];
     args.push(Uri.parse(link.url));
-    let treeViewItem = new TreeViewItem(link.title, link.url, BuiltInCommands.Open, args);
+    let treeViewItem = new TreeViewItem({
+      label: link.title,
+      tooltip: link.url,
+      commandString: BuiltInCommands.Open,
+      args
+    });
     if (showLinkIcon) {
-      treeViewItem.setIcon({
-        light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', `link-external.svg`),
-        dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', `link-external.svg`)
-      });
+      treeViewItem.setIcon(new ThemeIcon('link-external'));
     }
     return treeViewItem;
   }

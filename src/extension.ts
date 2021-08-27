@@ -2,8 +2,8 @@ import {
 	ExtensionContext,
 	window
 } from 'vscode';
-import { ClusterTreeViewDataProvider } from './views/clusterTreeViewDataProvider';
-import { LinkTreeViewDataProvider } from './views/linkTreeViewDataProvider';
+import { ClusterTreeViewDataProvider } from './views/treeViewProviders/clusterTreeViewDataProvider';
+import { LinkTreeViewDataProvider } from './views/treeViewProviders/linkTreeViewDataProvider';
 import { Views } from './views/views';
 
 export function activate(context: ExtensionContext) {
