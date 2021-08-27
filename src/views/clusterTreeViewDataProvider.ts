@@ -1,6 +1,6 @@
-import { getClusterProvider } from '../../kubernetes-tools/getClusters';
-import { TreeViewDataProvider } from '../treeViewDataProvider';
-import { TreeViewItem } from '../treeViewItem';
+import { getClusterProvider } from '../kubernetes-tools/getClusters';
+import { TreeViewDataProvider } from './treeViewDataProvider';
+import { TreeViewItem } from './treeViewItem';
 
 export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
   async buildTree() {
