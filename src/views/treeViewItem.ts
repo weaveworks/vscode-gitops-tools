@@ -1,7 +1,9 @@
 import {
   MarkdownString,
+  ThemeIcon,
   TreeItem,
-  TreeItemCollapsibleState
+  TreeItemCollapsibleState,
+  Uri
 } from 'vscode';
 
 export class TreeViewItem extends TreeItem {
@@ -38,8 +40,8 @@ export class TreeViewItem extends TreeItem {
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
-  setIcon(icons: {light: string; dark: string}) {
-    this.iconPath = icons;
+  setIcon(icon: ThemeIcon | Uri | {light: string; dark: string}) {
+    this.iconPath = icon;
   }
 
   addChild(item: TreeViewItem) {
