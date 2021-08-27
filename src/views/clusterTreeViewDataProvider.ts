@@ -1,10 +1,10 @@
-import { getClusterProvider } from '../kubernetes-tools/getClusters';
+import { clusterProvider } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 
 export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
   async buildTree() {
-    const clusterProviderApi = await getClusterProvider();
+    const clusterProviderApi = await clusterProvider();
     if (!clusterProviderApi) {
       return [];// TODO: show failure reason (if exists) as a single Tree View item
     }
