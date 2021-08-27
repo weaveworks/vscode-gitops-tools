@@ -3,11 +3,11 @@ import {
   TreeItemCollapsibleState,
   Uri
 } from 'vscode';
-import { BuiltInCommands } from '../commands';
-import { DocumentationLinks } from './documentationConfig';
-import { Link } from './link';
-import { TreeViewDataProvider } from './treeViewDataProvider';
-import { TreeViewItem } from './treeViewItem';
+import { BuiltInCommands } from '../../commands';
+import { DocumentationLinks } from '../documentationConfig';
+import { Link } from '../link';
+import { TreeViewDataProvider } from '../treeViewDataProvider';
+import { TreeViewItem } from '../treeViewItem';
 
 export class LinkTreeViewDataProvider extends TreeViewDataProvider {
 
@@ -40,7 +40,12 @@ export class LinkTreeViewDataProvider extends TreeViewDataProvider {
   private createLinkTreeViewItem(link: Link, showLinkIcon = true): TreeViewItem {
     let args: Array<Uri> = [];
     args.push(Uri.parse(link.url));
-    let treeViewItem = new TreeViewItem(link.title, link.url, BuiltInCommands.Open, args);
+    let treeViewItem = new TreeViewItem({
+      label: link.title,
+      tooltip: link.url,
+      commandString: BuiltInCommands.Open,
+      args
+    });
     if (showLinkIcon) {
       treeViewItem.setIcon({
         light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', `link-external.svg`),

@@ -1,4 +1,5 @@
 import {
+  MarkdownString,
   TreeItem,
   TreeItemCollapsibleState
 } from 'vscode';
@@ -6,17 +7,27 @@ import {
 export class TreeViewItem extends TreeItem {
   parent: TreeViewItem | undefined;
   children: TreeViewItem[] = [];
-  private commandString: string | undefined;
 
-  constructor(label: string, tooltip: string, commandString: string, args: Array<unknown>) {
+  constructor({
+    label,
+    tooltip,
+    commandString,
+    args,
+  }: {
+    label: string;
+    tooltip?: string | MarkdownString;
+    commandString?: string;
+    args?: Array<unknown>;
+  }) {
     super(label, TreeItemCollapsibleState.None);
     this.tooltip = tooltip;
-    this.commandString = commandString;
-    this.command = {
-      command: this.commandString,
-      arguments: args,
-      title: tooltip
-    };
+    if (commandString) {
+      this.command = {
+        command: commandString,
+        arguments: args,
+        title: typeof tooltip === 'string' ? tooltip : ''
+      };
+    }
   }
 
   makeCollapsible() {
