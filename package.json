@@ -32,6 +32,7 @@
 		"theme": "dark"
 	},
 	"activationEvents": [
+		"onCommand:gitops.kubectl.version",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
 		"onView:gitops.views.deployments",
@@ -39,6 +40,13 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"commands": [
+			{
+				"command": "gitops.kubectl.version",
+				"title": "Kubectl Version",
+				"category": "GitOps"
+			}
+		],
 		"viewsContainers": {
 			"activitybar": [
 				{
