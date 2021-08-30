@@ -3,7 +3,7 @@ import { kubectlBucket, kubectlGitRepository, kubectlHelmRepository } from '../k
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 
-export class SourcesTreeViewDataProvider extends TreeViewDataProvider {
+export class SourceTreeViewDataProvider extends TreeViewDataProvider {
   async buildTree() {
 		const treeItems: TreeViewItem[] = [];
 		const gitRepositories = await kubectlGitRepository();

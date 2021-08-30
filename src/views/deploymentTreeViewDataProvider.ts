@@ -3,7 +3,7 @@ import { kubectlHelmRelease, kubectlKustomization } from '../kubernetes/kubernet
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 
-export class DeploymentsTreeViewDataProvider extends TreeViewDataProvider {
+export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
   async buildTree() {
 		const treeItems: TreeViewItem[] = [];
     const kustomizations = await kubectlKustomization();
