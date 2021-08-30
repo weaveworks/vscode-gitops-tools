@@ -68,7 +68,7 @@ export async function kubectlGitRepository(): Promise<undefined | GitRepository>
 	}
 	const gitRepositoryShellResult = await kubectl.invokeCommand(outputJSON('get GitRepository -A'));
 	if (!gitRepositoryShellResult || gitRepositoryShellResult.stderr) {
-		console.warn(`Failed to get cubectl git releases ${gitRepositoryShellResult?.stderr}`);
+		console.warn(`Failed to get cubectl git repository ${gitRepositoryShellResult?.stderr}`);
     return;
 	}
 	return parseJSONOutput(gitRepositoryShellResult.stdout);
@@ -81,7 +81,7 @@ export async function kubectlHelmRepository(): Promise<undefined | HelmRepositor
 	}
 	const helmRepositoryShellResult = await kubectl.invokeCommand(outputJSON('get HelmRepository -A'));
 	if (!helmRepositoryShellResult || helmRepositoryShellResult.stderr) {
-		console.warn(`Failed to get cubectl helm releases ${helmRepositoryShellResult?.stderr}`);
+		console.warn(`Failed to get cubectl helm repository ${helmRepositoryShellResult?.stderr}`);
     return;
 	}
 	return parseJSONOutput(helmRepositoryShellResult.stdout);
