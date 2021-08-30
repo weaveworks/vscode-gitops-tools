@@ -35,22 +35,53 @@ export async function kubectlConfig(): Promise<undefined | Kubeconfig> {
   return parseJSONOutput(configShellResult.stdout);
 }
 
+export async function kubectlKustomization(): Promise<undefined | Kustomize> {
+	const kubectl = await kubectlProvider();
+	if (!kubectl) {
+		return;
+	}
+	const kustomizationShellResult = await kubectl.invokeCommand(outputJSON('get Kustomization -A'));
+	if (!kustomizationShellResult || kustomizationShellResult.stderr) {
+		console.warn(`Failed to get cubectl kustomizations ${kustomizationShellResult?.stderr}`);
+    return;
+	}
+	return parseJSONOutput(kustomizationShellResult.stdout);
+}
+
+export async function kubectlHelmRelease(): Promise<undefined | HelmRelease> {
+	const kubectl = await kubectlProvider();
+	if (!kubectl) {
+		return;
+	}
+	const helmReleaseShellResult = await kubectl.invokeCommand(outputJSON('get HelmRelease -A'));
+	if (!helmReleaseShellResult || helmReleaseShellResult.stderr) {
+		console.warn(`Failed to get cubectl helm releases ${helmReleaseShellResult?.stderr}`);
+    return;
+	}
+	return parseJSONOutput(helmReleaseShellResult.stdout);
+}
+
     return;
   }
   clusterProviderApi = clusterProvider.api;
   return clusterProviderApi;
 }
 
-let kubectlProviderApi: KubectlV1;
-export async function kubectlProvider() {
-	if (kubectlProviderApi) {
-		return kubectlProviderApi;
-	}
-	const kubectlProvider = await extension.kubectl.v1;
-	if (!kubectlProvider.available) {
-		window.showErrorMessage(`kubectl provider API is unavailable ${kubectlProvider.reason}`);
+
+function outputJSON(kubectlCommand: string) {
+  return `${kubectlCommand} -o json`;
+}
+
+export function parseJSONOutput(output: string) {
+	let parsedJson;
+	try {
+		parsedJson = JSON.parse(output.trim());
+	} catch(e) {
+		console.warn(`JSON.parse() failed ${e}`);
 		return;
 	}
+  return parsedJson;
+}
 
 interface Kubeconfig {
 	readonly apiVersion: string;
@@ -77,4 +108,47 @@ interface Kubeconfig {
 	}[] | undefined;
 }
 
+interface Kustomize {
+	readonly apiVersion: string;
+	readonly kind: 'List';
+	readonly items: {
+		readonly apiVersion: string;
+		readonly kind: 'Kustomization'
+		readonly metadata: ResourceMetadata;
+	}[];
+	readonly spec: {
+		readonly force: boolean;
+		readonly interval: string;
+		readonly path: string;
+		readonly prune: boolean;
+		readonly sourceRef: {
+			readonly kind: string;
+			readonly name: string;
+		}
+	}
+	readonly status: {
+		readonly conditions: Conditions;
+		readonly lastAppliedRevision: string;
+		readonly lastAttemptedRevision: string;
+		readonly observedGeneration: number;
+		readonly snapshot: {
+			readonly checksum: string;
+			readonly entries: {
+				readonly kinds: {
+					[key: string]: string;
+				}
+			}[]
+		}
+	}
+	readonly metadata: ItemMetadata;
 }
+
+
+interface HelmRelease {
+	readonly apiVersion: string;
+	readonly kind: 'HelmRelease';
+	readonly metadata: {
+		// TODO: fill
+	}
+}
+
