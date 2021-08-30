@@ -1,5 +1,6 @@
 export enum Views {
+	ClustersView = 'gitops.views.clusters',
 	SourcesView = 'gitops.views.sources',
-  DocumentationView = 'gitops.views.documentation',
-  ClusterView = 'gitops.views.clusters'
+	DeploymentsView = 'gitops.views.deployments',
+	DocumentationView = 'gitops.views.documentation',
 }
