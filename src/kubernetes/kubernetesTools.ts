@@ -61,12 +61,44 @@ export async function kubectlHelmRelease(): Promise<undefined | HelmRelease> {
 	return parseJSONOutput(helmReleaseShellResult.stdout);
 }
 
+export async function kubectlGitRepository(): Promise<undefined | GitRepository> {
+	const kubectl = await kubectlProvider();
+	if (!kubectl) {
+		return;
+	}
+	const gitRepositoryShellResult = await kubectl.invokeCommand(outputJSON('get GitRepository -A'));
+	if (!gitRepositoryShellResult || gitRepositoryShellResult.stderr) {
+		console.warn(`Failed to get cubectl git releases ${gitRepositoryShellResult?.stderr}`);
     return;
-  }
-  clusterProviderApi = clusterProvider.api;
-  return clusterProviderApi;
+	}
+	return parseJSONOutput(gitRepositoryShellResult.stdout);
 }
 
+export async function kubectlHelmRepository(): Promise<undefined | HelmRepository> {
+	const kubectl = await kubectlProvider();
+	if (!kubectl) {
+		return;
+	}
+	const helmRepositoryShellResult = await kubectl.invokeCommand(outputJSON('get HelmRepository -A'));
+	if (!helmRepositoryShellResult || helmRepositoryShellResult.stderr) {
+		console.warn(`Failed to get cubectl helm releases ${helmRepositoryShellResult?.stderr}`);
+    return;
+	}
+	return parseJSONOutput(helmRepositoryShellResult.stdout);
+}
+
+export async function kubectlBucket(): Promise<undefined | Bucket> {
+	const kubectl = await kubectlProvider();
+	if (!kubectl) {
+		return;
+	}
+	const bucketShellResult = await kubectl.invokeCommand(outputJSON('get Bucket -A'));
+	if (!bucketShellResult || bucketShellResult.stderr) {
+		console.warn(`Failed to get cubectl buckets ${bucketShellResult?.stderr}`);
+    return;
+	}
+	return parseJSONOutput(bucketShellResult.stdout);
+}
 
 function outputJSON(kubectlCommand: string) {
   return `${kubectlCommand} -o json`;
@@ -143,6 +175,10 @@ interface Kustomize {
 	readonly metadata: ItemMetadata;
 }
 
+interface Bucket {
+	readonly apiVersion: string;
+	// TODO: fill
+}
 
 interface HelmRelease {
 	readonly apiVersion: string;
@@ -152,3 +188,66 @@ interface HelmRelease {
 	}
 }
 
+interface GitRepository {
+	readonly apiVersion: string;
+	readonly kind: 'List';
+	readonly items: {
+		readonly apiVersion: string;
+		readonly kind: 'GitRepository';
+		readonly metadata: ResourceMetadata;
+		readonly spec: {
+			readonly gitImplementation: string;
+			readonly interval: string;
+			readonly ref: {
+				branch: string;
+			}
+			readonly timeout: string;
+			readonly url: string;
+		}
+		readonly status: {
+			readonly artifact: {
+				readonly checksum: string;
+				readonly lastUpdateTime: string;
+				readonly path: string;
+				readonly revision: string;
+				readonly url: string;
+			}
+			readonly conditions: Conditions;
+			readonly observedGeneration: number;
+		}
+	}[];
+	readonly metadata: ItemMetadata;
+}
+
+interface HelmRepository {
+	readonly apiVersion: string;
+	readonly kind: 'List';
+	readonly metadata: ItemMetadata;
+	// TODO: fill
+}
+
+interface ResourceMetadata {
+	readonly annotations: {
+		'kubectl.kubernetes.io/last-applied-configuration': string;
+	};
+	readonly creationTimestamp: string;
+	readonly finalizers: Array<string>;
+	readonly generation: number;
+	readonly name: string;
+	readonly namespace: string;
+	readonly resourceVersion: string;
+	readonly uid: string;
+}
+
+interface ItemMetadata {
+	readonly resourceVersion: '';
+	readonly selfLink: '';
+}
+
+type Conditions = Array<{
+	readonly lastTransitionTime: string;
+	readonly message: string;
+	readonly reason: string;
+	readonly status: string;
+	readonly type: string;
+}>;
