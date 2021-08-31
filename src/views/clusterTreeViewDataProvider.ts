@@ -1,11 +1,11 @@
 import { MarkdownString } from 'vscode';
-import { kubectlCluster } from '../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 
 export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
   async buildTree() {
-    const clusters = await kubectlCluster();
+    const clusters = await kubernetesTools.getClusters();
     if (!clusters) {
       return [];
     }
