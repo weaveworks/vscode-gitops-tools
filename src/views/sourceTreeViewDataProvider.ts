@@ -1,12 +1,12 @@
 import { MarkdownString } from 'vscode';
-import { kubectlBucket, kubectlGitRepository, kubectlHelmRepository } from '../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 
 export class SourceTreeViewDataProvider extends TreeViewDataProvider {
   async buildTree() {
 		const treeItems: TreeViewItem[] = [];
-		const gitRepositories = await kubectlGitRepository();
+		const gitRepositories = await kubernetesTools.getGitRepositories();
 		if (gitRepositories) {
 			for (const gitRepository of gitRepositories.items) {
 				const mdHover = new MarkdownString();
@@ -17,11 +17,11 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 				}));
 			}
 		}
-		const helmRepositories = await kubectlHelmRepository();
+		const helmRepositories = await kubernetesTools.getHelmRepositories();
 		if (helmRepositories) {
 			// TODO: implement me
 		}
-		const buckets = await kubectlBucket();
+		const buckets = await kubernetesTools.getBuckets();
 		if (buckets) {
 			// TODO: implement me
 		}
