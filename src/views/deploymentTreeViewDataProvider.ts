@@ -12,14 +12,21 @@ export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
 				const mdHover = new MarkdownString();
 				mdHover.appendCodeblock(JSON.stringify(kustomizeDeployment.metadata, null, '  '), 'json');
 				treeItems.push(new TreeViewItem({
-					label: `kustomization: ${kustomizeDeployment.metadata.name}`,
+					label: `Kustomization: ${kustomizeDeployment.metadata.name}`,
 					tooltip: mdHover
 				}));
 			}
     }
 		const helmReleases = await kubernetesTools.getHelmReleases();
 		if (helmReleases) {
-			// TODO: implement me
+			for (const helmRelease of helmReleases.items) {
+				const mdHover = new MarkdownString();
+				mdHover.appendCodeblock(JSON.stringify(helmRelease.metadata, null, '  '), 'json');
+				treeItems.push(new TreeViewItem({
+					label: `Helm Release: ${helmRelease.metadata.name}`,
+					tooltip: mdHover
+				}));
+			}
 		}
     return treeItems;
   }

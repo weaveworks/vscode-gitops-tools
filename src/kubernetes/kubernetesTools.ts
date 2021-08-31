@@ -199,10 +199,14 @@ interface Bucket {
 
 interface HelmRelease {
 	readonly apiVersion: string;
-	readonly kind: 'HelmRelease';
-	readonly metadata: {
-		// TODO: fill
-	}
+	readonly kind: 'List';
+	readonly items: {
+		readonly apiVersion: string;
+		readonly kind: "HelmRelease",
+		readonly metadata: ResourceMetadata;
+		// TODO: use types from somewhere instead of manually writing them
+	}[];
+	readonly metadata: ItemMetadata;
 }
 
 interface GitRepository {
@@ -248,7 +252,7 @@ interface ResourceMetadata {
 		'kubectl.kubernetes.io/last-applied-configuration': string;
 	};
 	readonly creationTimestamp: string;
-	readonly finalizers: Array<string>;
+	readonly finalizers: string[];
 	readonly generation: number;
 	readonly name: string;
 	readonly namespace: string;
@@ -261,10 +265,10 @@ interface ItemMetadata {
 	readonly selfLink: '';
 }
 
-type Conditions = Array<{
+type Conditions = {
 	readonly lastTransitionTime: string;
 	readonly message: string;
 	readonly reason: string;
 	readonly status: string;
 	readonly type: string;
-}>;
+}[];
