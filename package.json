@@ -33,6 +33,7 @@
 	},
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
+		"onCommand:gitops.flux.checkPrerequisites",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
 		"onView:gitops.views.deployments",
@@ -44,6 +45,11 @@
 			{
 				"command": "gitops.kubectl.version",
 				"title": "Kubectl Version",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.flux.checkPrerequisites",
+				"title": "Flux Check Prerequisites",
 				"category": "GitOps"
 			}
 		],

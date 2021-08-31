@@ -12,7 +12,7 @@ let _currentDirectory: string | undefined;
 let _disposable: Disposable | undefined;
 
 /**
- * Gets gitops treminal instance
+ * Gets gitops treminal instance.
  * @param context VScode extension context.
  * @param workingDirectory Optional working directory path to cd to.
  * @returns
@@ -46,15 +46,13 @@ function getTerminal(context: ExtensionContext, workingDirectory?: string): Term
  * @param context VSCode extension context.
  * @param command Command name.
  * @param args Command arguments.
- * @param workingDirectory Optional working directory.
+ * @param workingDirectory Optional working directory path to cd to.
  */
 export function runTerminalCommand(
 	context: ExtensionContext,
   command: string,
   args: string,
-  workingDirectory?: string,
-  ): void {
-
+  workingDirectory?: string): void {
   const terminal = getTerminal(context, workingDirectory);
 	terminal.show(true);
 	terminal.sendText(`${command} ${args}`, true); // add new line

@@ -22,6 +22,13 @@ export enum KubectlCommands {
 	Version = 'gitops.kubectl.version'
 }
 
+/**
+ * Flux commands.
+ */
+ export enum FluxCommands {
+	CheckPrerequisites = 'gitops.flux.checkPrerequisites'
+}
+
 let _context: ExtensionContext;
 
 /**
@@ -31,6 +38,7 @@ let _context: ExtensionContext;
 export function registerCommands(context: ExtensionContext) {
   _context = context;
   registerCommand(KubectlCommands.Version, showKubectlVersion);
+	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 }
 
 /**
@@ -51,4 +59,11 @@ function registerCommand(commandName: string, callback: (...args: any[]) => any,
  */
 async function showKubectlVersion() {
 	runTerminalCommand(_context, 'kubectl', 'version');
+}
+
+/**
+ * Runs Flux check --pre command in gitops terminal.
+ */
+ async function checkFluxPrerequisites() {
+	runTerminalCommand(_context, 'flux', 'check --pre');
 }

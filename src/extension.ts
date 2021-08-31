@@ -3,7 +3,7 @@ import {
 	commands,
 	window
 } from 'vscode';
-import { registerCommands, KubectlCommands } from './commands';
+import { registerCommands, FluxCommands, KubectlCommands } from './commands';
 import { ClusterTreeViewDataProvider } from './views/clusterTreeViewDataProvider';
 import { DeploymentTreeViewDataProvider } from './views/deploymentTreeViewDataProvider';
 import { LinkTreeViewDataProvider } from './views/linkTreeViewDataProvider';
@@ -42,6 +42,9 @@ export function activate(context: ExtensionContext) {
 
 	// show kubectl version in gitops terminal
 	commands.executeCommand(KubectlCommands.Version);
+
+	// run Flux prerequisites check
+	commands.executeCommand(FluxCommands.CheckPrerequisites);
 }
 
 export function deactivate() {}
