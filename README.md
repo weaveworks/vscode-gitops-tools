@@ -6,15 +6,20 @@ VSCode GitOps Tools Extension
 
 GitOps extension depends on [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) extension which is automatically installed with this extension for building applications to run with Kubernetes clusters or troublishooting Kubernetes cluster deployments. You may need to invoke the following command line tools, depending on which features you use. You will need `kubectl` at the minimum, and `docker` if you plan on using this extension to build applications rather than only browse.
 
-- `kubectl`
-- `docker`
-- `helm`
+Tool | Description | Installation
+--- | --- | ---
+[`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) | The kubectl command line tool lets you control Kubernetes clusters.  | [Install Kubectl](https://kubectl.docs.kubernetes.io/installation/kubectl/)
+[`docker`](https://www.docker.com) | Docker is an open platform for developing, shipping, and running applications. | [Install Docker](https://docs.docker.com/get-docker/)
+[`helm`](https://helm.sh) | The package manager for Kubernetes. | [Install Helm](https://helm.sh/docs/intro/install/)
 
 Optional tools:
 
-- `az` (Azure CLI - only if using the extension to create or register Azure clusters)
-- `minikube` (only if you want to use it)
-- `git` (only if using the 'sync working copy to repository' feature)
+Tool | Description | Installation
+--- | --- | ---
+[`az`](https://docs.microsoft.com/en-us/cli/azure/) | Azure CLI. (only if using the extension to create or register Azure clusters) | [Install az](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+[`minikube`](https://minikube.sigs.k8s.io/docs/) | minikube is local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. (only if you want to use it) | [Install minikube](https://minikube.sigs.k8s.io/docs/start/)
+[`git`](https://git-scm.com) | Git is a free and open source distributed version control system. (only if using the `sync working copy to repository` feature) | [Install git](https://git-scm.com/downloads)
+
 
 We recommend you install these CLI tools on your system PATH before using GitOps extension. If these tools aren't on your system `PATH`, then some commands may not work. If the extension needs one of the core Kubernetes tools and it's missing, it will offer to install it for you.
 
