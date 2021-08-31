@@ -191,10 +191,25 @@ interface Kustomize {
 	}
 	readonly metadata: ItemMetadata;
 }
-
+// Perhaps type can be found at https://fluxcd.io/docs/components/source/buckets/
 interface Bucket {
 	readonly apiVersion: string;
-	// TODO: fill
+	readonly kind: 'List';
+	readonly items: {
+		readonly apiVersion: string;
+		readonly kind: 'Bucket';
+		readonly metadata: ResourceMetadata;
+		readonly spec: {
+			readonly bucketName: string;
+			readonly endpoint: string;
+			readonly interval: string;
+			readonly insecure?: boolean;
+			readonly provider?: string;
+			readonly timeout?: string;
+		}
+		readonly status: unknown;
+	}[];
+	readonly metadata: ItemMetadata;
 }
 
 interface HelmRelease {
@@ -243,8 +258,13 @@ interface GitRepository {
 interface HelmRepository {
 	readonly apiVersion: string;
 	readonly kind: 'List';
+	readonly items: {
+		readonly apiVersion: string;
+		readonly kind: 'HelmRepository';
+		readonly metadata: ResourceMetadata;
+		// TODO: search for types
+	}[]
 	readonly metadata: ItemMetadata;
-	// TODO: fill
 }
 
 interface ResourceMetadata {
