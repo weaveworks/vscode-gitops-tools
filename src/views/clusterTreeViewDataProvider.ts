@@ -1,7 +1,8 @@
 import { MarkdownString } from 'vscode';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { ClusterType, kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
+import { TreeViewItemContext } from './views';
 
 export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
   async buildTree() {
@@ -11,13 +12,22 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
     }
     const treeItems: TreeViewItem[] = [];
     for (const cluster of clusters) {
-			const mdHover = new MarkdownString();
-			mdHover.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
-      treeItems.push(new TreeViewItem({
-        label: `${cluster.name} ${cluster.cluster.server}`,
-				tooltip: mdHover,
-      }));
+      treeItems.push(new ClusterTreeViewItem(cluster));
     }
     return treeItems;
   }
+}
+
+class ClusterTreeViewItem extends TreeViewItem {
+	constructor(cluster: ClusterType) {
+		super({
+			label: `${cluster.name} ${cluster.cluster.server}`
+		});
+
+		const mdHover = new MarkdownString();
+		mdHover.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
+		this.tooltip = mdHover;
+
+		this.contextValue = TreeViewItemContext.Cluster;
+	}
 }

@@ -9,7 +9,7 @@ import { Link } from './link';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 
-export class LinkTreeViewDataProvider extends TreeViewDataProvider {
+export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
 
   /**
    * Creates documentation tree view from documenation links config.

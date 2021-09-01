@@ -132,17 +132,19 @@ export function parseJSONOutput(output: string) {
   return parsedJson;
 }
 
-interface Kubeconfig {
+export interface ClusterType {
+	readonly name: string;
+	readonly cluster: {
+		readonly server: string;
+		readonly 'certificate-authority'?: string;
+		readonly 'certificate-authority-data'?: string;
+	};
+}
+
+export interface Kubeconfig {
 	readonly apiVersion: string;
 	readonly 'current-context': string;
-	readonly clusters: {
-		readonly name: string;
-		readonly cluster: {
-			readonly server: string;
-			readonly 'certificate-authority'?: string;
-			readonly 'certificate-authority-data'?: string;
-		};
-	}[] | undefined;
+	readonly clusters: ClusterType[] | undefined;
 	readonly contexts: {
 		readonly name: string;
 		readonly context: {
@@ -157,14 +159,16 @@ interface Kubeconfig {
 	}[] | undefined;
 }
 
-interface Kustomize {
+export interface Kustomize {
 	readonly apiVersion: string;
 	readonly kind: 'List';
-	readonly items: {
-		readonly apiVersion: string;
-		readonly kind: 'Kustomization'
-		readonly metadata: ResourceMetadata;
-	}[];
+	readonly items: KustomizeItem[];
+	readonly metadata: ItemMetadata;
+}
+export interface KustomizeItem {
+	readonly apiVersion: string;
+	readonly kind: 'Kustomization'
+	readonly metadata: ResourceMetadata;
 	readonly spec: {
 		readonly force: boolean;
 		readonly interval: string;
@@ -189,58 +193,85 @@ interface Kustomize {
 			}[]
 		}
 	}
-	readonly metadata: ItemMetadata;
 }
-
+// Perhaps type can be found at https://fluxcd.io/docs/components/source/buckets/
 interface Bucket {
 	readonly apiVersion: string;
-	// TODO: fill
+	readonly kind: 'List';
+	readonly items: BucketItem[];
+	readonly metadata: ItemMetadata;
+}
+export interface BucketItem {
+	readonly apiVersion: string;
+	readonly kind: 'Bucket';
+	readonly metadata: ResourceMetadata;
+	readonly spec: {
+		readonly bucketName: string;
+		readonly endpoint: string;
+		readonly interval: string;
+		readonly insecure?: boolean;
+		readonly provider?: string;
+		readonly timeout?: string;
+	}
+	readonly status: unknown;
 }
 
 interface HelmRelease {
 	readonly apiVersion: string;
-	readonly kind: 'HelmRelease';
-	readonly metadata: {
-		// TODO: fill
-	}
+	readonly kind: 'List';
+	readonly items: HelmReleaseItem[];
+	readonly metadata: ItemMetadata;
+}
+export interface HelmReleaseItem {
+	readonly apiVersion: string;
+	readonly kind: "HelmRelease",
+	readonly metadata: ResourceMetadata;
+	// TODO: use types from somewhere instead of manually writing them
 }
 
 interface GitRepository {
 	readonly apiVersion: string;
 	readonly kind: 'List';
-	readonly items: {
-		readonly apiVersion: string;
-		readonly kind: 'GitRepository';
-		readonly metadata: ResourceMetadata;
-		readonly spec: {
-			readonly gitImplementation: string;
-			readonly interval: string;
-			readonly ref: {
-				branch: string;
-			}
-			readonly timeout: string;
+	readonly items: GitRepositoryItem[];
+	readonly metadata: ItemMetadata;
+}
+export interface GitRepositoryItem {
+	readonly apiVersion: string;
+	readonly kind: 'GitRepository';
+	readonly metadata: ResourceMetadata;
+	readonly spec: {
+		readonly gitImplementation: string;
+		readonly interval: string;
+		readonly ref: {
+			branch: string;
+		}
+		readonly timeout: string;
+		readonly url: string;
+	}
+	readonly status: {
+		readonly artifact: {
+			readonly checksum: string;
+			readonly lastUpdateTime: string;
+			readonly path: string;
+			readonly revision: string;
 			readonly url: string;
 		}
-		readonly status: {
-			readonly artifact: {
-				readonly checksum: string;
-				readonly lastUpdateTime: string;
-				readonly path: string;
-				readonly revision: string;
-				readonly url: string;
-			}
-			readonly conditions: Conditions;
-			readonly observedGeneration: number;
-		}
-	}[];
-	readonly metadata: ItemMetadata;
+		readonly conditions: Conditions;
+		readonly observedGeneration: number;
+	}
 }
 
 interface HelmRepository {
 	readonly apiVersion: string;
 	readonly kind: 'List';
+	readonly items: HelmRepositoryItem[]
 	readonly metadata: ItemMetadata;
-	// TODO: fill
+}
+export interface HelmRepositoryItem {
+	readonly apiVersion: string;
+	readonly kind: 'HelmRepository';
+	readonly metadata: ResourceMetadata;
+	// TODO: search for types
 }
 
 interface ResourceMetadata {
@@ -248,7 +279,7 @@ interface ResourceMetadata {
 		'kubectl.kubernetes.io/last-applied-configuration': string;
 	};
 	readonly creationTimestamp: string;
-	readonly finalizers: Array<string>;
+	readonly finalizers: string[];
 	readonly generation: number;
 	readonly name: string;
 	readonly namespace: string;
@@ -261,10 +292,10 @@ interface ItemMetadata {
 	readonly selfLink: '';
 }
 
-type Conditions = Array<{
+type Conditions = {
 	readonly lastTransitionTime: string;
 	readonly message: string;
 	readonly reason: string;
 	readonly status: string;
 	readonly type: string;
-}>;
+}[];
