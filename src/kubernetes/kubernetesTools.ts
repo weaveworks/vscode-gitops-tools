@@ -41,7 +41,7 @@ class KubernetesTools {
 			console.warn(`Failed to get cubectl config ${currentContextShellResult?.stderr}`);
 			return;
 		}
-		return parseJSONOutput(currentContextShellResult.stdout);
+		return currentContextShellResult.stdout.trim();
 	}
 	/**
 	 * Switch current k8s config context.
