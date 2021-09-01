@@ -6,7 +6,7 @@ import {
 import { registerCommands, FluxCommands, KubectlCommands } from './commands';
 import { ClusterTreeViewDataProvider } from './views/clusterTreeViewDataProvider';
 import { DeploymentTreeViewDataProvider } from './views/deploymentTreeViewDataProvider';
-import { DocumentationTreeViewDataProvider } from './views/linkTreeViewDataProvider';
+import { DocumentationTreeViewDataProvider } from './views/documentationTreeViewDataProvider';
 import { SourceTreeViewDataProvider } from './views/sourceTreeViewDataProvider';
 import { Views } from './views/views';
 
