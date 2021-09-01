@@ -4,6 +4,7 @@ import {
 } from 'vscode';
 import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
+import { refreshAllTreeViews } from './views/treeViews';
 
 /**
  * Bulit-in VSCode commands.
@@ -71,5 +72,8 @@ async function showKubectlVersion() {
  * Switches current k8s context.
  */
 export async function setCurrentContext(contextName: string) {
-	return await kubernetesTools.setCurrentContext(contextName);
+	const success = await kubernetesTools.setCurrentContext(contextName);
+	if (success) {
+		refreshAllTreeViews();
+	}
 }
