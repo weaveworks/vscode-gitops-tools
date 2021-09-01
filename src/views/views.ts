@@ -1,6 +1,16 @@
-export enum Views {
+export const enum Views {
 	ClusterView = 'gitops.views.clusters',
 	SourceView = 'gitops.views.sources',
 	DeploymentView = 'gitops.views.deployments',
 	DocumentationView = 'gitops.views.documentation',
+}
+
+export const enum TreeViewItemContext {
+	Cluster = 'cluster',
+	Kustomization = 'kustomization',
+	HelmRelease = 'helmRelease',
+	HelmRepository = 'helmRepository',
+	GitRepository = 'gitRepository',
+	Bucket = 'bucket',
+	DocumentationLink = 'documentationLink',
 }

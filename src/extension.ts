@@ -6,7 +6,7 @@ import {
 import { registerCommands, FluxCommands, KubectlCommands } from './commands';
 import { ClusterTreeViewDataProvider } from './views/clusterTreeViewDataProvider';
 import { DeploymentTreeViewDataProvider } from './views/deploymentTreeViewDataProvider';
-import { LinkTreeViewDataProvider } from './views/linkTreeViewDataProvider';
+import { DocumentationTreeViewDataProvider } from './views/linkTreeViewDataProvider';
 import { SourceTreeViewDataProvider } from './views/sourceTreeViewDataProvider';
 import { Views } from './views/views';
 
@@ -33,7 +33,7 @@ export function activate(context: ExtensionContext) {
 
 	// create documentation links sidebar tree view
 	window.createTreeView(Views.DocumentationView, {
-		treeDataProvider: new LinkTreeViewDataProvider(),
+		treeDataProvider: new DocumentationTreeViewDataProvider(),
 		showCollapseAll: true,
 	});
 
