@@ -1,4 +1,5 @@
 import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
+import { KubectlCommands } from '../commands';
 import { ClusterType, kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
@@ -19,11 +20,15 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
   }
 }
 
-class ClusterTreeViewItem extends TreeViewItem {
+export class ClusterTreeViewItem extends TreeViewItem {
+	name: string;
+
 	constructor(cluster: ClusterType, currentContext: string) {
 		super({
 			label: `${cluster.name} ${cluster.cluster.server}`,
 		});
+
+		this.name = cluster.name;
 
 		const mdHover = new MarkdownString();
 		mdHover.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
@@ -32,6 +37,12 @@ class ClusterTreeViewItem extends TreeViewItem {
 		if (cluster.name === currentContext) {
 			this.collapsibleState = TreeItemCollapsibleState.Collapsed;
 		}
+
+		this.command = {
+			command: KubectlCommands.SetCurrentContext,
+			arguments: [this.name],
+			title: 'Set current context',
+		};
 
 		this.contextValue = TreeViewItemContext.Cluster;
 	}
