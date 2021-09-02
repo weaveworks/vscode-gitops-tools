@@ -29,6 +29,40 @@ class KubernetesTools {
 		return parseJSONOutput(configShellResult.stdout);
 	}
 	/**
+	 * Return k8s current config context name.
+	 */
+	async getCurrentContext(): Promise<undefined | string> {
+		const kubectl = await this.getProvider();
+		if (!kubectl) {
+			return;
+		}
+		const currentContextShellResult = await kubectl.invokeCommand('config current-context');
+		if (!currentContextShellResult || currentContextShellResult.stderr) {
+			console.warn(`Failed to get cubectl current context ${currentContextShellResult?.stderr}`);
+			return;
+		}
+		return currentContextShellResult.stdout.trim();
+	}
+	/**
+	 * Switch current k8s config context.
+	 */
+	async setCurrentContext(contextName: string): Promise<undefined | boolean> {
+		const kubectl = await this.getProvider();
+		if (!kubectl) {
+			return;
+		}
+		const currentContext = await this.getCurrentContext();
+		if (currentContext && currentContext === contextName) {
+			return;
+		}
+		const setContextShellResult = await kubectl.invokeCommand(`config use-context ${contextName}`);
+		if (setContextShellResult?.stderr) {
+			window.showErrorMessage(`Failed to switch the active context ${setContextShellResult?.stderr}`);
+			return;
+		}
+		return true;
+	}
+	/**
 	 * Return all k8s clusters.
 	 */
 	async getClusters() {

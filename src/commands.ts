@@ -1,12 +1,10 @@
 import {
-  Disposable,
-  ExtensionContext,
-  Uri,
-  commands,
-  window
-}
-from 'vscode';
-import {runTerminalCommand} from './gitOps';
+	commands, Disposable,
+	ExtensionContext
+} from 'vscode';
+import { runTerminalCommand } from './gitOps';
+import { kubernetesTools } from './kubernetes/kubernetesTools';
+import { refreshAllTreeViews } from './views/treeViews';
 
 /**
  * Bulit-in VSCode commands.
@@ -19,7 +17,8 @@ export enum BuiltInCommands {
  * Kubectl commands.
  */
 export enum KubectlCommands {
-	Version = 'gitops.kubectl.version'
+	Version = 'gitops.kubectl.version',
+	SetCurrentContext = 'gitops.kubectl.setCurrentContext',
 }
 
 /**
@@ -38,6 +37,7 @@ let _context: ExtensionContext;
 export function registerCommands(context: ExtensionContext) {
   _context = context;
   registerCommand(KubectlCommands.Version, showKubectlVersion);
+	registerCommand(KubectlCommands.SetCurrentContext, setCurrentContext);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 }
 
@@ -66,4 +66,14 @@ async function showKubectlVersion() {
  */
  async function checkFluxPrerequisites() {
 	runTerminalCommand(_context, 'flux', 'check --pre');
+}
+
+/**
+ * Switches current k8s context.
+ */
+export async function setCurrentContext(contextName: string) {
+	const success = await kubernetesTools.setCurrentContext(contextName);
+	if (success) {
+		refreshAllTreeViews();
+	}
 }
