@@ -51,6 +51,10 @@ class KubernetesTools {
 		if (!kubectl) {
 			return;
 		}
+		const currentContext = await this.getCurrentContext();
+		if (currentContext && currentContext === contextName) {
+			return;
+		}
 		const setContextShellResult = await kubectl.invokeCommand(`config use-context ${contextName}`);
 		if (setContextShellResult?.stderr) {
 			window.showErrorMessage(`Failed to switch the active context ${setContextShellResult?.stderr}`);
