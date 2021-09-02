@@ -38,7 +38,7 @@ class KubernetesTools {
 		}
 		const currentContextShellResult = await kubectl.invokeCommand('config current-context');
 		if (!currentContextShellResult || currentContextShellResult.stderr) {
-			console.warn(`Failed to get cubectl config ${currentContextShellResult?.stderr}`);
+			console.warn(`Failed to get cubectl current context ${currentContextShellResult?.stderr}`);
 			return;
 		}
 		return currentContextShellResult.stdout.trim();
