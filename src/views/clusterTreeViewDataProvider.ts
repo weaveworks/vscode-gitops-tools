@@ -1,6 +1,7 @@
 import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
 import { KubectlCommands } from '../commands';
-import { ClusterType, kubernetesTools } from '../kubernetes/kubernetesTools';
+import { ClusterType } from '../kubernetes/kubernetesConfig';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './views';

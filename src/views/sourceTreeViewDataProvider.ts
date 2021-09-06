@@ -1,5 +1,8 @@
 import { MarkdownString } from 'vscode';
-import { BucketItem, GitRepositoryItem, HelmRepositoryItem, kubernetesTools } from '../kubernetes/kubernetesTools';
+import { BucketItem } from '../kubernetes/kubernetesBucket';
+import { GitRepositoryItem } from '../kubernetes/kubernetesGitRepository';
+import { HelmRepositoryItem } from '../kubernetes/kubernetesHelmRepository';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './views';
