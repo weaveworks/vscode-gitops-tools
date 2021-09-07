@@ -1,5 +1,8 @@
 import { MarkdownString } from 'vscode';
-import { BucketItem, GitRepositoryItem, HelmRepositoryItem, kubernetesTools } from '../kubernetes/kubernetesTools';
+import { Bucket } from '../kubernetes/kubernetesBucket';
+import { GitRepository } from '../kubernetes/kubernetesGitRepository';
+import { HelmRepository } from '../kubernetes/kubernetesHelmRepository';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './views';
@@ -30,7 +33,7 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 }
 
 class GitRepositoryTreeViewItem extends TreeViewItem {
-	constructor(gitRepository: GitRepositoryItem) {
+	constructor(gitRepository: GitRepository) {
 		super({
 			label: `Git: ${gitRepository.metadata.name}`,
 		});
@@ -44,7 +47,7 @@ class GitRepositoryTreeViewItem extends TreeViewItem {
 }
 
 class HelmRepositoryTreeViewItem extends TreeViewItem {
-	constructor(helmRepository: HelmRepositoryItem) {
+	constructor(helmRepository: HelmRepository) {
 		super({
 			label: `Helm Repository: ${helmRepository.metadata.name}`,
 		});
@@ -58,7 +61,7 @@ class HelmRepositoryTreeViewItem extends TreeViewItem {
 }
 
 class BucketTreeViewItem extends TreeViewItem {
-	constructor(bucket: BucketItem) {
+	constructor(bucket: Bucket) {
 		super({
 			label: `Bucket: ${bucket.metadata.name}`,
 		});

@@ -1,5 +1,11 @@
 import { window } from 'vscode';
 import { extension } from 'vscode-kubernetes-tools-api';
+import { BucketResult } from './kubernetesBucket';
+import { KubernetesConfig } from './kubernetesConfig';
+import { GitRepositoryResult } from './kubernetesGitRepository';
+import { HelmReleaseResult } from './kubernetesHelmRelease';
+import { HelmRepositoryResult } from './kubernetesHelmRepository';
+import { KustomizeResult } from './kubernetesKustomize';
 
 class KubernetesTools {
 	/**
@@ -16,7 +22,7 @@ class KubernetesTools {
 	/**
 	 * Return k8s config with contexts and clusters.
 	 */
-	async getKubectlConfig(): Promise<undefined | Kubeconfig> {
+	async getKubectlConfig(): Promise<undefined | KubernetesConfig> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -75,7 +81,7 @@ class KubernetesTools {
 	/**
 	 * Return all kustomizations from all namespaces.
 	 */
-	async getKustomizations(): Promise<undefined | Kustomize> {
+	async getKustomizations(): Promise<undefined | KustomizeResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -90,7 +96,7 @@ class KubernetesTools {
 	/**
 	 * Return all helm releases from all namespaces.
 	 */
-	async getHelmReleases(): Promise<undefined | HelmRelease> {
+	async getHelmReleases(): Promise<undefined | HelmReleaseResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -105,7 +111,7 @@ class KubernetesTools {
 	/**
 	 * Return all git repositories from all namespaces.
 	 */
-	async getGitRepositories(): Promise<undefined | GitRepository> {
+	async getGitRepositories(): Promise<undefined | GitRepositoryResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -120,7 +126,7 @@ class KubernetesTools {
 	/**
 	 * Return all helm repositories from all namespaces.
 	 */
-	async getHelmRepositories(): Promise<undefined | HelmRepository> {
+	async getHelmRepositories(): Promise<undefined | HelmRepositoryResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -135,7 +141,7 @@ class KubernetesTools {
 	/**
 	 * Return all buckets from all namespaces.
 	 */
-	async getBuckets(): Promise<undefined | Bucket> {
+	async getBuckets(): Promise<undefined | BucketResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -166,170 +172,3 @@ export function parseJSONOutput(output: string) {
   return parsedJson;
 }
 
-export interface ClusterType {
-	readonly name: string;
-	readonly cluster: {
-		readonly server: string;
-		readonly 'certificate-authority'?: string;
-		readonly 'certificate-authority-data'?: string;
-	};
-}
-
-export interface Kubeconfig {
-	readonly apiVersion: string;
-	readonly 'current-context': string;
-	readonly clusters: ClusterType[] | undefined;
-	readonly contexts: {
-		readonly name: string;
-		readonly context: {
-			readonly cluster: string;
-			readonly user: string;
-			readonly namespace?: string;
-		};
-	}[] | undefined;
-	readonly users: {
-		readonly name: string;
-		readonly user: Record<string, unknown>;
-	}[] | undefined;
-}
-
-export interface Kustomize {
-	readonly apiVersion: string;
-	readonly kind: 'List';
-	readonly items: KustomizeItem[];
-	readonly metadata: ItemMetadata;
-}
-export interface KustomizeItem {
-	readonly apiVersion: string;
-	readonly kind: 'Kustomization'
-	readonly metadata: ResourceMetadata;
-	readonly spec: {
-		readonly force: boolean;
-		readonly interval: string;
-		readonly path: string;
-		readonly prune: boolean;
-		readonly sourceRef: {
-			readonly kind: string;
-			readonly name: string;
-		}
-	}
-	readonly status: {
-		readonly conditions: Conditions;
-		readonly lastAppliedRevision: string;
-		readonly lastAttemptedRevision: string;
-		readonly observedGeneration: number;
-		readonly snapshot: {
-			readonly checksum: string;
-			readonly entries: {
-				readonly kinds: {
-					[key: string]: string;
-				}
-			}[]
-		}
-	}
-}
-// Perhaps type can be found at https://fluxcd.io/docs/components/source/buckets/
-interface Bucket {
-	readonly apiVersion: string;
-	readonly kind: 'List';
-	readonly items: BucketItem[];
-	readonly metadata: ItemMetadata;
-}
-export interface BucketItem {
-	readonly apiVersion: string;
-	readonly kind: 'Bucket';
-	readonly metadata: ResourceMetadata;
-	readonly spec: {
-		readonly bucketName: string;
-		readonly endpoint: string;
-		readonly interval: string;
-		readonly insecure?: boolean;
-		readonly provider?: string;
-		readonly timeout?: string;
-	}
-	readonly status: unknown;
-}
-
-interface HelmRelease {
-	readonly apiVersion: string;
-	readonly kind: 'List';
-	readonly items: HelmReleaseItem[];
-	readonly metadata: ItemMetadata;
-}
-export interface HelmReleaseItem {
-	readonly apiVersion: string;
-	readonly kind: "HelmRelease",
-	readonly metadata: ResourceMetadata;
-	// TODO: use types from somewhere instead of manually writing them
-}
-
-interface GitRepository {
-	readonly apiVersion: string;
-	readonly kind: 'List';
-	readonly items: GitRepositoryItem[];
-	readonly metadata: ItemMetadata;
-}
-export interface GitRepositoryItem {
-	readonly apiVersion: string;
-	readonly kind: 'GitRepository';
-	readonly metadata: ResourceMetadata;
-	readonly spec: {
-		readonly gitImplementation: string;
-		readonly interval: string;
-		readonly ref: {
-			branch: string;
-		}
-		readonly timeout: string;
-		readonly url: string;
-	}
-	readonly status: {
-		readonly artifact: {
-			readonly checksum: string;
-			readonly lastUpdateTime: string;
-			readonly path: string;
-			readonly revision: string;
-			readonly url: string;
-		}
-		readonly conditions: Conditions;
-		readonly observedGeneration: number;
-	}
-}
-
-interface HelmRepository {
-	readonly apiVersion: string;
-	readonly kind: 'List';
-	readonly items: HelmRepositoryItem[]
-	readonly metadata: ItemMetadata;
-}
-export interface HelmRepositoryItem {
-	readonly apiVersion: string;
-	readonly kind: 'HelmRepository';
-	readonly metadata: ResourceMetadata;
-	// TODO: search for types
-}
-
-interface ResourceMetadata {
-	readonly annotations: {
-		'kubectl.kubernetes.io/last-applied-configuration': string;
-	};
-	readonly creationTimestamp: string;
-	readonly finalizers: string[];
-	readonly generation: number;
-	readonly name: string;
-	readonly namespace: string;
-	readonly resourceVersion: string;
-	readonly uid: string;
-}
-
-interface ItemMetadata {
-	readonly resourceVersion: '';
-	readonly selfLink: '';
-}
-
-type Conditions = {
-	readonly lastTransitionTime: string;
-	readonly message: string;
-	readonly reason: string;
-	readonly status: string;
-	readonly type: string;
-}[];
