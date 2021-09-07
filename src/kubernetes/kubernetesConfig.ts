@@ -1,4 +1,4 @@
-export interface Kubeconfig {
+export interface KubernetesConfig {
 	readonly apiVersion: string;
 	readonly 'current-context': string;
 	readonly clusters: ClusterType[] | undefined;

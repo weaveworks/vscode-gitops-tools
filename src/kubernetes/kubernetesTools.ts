@@ -1,11 +1,11 @@
 import { window } from 'vscode';
 import { extension } from 'vscode-kubernetes-tools-api';
-import { Bucket } from './kubernetesBucket';
-import { Kubeconfig } from './kubernetesConfig';
-import { GitRepository } from './kubernetesGitRepository';
-import { HelmRelease } from './kubernetesHelmRelease';
-import { HelmRepository } from './kubernetesHelmRepository';
-import { Kustomize } from './kubernetesKustomize';
+import { BucketResult } from './kubernetesBucket';
+import { KubernetesConfig } from './kubernetesConfig';
+import { GitRepositoryResult } from './kubernetesGitRepository';
+import { HelmReleaseResult } from './kubernetesHelmRelease';
+import { HelmRepositoryResult } from './kubernetesHelmRepository';
+import { KustomizeResult } from './kubernetesKustomize';
 
 class KubernetesTools {
 	/**
@@ -22,7 +22,7 @@ class KubernetesTools {
 	/**
 	 * Return k8s config with contexts and clusters.
 	 */
-	async getKubectlConfig(): Promise<undefined | Kubeconfig> {
+	async getKubectlConfig(): Promise<undefined | KubernetesConfig> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -81,7 +81,7 @@ class KubernetesTools {
 	/**
 	 * Return all kustomizations from all namespaces.
 	 */
-	async getKustomizations(): Promise<undefined | Kustomize> {
+	async getKustomizations(): Promise<undefined | KustomizeResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -96,7 +96,7 @@ class KubernetesTools {
 	/**
 	 * Return all helm releases from all namespaces.
 	 */
-	async getHelmReleases(): Promise<undefined | HelmRelease> {
+	async getHelmReleases(): Promise<undefined | HelmReleaseResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -111,7 +111,7 @@ class KubernetesTools {
 	/**
 	 * Return all git repositories from all namespaces.
 	 */
-	async getGitRepositories(): Promise<undefined | GitRepository> {
+	async getGitRepositories(): Promise<undefined | GitRepositoryResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -126,7 +126,7 @@ class KubernetesTools {
 	/**
 	 * Return all helm repositories from all namespaces.
 	 */
-	async getHelmRepositories(): Promise<undefined | HelmRepository> {
+	async getHelmRepositories(): Promise<undefined | HelmRepositoryResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;
@@ -141,7 +141,7 @@ class KubernetesTools {
 	/**
 	 * Return all buckets from all namespaces.
 	 */
-	async getBuckets(): Promise<undefined | Bucket> {
+	async getBuckets(): Promise<undefined | BucketResult> {
 		const kubectl = await this.getProvider();
 		if (!kubectl) {
 			return;

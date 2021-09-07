@@ -1,6 +1,6 @@
 import { MarkdownString } from 'vscode';
-import { HelmReleaseItem } from '../kubernetes/kubernetesHelmRelease';
-import { KustomizeItem } from '../kubernetes/kubernetesKustomize';
+import { HelmRelease } from '../kubernetes/kubernetesHelmRelease';
+import { Kustomize } from '../kubernetes/kubernetesKustomize';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
@@ -26,7 +26,7 @@ export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
 }
 
 class KustomizationTreeViewItem extends TreeViewItem {
-	constructor(kustomization: KustomizeItem) {
+	constructor(kustomization: Kustomize) {
 		super({
 			label: `Kustomization: ${kustomization.metadata.name}`,
 		});
@@ -40,7 +40,7 @@ class KustomizationTreeViewItem extends TreeViewItem {
 }
 
 class HelmReleaseTreeViewItem extends TreeViewItem {
-	constructor(helmRelease: HelmReleaseItem) {
+	constructor(helmRelease: HelmRelease) {
 		super({
 			label: `Helm Release: ${helmRelease.metadata.name}`,
 		});
