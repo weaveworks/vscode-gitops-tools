@@ -2,6 +2,7 @@ import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
 import { KubectlCommands } from '../commands';
 import { ClusterType } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { setVscodeContext } from '../vscodeContext';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './views';
@@ -14,6 +15,7 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
     }
     const treeItems: TreeViewItem[] = [];
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
+		setVscodeContext('gitops:noClusterSelected', !currentContext);
     for (const cluster of clusters) {
       treeItems.push(new ClusterTreeViewItem(cluster, currentContext));
     }
