@@ -34,6 +34,7 @@
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.flux.checkPrerequisites",
+		"onCommand:gitops.views.refreshAllTreeViews",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
 		"onView:gitops.views.deployments",
