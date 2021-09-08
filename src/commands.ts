@@ -13,6 +13,10 @@ export enum BuiltInCommands {
   Open = 'vscode.open'
 }
 
+export enum ViewCommands {
+	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
+}
+
 /**
  * Kubectl commands.
  */
@@ -38,6 +42,7 @@ export function registerCommands(context: ExtensionContext) {
   _context = context;
   registerCommand(KubectlCommands.Version, showKubectlVersion);
 	registerCommand(KubectlCommands.SetCurrentContext, setCurrentContext);
+	registerCommand(ViewCommands.RefreshAllTreeViews, refreshAllTreeViews);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 }
 

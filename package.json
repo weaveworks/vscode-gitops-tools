@@ -34,6 +34,7 @@
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.flux.checkPrerequisites",
+		"onCommand:gitops.views.refreshAllTreeViews",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
 		"onView:gitops.views.deployments",
@@ -51,6 +52,12 @@
 				"command": "gitops.flux.checkPrerequisites",
 				"title": "Flux Check Prerequisites",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.refreshAllTreeViews",
+				"title": "Refresh",
+				"category": "GitOps",
+				"icon": "$(refresh)"
 			}
 		],
 		"viewsContainers": {
@@ -99,7 +106,16 @@
 				"view": "gitops.views.documentation",
 				"contents": "Loading Topics ..."
 			}
-		]
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "gitops.views.refreshAllTreeViews",
+					"group": "navigation",
+					"when": "view == gitops.views.clusters"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
