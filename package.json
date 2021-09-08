@@ -53,7 +53,7 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.views.refreshClusters",
+				"command": "gitops.views.refreshAllTreeViews",
 				"title": "Refresh",
 				"category": "GitOps",
 				"icon": "$(refresh)"
@@ -109,7 +109,7 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "gitops.views.refreshClusters",
+					"command": "gitops.views.refreshAllTreeViews",
 					"group": "navigation",
 					"when": "view == gitops.views.clusters"
 				}
