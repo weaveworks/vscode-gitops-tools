@@ -53,7 +53,7 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.kubectl.refresh",
+				"command": "gitops.views.refreshClusters",
 				"title": "Refresh",
 				"category": "GitOps",
 				"icon": "$(refresh)"
@@ -109,7 +109,7 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "gitops.kubectl.refresh",
+					"command": "gitops.views.refreshClusters",
 					"group": "navigation",
 					"when": "view == gitops.views.clusters"
 				}
