@@ -51,6 +51,12 @@
 				"command": "gitops.flux.checkPrerequisites",
 				"title": "Flux Check Prerequisites",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.kubectl.refresh",
+				"title": "Refresh",
+				"category": "GitOps",
+				"icon": "$(refresh)"
 			}
 		],
 		"viewsContainers": {
@@ -99,7 +105,16 @@
 				"view": "gitops.views.documentation",
 				"contents": "Loading Topics ..."
 			}
-		]
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "gitops.kubectl.refresh",
+					"group": "navigation",
+					"when": "view == gitops.views.clusters"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
