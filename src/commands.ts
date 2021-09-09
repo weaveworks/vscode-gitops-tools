@@ -10,7 +10,8 @@ import { refreshAllTreeViews } from './views/treeViews';
  * Bulit-in VSCode commands.
  */
 export enum BuiltInCommands {
-  Open = 'vscode.open'
+  Open = 'vscode.open',
+	SetContext = 'setContext'
 }
 
 export enum ViewCommands {
