@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import { extension } from 'vscode-kubernetes-tools-api';
+import { setVscodeContext } from '../vscodeContext';
 import { BucketResult } from './kubernetesBucket';
 import { KubernetesConfig } from './kubernetesConfig';
 import { GitRepositoryResult } from './kubernetesGitRepository';
@@ -45,9 +46,12 @@ class KubernetesTools {
 		const currentContextShellResult = await kubectl.invokeCommand('config current-context');
 		if (!currentContextShellResult || currentContextShellResult.stderr) {
 			console.warn(`Failed to get cubectl current context ${currentContextShellResult?.stderr}`);
+			setVscodeContext('gitops:noClusterSelected', true);
 			return;
 		}
-		return currentContextShellResult.stdout.trim();
+		const currentContext = currentContextShellResult.stdout.trim();
+		setVscodeContext('gitops:noClusterSelected', !currentContext);
+		return currentContext;
 	}
 	/**
 	 * Switch current k8s config context.
@@ -66,6 +70,7 @@ class KubernetesTools {
 			window.showErrorMessage(`Failed to switch the active context ${setContextShellResult?.stderr}`);
 			return;
 		}
+		setVscodeContext('gitops:noClusterSelected', false);
 		return true;
 	}
 	/**
