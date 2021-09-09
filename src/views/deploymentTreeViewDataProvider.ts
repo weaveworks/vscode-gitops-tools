@@ -1,6 +1,6 @@
 import { MarkdownString } from 'vscode';
-import { HelmRelease } from '../kubernetes/kubernetesHelmRelease';
-import { Kustomize } from '../kubernetes/kubernetesKustomize';
+import { HelmRelease } from '../kubernetes/helmRelease';
+import { Kustomize } from '../kubernetes/kustomize';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';

@@ -1,4 +1,4 @@
-import { KubernetesDeploymentCondition, KubernetesJSON, KubernetesLocalObjectReference, KubernetesObjectBase, KubernetesObjectMeta, ResultMetadata } from './kubernetesGeneralTypes';
+import { KubernetesDeploymentCondition, KubernetesJSON, KubernetesLocalObjectReference, KubernetesObjectBase, KubernetesObjectMeta, ResultMetadata } from './kubernetesTypes';
 
 export interface KustomizeResult {
 	readonly apiVersion: string;

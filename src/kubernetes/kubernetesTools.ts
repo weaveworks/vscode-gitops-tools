@@ -1,12 +1,12 @@
 import { window } from 'vscode';
 import { extension } from 'vscode-kubernetes-tools-api';
 import { setContext, ContextTypes } from '../context';
-import { BucketResult } from './kubernetesBucket';
+import { BucketResult } from './bucket';
 import { KubernetesConfig } from './kubernetesConfig';
-import { GitRepositoryResult } from './kubernetesGitRepository';
-import { HelmReleaseResult } from './kubernetesHelmRelease';
-import { HelmRepositoryResult } from './kubernetesHelmRepository';
-import { KustomizeResult } from './kubernetesKustomize';
+import { GitRepositoryResult } from './gitRepository';
+import { HelmReleaseResult } from './helmRelease';
+import { HelmRepositoryResult } from './helmRepository';
+import { KustomizeResult } from './kustomize';
 
 class KubernetesTools {
 	/**
