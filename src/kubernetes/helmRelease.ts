@@ -1,5 +1,17 @@
-import { ResultMetadata, KubernetesObjectBase, KubernetesObjectMeta, KubernetesJSON, KubernetesDeploymentCondition } from './kubernetesTypes';
-import { DependsOn, KubeConfig, Kustomize, NamespacedObjectKindReference } from './kustomize';
+import {
+	KubernetesDeploymentCondition,
+	KubernetesJSON,
+	KubernetesObjectBase,
+	KubernetesObjectMeta,
+	ResultMetadata
+} from './kubernetesTypes';
+
+import {
+	DependsOn,
+	KubeConfig,
+	Kustomize,
+	NamespacedObjectKindReference
+} from './kustomize';
 
 export interface HelmReleaseResult {
 	readonly apiVersion: string;

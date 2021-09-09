@@ -1,4 +1,11 @@
-import { KubernetesArtifact, KubernetesDeploymentCondition, KubernetesLocalObjectReference, KubernetesObjectBase, KubernetesObjectMeta, ResultMetadata } from './kubernetesTypes';
+import {
+	KubernetesArtifact,
+	KubernetesDeploymentCondition,
+	KubernetesLocalObjectReference,
+	KubernetesObjectBase,
+	KubernetesObjectMeta,
+	ResultMetadata
+} from './kubernetesTypes';
 
 export interface HelmRepositoryResult {
 	readonly apiVersion: string;

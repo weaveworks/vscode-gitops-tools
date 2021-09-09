@@ -1,4 +1,10 @@
-import { ResultMetadata, KubernetesArtifact, KubernetesDeploymentCondition, KubernetesObjectBase, KubernetesObjectMeta } from './kubernetesTypes';
+import {
+	KubernetesArtifact,
+	KubernetesDeploymentCondition,
+	KubernetesObjectBase,
+	KubernetesObjectMeta,
+	ResultMetadata
+} from './kubernetesTypes';
 
 export interface BucketResult {
 	readonly apiVersion: string;

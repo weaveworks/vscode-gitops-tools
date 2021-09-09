@@ -1,4 +1,11 @@
-import { KubernetesArtifact, KubernetesDeploymentCondition, KubernetesLocalObjectReference, KubernetesObjectBase, KubernetesObjectMeta, ResultMetadata } from './kubernetesTypes';
+import {
+	KubernetesArtifact,
+	KubernetesDeploymentCondition,
+	KubernetesLocalObjectReference,
+	KubernetesObjectBase,
+	KubernetesObjectMeta,
+	ResultMetadata
+} from './kubernetesTypes';
 
 export interface GitRepositoryResult {
 	readonly apiVersion: string;
