@@ -101,7 +101,7 @@
 			},
 			{
 				"view": "gitops.views.sources",
-				"contents": "No cluster is selected.\n\n[Select a cluster](command:gitops.views.clusters.focus \"Click on the cluster at the CLUSTERS tree view to select it\")",
+				"contents": "Select GitOps Cluster to view Sources",
 				"when": "gitops:noClusterSelected"
 			},
 			{
@@ -111,7 +111,7 @@
 			},
 			{
 				"view": "gitops.views.deployments",
-				"contents": "No cluster is selected.\n\n[Select a cluster](command:gitops.views.clusters.focus \"Click on the cluster at the CLUSTERS tree view to select it\")",
+				"contents": "Select GitOps Cluster to view Deployments",
 				"when": "gitops:noClusterSelected"
 			},
 			{
