@@ -3,6 +3,7 @@ import { Bucket } from '../kubernetes/kubernetesBucket';
 import { GitRepository } from '../kubernetes/kubernetesGitRepository';
 import { HelmRepository } from '../kubernetes/kubernetesHelmRepository';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { shortenRevision } from '../utils/stringUtils';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './views';
@@ -36,6 +37,7 @@ class GitRepositoryTreeViewItem extends TreeViewItem {
 	constructor(gitRepository: GitRepository) {
 		super({
 			label: `Git: ${gitRepository.metadata.name}`,
+			description: shortenRevision(gitRepository.status.artifact?.revision),
 		});
 
 		const mdHover = new MarkdownString();
@@ -50,6 +52,7 @@ class HelmRepositoryTreeViewItem extends TreeViewItem {
 	constructor(helmRepository: HelmRepository) {
 		super({
 			label: `Helm Repository: ${helmRepository.metadata.name}`,
+			description: shortenRevision(helmRepository.status.artifact?.revision),
 		});
 
 		const mdHover = new MarkdownString();
@@ -64,6 +67,7 @@ class BucketTreeViewItem extends TreeViewItem {
 	constructor(bucket: Bucket) {
 		super({
 			label: `Bucket: ${bucket.metadata.name}`,
+			description: shortenRevision(bucket.status.artifact?.revision),
 		});
 
 		const mdHover = new MarkdownString();
