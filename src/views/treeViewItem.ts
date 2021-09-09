@@ -12,17 +12,20 @@ export class TreeViewItem extends TreeItem {
 
   constructor({
     label,
+		description,
     tooltip,
     commandString,
     args,
   }: {
     label: string;
+		description?: string;
     tooltip?: string | MarkdownString;
     commandString?: string;
     args?: Array<unknown>;
   }) {
     super(label, TreeItemCollapsibleState.None);
     this.tooltip = tooltip;
+		this.description = description;
     if (commandString) {
       this.command = {
         command: commandString,
