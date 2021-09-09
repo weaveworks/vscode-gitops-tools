@@ -1,9 +1,9 @@
 import {
-	KubernetesDeploymentCondition,
+	DeploymentCondition,
 	KubernetesJSON,
-	KubernetesLocalObjectReference,
-	KubernetesObjectBase,
-	KubernetesObjectMeta,
+	LocalObjectReference,
+	KubernetesObject,
+	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
 
@@ -16,10 +16,10 @@ export interface KustomizeResult {
 /**
  * https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/#Deployment
  */
-export interface Kustomize extends KubernetesObjectBase {
+export interface Kustomize extends KubernetesObject {
 	readonly apiVersion: string;
 	readonly kind: 'Kustomization'
-	readonly metadata: KubernetesObjectMeta;
+	readonly metadata: ObjectMeta;
 	/**
 	 * https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/#DeploymentSpec
 	 * https://github.com/fluxcd/kustomize-controller/blob/main/docs/api/kustomize.md#kustomizationspec
@@ -87,7 +87,7 @@ export interface Kustomize extends KubernetesObjectBase {
 	readonly status: {
 		/** ObservedGeneration is the last reconciled generation. */
 		readonly observedGeneration?: number;
-		readonly conditions?: KubernetesDeploymentCondition[];
+		readonly conditions?: DeploymentCondition[];
 		/** The last successfully applied revision. The revision format for Git sources is /. */
 		readonly lastAppliedRevision?: string;
 		/** LastAttemptedRevision is the revision of the last reconciliation attempt. */
@@ -129,7 +129,7 @@ interface Decryption {
 	/** Provider is the name of the decryption engine. */
 	readonly provider: string;
 	/** The secret name containing the private OpenPGP keys used for decryption. */
-	readonly secretRef?: KubernetesLocalObjectReference;
+	readonly secretRef?: LocalObjectReference;
 }
 
 export interface NamespacedObjectKindReference {
@@ -203,5 +203,5 @@ export interface KubeConfig {
 	 * will not function without adding binaries and credentials to the Pod
 	 * that is responsible for reconciling the Kustomization.
 	 */
-	readonly secretRef: KubernetesLocalObjectReference;
+	readonly secretRef: LocalObjectReference;
 }

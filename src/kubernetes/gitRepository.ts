@@ -1,9 +1,9 @@
 import {
-	KubernetesArtifact,
-	KubernetesDeploymentCondition,
-	KubernetesLocalObjectReference,
-	KubernetesObjectBase,
-	KubernetesObjectMeta,
+	Artifact,
+	DeploymentCondition,
+	LocalObjectReference,
+	KubernetesObject,
+	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
 
@@ -14,10 +14,10 @@ export interface GitRepositoryResult {
 	readonly metadata: ResultMetadata;
 }
 
-export interface GitRepository extends KubernetesObjectBase {
+export interface GitRepository extends KubernetesObject {
 	readonly apiVersion: string;
 	readonly kind: 'GitRepository';
-	readonly metadata: KubernetesObjectMeta;
+	readonly metadata: ObjectMeta;
 	/** https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#gitrepositoryspec */
 	readonly spec: {
 		/** The repository URL, can be a HTTP/S or SSH address. */
@@ -27,7 +27,7 @@ export interface GitRepository extends KubernetesObjectBase {
 		 * For HTTPS repositories the secret must contain username and password fields.
 		 * For SSH repositories the secret must contain identity, identity.pub and known_hosts fields.
 		 */
-		readonly secretRef?: KubernetesLocalObjectReference;
+		readonly secretRef?: LocalObjectReference;
 		/** The interval at which to check for repository updates. */
 		readonly interval: string;
 		/** The timeout for remote Git operations like cloning, defaults to 20s. */
@@ -62,11 +62,11 @@ export interface GitRepository extends KubernetesObjectBase {
 		/** ObservedGeneration is the last observed generation. */
 		readonly observedGeneration?: number;
 		/** Conditions holds the conditions for the GitRepository. */
-		readonly conditions?: KubernetesDeploymentCondition[];
+		readonly conditions?: DeploymentCondition[];
 		/** URL is the download link for the artifact output of the last repository sync. */
 		readonly url?: string;
 		/** Artifact represents the output of the last successful repository sync. */
-		readonly artifact?: KubernetesArtifact;
+		readonly artifact?: Artifact;
 	}
 }
 /**
@@ -91,7 +91,7 @@ interface GitRepositoryVerification {
 	/** Mode describes what git object should be verified, currently (‘head’). */
 	readonly mode: string;
 	/** The secret name containing the public keys of all trusted Git authors. */
-	readonly secretRef: KubernetesLocalObjectReference;
+	readonly secretRef: LocalObjectReference;
 }
 /**
  * GitRepositoryInclude defines a source with a from and to path.
@@ -99,7 +99,7 @@ interface GitRepositoryVerification {
  */
 interface GitRepositoryInclude {
 	/** Reference to a GitRepository to include. */
-	readonly repository: KubernetesLocalObjectReference;
+	readonly repository: LocalObjectReference;
 	/** The path to copy contents from, defaults to the root directory. */
 	readonly fromPath?: string;
 	/** The path to copy contents to, defaults to the name of the source ref. */

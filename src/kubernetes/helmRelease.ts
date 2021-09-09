@@ -1,8 +1,8 @@
 import {
-	KubernetesDeploymentCondition,
+	DeploymentCondition,
 	KubernetesJSON,
-	KubernetesObjectBase,
-	KubernetesObjectMeta,
+	KubernetesObject,
+	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
 
@@ -20,10 +20,10 @@ export interface HelmReleaseResult {
 	readonly metadata: ResultMetadata;
 }
 
-export interface HelmRelease extends KubernetesObjectBase {
+export interface HelmRelease extends KubernetesObject {
 	readonly apiVersion: string;
 	readonly kind: "HelmRelease",
-	readonly metadata: KubernetesObjectMeta;
+	readonly metadata: ObjectMeta;
 	/**
 	 * https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/#DeploymentSpec
 	 * https://github.com/fluxcd/helm-controller/blob/main/docs/api/helmrelease.md#helmreleasespec
@@ -103,7 +103,7 @@ export interface HelmRelease extends KubernetesObjectBase {
 		readonly observedGeneration?: number;
 		// readonly ReconcileRequestStatus: https://pkg.go.dev/github.com/fluxcd/pkg/apis/meta?utm_source=godoc#ReconcileRequestStatus
 		/** Conditions holds the conditions for the HelmRelease. */
-		readonly conditions?: KubernetesDeploymentCondition;
+		readonly conditions?: DeploymentCondition;
 		/** LastAppliedRevision is the revision of the last successfully applied source. */
 		readonly lastAppliedRevision?: string;
 		/** LastAttemptedRevision is the revision of the last reconciliation attempt. */

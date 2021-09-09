@@ -1,9 +1,9 @@
 import {
-	KubernetesArtifact,
-	KubernetesDeploymentCondition,
-	KubernetesLocalObjectReference,
-	KubernetesObjectBase,
-	KubernetesObjectMeta,
+	Artifact,
+	DeploymentCondition,
+	LocalObjectReference,
+	KubernetesObject,
+	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
 
@@ -13,10 +13,10 @@ export interface HelmRepositoryResult {
 	readonly items: HelmRepository[]
 	readonly metadata: ResultMetadata;
 }
-export interface HelmRepository extends KubernetesObjectBase {
+export interface HelmRepository extends KubernetesObject {
 	readonly apiVersion: string;
 	readonly kind: 'HelmRepository';
-	readonly metadata: KubernetesObjectMeta;
+	readonly metadata: ObjectMeta;
 	/** https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#helmrepositoryspec */
 	readonly spec: {
 		/** The Helm repository URL, a valid URL contains at least a protocol and host. */
@@ -26,7 +26,7 @@ export interface HelmRepository extends KubernetesObjectBase {
 		 * For HTTP/S basic auth the secret must contain username and password fields.
 		 * For TLS the secret must contain a certFile and keyFile, and/or caCert fields.
 		 */
-		readonly secretRef?: KubernetesLocalObjectReference;
+		readonly secretRef?: LocalObjectReference;
 		/**
 		 * PassCredentials allows the credentials from the SecretRef
 		 * to be passed on to a host that does not match the host as defined in URL.
@@ -47,11 +47,11 @@ export interface HelmRepository extends KubernetesObjectBase {
 		/** ObservedGeneration is the last observed generation. */
 		readonly observedGeneration?: number;
 		/** Conditions holds the conditions for the HelmRepository. */
-		readonly conditions?: KubernetesDeploymentCondition[];
+		readonly conditions?: DeploymentCondition[];
 		/** URL is the download link for the last index fetched. */
 		readonly url?: string;
 		/** Artifact represents the output of the last successful repository sync. */
-		readonly artifact?: KubernetesArtifact;
+		readonly artifact?: Artifact;
 
 	}
 }

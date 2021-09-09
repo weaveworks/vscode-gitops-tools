@@ -1,8 +1,8 @@
 import {
-	KubernetesArtifact,
-	KubernetesDeploymentCondition,
-	KubernetesObjectBase,
-	KubernetesObjectMeta,
+	Artifact,
+	DeploymentCondition,
+	KubernetesObject,
+	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
 
@@ -13,10 +13,10 @@ export interface BucketResult {
 	readonly metadata: ResultMetadata;
 }
 
-export interface Bucket extends KubernetesObjectBase {
+export interface Bucket extends KubernetesObject {
 	readonly apiVersion: string;
 	readonly kind: 'Bucket';
-	readonly metadata: KubernetesObjectMeta;
+	readonly metadata: ObjectMeta;
 	/** https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#bucketspec */
 	readonly spec: {
 		/** The S3 compatible storage provider name, default ('generic'). */
@@ -49,11 +49,11 @@ export interface Bucket extends KubernetesObjectBase {
 		/** ObservedGeneration is the last observed generation. */
 		readonly observedGeneration?: number;
 		/** Conditions holds the conditions for the Bucket. */
-		readonly conditions?: KubernetesDeploymentCondition[];
+		readonly conditions?: DeploymentCondition[];
 		/** URL is the download link for the artifact output of the last Bucket sync. */
 	  readonly url?: string;
 		/** Artifact represents the output of the last successful Bucket sync. */
-		readonly artifact?: KubernetesArtifact;
+		readonly artifact?: Artifact;
 		/** LastHandledReconcileAt is the last manual reconciliation request (by annotating the Bucket) handled by the reconciler. */
 		readonly lastHandledReconcileAt?: string;
 	};

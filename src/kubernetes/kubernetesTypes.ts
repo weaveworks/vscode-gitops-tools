@@ -2,7 +2,7 @@
  * Required fields on every kubernetes object:
  * https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/#required-fields
  */
-export interface KubernetesObjectBase {
+export interface KubernetesObject {
 	readonly apiVersion: string;
 	readonly kind: string;
 	readonly metadata: unknown;
@@ -17,7 +17,7 @@ export interface ResultMetadata {
 }
 
 /** DeploymentCondition describes the state of a deployment at a certain point. */
-export interface KubernetesDeploymentCondition {
+export interface DeploymentCondition {
 	/** Last time the condition transitioned from one status to another. */
 	lastTransitionTime?: string;
 	/** The last time this condition was updated. */
@@ -33,7 +33,7 @@ export interface KubernetesDeploymentCondition {
 }
 
 /** LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace. */
-export interface KubernetesLocalObjectReference {
+export interface LocalObjectReference {
 	/** Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names */
 	name: string;
 }
@@ -46,7 +46,7 @@ export interface KubernetesJSON {
 }
 
 /** Artifact represents the output of a source synchronisation. */
-export interface KubernetesArtifact {
+export interface Artifact {
 	/** Path is the relative file path of this artifact. */
 	readonly path: string;
 	/** URL is the HTTP address of this artifact. */
@@ -63,7 +63,7 @@ export interface KubernetesArtifact {
 }
 
 /** ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. */
-export interface KubernetesObjectMeta {
+export interface ObjectMeta {
 	/** Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations */
 	annotations?: { [key: string]: string };
 	/** The name of the cluster which the object belongs to. This is used to distinguish resources with same name and namespace in different clusters. This field is not set anywhere right now and apiserver is going to ignore it if set in create or update request. */
