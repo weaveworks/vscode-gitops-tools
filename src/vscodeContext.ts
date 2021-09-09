@@ -1,8 +1,12 @@
 import { commands } from 'vscode';
 
+const enum DynamicContexts {
+	NoClusterSelected = 'gitops:noClusterSelected',
+}
+
 /** Mapping between context name and context value. */
 interface VscodeContextTypes {
-	['gitops:noClusterSelected']: boolean;
+	[DynamicContexts.NoClusterSelected]: boolean;
 }
 /** VSCode context names */
 export type ContextKey = keyof VscodeContextTypes;
