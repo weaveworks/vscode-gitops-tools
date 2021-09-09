@@ -3,7 +3,7 @@ import { Bucket } from '../kubernetes/kubernetesBucket';
 import { GitRepository } from '../kubernetes/kubernetesGitRepository';
 import { HelmRepository } from '../kubernetes/kubernetesHelmRepository';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { shortenRevision } from '../utils/utils';
+import { shortenRevision } from '../utils/stringUtils';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './views';
