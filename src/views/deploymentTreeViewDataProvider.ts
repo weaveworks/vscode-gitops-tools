@@ -1,12 +1,20 @@
-import { MarkdownString } from 'vscode';
+import { ExtensionContext, ExtensionMode, MarkdownString } from 'vscode';
 import { HelmRelease } from '../kubernetes/helmRelease';
-import { Kustomize } from '../kubernetes/kustomize';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { Kustomize } from '../kubernetes/kustomize';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
+import { generateDeploymentHover } from './treeViewItemHover';
 import { TreeViewItemContext } from './views';
 
+let _extensionContext: ExtensionContext;
+
 export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
+	constructor(extensionContext: ExtensionContext) {
+		super();
+		_extensionContext = extensionContext;
+	}
+
   async buildTree() {
 		const treeItems: TreeViewItem[] = [];
     const kustomizations = await kubernetesTools.getKustomizations();
@@ -31,9 +39,7 @@ class KustomizationTreeViewItem extends TreeViewItem {
 			label: `Kustomization: ${kustomization.metadata.name}`,
 		});
 
-		const mdHover = new MarkdownString();
-		mdHover.appendCodeblock(JSON.stringify(kustomization, null, '  '), 'json');
-		this.tooltip = mdHover;
+		this.tooltip = generateDeploymentHover(kustomization, _extensionContext.extensionMode === ExtensionMode.Development);
 
 		this.contextValue = TreeViewItemContext.Kustomization;
 	}
@@ -45,9 +51,7 @@ class HelmReleaseTreeViewItem extends TreeViewItem {
 			label: `Helm Release: ${helmRelease.metadata.name}`,
 		});
 
-		const mdHover = new MarkdownString();
-		mdHover.appendCodeblock(JSON.stringify(helmRelease, null, '  '), 'json');
-		this.tooltip = mdHover;
+		this.tooltip = generateDeploymentHover(helmRelease, _extensionContext.extensionMode === ExtensionMode.Development);
 
 		this.contextValue = TreeViewItemContext.HelmRelease;
 	}

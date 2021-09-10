@@ -1,4 +1,4 @@
-import { MarkdownString } from 'vscode';
+import { ExtensionContext, ExtensionMode } from 'vscode';
 import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRepository } from '../kubernetes/helmRepository';
@@ -6,9 +6,17 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { shortenRevision } from '../utils/stringUtils';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
+import { generateSourceHover } from './treeViewItemHover';
 import { TreeViewItemContext } from './views';
 
+let _extensionContext: ExtensionContext;
+
 export class SourceTreeViewDataProvider extends TreeViewDataProvider {
+	constructor(extensionContext: ExtensionContext) {
+		super();
+		_extensionContext = extensionContext;
+	}
+
   async buildTree() {
 		const treeItems: TreeViewItem[] = [];
 		const gitRepositories = await kubernetesTools.getGitRepositories();
@@ -40,9 +48,7 @@ class GitRepositoryTreeViewItem extends TreeViewItem {
 			description: shortenRevision(gitRepository.status.artifact?.revision),
 		});
 
-		const mdHover = new MarkdownString();
-		mdHover.appendCodeblock(JSON.stringify(gitRepository, null, '  '), 'json');
-		this.tooltip = mdHover;
+		this.tooltip = generateSourceHover(gitRepository, _extensionContext.extensionMode === ExtensionMode.Development);
 
 		this.contextValue = TreeViewItemContext.GitRepository;
 	}
@@ -55,9 +61,7 @@ class HelmRepositoryTreeViewItem extends TreeViewItem {
 			description: shortenRevision(helmRepository.status.artifact?.revision),
 		});
 
-		const mdHover = new MarkdownString();
-		mdHover.appendCodeblock(JSON.stringify(helmRepository, null, '  '), 'json');
-		this.tooltip = mdHover;
+		this.tooltip = generateSourceHover(helmRepository, _extensionContext.extensionMode === ExtensionMode.Development);
 
 		this.contextValue = TreeViewItemContext.HelmRepository;
 	}
@@ -70,9 +74,7 @@ class BucketTreeViewItem extends TreeViewItem {
 			description: shortenRevision(bucket.status.artifact?.revision),
 		});
 
-		const mdHover = new MarkdownString();
-		mdHover.appendCodeblock(JSON.stringify(bucket, null, '  '), 'json');
-		this.tooltip = mdHover;
+		this.tooltip = generateSourceHover(bucket, _extensionContext.extensionMode === ExtensionMode.Development);
 
 		this.contextValue = TreeViewItemContext.Bucket;
 	}

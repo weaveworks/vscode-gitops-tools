@@ -10,7 +10,7 @@ import { createAllTreeViews } from './views/treeViews';
  */
 export function activate(context: ExtensionContext) {
 	// create gitops tree views
-	createAllTreeViews();
+	createAllTreeViews(context);
 
 	// register gitops commands
 	registerCommands(context);
