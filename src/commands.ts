@@ -4,7 +4,7 @@ import {
 } from 'vscode';
 import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
-import { refreshAllTreeViews } from './views/treeViews';
+import { refreshTreeViews } from './views/treeViews';
 
 /**
  * Bulit-in VSCode commands.
@@ -14,8 +14,11 @@ export enum BuiltInCommands {
 	SetContext = 'setContext'
 }
 
+/**
+ * GitOps View commands.
+ */
 export enum ViewCommands {
-	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
+	RefreshTreeViews = 'gitops.views.refreshTreeViews',
 }
 
 /**
@@ -42,8 +45,8 @@ let _context: ExtensionContext;
 export function registerCommands(context: ExtensionContext) {
   _context = context;
   registerCommand(KubectlCommands.Version, showKubectlVersion);
-	registerCommand(KubectlCommands.SetCurrentContext, setCurrentContext);
-	registerCommand(ViewCommands.RefreshAllTreeViews, refreshAllTreeViews);
+	registerCommand(KubectlCommands.SetCurrentContext, setKubernetesClusterContext);
+	registerCommand(ViewCommands.RefreshTreeViews, refreshTreeViews);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 }
 
@@ -75,11 +78,12 @@ async function showKubectlVersion() {
 }
 
 /**
- * Switches current k8s context.
+ * Sets Kubernetes cluster context.
+ * @param contextName Kubernetes cluster context name.
  */
-export async function setCurrentContext(contextName: string) {
+export async function setKubernetesClusterContext(contextName: string) {
 	const success = await kubernetesTools.setCurrentContext(contextName);
 	if (success) {
-		refreshAllTreeViews();
+		refreshTreeViews();
 	}
 }

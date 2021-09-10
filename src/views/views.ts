@@ -1,3 +1,6 @@
+/**
+ * GitOps views.
+ */
 export const enum Views {
 	ClusterView = 'gitops.views.clusters',
 	SourceView = 'gitops.views.sources',
@@ -5,6 +8,9 @@ export const enum Views {
 	DocumentationView = 'gitops.views.documentation',
 }
 
+/**
+ * GitOps tree view item context values.
+ */
 export const enum TreeViewItemContext {
 	Cluster = 'cluster',
 	Kustomization = 'kustomization',

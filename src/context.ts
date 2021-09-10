@@ -27,4 +27,3 @@ export type ContextKey = keyof ContextValues;
 export async function setContext<T extends ContextKey>(context: T, value: ContextValues[T]) {
 	return await commands.executeCommand(BuiltInCommands.SetContext, context, value);
 }
-

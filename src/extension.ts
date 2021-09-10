@@ -1,8 +1,13 @@
 import {
-	commands, ExtensionContext
+	commands,
+	ExtensionContext
 } from 'vscode';
-import { FluxCommands, KubectlCommands, registerCommands } from './commands';
-import { createAllTreeViews } from './views/treeViews';
+import { createTreeViews } from './views/treeViews';
+import {
+	FluxCommands,
+	KubectlCommands,
+	registerCommands
+} from './commands';
 
 /**
  * Activates GitOps extension.
@@ -10,7 +15,7 @@ import { createAllTreeViews } from './views/treeViews';
  */
 export function activate(context: ExtensionContext) {
 	// create gitops tree views
-	createAllTreeViews(context);
+	createTreeViews(context);
 
 	// register gitops commands
 	registerCommands(context);
