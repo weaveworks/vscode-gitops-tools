@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { extension } from 'vscode-kubernetes-tools-api';
+import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { setContext, ContextTypes } from '../context';
 import { BucketResult } from './bucket';
 import { KubernetesConfig } from './kubernetesConfig';
@@ -23,7 +23,7 @@ class KubernetesTools {
 	 * @see https://github.com/Azure/vscode-kubernetes-tools-api
 	 */
 	async getKubectlApi() {
-		const kubectl = await extension.kubectl.v1;
+		const kubectl = await kubernetes.extension.kubectl.v1;
 		if (!kubectl.available) {
 			window.showErrorMessage(`Kubernetes Tools Kubectl API is unavailable: ${kubectl.reason}`);
 			return;
@@ -32,14 +32,23 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Gets current kubectl config with available contexts and clusters.
+	 * Invokes kubectl command via Kubernetes Tools API.
+	 * @param command Kubectl command to run.
+	 * @returns Kubectl command results.
 	 */
-	async getKubectlConfig(): Promise<undefined | KubernetesConfig> {
+	 async invokeKubectlCommand(command: string): Promise<kubernetes.KubectlV1.ShellResult | undefined> {
 		const kubectl = await this.getKubectlApi();
 		if (!kubectl) {
 			return;
 		}
-		const configShellResult = await kubectl.invokeCommand('config view -o json');
+		return await kubectl.invokeCommand(command);
+	}
+
+	/**
+	 * Gets current kubectl config with available contexts and clusters.
+	 */
+	async getKubectlConfig(): Promise<undefined | KubernetesConfig> {
+		const configShellResult = await this.invokeKubectlCommand('config view -o json');
 		if (!configShellResult || configShellResult.stderr) {
 			console.warn(`Failed to get kubectl config: ${configShellResult?.stderr}`);
 			return;
@@ -51,18 +60,12 @@ class KubernetesTools {
 	 * Gets current kubectl context name.
 	 */
 	async getCurrentContext(): Promise<undefined | string> {
-		const kubectl = await this.getKubectlApi();
-		if (!kubectl) {
-			return;
-		}
-
-		const currentContextShellResult = await kubectl.invokeCommand('config current-context');
+		const currentContextShellResult = await this.invokeKubectlCommand('config current-context');
 		if (!currentContextShellResult || currentContextShellResult.stderr) {
 			console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
 			setContext(ContextTypes.NoClusterSelected, true);
 			return;
 		}
-
 		const currentContext = currentContextShellResult.stdout.trim();
 		setContext(ContextTypes.NoClusterSelected, !currentContext);
 		return currentContext;
@@ -74,17 +77,12 @@ class KubernetesTools {
 	 * @returns True if kubectl context was changed, and false or undefined otherwise.
 	 */
 	async setCurrentContext(contextName: string): Promise<undefined | boolean> {
-		const kubectl = await this.getKubectlApi();
-		if (!kubectl) {
-			return;
-		}
-
 		const currentContext = await this.getCurrentContext();
 		if (currentContext && currentContext === contextName) {
 			return;
 		}
 
-		const setContextShellResult = await kubectl.invokeCommand(`config use-context ${contextName}`);
+		const setContextShellResult = await this.invokeKubectlCommand(`config use-context ${contextName}`);
 		if (setContextShellResult?.stderr) {
 			window.showErrorMessage(`Failed to set kubectl context to ${contextName}: ${setContextShellResult?.stderr}`);
 			return;
@@ -109,17 +107,11 @@ class KubernetesTools {
 	 * Gets all kustomizations for the current kubectl context.
 	 */
 	async getKustomizations(): Promise<undefined | KustomizeResult> {
-		const kubectl = await this.getKubectlApi();
-		if (!kubectl) {
-			return;
-		}
-
-		const kustomizationShellResult = await kubectl.invokeCommand('get Kustomization -A -o json');
+		const kustomizationShellResult = await this.invokeKubectlCommand('get Kustomization -A -o json');
 		if (!kustomizationShellResult || kustomizationShellResult.stderr) {
 			console.warn(`Failed to get kubectl kustomizations: ${kustomizationShellResult?.stderr}`);
 			return;
 		}
-
 		return parseJson(kustomizationShellResult.stdout);
 	}
 
@@ -127,17 +119,11 @@ class KubernetesTools {
 	 * Gets all helm releases from the current kubectl context.
 	 */
 	async getHelmReleases(): Promise<undefined | HelmReleaseResult> {
-		const kubectl = await this.getKubectlApi();
-		if (!kubectl) {
-			return;
-		}
-
-		const helmReleaseShellResult = await kubectl.invokeCommand('get HelmRelease -A -o json');
+		const helmReleaseShellResult = await this.invokeKubectlCommand('get HelmRelease -A -o json');
 		if (!helmReleaseShellResult || helmReleaseShellResult.stderr) {
 			console.warn(`Failed to get kubectl helm releases: ${helmReleaseShellResult?.stderr}`);
 			return;
 		}
-
 		return parseJson(helmReleaseShellResult.stdout);
 	}
 
@@ -145,17 +131,11 @@ class KubernetesTools {
 	 * Gets all git repositories for the current kubectl context.
 	 */
 	async getGitRepositories(): Promise<undefined | GitRepositoryResult> {
-		const kubectl = await this.getKubectlApi();
-		if (!kubectl) {
-			return;
-		}
-
-		const gitRepositoryShellResult = await kubectl.invokeCommand('get GitRepository -A -o json');
+		const gitRepositoryShellResult = await this.invokeKubectlCommand('get GitRepository -A -o json');
 		if (!gitRepositoryShellResult || gitRepositoryShellResult.stderr) {
 			console.warn(`Failed to get kubectl git repositories: ${gitRepositoryShellResult?.stderr}`);
 			return;
 		}
-
 		return parseJson(gitRepositoryShellResult.stdout);
 	}
 
@@ -163,17 +143,11 @@ class KubernetesTools {
 	 * Gets all helm repositories for the current kubectl context.
 	 */
 	async getHelmRepositories(): Promise<undefined | HelmRepositoryResult> {
-		const kubectl = await this.getKubectlApi();
-		if (!kubectl) {
-			return;
-		}
-
-		const helmRepositoryShellResult = await kubectl.invokeCommand('get HelmRepository -A -o json');
+		const helmRepositoryShellResult = await this.invokeKubectlCommand('get HelmRepository -A -o json');
 		if (!helmRepositoryShellResult || helmRepositoryShellResult.stderr) {
 			console.warn(`Failed to get kubectl helm repositories: ${helmRepositoryShellResult?.stderr}`);
 			return;
 		}
-
 		return parseJson(helmRepositoryShellResult.stdout);
 	}
 
@@ -181,19 +155,14 @@ class KubernetesTools {
 	 * Gets all buckets for the current kubectl context.
 	 */
 	async getBuckets(): Promise<undefined | BucketResult> {
-		const kubectl = await this.getKubectlApi();
-		if (!kubectl) {
-			return;
-		}
-
-		const bucketShellResult = await kubectl.invokeCommand('get Bucket -A -o json');
+		const bucketShellResult = await this.invokeKubectlCommand('get Bucket -A -o json');
 		if (!bucketShellResult || bucketShellResult.stderr) {
 			console.warn(`Failed to get kubectl buckets: ${bucketShellResult?.stderr}`);
 			return;
 		}
-
 		return parseJson(bucketShellResult.stdout);
 	}
+
 }
 
 export const kubernetesTools = new KubernetesTools();
