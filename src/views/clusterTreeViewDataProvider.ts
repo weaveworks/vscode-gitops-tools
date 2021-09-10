@@ -1,10 +1,14 @@
-import { ExtensionContext, ExtensionMode, TreeItemCollapsibleState } from 'vscode';
+import {
+	ExtensionContext,
+	ExtensionMode,
+	MarkdownString,
+	TreeItemCollapsibleState
+} from 'vscode';
 import { KubectlCommands } from '../commands';
 import { ClusterType } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
-import { generateClusterHover } from './treeViewItemHover';
 import { TreeViewItemContext } from './views';
 
 let _extensionContext: ExtensionContext;
@@ -37,20 +41,47 @@ export class ClusterTreeViewItem extends TreeViewItem {
 			label: `${cluster.name} ${cluster.cluster.server}`,
 		});
 
+		this.contextValue = TreeViewItemContext.Cluster;
 		this.name = cluster.name;
-
-		this.tooltip = generateClusterHover(cluster, _extensionContext.extensionMode === ExtensionMode.Development);
-
-		if (cluster.name === currentContext) {
-			this.collapsibleState = TreeItemCollapsibleState.Collapsed;
-		}
-
+		this.tooltip = this.getMarkdown(cluster); //, _extensionContext.extensionMode === ExtensionMode.Development);
 		this.command = {
 			command: KubectlCommands.SetCurrentContext,
 			arguments: [this.name],
 			title: 'Set current context',
 		};
 
-		this.contextValue = TreeViewItemContext.Cluster;
+		if (cluster.name === currentContext) {
+			// why do we want to collapse a cluster tree node that matches kubectl current context ???
+			this.collapsibleState = TreeItemCollapsibleState.Collapsed;
+		}
 	}
+
+	/**
+	 * Creates markdwon string for the Cluster tree view item tooltip.
+	 * @param cluster Cluster type object.
+	 * @param showJsonConfig Optional show Json config flag for dev debug.
+	 * @returns Markdown string to use for Cluster tree view item tooltip.
+	 */
+	getMarkdown(cluster: ClusterType,	showJsonConfig: boolean = false): MarkdownString {
+		const markdown: MarkdownString = new MarkdownString();
+		markdown.appendMarkdown(`Property | Value\n`);
+		markdown.appendMarkdown(`--- | ---\n`);
+		markdown.appendMarkdown(`Name | ${cluster.name}\n`);
+		markdown.appendMarkdown(`Server | ${cluster.cluster.server}\n`);
+
+		if (cluster.cluster['certificate-authority']) {
+			markdown.appendMarkdown(`Certificate authority | ${cluster.cluster['certificate-authority']}`);
+		}
+
+		if (cluster.cluster['certificate-authority-data']) {
+			markdown.appendMarkdown(`Certificate authority data | ${cluster.cluster['certificate-authority-data']}`);
+		}
+
+		if (showJsonConfig) {
+				markdown.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
+		}
+
+		return markdown;
+	}
+
 }
