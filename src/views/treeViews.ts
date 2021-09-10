@@ -25,6 +25,7 @@ let documentationTreeView: TreeView<TreeItem>;
  * @param extensionContext VSCode extension context.
  */
 export function createTreeViews(extensionContext: ExtensionContext) {
+	// create gitops tree view data providers
 	clusterTreeViewProvider = new ClusterTreeViewDataProvider(extensionContext);
 	sourceTreeViewProvider =  new SourceTreeViewDataProvider(extensionContext);
 	deploymentTreeViewProvider = new DeploymentTreeViewDataProvider(extensionContext);
@@ -54,7 +55,7 @@ export function createTreeViews(extensionContext: ExtensionContext) {
 }
 
 /**
- * Refresh all GitOps tree views.
+ * Refreshes all GitOps tree views.
  */
  export function refreshTreeViews() {
 	refreshClusterTreeView();
@@ -63,21 +64,21 @@ export function createTreeViews(extensionContext: ExtensionContext) {
 }
 
 /**
- * Reloads configured clusters via kubectl.
+ * Reloads configured clusters tree view via kubectl.
  */
 export function refreshClusterTreeView() {
 	clusterTreeViewProvider.refresh();
 }
 
 /**
- * Reloads sources for the selected cluster.
+ * Reloads sources tree view for the selected cluster.
  */
 export function refreshSourceTreeView() {
 	sourceTreeViewProvider.refresh();
 }
 
 /**
- * Reloads deployments for the selected cluster.
+ * Reloads deployments tree view for the selected cluster.
  */
 export function refreshDeploymentTreeView() {
 	deploymentTreeViewProvider.refresh();
