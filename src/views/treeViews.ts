@@ -1,34 +1,43 @@
-import { window } from 'vscode';
+import { ExtensionContext, TreeItem, TreeView, window } from 'vscode';
 import { ClusterTreeViewDataProvider } from './clusterTreeViewDataProvider';
 import { DeploymentTreeViewDataProvider } from './deploymentTreeViewDataProvider';
 import { DocumentationTreeViewDataProvider } from './documentationTreeViewDataProvider';
 import { SourceTreeViewDataProvider } from './sourceTreeViewDataProvider';
 import { Views } from './views';
 
-let clusterTreeViewProvider = new ClusterTreeViewDataProvider();
-let sourceTreeViewProvider = new SourceTreeViewDataProvider();
-let deploymentTreeViewProvider = new DeploymentTreeViewDataProvider();
-let documentationTreeViewProvider = new DocumentationTreeViewDataProvider();
+let clusterTreeViewProvider: ClusterTreeViewDataProvider;
+let sourceTreeViewProvider: SourceTreeViewDataProvider;
+let deploymentTreeViewProvider: DeploymentTreeViewDataProvider;
+let documentationTreeViewProvider: DocumentationTreeViewDataProvider;
+let clusterTreeView: TreeView<TreeItem>;
+let sourceTreeView: TreeView<TreeItem>;
+let deploymentTreeView: TreeView<TreeItem>;
+let documentationTreeView: TreeView<TreeItem>;
 
-export function createAllTreeViews() {
+export function createAllTreeViews(extensionContext: ExtensionContext) {
+	clusterTreeViewProvider = new ClusterTreeViewDataProvider(extensionContext);
+	sourceTreeViewProvider =  new SourceTreeViewDataProvider(extensionContext);
+	deploymentTreeViewProvider = new DeploymentTreeViewDataProvider(extensionContext);
+	documentationTreeViewProvider = new DocumentationTreeViewDataProvider();
+
 	// create gitops sidebar tree views
-  window.createTreeView(Views.ClusterView, {
+  clusterTreeView = window.createTreeView(Views.ClusterView, {
     treeDataProvider: clusterTreeViewProvider,
     showCollapseAll: true,
   });
 
-	window.createTreeView(Views.SourceView, {
+	sourceTreeView = window.createTreeView(Views.SourceView, {
     treeDataProvider: sourceTreeViewProvider,
     showCollapseAll: true,
   });
 
-	window.createTreeView(Views.DeploymentView, {
+	deploymentTreeView = window.createTreeView(Views.DeploymentView, {
     treeDataProvider: deploymentTreeViewProvider,
     showCollapseAll: true,
   });
 
 	// create documentation links sidebar tree view
-	window.createTreeView(Views.DocumentationView, {
+	documentationTreeView = window.createTreeView(Views.DocumentationView, {
 		treeDataProvider: documentationTreeViewProvider,
 		showCollapseAll: true,
 	});

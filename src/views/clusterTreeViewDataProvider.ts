@@ -1,12 +1,20 @@
-import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
+import { ExtensionContext, ExtensionMode, TreeItemCollapsibleState } from 'vscode';
 import { KubectlCommands } from '../commands';
 import { ClusterType } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
+import { generateClusterHover } from './treeViewItemHover';
 import { TreeViewItemContext } from './views';
 
+let _extensionContext: ExtensionContext;
+
 export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
+	constructor(extensionContext: ExtensionContext) {
+		super();
+		_extensionContext = extensionContext;
+	}
+
   async buildTree() {
     const clusters = await kubernetesTools.getClusters();
     if (!clusters) {
@@ -31,9 +39,7 @@ export class ClusterTreeViewItem extends TreeViewItem {
 
 		this.name = cluster.name;
 
-		const mdHover = new MarkdownString();
-		mdHover.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
-		this.tooltip = mdHover;
+		this.tooltip = generateClusterHover(cluster, _extensionContext.extensionMode === ExtensionMode.Development);
 
 		if (cluster.name === currentContext) {
 			this.collapsibleState = TreeItemCollapsibleState.Collapsed;

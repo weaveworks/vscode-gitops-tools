@@ -123,40 +123,47 @@ export interface HelmRelease extends KubernetesObject {
 	}
 }
 
-/** Spec holds the template for the v1beta1.HelmChartSpec for this HelmRelease. */
+/**
+ * Spec holds the template for the v1beta1.HelmChartSpec for this HelmRelease.
+ * https://github.com/fluxcd/helm-controller/blob/main/docs/api/helmrelease.md#helm.toolkit.fluxcd.io/v2beta1.HelmChartTemplate
+ */
 interface HelmChartReleaseSpec {
-	/** The name or path the Helm chart is available at in the SourceRef. */
-	readonly chart: string;
-	/** Version semver expression, ignored for charts from
-	 * v1beta1.GitRepository and v1beta1.Bucket sources.
-	 * Defaults to latest when omitted.
-	 */
-	readonly version?: string;
-	/** The name and namespace of the v1beta1.Source the chart is available at. */
-	readonly sourceRef: NamespacedObjectKindReference;
-	/**
-	 * Interval at which to check the v1beta1.Source for updates.
-	 * Defaults to ‘HelmReleaseSpec.Interval’.
-	 */
-	readonly interval?: string;
-	/**
-	 * Alternative list of values files to use as the chart values
-	 * (values.yaml is not included by default), expected to be a relative path
-	 * in the SourceRef.
-	 * Values files are merged in the order of this list
-	 * with the last file overriding the first. Ignored when omitted.
-	 */
-	readonly valuesFiles?: string[];
-	/**
-	 * Alternative values file to use as the default chart values,
-	 * expected to be a relative path in the SourceRef.
-	 * Deprecated in favor of ValuesFiles, for backwards compatibility
-	 * the file defined here is merged before the ValuesFiles items.
-	 * Ignored when omitted.
-	 */
-	readonly valuesFile?: string;
+	readonly spec: {
+		/** The name or path the Helm chart is available at in the SourceRef. */
+		readonly chart: string;
+		/** Version semver expression, ignored for charts from
+		 * v1beta1.GitRepository and v1beta1.Bucket sources.
+		 * Defaults to latest when omitted.
+		 */
+		readonly version?: string;
+		/** The name and namespace of the v1beta1.Source the chart is available at. */
+		readonly sourceRef: NamespacedObjectKindReference;
+		/**
+		 * Interval at which to check the v1beta1.Source for updates.
+		 * Defaults to ‘HelmReleaseSpec.Interval’.
+		 */
+		readonly interval?: string;
+		/**
+		 * Alternative list of values files to use as the chart values
+		 * (values.yaml is not included by default), expected to be a relative path
+		 * in the SourceRef.
+		 * Values files are merged in the order of this list
+		 * with the last file overriding the first. Ignored when omitted.
+		 */
+		readonly valuesFiles?: string[];
+		/**
+		 * Alternative values file to use as the default chart values,
+		 * expected to be a relative path in the SourceRef.
+		 * Deprecated in favor of ValuesFiles, for backwards compatibility
+		 * the file defined here is merged before the ValuesFiles items.
+		 * Ignored when omitted.
+		 */
+		readonly valuesFile?: string;
+	}
 }
-
+/**
+ * https://github.com/fluxcd/helm-controller/blob/main/docs/api/helmrelease.md#install
+ */
 interface Install {
 	/**
 	 * Timeout is the time to wait for any individual Kubernetes operation
@@ -216,7 +223,9 @@ interface Install {
 	 */
 	readonly createNamespace?: boolean;
 }
-
+/**
+ * https://github.com/fluxcd/helm-controller/blob/main/docs/api/helmrelease.md#upgrade
+ */
 interface Upgrade {
 	/**
 	 * Timeout is the time to wait for any individual Kubernetes operation
@@ -272,7 +281,9 @@ interface Upgrade {
 	 */
 	readonly crds?: string;
 }
-
+/**
+ * https://github.com/fluxcd/helm-controller/blob/main/docs/api/helmrelease.md#uninstall
+ */
 interface Uninstall {
 	/**
 	 * Timeout is the time to wait for any individual Kubernetes operation
@@ -290,7 +301,9 @@ interface Uninstall {
 	 */
 	keepHistory?: boolean;
 }
-
+/**
+ * https://github.com/fluxcd/helm-controller/blob/main/docs/api/helmrelease.md#test
+ */
 interface Test {
 	/**
 	 * Enable enables Helm test actions for this HelmRelease
@@ -311,7 +324,9 @@ interface Test {
 	 */
 	ignoreFailures?: boolean;
 }
-
+/**
+ * https://github.com/fluxcd/helm-controller/blob/main/docs/api/helmrelease.md#rollback
+ */
 interface Rollback {
 	/**
 	 * Timeout is the time to wait for any individual
