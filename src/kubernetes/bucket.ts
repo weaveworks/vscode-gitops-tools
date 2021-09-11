@@ -2,6 +2,7 @@ import {
 	Artifact,
 	DeploymentCondition,
 	KubernetesObject,
+	KubernetesObjectKinds,
 	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
@@ -12,7 +13,7 @@ import {
  */
 export interface BucketResult {
 	readonly apiVersion: string;
-	readonly kind: 'List';
+	readonly kind: KubernetesObjectKinds.List;
 	readonly items: Bucket[];
 	readonly metadata: ResultMetadata;
 }
@@ -24,7 +25,7 @@ export interface Bucket extends KubernetesObject {
 
 	// standard kubernetes object fields
 	readonly apiVersion: string;
-	readonly kind: 'Bucket';
+	readonly kind: KubernetesObjectKinds.Bucket;
 	readonly metadata: ObjectMeta;
 
 	/**

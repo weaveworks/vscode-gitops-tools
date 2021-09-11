@@ -3,6 +3,7 @@ import {
 	DeploymentCondition,
 	LocalObjectReference,
 	KubernetesObject,
+	KubernetesObjectKinds,
 	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
@@ -13,7 +14,7 @@ import {
  */
 export interface HelmRepositoryResult {
 	readonly apiVersion: string;
-	readonly kind: 'List';
+	readonly kind: KubernetesObjectKinds.List;
 	readonly items: HelmRepository[]
 	readonly metadata: ResultMetadata;
 }
@@ -25,7 +26,7 @@ export interface HelmRepository extends KubernetesObject {
 
 	// standard kubernetes object fields
 	readonly apiVersion: string;
-	readonly kind: 'HelmRepository';
+	readonly kind: KubernetesObjectKinds.HelmRepository;
 	readonly metadata: ObjectMeta;
 
 	/**

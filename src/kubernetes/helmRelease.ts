@@ -2,6 +2,7 @@ import {
 	DeploymentCondition,
 	KubernetesJSON,
 	KubernetesObject,
+	KubernetesObjectKinds,
 	ObjectMeta,
 	ResultMetadata
 } from './kubernetesTypes';
@@ -19,7 +20,7 @@ import {
  */
 export interface HelmReleaseResult {
 	readonly apiVersion: string;
-	readonly kind: 'List';
+	readonly kind: KubernetesObjectKinds.List;
 	readonly items: HelmRelease[];
 	readonly metadata: ResultMetadata;
 }
@@ -31,7 +32,7 @@ export interface HelmRelease extends KubernetesObject {
 
 	// standard kubernetes object fields
 	readonly apiVersion: string;
-	readonly kind: "HelmRelease",
+	readonly kind: KubernetesObjectKinds.HelmRelease,
 	readonly metadata: ObjectMeta;
 
 	/**

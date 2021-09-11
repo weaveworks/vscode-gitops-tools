@@ -10,7 +10,19 @@ export interface KubernetesObject {
 	readonly spec: unknown;
 }
 
+/**
+ * Defines supported Kubernetes object kinds.
+ */
+export enum KubernetesObjectKinds {
+	List = 'List',
+	Bucket = 'Bucket',
+	GitRepository = 'GitRepository',
+	HelmRepository = 'HelmRepository',
+	HelmRelease = 'HelmRelease'
+}
+
 export interface ResultMetadata {
+
 	// Version of this resource as stored in the underlying database.
 	readonly resourceVersion: '';
 
