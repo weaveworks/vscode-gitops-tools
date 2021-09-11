@@ -10,20 +10,32 @@ import { DeploymentTreeViewItem } from './deploymentTreeViewItem';
 
 let _extensionContext: ExtensionContext;
 
+/**
+ * Defines Deployments data provider for loading Kustomizations
+ * and Helm Releases in GitOps Depoloyments tree view.
+ */
 export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
 	constructor(extensionContext: ExtensionContext) {
 		super();
 		_extensionContext = extensionContext;
 	}
 
-  async buildTree() {
-		const treeItems: TreeViewItem[] = [];
+	/**
+   * Creates Deployment tree view items for the currently selected kubernetes cluster.
+   * @returns Deployment tree view items to display.
+   */
+  async buildTree(): Promise<DeploymentTreeViewItem[]> {
+		const treeItems: DeploymentTreeViewItem[] = [];
+
+		// load deployment kustomizations
     const kustomizations = await kubernetesTools.getKustomizations();
     if (kustomizations) {
 			for (const kustomizeDeployment of kustomizations.items) {
 				treeItems.push(new KustomizationTreeViewItem(kustomizeDeployment));
 			}
     }
+
+		// load deployment helm releases
 		const helmReleases = await kubernetesTools.getHelmReleases();
 		if (helmReleases) {
 			for (const helmRelease of helmReleases.items) {
@@ -34,6 +46,9 @@ export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
   }
 }
 
+/**
+ * Defines Kustomization tree view item for display in GitOps Depoyments tree view.
+ */
 class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 	constructor(kustomization: Kustomize) {
 		super({
@@ -44,6 +59,9 @@ class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 	}
 }
 
+/**
+ * Defines Helm release tree view item for display in GitOps Deployments tree view.
+ */
 class HelmReleaseTreeViewItem extends DeploymentTreeViewItem {
 	constructor(helmRelease: HelmRelease) {
 		super({

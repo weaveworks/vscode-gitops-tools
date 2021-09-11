@@ -13,18 +13,27 @@ import { TreeViewItemContext } from './treeViewItemContext';
 
 let _extensionContext: ExtensionContext;
 
+/**
+ * Defines Clusters data provider for loading configured kubernetes clusters
+ * and contexts in GitOps Clusters tree view.
+ */
 export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
 	constructor(extensionContext: ExtensionContext) {
 		super();
 		_extensionContext = extensionContext;
 	}
 
-  async buildTree() {
+	/**
+   * Creates Clusters tree view items from local kubernetes config.
+   * @returns Cluster tree view items to display.
+   */
+  async buildTree(): Promise<ClusterTreeViewItem[]> {
+		// load configured kubernetes clusters
     const clusters = await kubernetesTools.getClusters();
     if (!clusters) {
       return [];
     }
-    const treeItems: TreeViewItem[] = [];
+    const treeItems: ClusterTreeViewItem[] = [];
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
     for (const cluster of clusters) {
       treeItems.push(new ClusterTreeViewItem(cluster, currentContext));
@@ -33,9 +42,18 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
   }
 }
 
+/**
+ * Defines Cluster tree view item for displaying
+ * configured kubernetes clusters in GitOps Clusters tree view.
+ */
 export class ClusterTreeViewItem extends TreeViewItem {
 	name: string;
 
+	/**
+	 * Creates new Cluster tree view item for display.
+	 * @param cluster Cluster object info.
+	 * @param currentContext Current kubernetes cluster context name.
+	 */
 	constructor(cluster: Cluster, currentContext: string) {
 		super({
 			label: `${cluster.name} ${cluster.cluster.server}`,

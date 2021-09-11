@@ -12,14 +12,24 @@ import { shortenRevision } from '../utils/stringUtils';
 
 let _extensionContext: ExtensionContext;
 
+/**
+ * Defines Sources data provider for loading Git/Helm repositories
+ * and Buckets in GitOps Sources tree view.
+ */
 export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 	constructor(extensionContext: ExtensionContext) {
 		super();
 		_extensionContext = extensionContext;
 	}
 
-  async buildTree() {
-		const treeItems: TreeViewItem[] = [];
+	/**
+   * Creates Source tree view items for the currently selected kubernetes cluster.
+   * @returns Source tree view items to display.
+   */
+	 async buildTree(): Promise<SourceTreeViewItem[]> {
+		const treeItems: SourceTreeViewItem[] = [];
+
+		// load git repositories for the current cluster
 		const gitRepositories = await kubernetesTools.getGitRepositories();
 		if (gitRepositories) {
 			for (const gitRepository of gitRepositories.items) {
@@ -27,6 +37,7 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 			}
 		}
 
+		// load helm repositores for the current cluster
 		const helmRepositories = await kubernetesTools.getHelmRepositories();
 		if (helmRepositories) {
 			for (const helmRepository of helmRepositories.items) {
@@ -34,6 +45,7 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 			}
 		}
 
+		// load buckets for the current cluster
 		const buckets = await kubernetesTools.getBuckets();
 		if (buckets) {
 			for (const bucket of buckets.items) {
@@ -44,6 +56,9 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
   }
 }
 
+/**
+ *  Defines GitRepository tree view item for display in GitOps Sources tree view.
+ */
 class GitRepositoryTreeViewItem extends SourceTreeViewItem {
 	constructor(gitRepository: GitRepository) {
 		super({
@@ -56,6 +71,9 @@ class GitRepositoryTreeViewItem extends SourceTreeViewItem {
 
 }
 
+/**
+ *  Defines HelmRepository tree view item for display in GitOps Sources tree view.
+ */
 class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
 	constructor(helmRepository: HelmRepository) {
 		super({
@@ -67,6 +85,9 @@ class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
 	}
 }
 
+/**
+ *  Defines Bucket tree view item for display in GitOps Sources tree view.
+ */
 class BucketTreeViewItem extends SourceTreeViewItem {
 	constructor(bucket: Bucket) {
 		super({
