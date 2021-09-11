@@ -1,7 +1,11 @@
+/**
+ * Kubernetes config result from
+ * running `kubectl config view` command.
+ */
 export interface KubernetesConfig {
 	readonly apiVersion: string;
 	readonly 'current-context': string;
-	readonly clusters: ClusterType[] | undefined;
+	readonly clusters: Cluster[] | undefined;
 	readonly contexts: {
 		readonly name: string;
 		readonly context: {
@@ -16,7 +20,10 @@ export interface KubernetesConfig {
 	}[] | undefined;
 }
 
-export interface ClusterType {
+/**
+ * Cluster info from `kubectl config view`.
+ */
+export interface Cluster {
 	readonly name: string;
 	readonly cluster: {
 		readonly server: string;

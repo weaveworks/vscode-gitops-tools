@@ -5,7 +5,7 @@ import {
 	TreeItemCollapsibleState
 } from 'vscode';
 import { KubectlCommands } from '../commands';
-import { ClusterType } from '../kubernetes/kubernetesConfig';
+import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
@@ -36,7 +36,7 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
 export class ClusterTreeViewItem extends TreeViewItem {
 	name: string;
 
-	constructor(cluster: ClusterType, currentContext: string) {
+	constructor(cluster: Cluster, currentContext: string) {
 		super({
 			label: `${cluster.name} ${cluster.cluster.server}`,
 		});
@@ -58,11 +58,11 @@ export class ClusterTreeViewItem extends TreeViewItem {
 
 	/**
 	 * Creates markdwon string for the Cluster tree view item tooltip.
-	 * @param cluster Cluster type object.
+	 * @param cluster Cluster info object.
 	 * @param showJsonConfig Optional show Json config flag for dev debug.
 	 * @returns Markdown string to use for Cluster tree view item tooltip.
 	 */
-	getMarkdown(cluster: ClusterType,	showJsonConfig: boolean = false): MarkdownString {
+	getMarkdown(cluster: Cluster,	showJsonConfig: boolean = false): MarkdownString {
 		const markdown: MarkdownString = new MarkdownString();
 		markdown.appendMarkdown(`Property | Value\n`);
 		markdown.appendMarkdown(`--- | ---\n`);
