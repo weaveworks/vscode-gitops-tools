@@ -7,7 +7,7 @@ import {
 } from './kubernetesTypes';
 
 /**
- * Bucket result from running
+ * Buckets result from running
  * `kubectl get Bucket -A` command.
  */
 export interface BucketResult {
