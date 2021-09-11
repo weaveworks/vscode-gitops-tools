@@ -29,7 +29,7 @@ export interface GitRepository extends KubernetesObject {
 	readonly metadata: ObjectMeta;
 
 	/**
-	 * Git repository spec. details.
+	 * Git repository spec details.
 	 *
 	 * @see https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#gitrepositoryspec
 	 */
@@ -89,6 +89,7 @@ export interface GitRepository extends KubernetesObject {
 	 * @see https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#gitrepositorystatus
 	 */
 	readonly status: {
+
 		// ObservedGeneration is the last observed generation
 		readonly observedGeneration?: number;
 
@@ -109,6 +110,7 @@ export interface GitRepository extends KubernetesObject {
  * @see https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#gitrepositoryref
  */
 interface GitRepositoryRef {
+
 	// The Git branch to checkout, defaults to master
 	readonly branch?: string;
 
@@ -128,6 +130,7 @@ interface GitRepositoryRef {
  * @see https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#gitrepositoryverification
  */
 interface GitRepositoryVerification {
+
 	// Mode describes what git object should be verified, currently (‘head’)
 	readonly mode: string;
 
@@ -141,6 +144,7 @@ interface GitRepositoryVerification {
  * @see https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#gitrepositoryinclude
  */
 interface GitRepositoryInclude {
+
 	// Reference to a GitRepository to include
 	readonly repository: LocalObjectReference;
 

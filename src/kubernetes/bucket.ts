@@ -28,7 +28,7 @@ export interface Bucket extends KubernetesObject {
 	readonly metadata: ObjectMeta;
 
 	/**
-	 * Bucket spec. details.
+	 * Bucket spec details.
 	 *
 	 * @see https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#bucketspec
 	 */
@@ -75,6 +75,7 @@ export interface Bucket extends KubernetesObject {
 	 * @see https://github.com/fluxcd/source-controller/blob/main/docs/api/source.md#bucketstatus
 	 */
 	readonly status: {
+
 		// ObservedGeneration is the last observed generation
 		readonly observedGeneration?: number;
 
@@ -87,8 +88,10 @@ export interface Bucket extends KubernetesObject {
 		// Artifact represents the output of the last successful Bucket sync
 		readonly artifact?: Artifact;
 
-		// LastHandledReconcileAt is the last manual reconciliation request
-		// (by annotating the Bucket) handled by the reconciler
+		/**
+		 * LastHandledReconcileAt is the last manual reconciliation request
+		 * (by annotating the Bucket) handled by the reconciler.
+		 */
 		readonly lastHandledReconcileAt?: string;
 	};
 }
