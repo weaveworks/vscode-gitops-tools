@@ -9,7 +9,7 @@ import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
-import { TreeViewItemContext } from './views';
+import { TreeViewItemContext } from './treeViewItemContext';
 
 let _extensionContext: ExtensionContext;
 
@@ -78,7 +78,7 @@ export class ClusterTreeViewItem extends TreeViewItem {
 		}
 
 		if (showJsonConfig) {
-				markdown.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
+			markdown.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
 		}
 
 		return markdown;

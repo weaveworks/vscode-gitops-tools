@@ -11,7 +11,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { shortenRevision } from '../utils/stringUtils';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
-import { TreeViewItemContext } from './views';
+import { TreeViewItemContext } from './treeViewItemContext';
 
 let _extensionContext: ExtensionContext;
 

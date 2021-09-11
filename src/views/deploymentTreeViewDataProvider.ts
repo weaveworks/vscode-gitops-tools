@@ -8,7 +8,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { Kustomize } from '../kubernetes/kustomize';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
-import { TreeViewItemContext } from './views';
+import { TreeViewItemContext } from './treeViewItemContext';
 
 let _extensionContext: ExtensionContext;
 
