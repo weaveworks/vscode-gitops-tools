@@ -1,18 +1,14 @@
-import {
-	ExtensionContext,
-	ExtensionMode,
-	MarkdownString,
-	TreeItemCollapsibleState
-} from 'vscode';
+import { ExtensionContext, ExtensionMode} from 'vscode';
 import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRepository } from '../kubernetes/helmRepository';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { shortenRevision } from '../utils/stringUtils';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
 import { SourceTreeViewItem } from './sourceTreeViewItem';
+import { TreeViewItemLabels } from './treeViewItemLabels';
+import { shortenRevision } from '../utils/stringUtils';
 
 let _extensionContext: ExtensionContext;
 
@@ -51,7 +47,7 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 class GitRepositoryTreeViewItem extends SourceTreeViewItem {
 	constructor(gitRepository: GitRepository) {
 		super({
-			label: `Git: ${gitRepository.metadata.name}`,
+			label: `${TreeViewItemLabels.GitRepository}: ${gitRepository.metadata.name}`,
 			description: shortenRevision(gitRepository.status.artifact?.revision),
 		});
 		this.contextValue = TreeViewItemContext.GitRepository;
@@ -63,7 +59,7 @@ class GitRepositoryTreeViewItem extends SourceTreeViewItem {
 class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
 	constructor(helmRepository: HelmRepository) {
 		super({
-			label: `Helm Repository: ${helmRepository.metadata.name}`,
+			label: `${TreeViewItemLabels.HelmRepositry}: ${helmRepository.metadata.name}`,
 			description: shortenRevision(helmRepository.status.artifact?.revision),
 		});
 		this.contextValue = TreeViewItemContext.HelmRepository;
@@ -74,7 +70,7 @@ class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
 class BucketTreeViewItem extends SourceTreeViewItem {
 	constructor(bucket: Bucket) {
 		super({
-			label: `Bucket: ${bucket.metadata.name}`,
+			label: `${TreeViewItemLabels.Bucket}: ${bucket.metadata.name}`,
 			description: shortenRevision(bucket.status.artifact?.revision),
 		});
 		this.contextValue = TreeViewItemContext.Bucket;

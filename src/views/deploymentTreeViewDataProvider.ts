@@ -9,6 +9,7 @@ import { Kustomize } from '../kubernetes/kustomize';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
+import { TreeViewItemLabels } from './treeViewItemLabels';
 
 let _extensionContext: ExtensionContext;
 
@@ -105,7 +106,7 @@ class DeploymentTreeViewItem extends TreeViewItem {
 class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 	constructor(kustomization: Kustomize) {
 		super({
-			label: `Kustomization: ${kustomization.metadata.name}`,
+			label: `${TreeViewItemLabels.Kustomization}: ${kustomization.metadata.name}`,
 		});
 		this.contextValue = TreeViewItemContext.Kustomization;
 		this.tooltip = this.getMarkdown(kustomization); //, _extensionContext.extensionMode === ExtensionMode.Development);
@@ -115,7 +116,7 @@ class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 class HelmReleaseTreeViewItem extends DeploymentTreeViewItem {
 	constructor(helmRelease: HelmRelease) {
 		super({
-			label: `Helm Release: ${helmRelease.metadata.name}`,
+			label: `${TreeViewItemLabels.HelmRelease}: ${helmRelease.metadata.name}`,
 		});
 		this.contextValue = TreeViewItemContext.HelmRelease;
 		this.tooltip = this.getMarkdown(helmRelease); //, _extensionContext.extensionMode === ExtensionMode.Development);
