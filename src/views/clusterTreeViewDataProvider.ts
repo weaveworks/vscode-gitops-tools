@@ -5,8 +5,8 @@ import {
 	TreeItemCollapsibleState
 } from 'vscode';
 import { KubectlCommands } from '../commands';
-import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { Cluster } from '../kubernetes/kubernetesConfig';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
