@@ -26,6 +26,7 @@ export enum KubernetesObjectKinds {
  * to construct resource Uri.
  */
 export enum ResourceTypes {
+	HelmRelease = 'hr',
 	Kustomization = 'ks',
 }
 

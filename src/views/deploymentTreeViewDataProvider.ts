@@ -57,15 +57,19 @@ class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 			label: `${TreeViewItemLabels.Kustomization}: ${kustomization.metadata?.name}`,
 		});
 
+		// set context type value for kustomization commands
 		this.contextValue = TreeViewItemContext.Kustomization;
 
+		// show markdown tooltip
 		this.tooltip = this.getMarkdown(kustomization); //, _extensionContext.extensionMode === ExtensionMode.Development);
 
-		// TODO: get and use current namespace from current context
-		this.resourceUri = kubernetesTools.getResourceUri(null, // namespace
+		// set resource Uri to open kustomization document in editor
+		this.resourceUri = kubernetesTools.getResourceUri(
+			kustomization.metadata?.namespace,
 			`${ResourceTypes.Kustomization}/${kustomization.metadata?.name}`,
 			FileTypes.Yaml);
 
+		// set open resource in editor command
 		this.command = {
 			command: EditorCommands.OpenResource,
 			arguments: [this.resourceUri],
@@ -80,9 +84,27 @@ class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 class HelmReleaseTreeViewItem extends DeploymentTreeViewItem {
 	constructor(helmRelease: HelmRelease) {
 		super({
-			label: `${TreeViewItemLabels.HelmRelease}: ${helmRelease.metadata.name}`,
+			label: `${TreeViewItemLabels.HelmRelease}: ${helmRelease.metadata?.name}`,
 		});
+
+		// set context type value for helm release commands
 		this.contextValue = TreeViewItemContext.HelmRelease;
+
+		// show markdown tooltip
 		this.tooltip = this.getMarkdown(helmRelease); //, _extensionContext.extensionMode === ExtensionMode.Development);
+
+		// set resource Uri to open helm release config document in editor
+		this.resourceUri = kubernetesTools.getResourceUri(
+			helmRelease.metadata?.namespace,
+			`${ResourceTypes.HelmRelease}/${helmRelease.metadata?.name}`,
+			FileTypes.Yaml);
+
+		// set open resource in editor command
+		this.command = {
+			command: EditorCommands.OpenResource,
+			arguments: [this.resourceUri],
+			title: 'View Resource',
+		};
+
 	}
 }
