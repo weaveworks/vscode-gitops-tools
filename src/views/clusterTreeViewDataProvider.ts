@@ -1,12 +1,13 @@
 import {
 	ExtensionContext,
-	ExtensionMode,
 	MarkdownString,
 	TreeItemCollapsibleState
 } from 'vscode';
-import { KubectlCommands } from '../commands';
+import { FileTypes } from '../fileTypes';
+import { EditorCommands, KubectlCommands } from '../commands';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { Cluster } from '../kubernetes/kubernetesConfig';
+import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
@@ -18,9 +19,8 @@ let _extensionContext: ExtensionContext;
  * and contexts in GitOps Clusters tree view.
  */
 export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
-	constructor(extensionContext: ExtensionContext) {
+	constructor(private extensionContext: ExtensionContext) {
 		super();
-		_extensionContext = extensionContext;
 	}
 
 	/**
@@ -59,9 +59,20 @@ export class ClusterTreeViewItem extends TreeViewItem {
 			label: `${cluster.name} ${cluster.cluster.server}`,
 		});
 
+		// set context type value for cluster commands
 		this.contextValue = TreeViewItemContext.Cluster;
 		this.name = cluster.name;
-		this.tooltip = this.getMarkdown(cluster); //, _extensionContext.extensionMode === ExtensionMode.Development);
+
+		// show markdown tooltip
+		this.tooltip = this.getMarkdown(cluster);
+
+		// set resource Uri to open cluster config in editor
+		this.resourceUri = kubernetesTools.getResourceUri(
+			cluster.name,
+			`${ResourceTypes.Namespace}/${cluster.name}`,
+			FileTypes.Yaml);
+
+		// set current context command to change selected cluster
 		this.command = {
 			command: KubectlCommands.SetCurrentContext,
 			arguments: [this.name],
@@ -69,7 +80,7 @@ export class ClusterTreeViewItem extends TreeViewItem {
 		};
 
 		if (cluster.name === currentContext) {
-			// why do we want to collapse a cluster tree node that matches kubectl current context ???
+			// TODO: why do we want to collapse a cluster tree node that matches kubectl current context ???
 			this.collapsibleState = TreeItemCollapsibleState.Collapsed;
 		}
 	}

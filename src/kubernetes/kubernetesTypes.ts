@@ -31,6 +31,7 @@ export enum ResourceTypes {
 	HelmRepository = 'helmrepo',
 	HelmRelease = 'hr',
 	Kustomization = 'ks',
+	Namespace = 'namespace'
 }
 
 export interface ResultMetadata {

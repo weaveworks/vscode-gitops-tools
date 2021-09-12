@@ -62,9 +62,9 @@
 			},
 			{
 				"command": "gitops.editor.openResource",
-				"title": "Open Resource",
+				"title": "View Config",
 				"category": "GitOps",
-				"icon": "$(open)"
+				"icon": "$(symbol-reference)"
 			}
 		],
 		"viewsContainers": {
@@ -132,6 +132,13 @@
 					"command": "gitops.views.refreshTreeViews",
 					"group": "navigation",
 					"when": "view == gitops.views.clusters"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "gitops.editor.openResource",
+					"group": "inline",
+					"when": "viewItem == cluster"
 				}
 			],
 			"commandPalette": [
