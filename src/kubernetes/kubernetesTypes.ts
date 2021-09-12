@@ -21,6 +21,14 @@ export enum KubernetesObjectKinds {
 	HelmRelease = 'HelmRelease'
 }
 
+/**
+ * Defines supported resource types
+ * to construct resource Uri.
+ */
+export enum ResourceTypes {
+	Kustomization = 'ks',
+}
+
 export interface ResultMetadata {
 
 	// Version of this resource as stored in the underlying database.
