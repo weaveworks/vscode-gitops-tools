@@ -171,23 +171,23 @@ class KubernetesTools {
 	 *
 	 * @param namespace Resource namespace.
 	 * @param resourceName Resource name.
-	 * @param outputFormat Resource document format.
+	 * @param documentFormat Resource document format.
 	 * @param action Resource Uri action.
 	 * @returns
 	 */
 	getResourceUri(namespace: string | null | undefined,
-		resourceName: string,
-		outputFormat: string,
+		resourceName: string | undefined,
+		documentFormat: string,
 		action?: string): Uri {
 
 		// determine resource file extension
 		let fileExtension: string = '';
-		if (outputFormat !== '') {
-			fileExtension = `.${outputFormat}`;
+		if (documentFormat !== '') {
+			fileExtension = `.${documentFormat}`;
 		}
 
 		// create virtual document file name with extension
-    const documentName: string = `${resourceName.replace('/', '-')}${fileExtension}`;
+    const documentName: string = `${resourceName?.replace('/', '-')}${fileExtension}`;
 
 		// determine virtual resource file scheme
 		let scheme = KubernetesFileSchemes.Resource;
@@ -207,11 +207,12 @@ class KubernetesTools {
 			namespaceQuery = `ns=${namespace}&`;
 		}
 
+		// create resource url
 		const nonce: number = new Date().getTime();
     const url: string = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
-
 		console.debug(`gitops.kubernetesTools.getResourceUri: ${url}`);
 
+		// create resource uri
     return Uri.parse(url);
 	}
 
