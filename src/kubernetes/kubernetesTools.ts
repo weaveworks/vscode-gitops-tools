@@ -1,8 +1,9 @@
-import { window } from 'vscode';
+import { window, Uri } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { setContext, ContextTypes } from '../context';
-import { BucketResult } from './bucket';
 import { KubernetesConfig } from './kubernetesConfig';
+import { KubernetesFileSchemes } from './kubernetesFileSchemes';
+import { BucketResult } from './bucket';
 import { GitRepositoryResult } from './gitRepository';
 import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
@@ -161,6 +162,57 @@ class KubernetesTools {
 			return;
 		}
 		return parseJson(bucketShellResult.stdout);
+	}
+
+	/**
+	 * Gets resource Uri for loading kubernetes resource config in vscode editor.
+	 *
+	 * @see https://github.com/Azure/vscode-kubernetes-tools/blob/master/src/kuberesources.virtualfs.ts
+	 *
+	 * @param namespace Resource namespace.
+	 * @param resourceName Resource name.
+	 * @param outputFormat Resource document format.
+	 * @param action Resource Uri action.
+	 * @returns
+	 */
+	getResourceUri(namespace: string | null | undefined,
+		resourceName: string,
+		outputFormat: string,
+		action?: string): Uri {
+
+		// determine resource file extension
+		let fileExtension: string = '';
+		if (outputFormat !== '') {
+			fileExtension = `.${outputFormat}`;
+		}
+
+		// create virtual document file name with extension
+    const documentName: string = `${resourceName.replace('/', '-')}${fileExtension}`;
+
+		// determine virtual resource file scheme
+		let scheme = KubernetesFileSchemes.Resource;
+		if (action === 'describe') {
+			scheme = KubernetesFileSchemes.ReadonlyResource;
+		}
+
+		// determine virtual resource file authority
+    let authority: string = KubernetesFileSchemes.KubectlResource;
+		if (action === 'describe') {
+			authority = KubernetesFileSchemes.DescribeResource;
+		}
+
+		// set namespace query param
+		let namespaceQuery: string = '';
+		if (namespace) {
+			namespaceQuery = `ns=${namespace}&`;
+		}
+
+		const nonce: number = new Date().getTime();
+    const url: string = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
+
+		console.debug(`gitops.kubernetesTools.getResourceUri: ${url}`);
+
+    return Uri.parse(url);
 	}
 
 }
