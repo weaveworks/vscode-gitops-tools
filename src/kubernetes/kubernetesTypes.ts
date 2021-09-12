@@ -26,6 +26,9 @@ export enum KubernetesObjectKinds {
  * to construct resource Uri.
  */
 export enum ResourceTypes {
+	Bucket = 'buckets.source.toolkit.fluxcd.io',
+	GitRepository = 'gitrepo',
+	HelmRepository = 'helmrepo',
 	HelmRelease = 'hr',
 	Kustomization = 'ks',
 }

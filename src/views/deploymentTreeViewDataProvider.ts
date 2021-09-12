@@ -10,16 +10,13 @@ import { TreeViewItemContext } from './treeViewItemContext';
 import { TreeViewItemLabels } from './treeViewItemLabels';
 import { DeploymentTreeViewItem } from './deploymentTreeViewItem';
 
-let _extensionContext: ExtensionContext;
-
 /**
  * Defines Deployments data provider for loading Kustomizations
  * and Helm Releases in GitOps Depoloyments tree view.
  */
 export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
-	constructor(extensionContext: ExtensionContext) {
+	constructor(private extensionContext: ExtensionContext) {
 		super();
-		_extensionContext = extensionContext;
 	}
 
 	/**
@@ -61,7 +58,7 @@ class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 		this.contextValue = TreeViewItemContext.Kustomization;
 
 		// show markdown tooltip
-		this.tooltip = this.getMarkdown(kustomization); //, _extensionContext.extensionMode === ExtensionMode.Development);
+		this.tooltip = this.getMarkdown(kustomization);
 
 		// set resource Uri to open kustomization document in editor
 		this.resourceUri = kubernetesTools.getResourceUri(
@@ -91,7 +88,7 @@ class HelmReleaseTreeViewItem extends DeploymentTreeViewItem {
 		this.contextValue = TreeViewItemContext.HelmRelease;
 
 		// show markdown tooltip
-		this.tooltip = this.getMarkdown(helmRelease); //, _extensionContext.extensionMode === ExtensionMode.Development);
+		this.tooltip = this.getMarkdown(helmRelease);
 
 		// set resource Uri to open helm release config document in editor
 		this.resourceUri = kubernetesTools.getResourceUri(

@@ -1,25 +1,25 @@
 import { ExtensionContext, ExtensionMode} from 'vscode';
+import { FileTypes } from '../fileTypes';
+import { EditorCommands } from '../commands';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRepository } from '../kubernetes/helmRepository';
+import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
-import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
-import { SourceTreeViewItem } from './sourceTreeViewItem';
 import { TreeViewItemLabels } from './treeViewItemLabels';
+import { SourceTreeViewItem } from './sourceTreeViewItem';
 import { shortenRevision } from '../utils/stringUtils';
 
-let _extensionContext: ExtensionContext;
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
  * and Buckets in GitOps Sources tree view.
  */
 export class SourceTreeViewDataProvider extends TreeViewDataProvider {
-	constructor(extensionContext: ExtensionContext) {
+	constructor(private extensionContext: ExtensionContext) {
 		super();
-		_extensionContext = extensionContext;
 	}
 
 	/**
@@ -62,13 +62,29 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 class GitRepositoryTreeViewItem extends SourceTreeViewItem {
 	constructor(gitRepository: GitRepository) {
 		super({
-			label: `${TreeViewItemLabels.GitRepository}: ${gitRepository.metadata.name}`,
+			label: `${TreeViewItemLabels.GitRepository}: ${gitRepository.metadata?.name}`,
 			description: shortenRevision(gitRepository.status.artifact?.revision),
 		});
-		this.contextValue = TreeViewItemContext.GitRepository;
-		this.tooltip = this.getMarkdown(gitRepository); //, _extensionContext.extensionMode === ExtensionMode.Development);
-	}
 
+		// set context type value for git repository commands
+		this.contextValue = TreeViewItemContext.GitRepository;
+
+		// show markdown tooltip
+		this.tooltip = this.getMarkdown(gitRepository);
+
+		// set resource Uri to open git repository config document in editor
+		this.resourceUri = kubernetesTools.getResourceUri(
+			gitRepository.metadata?.namespace,
+			`${ResourceTypes.GitRepository}/${gitRepository.metadata?.name}`,
+			FileTypes.Yaml);
+
+		// set open resource in editor command
+		this.command = {
+			command: EditorCommands.OpenResource,
+			arguments: [this.resourceUri],
+			title: 'View Resource',
+		};
+	}
 }
 
 /**
@@ -77,11 +93,28 @@ class GitRepositoryTreeViewItem extends SourceTreeViewItem {
 class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
 	constructor(helmRepository: HelmRepository) {
 		super({
-			label: `${TreeViewItemLabels.HelmRepositry}: ${helmRepository.metadata.name}`,
+			label: `${TreeViewItemLabels.HelmRepositry}: ${helmRepository.metadata?.name}`,
 			description: shortenRevision(helmRepository.status.artifact?.revision),
 		});
+
+		// set context type value for helm repository commands
 		this.contextValue = TreeViewItemContext.HelmRepository;
-		this.tooltip = this.getMarkdown(helmRepository); //, _extensionContext.extensionMode === ExtensionMode.Development);
+
+		// show markdown tooltip
+		this.tooltip = this.getMarkdown(helmRepository);
+
+		// set resource Uri to open helm repository config document in editor
+		this.resourceUri = kubernetesTools.getResourceUri(
+			helmRepository.metadata?.namespace,
+			`${ResourceTypes.HelmRepository}/${helmRepository.metadata?.name}`,
+			FileTypes.Yaml);
+
+		// set open resource in editor command
+		this.command = {
+			command: EditorCommands.OpenResource,
+			arguments: [this.resourceUri],
+			title: 'View Resource',
+		};
 	}
 }
 
@@ -91,10 +124,27 @@ class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
 class BucketTreeViewItem extends SourceTreeViewItem {
 	constructor(bucket: Bucket) {
 		super({
-			label: `${TreeViewItemLabels.Bucket}: ${bucket.metadata.name}`,
+			label: `${TreeViewItemLabels.Bucket}: ${bucket.metadata?.name}`,
 			description: shortenRevision(bucket.status.artifact?.revision),
 		});
+
+		// set context type value for bucket commands
 		this.contextValue = TreeViewItemContext.Bucket;
-		this.tooltip = this.getMarkdown(bucket); //, _extensionContext.extensionMode === ExtensionMode.Development);
+
+		// show markdown tooltip
+		this.tooltip = this.getMarkdown(bucket);
+
+		// set resource Uri to open bucket config document in editor
+		this.resourceUri = kubernetesTools.getResourceUri(
+			bucket.metadata?.namespace,
+			`${ResourceTypes.Bucket}/${bucket.metadata?.name}`,
+			FileTypes.Yaml);
+
+		// set open resource in editor command
+		this.command = {
+			command: EditorCommands.OpenResource,
+			arguments: [this.resourceUri],
+			title: 'View Resource',
+		};
 	}
 }
