@@ -1,5 +1,5 @@
 import { commands } from 'vscode';
-import { BuiltInCommands } from './commands';
+import { ViewCommands } from './commands';
 
 /**
  * GitOps context types.
@@ -25,5 +25,5 @@ export type ContextKey = keyof ContextValues;
  * menus, keybindings, welcomeView...
  */
 export async function setContext<T extends ContextKey>(context: T, value: ContextValues[T]) {
-	return await commands.executeCommand(BuiltInCommands.SetContext, context, value);
+	return await commands.executeCommand(ViewCommands.SetContext, context, value);
 }

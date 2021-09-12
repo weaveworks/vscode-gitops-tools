@@ -1,23 +1,28 @@
 import {
-	commands, Disposable,
-	ExtensionContext
+	commands,
+	window,
+	workspace,
+	Disposable,
+	ExtensionContext,
+	Uri
 } from 'vscode';
 import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { refreshTreeViews } from './views/treeViews';
 
 /**
- * Bulit-in VSCode commands.
+ * GitOps/vscode editor commands.
  */
-export enum BuiltInCommands {
-  Open = 'vscode.open',
-	SetContext = 'setContext'
+export enum EditorCommands {
+	OpenResource = 'gitops.editor.openResource'
 }
 
 /**
  * GitOps View commands.
  */
 export enum ViewCommands {
+	Open = 'vscode.open',
+	SetContext = 'setContext',
 	RefreshTreeViews = 'gitops.views.refreshTreeViews',
 }
 
@@ -48,6 +53,18 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(KubectlCommands.SetCurrentContext, setKubernetesClusterContext);
 	registerCommand(ViewCommands.RefreshTreeViews, refreshTreeViews);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
+
+	// add open gitops resource in vscode editor command
+	context.subscriptions.push(
+    commands.registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
+      workspace.openTextDocument(uri).then((document) => {
+				if (document) {
+					window.showTextDocument(document);
+				}
+      },
+			(error) => window.showErrorMessage(`Error loading document: ${error}`));
+    })
+  );
 }
 
 /**

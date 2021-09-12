@@ -3,7 +3,7 @@ import {
   TreeItemCollapsibleState,
   Uri
 } from 'vscode';
-import { BuiltInCommands } from '../commands';
+import { ViewCommands } from '../commands';
 import { DocumentationLinks } from './documentationConfig';
 import { Link } from './link';
 import { TreeViewDataProvider } from './treeViewDataProvider';
@@ -43,7 +43,7 @@ export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
     let treeViewItem = new TreeViewItem({
       label: link.title,
       tooltip: link.url,
-      commandString: BuiltInCommands.Open,
+      commandString: ViewCommands.Open,
       args
     });
     if (showLinkIcon) {
