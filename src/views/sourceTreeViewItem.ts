@@ -2,6 +2,7 @@ import { MarkdownString } from 'vscode';
 import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRepository } from '../kubernetes/helmRepository';
+import { generateMarkdownTableHeader, generateMarkdownTableRow } from '../utils/markdownStringUtils';
 import { TreeViewItem } from './treeViewItem';
 
 /**
@@ -21,48 +22,27 @@ import { TreeViewItem } from './treeViewItem';
 		showJsonConfig: boolean = false): MarkdownString {
 
 		const markdown: MarkdownString = new MarkdownString();
-		markdown.appendMarkdown(`Property | Value\n`);
-		markdown.appendMarkdown(`--- | ---\n`);
-		markdown.appendMarkdown(`Api version | ${source.apiVersion}\n`);
-		markdown.appendMarkdown(`Kind | ${source.kind}\n`);
-
-		if (source.metadata.name) {
-			markdown.appendMarkdown(`Name | ${source.metadata.name}\n`);
-		}
-
-		if (source.metadata.namespace) {
-			markdown.appendMarkdown(`Namespace | ${source.metadata.namespace}\n`);
-		}
-
-		markdown.appendMarkdown(`Interval | ${source.spec.interval}\n`);
-		if (source.spec.timeout) {
-			markdown.appendMarkdown(`Timeout | ${source.spec.timeout}\n`);
-		}
+		generateMarkdownTableHeader(markdown);
+		generateMarkdownTableRow('Api version', source.apiVersion, markdown);
+		generateMarkdownTableRow('Kind', source.kind, markdown);
+		generateMarkdownTableRow('Name', source.metadata.name, markdown);
+		generateMarkdownTableRow('Namespace', source.metadata.namespace, markdown);
+		generateMarkdownTableRow('Interval', source.spec.interval, markdown);
+		generateMarkdownTableRow('Timeout', source.spec.timeout, markdown);
 
 		if (source.kind === 'GitRepository') {
-			markdown.appendMarkdown(`URL | ${source.spec.url}\n`);
-			if (source.spec.ref) {
-				if (source.spec.ref.branch) {
-					markdown.appendMarkdown(`Branch | ${source.spec.ref.branch}\n`);
-				}
-
-				if (source.spec.ref.commit) {
-					markdown.appendMarkdown(`Commit | ${source.spec.ref.commit}\n`);
-				}
-			}
+			generateMarkdownTableRow('URL', source.spec.url, markdown);
+			generateMarkdownTableRow('Branch', source.spec?.ref?.branch, markdown);
+			generateMarkdownTableRow('Commit', source.spec?.ref?.commit, markdown);
 		}
 		else if (source.kind === 'HelmRepository') {
-			markdown.appendMarkdown(`URL | ${source.spec.url}\n`);
+			generateMarkdownTableRow('URL', source.spec.url, markdown);
 		}
 		else if (source.kind === 'Bucket') {
-			markdown.appendMarkdown(`Name | ${source.spec.bucketName}\n`);
-			markdown.appendMarkdown(`Endpoint | ${source.spec.endpoint}\n`);
-			if (source.spec.provider) {
-				markdown.appendMarkdown(`Provider | ${source.spec.provider}\n`);
-			}
-			if (source.spec.insecure !== undefined) {
-				markdown.appendMarkdown(`Insecure | ${source.spec.insecure}\n`);
-			}
+			generateMarkdownTableRow('Name', source.spec.bucketName, markdown);
+			generateMarkdownTableRow('Endpoint', source.spec.endpoint, markdown);
+			generateMarkdownTableRow('Provider', source.spec.provider, markdown);
+			generateMarkdownTableRow('Insecure', source.spec.insecure, markdown);
 		}
 
 		if (showJsonConfig) {

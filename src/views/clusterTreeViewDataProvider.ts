@@ -11,6 +11,7 @@ import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
+import { generateMarkdownTableHeader, generateMarkdownTableRow } from '../utils/markdownStringUtils';
 
 let _extensionContext: ExtensionContext;
 
@@ -93,18 +94,11 @@ export class ClusterTreeViewItem extends TreeViewItem {
 	 */
 	getMarkdown(cluster: Cluster,	showJsonConfig: boolean = false): MarkdownString {
 		const markdown: MarkdownString = new MarkdownString();
-		markdown.appendMarkdown(`Property | Value\n`);
-		markdown.appendMarkdown(`--- | ---\n`);
-		markdown.appendMarkdown(`Name | ${cluster.name}\n`);
-		markdown.appendMarkdown(`Server | ${cluster.cluster.server}\n`);
-
-		if (cluster.cluster['certificate-authority']) {
-			markdown.appendMarkdown(`Certificate authority | ${cluster.cluster['certificate-authority']}`);
-		}
-
-		if (cluster.cluster['certificate-authority-data']) {
-			markdown.appendMarkdown(`Certificate authority data | ${cluster.cluster['certificate-authority-data']}`);
-		}
+		generateMarkdownTableHeader(markdown);
+		generateMarkdownTableRow('Name', cluster.name, markdown);
+		generateMarkdownTableRow('Server', cluster.cluster.server, markdown);
+		generateMarkdownTableRow('Certificate authority', cluster.cluster['certificate-authority'], markdown);
+		generateMarkdownTableRow('Certificate authority data', cluster.cluster['certificate-authority-data'], markdown);
 
 		if (showJsonConfig) {
 			markdown.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
