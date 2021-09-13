@@ -22,7 +22,7 @@ import { TreeViewItem } from './treeViewItem';
 
 		const markdown: MarkdownString = new MarkdownString();
 		markdown.appendMarkdown(`Property | Value\n`);
-		markdown.appendMarkdown(`--- | ---\n`);
+		markdown.appendMarkdown(`:--- | :---\n`);
 		markdown.appendMarkdown(`Api version | ${source.apiVersion}\n`);
 		markdown.appendMarkdown(`Kind | ${source.kind}\n`);
 

@@ -4,7 +4,7 @@ import {
 	TreeItemCollapsibleState
 } from 'vscode';
 import { FileTypes } from '../fileTypes';
-import { EditorCommands, KubectlCommands } from '../commands';
+import { KubectlCommands } from '../commands';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { Cluster } from '../kubernetes/kubernetesConfig';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
@@ -94,7 +94,7 @@ export class ClusterTreeViewItem extends TreeViewItem {
 	getMarkdown(cluster: Cluster,	showJsonConfig: boolean = false): MarkdownString {
 		const markdown: MarkdownString = new MarkdownString();
 		markdown.appendMarkdown(`Property | Value\n`);
-		markdown.appendMarkdown(`--- | ---\n`);
+		markdown.appendMarkdown(`:--- | :---\n`);
 		markdown.appendMarkdown(`Name | ${cluster.name}\n`);
 		markdown.appendMarkdown(`Server | ${cluster.cluster.server}\n`);
 

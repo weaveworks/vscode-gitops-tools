@@ -21,7 +21,7 @@ export class DeploymentTreeViewItem extends TreeViewItem {
 
 		const markdown: MarkdownString = new MarkdownString();
 		markdown.appendMarkdown(`Property | Value\n`);
-		markdown.appendMarkdown(`--- | ---\n`);
+		markdown.appendMarkdown(`:--- | :---\n`);
 		markdown.appendMarkdown(`Api version | ${deployment.apiVersion}\n`);
 		markdown.appendMarkdown(`Kind | ${deployment.kind}\n`);
 
