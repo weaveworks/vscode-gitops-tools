@@ -13,6 +13,16 @@ GitOps extension provides integration with [Kubernetes Tools](https://marketplac
 
 ![VSCode GitOps Tools](docs/images/vscode-gitops-tools.png)
 
+# Features
+
+- Custom GitOps sidebar and integrated terminal
+- Clusters view with Kubernetes namespaces and configured clusters from `kubectl`
+- Sources view with Git/Helm Repositories and Buckets info
+- Deployments view with Kustomizations and Helm Releases
+- Rich Kubernetes Object info tooltips with quick overviews of loaded Clusters, Sources, and Deployments
+- View full Kubernetes Object `.yaml` configs in VSCode Editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
+- Integrated [GitOps](https://www.weave.works/technologies/gitops/) Documentation view with links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics
+
 # Dependencies
 
 GitOps extension depends on [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) extension which is automatically installed with this extension for building applications to run with Kubernetes clusters or troublishooting Kubernetes cluster deployments. You may need to invoke the following command line tools, depending on which features you use. You will need `kubectl`, `helm`, and `flux` CLI at the minimum to use this GitOps extension and its Kubernetes cluster management operations.
