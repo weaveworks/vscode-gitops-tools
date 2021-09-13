@@ -1,5 +1,6 @@
 import { window, Uri } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
+import { V1DeploymentList } from '@kubernetes/client-node';
 import { setContext, ContextTypes } from '../context';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
@@ -165,6 +166,18 @@ class KubernetesTools {
 	}
 
 	/**
+	 * Get all deployments (controllers) from the flux namespace.
+	 */
+	async getFluxControllers(): Promise<undefined | V1DeploymentList> {
+		const fluxControllersShellResult = await this.invokeKubectlCommand('get deployment --namespace=flux-system -o json');
+		if (!fluxControllersShellResult || fluxControllersShellResult.stderr) {
+			console.warn(`Failed to get deployments: ${fluxControllersShellResult?.stderr}`);
+			return;
+		}
+		return parseJson(fluxControllersShellResult.stdout);
+	}
+
+	/**
 	 * Gets resource Uri for loading kubernetes resource config in vscode editor.
 	 *
 	 * @see https://github.com/Azure/vscode-kubernetes-tools/blob/master/src/kuberesources.virtualfs.ts
@@ -210,7 +223,7 @@ class KubernetesTools {
 		// create resource url
 		const nonce: number = new Date().getTime();
     const url: string = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
-		console.debug(`gitops.kubernetesTools.getResourceUri: ${url}`);
+		// console.debug(`gitops.kubernetesTools.getResourceUri: ${url}`);// TODO: pls don't commit console.log
 
 		// create resource uri
     return Uri.parse(url);
