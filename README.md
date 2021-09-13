@@ -1,6 +1,13 @@
 # vscode-gitops-tools
 
-VSCode GitOps Tools Extension
+<h1 align="center">
+  <br />
+    <img src="resources/icons/gitops-logo.png" alt="datadog" width="200" />
+  <br />
+  Kubernetes GitOps Tools for Visual Studio Code
+  <br />
+  <br />
+</h1>
 
 # Dependencies
 
