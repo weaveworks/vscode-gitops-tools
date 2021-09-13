@@ -4,10 +4,12 @@
   <br />
     <img src="resources/icons/gitops-logo.png" alt="datadog" width="200" />
   <br />
-  Kubernetes GitOps Tools for Visual Studio Code
+  GitOps Tools for Visual Studio Code
   <br />
   <br />
 </h1>
+
+GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Deployments in Visual Studio Code IDE.
 
 # Dependencies
 
