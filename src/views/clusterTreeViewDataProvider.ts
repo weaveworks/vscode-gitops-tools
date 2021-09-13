@@ -11,6 +11,7 @@ import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
+import { statusBar } from '../statusBar';
 
 let _extensionContext: ExtensionContext;
 
@@ -38,6 +39,7 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
     for (const cluster of clusters) {
       treeItems.push(new ClusterTreeViewItem(cluster, currentContext));
     }
+		statusBar.hide();
     return treeItems;
   }
 }

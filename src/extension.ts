@@ -8,12 +8,18 @@ import {
 	KubectlCommands,
 	registerCommands
 } from './commands';
+import { statusBar } from './statusBar';
 
 /**
  * Activates GitOps extension.
  * @param context VSCode extension context.
  */
 export function activate(context: ExtensionContext) {
+
+	// initialize gitops status bar
+	context.subscriptions.push(statusBar.status);
+	statusBar.show('Initializing GitOps');
+
 	// create gitops tree views
 	createTreeViews(context);
 

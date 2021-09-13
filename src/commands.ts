@@ -6,9 +6,9 @@ import {
 	ExtensionContext,
 	Uri
 } from 'vscode';
-import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { refreshTreeViews } from './views/treeViews';
+import { runTerminalCommand } from './gitOps';
 
 /**
  * GitOps/vscode editor commands.
