@@ -18,7 +18,9 @@ export enum KubernetesObjectKinds {
 	Bucket = 'Bucket',
 	GitRepository = 'GitRepository',
 	HelmRepository = 'HelmRepository',
-	HelmRelease = 'HelmRelease'
+	HelmRelease = 'HelmRelease',
+	Kustomization = 'Kustomization',
+	Deployment = 'Deployment',
 }
 
 /**

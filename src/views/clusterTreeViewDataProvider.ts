@@ -12,6 +12,7 @@ import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
 import { ClusterDeploymentTreeViewItem } from './clusterDeploymentTreeViewItem';
 import { statusBar } from '../statusBar';
+import { createMarkdownTable } from '../utils/stringUtils';
 
 
 /**
@@ -100,19 +101,8 @@ export class ClusterTreeViewItem extends TreeViewItem {
 	 * @returns Markdown string to use for Cluster tree view item tooltip.
 	 */
 	getMarkdown(cluster: Cluster,	showJsonConfig: boolean = false): MarkdownString {
-		const markdown: MarkdownString = new MarkdownString();
-		markdown.appendMarkdown('Property | Value\n');
-		markdown.appendMarkdown(':--- | :---\n');
-		markdown.appendMarkdown(`Name | ${cluster.name}\n`);
-		markdown.appendMarkdown(`Server | ${cluster.cluster.server}\n`);
 
-		if (cluster.cluster['certificate-authority']) {
-			markdown.appendMarkdown(`Certificate authority | ${cluster.cluster['certificate-authority']}`);
-		}
-
-		if (cluster.cluster['certificate-authority-data']) {
-			markdown.appendMarkdown(`Certificate authority data | ${cluster.cluster['certificate-authority-data']}`);
-		}
+		const markdown: MarkdownString = createMarkdownTable(cluster);
 
 		if (showJsonConfig) {
 			markdown.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
