@@ -10,7 +10,7 @@ import { TreeViewItemContext } from './treeViewItemContext';
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.
  */
-export class DeploymentTreeViewItem2 extends TreeViewItem {
+export class ClusterDeploymentTreeViewItem extends TreeViewItem {
 	constructor(deployment: V1Deployment) {
 		super({
 			label: deployment.metadata?.name || '',

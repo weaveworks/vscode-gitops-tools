@@ -7,13 +7,12 @@ import { FileTypes } from '../fileTypes';
 import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { DeploymentTreeViewItem2 } from './clusterDeploymentTreeViewItem';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
+import { ClusterDeploymentTreeViewItem } from './clusterDeploymentTreeViewItem';
 import { statusBar } from '../statusBar';
 
-let _extensionContext: ExtensionContext;
 
 /**
  * Defines Clusters data provider for loading configured kubernetes clusters
@@ -45,7 +44,7 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
 				if (fluxControllers) {
 					clusterTreeViewItem.expand();
 					for (const deployment of fluxControllers.items) {
-						clusterTreeViewItem.addChild(new DeploymentTreeViewItem2(deployment));
+						clusterTreeViewItem.addChild(new ClusterDeploymentTreeViewItem(deployment));
 					}
 				}
 			}
