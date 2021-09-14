@@ -7,7 +7,7 @@ import { FileTypes } from '../fileTypes';
 import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { DeploymentTreeViewItem2 } from './deploymentTreeViewItem2';
+import { DeploymentTreeViewItem2 } from './clusterDeploymentTreeViewItem';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';

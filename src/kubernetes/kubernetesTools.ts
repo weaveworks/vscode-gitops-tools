@@ -223,7 +223,7 @@ class KubernetesTools {
 		// create resource url
 		const nonce: number = new Date().getTime();
     const url: string = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
-		// console.debug(`gitops.kubernetesTools.getResourceUri: ${url}`);// TODO: pls don't commit console.log
+		// console.debug(`gitops.kubernetesTools.getResourceUri: ${url}`);
 
 		// create resource uri
     return Uri.parse(url);
