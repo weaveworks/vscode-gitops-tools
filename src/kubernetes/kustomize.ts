@@ -4,7 +4,8 @@ import {
 	LocalObjectReference,
 	KubernetesObject,
 	ObjectMeta,
-	ResultMetadata
+	ResultMetadata,
+	KubernetesObjectKinds
 } from './kubernetesTypes';
 
 /**
@@ -27,7 +28,7 @@ export interface Kustomize extends KubernetesObject {
 
 	// standard kubernetes object fields
 	readonly apiVersion: string;
-	readonly kind: 'Kustomization'
+	readonly kind: KubernetesObjectKinds.Kustomization;
 	readonly metadata: ObjectMeta;
 
 	/**
