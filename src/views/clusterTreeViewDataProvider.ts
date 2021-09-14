@@ -1,13 +1,13 @@
 import {
 	ExtensionContext,
-	MarkdownString,
-	TreeItemCollapsibleState
+	MarkdownString
 } from 'vscode';
-import { FileTypes } from '../fileTypes';
 import { KubectlCommands } from '../commands';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { FileTypes } from '../fileTypes';
 import { Cluster } from '../kubernetes/kubernetesConfig';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
+import { DeploymentTreeViewItem2 } from './deploymentTreeViewItem2';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItem } from './treeViewItem';
 import { TreeViewItemContext } from './treeViewItemContext';
@@ -37,7 +37,19 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
     const treeItems: ClusterTreeViewItem[] = [];
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
     for (const cluster of clusters) {
-      treeItems.push(new ClusterTreeViewItem(cluster, currentContext));
+			const clusterTreeViewItem = new ClusterTreeViewItem(cluster);
+			if (cluster.name === currentContext) {
+				// Current cluster. Populate child nodes.
+				clusterTreeViewItem.makeCollapsible();
+				const fluxControllers = await kubernetesTools.getFluxControllers();
+				if (fluxControllers) {
+					clusterTreeViewItem.expand();
+					for (const deployment of fluxControllers.items) {
+						clusterTreeViewItem.addChild(new DeploymentTreeViewItem2(deployment));
+					}
+				}
+			}
+			treeItems.push(clusterTreeViewItem);
     }
 		statusBar.hide();
     return treeItems;
@@ -54,11 +66,11 @@ export class ClusterTreeViewItem extends TreeViewItem {
 	/**
 	 * Creates new Cluster tree view item for display.
 	 * @param cluster Cluster object info.
-	 * @param currentContext Current kubernetes cluster context name.
 	 */
-	constructor(cluster: Cluster, currentContext: string) {
+	constructor(cluster: Cluster) {
 		super({
-			label: `${cluster.name} ${cluster.cluster.server}`,
+			label: cluster.name,
+			description: cluster.cluster.server,
 		});
 
 		// set context type value for cluster commands
@@ -80,11 +92,6 @@ export class ClusterTreeViewItem extends TreeViewItem {
 			arguments: [this.name],
 			title: 'Set current context',
 		};
-
-		if (cluster.name === currentContext) {
-			// TODO: why do we want to collapse a cluster tree node that matches kubectl current context ???
-			this.collapsibleState = TreeItemCollapsibleState.Collapsed;
-		}
 	}
 
 	/**
@@ -95,8 +102,8 @@ export class ClusterTreeViewItem extends TreeViewItem {
 	 */
 	getMarkdown(cluster: Cluster,	showJsonConfig: boolean = false): MarkdownString {
 		const markdown: MarkdownString = new MarkdownString();
-		markdown.appendMarkdown(`Property | Value\n`);
-		markdown.appendMarkdown(`:--- | :---\n`);
+		markdown.appendMarkdown('Property | Value\n');
+		markdown.appendMarkdown(':--- | :---\n');
 		markdown.appendMarkdown(`Name | ${cluster.name}\n`);
 		markdown.appendMarkdown(`Server | ${cluster.cluster.server}\n`);
 
