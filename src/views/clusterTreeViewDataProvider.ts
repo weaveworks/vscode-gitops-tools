@@ -38,12 +38,12 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
     for (const cluster of clusters) {
 			const clusterTreeViewItem = new ClusterTreeViewItem(cluster);
 			if (cluster.name === currentContext) {
-				// Current cluster. Populate child nodes.
 				clusterTreeViewItem.makeCollapsible();
-				const fluxControllers = await kubernetesTools.getFluxControllers();
-				if (fluxControllers) {
+				// load flux system deployments
+				const fluxDeployments = await kubernetesTools.getFluxDeployments();
+				if (fluxDeployments) {
 					clusterTreeViewItem.expand();
-					for (const deployment of fluxControllers.items) {
+					for (const deployment of fluxDeployments.items) {
 						clusterTreeViewItem.addChild(new ClusterDeploymentTreeViewItem(deployment));
 					}
 				}

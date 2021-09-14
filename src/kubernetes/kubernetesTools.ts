@@ -1,6 +1,6 @@
 import { window, Uri } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
-import { V1DeploymentList } from '@kubernetes/client-node';
+import { V1DeploymentList as DeploymentList } from '@kubernetes/client-node';
 import { setContext, ContextTypes } from '../context';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
@@ -166,15 +166,15 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Get all deployments (controllers) from the flux namespace.
+	 * Get all flux system deployments.
 	 */
-	async getFluxControllers(): Promise<undefined | V1DeploymentList> {
-		const fluxControllersShellResult = await this.invokeKubectlCommand('get deployment --namespace=flux-system -o json');
-		if (!fluxControllersShellResult || fluxControllersShellResult.stderr) {
-			console.warn(`Failed to get deployments: ${fluxControllersShellResult?.stderr}`);
+	async getFluxDeployments(): Promise<undefined | DeploymentList> {
+		const fluxDeploymentShellResult = await this.invokeKubectlCommand('get deployment --namespace=flux-system -o json');
+		if (!fluxDeploymentShellResult || fluxDeploymentShellResult.stderr) {
+			console.warn(`Failed to get flux system deployments: ${fluxDeploymentShellResult?.stderr}`);
 			return;
 		}
-		return parseJson(fluxControllersShellResult.stdout);
+		return parseJson(fluxDeploymentShellResult.stdout);
 	}
 
 	/**
