@@ -14,9 +14,11 @@ import { TreeViewItemContext } from './treeViewItemContext';
 export class ClusterDeploymentTreeViewItem extends TreeViewItem {
 	constructor(deployment: Deployment) {
 		super({
-			label: deployment.metadata?.name || '',
-			description: `${deployment.status?.readyReplicas}/${deployment.status?.replicas}`,
+			label: deployment.metadata.name || '',
+			description: `${deployment.status.readyReplicas}/${deployment.status.replicas}`,
 		});
+
+		this.label = `${deployment.metadata.name} ${this.getFluxControllerVersion(deployment)}`;
 
 		// set context type value for controller commands
 		this.contextValue = TreeViewItemContext.Deployment;
@@ -50,10 +52,20 @@ export class ClusterDeploymentTreeViewItem extends TreeViewItem {
 		const markdown: MarkdownString = createMarkdownTable(deployment);
 
 		if (showJsonConfig) {
-			markdown.appendCodeblock(JSON.stringify(deployment, null, '  '));
+			markdown.appendCodeblock(JSON.stringify(deployment, null, '  '), 'json');
 		}
 
 		return markdown;
+	}
+
+	/**
+	 * Get version of the flux controller
+	 * @param deployment Deployment kubernetes object
+	 * @returns Version of the flux controller or an empty string
+	 */
+	getFluxControllerVersion(deployment: Deployment): string {
+		const fluxControllerContainer = deployment.spec.template.spec?.containers?.find(container => /^fluxcd\/.+controller.+$/.test(container.image || ''));
+		return fluxControllerContainer?.image?.split(':')[1] || '';
 	}
 }
 
