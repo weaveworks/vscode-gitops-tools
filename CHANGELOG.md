@@ -2,6 +2,37 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.3.0 - [2021-09-15]
+
+- [#36](https://github.com/weaveworks/vscode-gitops-tools/issues/36)
+Cluster tree view - show if gitops is enabled
+- [#37](https://github.com/weaveworks/vscode-gitops-tools/issues/37)
+Select a cluster to update other tree views
+- [#38](https://github.com/weaveworks/vscode-gitops-tools/issues/38)
+Ensure single version of gitops terminal is created
+- [#40](https://github.com/weaveworks/vscode-gitops-tools/issues/40)
+Indicate latest revision fetched by any source
+- [#46](https://github.com/weaveworks/vscode-gitops-tools/issues/46)
+Investigate using openapi-typescript for kubernetes typescript types generation
+- [#49](https://github.com/weaveworks/vscode-gitops-tools/issues/49)
+Move kubectl CLI object types/results interfaces to separate .ts files under ./kubernetes folder
+- [#50](https://github.com/weaveworks/vscode-gitops-tools/issues/50)
+Create GitOps status bar
+- [#53](https://github.com/weaveworks/vscode-gitops-tools/issues/53)
+Add Flux CLI to Dependencies section in docs
+- [#54](https://github.com/weaveworks/vscode-gitops-tools/issues/54)
+Add short GitOps extension info and Features section to docs
+- [#57](https://github.com/weaveworks/vscode-gitops-tools/issues/57)
+Create markdown table hovers for tree view items
+- [#59](https://github.com/weaveworks/vscode-gitops-tools/issues/59)
+Review, document, and refactor GitOps tree views setup, initialization, context settings, and refreshes
+- [#60](https://github.com/weaveworks/vscode-gitops-tools/issues/60)
+Open Kubernetes config documents in vscode Editor on tree view nodes click
+- [#65](https://github.com/weaveworks/vscode-gitops-tools/issues/65)
+Add GitOps Commands section to repo docs
+- [#66](https://github.com/weaveworks/vscode-gitops-tools/issues/66)
+Package Sprint 3 release
+
 # v0.2.0 - [2021-08-31]
 
 - [#8](https://github.com/weaveworks/vscode-gitops-tools/issues/8)
