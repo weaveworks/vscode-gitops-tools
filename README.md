@@ -46,6 +46,12 @@ Tool | Description | Installation
 
 We recommend you install these CLI tools on your system PATH before using GitOps extension. If these tools aren't on your system `PATH`, then some commands may not work. If the extension needs one of the core Kubernetes tools and they are missing, it will prompt you to install them.
 
+# GitOps Commands
+
+You can access GitOps tools check, CLI dependendency versions, Clusters, Sources and Deployments views Focus and Refresh commands by typing `GitOps` in `View -> Command Palette...` menu prompt:
+
+![VSCode GitOps Commands](docs/images/vscode-gitops-commands.png)
+
 # Dev Build
 
 Use the following commands to build GitOps vscode extension locally for testing, debugging, and submitting pull requests (PRs):
