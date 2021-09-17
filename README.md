@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br />
-    <img src="resources/icons/gitops-logo.png" alt="datadog" width="200" />
+    <img src="resources/icons/gitops-logo.png" alt="GitOps" width="200" />
   <br />
   GitOps Tools for Visual Studio Code
   <br />
@@ -16,11 +16,12 @@ GitOps extension provides integration with [Kubernetes Tools](https://marketplac
 # Features
 
 - Custom GitOps sidebar and integrated terminal
-- Clusters view with Kubernetes namespaces and configured clusters from `kubectl`
-- Sources view with Git/Helm Repositories and Buckets info
-- Deployments view with Kustomizations and Helm Releases
-- Rich Kubernetes Object info tooltips with quick overviews of loaded Clusters, Sources, and Deployments
-- View full Kubernetes Object `.yaml` configs in VSCode Editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
+- Clusters view with configured Kubernetes clusters from `kubectl`
+- [GitOps Toolkit components](https://fluxcd.io/docs/components/) and versions info for the Flux enabled clusters
+- Sources view with Git/Helm Repositories and Buckets info for the selected cluster
+- Deployments view with Kustomizations and Helm Releases for the selected cluster
+- Rich Kubernetes Object info tooltips with quick overviews for the loaded Clusters, Sources, and Deployments
+- Loading of full Kubernetes Object `.yaml` configs in VSCode Editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
 - Integrated [GitOps](https://www.weave.works/technologies/gitops/) Documentation view with links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics
 
 # Dependencies
@@ -44,6 +45,12 @@ Tool | Description | Installation
 
 
 We recommend you install these CLI tools on your system PATH before using GitOps extension. If these tools aren't on your system `PATH`, then some commands may not work. If the extension needs one of the core Kubernetes tools and they are missing, it will prompt you to install them.
+
+# GitOps Commands
+
+You can access GitOps tools check, CLI dependendency versions, Clusters, Sources and Deployments views Focus and Refresh commands by typing `GitOps` in `View -> Command Palette...` menu prompt:
+
+![VSCode GitOps Commands](docs/images/vscode-gitops-commands.png)
 
 # Dev Build
 
