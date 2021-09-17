@@ -64,7 +64,7 @@ export class ClusterDeploymentTreeViewItem extends TreeViewItem {
 	 * @returns Version of the flux controller or an empty string
 	 */
 	getFluxControllerVersion(deployment: Deployment): string {
-		const fluxControllerContainer = deployment.spec.template.spec?.containers?.find(container => /^fluxcd\/.+controller.+$/.test(container.image || ''));
+		const fluxControllerContainer = deployment.spec.template.spec?.containers?.find(container => /fluxcd.+controller.+/.test(container.image || ''));
 		return fluxControllerContainer?.image?.split(':')[1] || '';
 	}
 }
