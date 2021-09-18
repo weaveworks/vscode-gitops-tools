@@ -161,7 +161,6 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"extensionDependencies": [
-		"redhat.vscode-yaml",
 		"ms-kubernetes-tools.vscode-kubernetes-tools"
 	],
 	"devDependencies": {
