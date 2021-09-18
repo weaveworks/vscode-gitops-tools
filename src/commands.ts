@@ -7,7 +7,11 @@ import {
 	Uri
 } from 'vscode';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
-import { refreshTreeViews } from './views/treeViews';
+import {
+	refreshDeploymentTreeView,
+	refreshSourceTreeView,
+	refreshTreeViews
+} from './views/treeViews';
 import { runTerminalCommand } from './gitOps';
 
 /**
@@ -24,6 +28,8 @@ export enum ViewCommands {
 	Open = 'vscode.open',
 	SetContext = 'setContext',
 	RefreshTreeViews = 'gitops.views.refreshTreeViews',
+	RefreshSourceTreeView = 'gitops.views.refreshSourceTreeView',
+	RefreshDeploymentTreeView = 'gitops.views.refreshDeploymentTreeView',
 }
 
 /**
@@ -52,6 +58,8 @@ export function registerCommands(context: ExtensionContext) {
   registerCommand(KubectlCommands.Version, showKubectlVersion);
 	registerCommand(KubectlCommands.SetCurrentContext, setKubernetesClusterContext);
 	registerCommand(ViewCommands.RefreshTreeViews, refreshTreeViews);
+	registerCommand(ViewCommands.RefreshSourceTreeView, refreshSourceTreeView);
+	registerCommand(ViewCommands.RefreshDeploymentTreeView, refreshDeploymentTreeView);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 
 	// add open gitops resource in vscode editor command

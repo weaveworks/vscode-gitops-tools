@@ -35,6 +35,8 @@
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.flux.checkPrerequisites",
 		"onCommand:gitops.views.refreshTreeViews",
+		"onCommand:gitops.views.refreshSourceTreeView",
+		"onCommand:gitops.views.refreshDeploymentTreeView",
 		"onCommand:gitops.editor.openResource",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
@@ -57,6 +59,18 @@
 			{
 				"command": "gitops.views.refreshTreeViews",
 				"title": "Refresh",
+				"category": "GitOps",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "gitops.views.refreshSourceTreeView",
+				"title": "Refresh Sources tree view",
+				"category": "GitOps",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "gitops.views.refreshDeploymentTreeView",
+				"title": "Refresh Deployment tree view",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
@@ -132,6 +146,16 @@
 					"command": "gitops.views.refreshTreeViews",
 					"group": "navigation",
 					"when": "view == gitops.views.clusters"
+				},
+				{
+					"command": "gitops.views.refreshSourceTreeView",
+					"group": "navigation",
+					"when": "view == gitops.views.sources"
+				},
+				{
+					"command": "gitops.views.refreshDeploymentTreeView",
+					"group": "navigation",
+					"when": "view == gitops.views.deployments"
 				}
 			],
 			"view/item/context": [],
