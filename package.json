@@ -36,11 +36,11 @@
 		"onCommand:gitops.flux.checkPrerequisites",
 		"onCommand:gitops.views.refreshTreeViews",
 		"onCommand:gitops.views.refreshSourceTreeView",
-		"onCommand:gitops.views.refreshDeploymentTreeView",
+		"onCommand:gitops.views.refreshApplicationTreeView",
 		"onCommand:gitops.editor.openResource",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
-		"onView:gitops.views.deployments",
+		"onView:gitops.views.applications",
 		"onView:gitops.views.documentation"
 	],
 	"main": "./dist/extension.js",
@@ -69,8 +69,8 @@
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "gitops.views.refreshDeploymentTreeView",
-				"title": "Refresh Deployment tree view",
+				"command": "gitops.views.refreshApplicationTreeView",
+				"title": "Refresh Application tree view",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
@@ -101,8 +101,8 @@
 					"name": "Sources"
 				},
 				{
-					"id": "gitops.views.deployments",
-					"name": "Deployments"
+					"id": "gitops.views.applications",
+					"name": "Applications"
 				},
 				{
 					"id": "gitops.views.documentation",
@@ -126,13 +126,13 @@
 				"when": "gitops:noClusterSelected"
 			},
 			{
-				"view": "gitops.views.deployments",
-				"contents": "Loading Deployments ...",
+				"view": "gitops.views.applications",
+				"contents": "Loading Applications ...",
 				"when": "!gitops:noClusterSelected"
 			},
 			{
-				"view": "gitops.views.deployments",
-				"contents": "Select GitOps Cluster to view Deployments",
+				"view": "gitops.views.applications",
+				"contents": "Select GitOps Cluster to view Applications",
 				"when": "gitops:noClusterSelected"
 			},
 			{
@@ -153,9 +153,9 @@
 					"when": "view == gitops.views.sources"
 				},
 				{
-					"command": "gitops.views.refreshDeploymentTreeView",
+					"command": "gitops.views.refreshApplicationTreeView",
 					"group": "navigation",
-					"when": "view == gitops.views.deployments"
+					"when": "view == gitops.views.applications"
 				}
 			],
 			"view/item/context": [],

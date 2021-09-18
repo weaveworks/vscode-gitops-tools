@@ -9,7 +9,7 @@
   <br />
 </h1>
 
-GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Deployments in Visual Studio Code IDE.
+GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Applications in Visual Studio Code IDE.
 
 ![VSCode GitOps Tools](docs/images/vscode-gitops-tools.png)
 
@@ -19,14 +19,14 @@ GitOps extension provides integration with [Kubernetes Tools](https://marketplac
 - Clusters view with configured Kubernetes clusters from `kubectl`
 - [GitOps Toolkit components](https://fluxcd.io/docs/components/) and versions info for the Flux enabled clusters
 - Sources view with Git/Helm Repositories and Buckets info for the selected cluster
-- Deployments view with Kustomizations and Helm Releases for the selected cluster
-- Rich Kubernetes Object info tooltips with quick overviews for the loaded Clusters, Sources, and Deployments
+- Applications view with Kustomizations and Helm Releases for the selected cluster
+- Rich Kubernetes Object info tooltips with quick overviews for the loaded Clusters, Sources, and Applications
 - Loading of full Kubernetes Object `.yaml` configs in VSCode Editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
 - Integrated [GitOps](https://www.weave.works/technologies/gitops/) Documentation view with links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics
 
 # Dependencies
 
-GitOps extension depends on [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) extension which is automatically installed with this extension for building applications to run with Kubernetes clusters or troublishooting Kubernetes cluster deployments. You may need to invoke the following command line tools, depending on which features you use. You will need `kubectl`, `helm`, and `flux` CLI at the minimum to use this GitOps extension and its Kubernetes cluster management operations.
+GitOps extension depends on [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) extension which is automatically installed with this extension for building apps to run with Kubernetes clusters or troublishooting Kubernetes cluster applications. You may need to invoke the following command line tools, depending on which features you use. You will need `kubectl`, `helm`, and `flux` CLI at the minimum to use this GitOps extension and its Kubernetes cluster management operations.
 
 Tool | Description | Installation
 --- | --- | ---
@@ -48,7 +48,7 @@ We recommend you install these CLI tools on your system PATH before using GitOps
 
 # GitOps Commands
 
-You can access GitOps tools check, CLI dependendency versions, Clusters, Sources and Deployments views Focus and Refresh commands by typing `GitOps` in `View -> Command Palette...` menu prompt:
+You can access GitOps tools check, CLI dependendency versions, Clusters, Sources and Applications views Focus and Refresh commands by typing `GitOps` in `View -> Command Palette...` menu prompt:
 
 ![VSCode GitOps Commands](docs/images/vscode-gitops-commands.png)
 

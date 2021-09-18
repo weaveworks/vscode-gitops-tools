@@ -5,19 +5,19 @@ import {
 	window
 } from 'vscode';
 import { ClusterTreeViewDataProvider } from './clusterTreeViewDataProvider';
-import { DeploymentTreeViewDataProvider } from './deploymentTreeViewDataProvider';
+import { ApplicationTreeViewDataProvider } from './applicationTreeViewDataProvider';
 import { DocumentationTreeViewDataProvider } from './documentationTreeViewDataProvider';
 import { SourceTreeViewDataProvider } from './sourceTreeViewDataProvider';
 import { Views } from './views';
 
 let clusterTreeViewProvider: ClusterTreeViewDataProvider;
 let sourceTreeViewProvider: SourceTreeViewDataProvider;
-let deploymentTreeViewProvider: DeploymentTreeViewDataProvider;
+let applicationTreeViewProvider: ApplicationTreeViewDataProvider;
 let documentationTreeViewProvider: DocumentationTreeViewDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
-let deploymentTreeView: TreeView<TreeItem>;
+let applicationTreeView: TreeView<TreeItem>;
 let documentationTreeView: TreeView<TreeItem>;
 
 /**
@@ -28,7 +28,7 @@ export function createTreeViews(extensionContext: ExtensionContext) {
 	// create gitops tree view data providers
 	clusterTreeViewProvider = new ClusterTreeViewDataProvider(extensionContext);
 	sourceTreeViewProvider =  new SourceTreeViewDataProvider(extensionContext);
-	deploymentTreeViewProvider = new DeploymentTreeViewDataProvider(extensionContext);
+	applicationTreeViewProvider = new ApplicationTreeViewDataProvider(extensionContext);
 	documentationTreeViewProvider = new DocumentationTreeViewDataProvider();
 
 	// create gitops sidebar tree views
@@ -42,8 +42,8 @@ export function createTreeViews(extensionContext: ExtensionContext) {
     showCollapseAll: true,
   });
 
-	deploymentTreeView = window.createTreeView(Views.DeploymentView, {
-    treeDataProvider: deploymentTreeViewProvider,
+	applicationTreeView = window.createTreeView(Views.ApplicationView, {
+    treeDataProvider: applicationTreeViewProvider,
     showCollapseAll: true,
   });
 
@@ -60,7 +60,7 @@ export function createTreeViews(extensionContext: ExtensionContext) {
  export function refreshTreeViews() {
 	refreshClusterTreeView();
 	refreshSourceTreeView();
-	refreshDeploymentTreeView();
+	refreshApplicationTreeView();
 }
 
 /**
@@ -78,8 +78,8 @@ export function refreshSourceTreeView() {
 }
 
 /**
- * Reloads deployments tree view for the selected cluster.
+ * Reloads applications tree view for the selected cluster.
  */
-export function refreshDeploymentTreeView() {
-	deploymentTreeViewProvider.refresh();
+export function refreshApplicationTreeView() {
+	applicationTreeViewProvider.refresh();
 }

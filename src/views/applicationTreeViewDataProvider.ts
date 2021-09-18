@@ -8,33 +8,33 @@ import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItemContext } from './treeViewItemContext';
 import { TreeViewItemLabels } from './treeViewItemLabels';
-import { DeploymentTreeViewItem } from './deploymentTreeViewItem';
+import { ApplicationTreeViewItem } from './applicationTreeViewItem';
 
 /**
- * Defines Deployments data provider for loading Kustomizations
+ * Defines Applications data provider for loading Kustomizations
  * and Helm Releases in GitOps Depoloyments tree view.
  */
-export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
+export class ApplicationTreeViewDataProvider extends TreeViewDataProvider {
 	constructor(private extensionContext: ExtensionContext) {
 		super();
 	}
 
 	/**
-   * Creates Deployment tree view items for the currently selected kubernetes cluster.
-   * @returns Deployment tree view items to display.
+   * Creates Application tree view items for the currently selected kubernetes cluster.
+   * @returns Application tree view items to display.
    */
-  async buildTree(): Promise<DeploymentTreeViewItem[]> {
-		const treeItems: DeploymentTreeViewItem[] = [];
+  async buildTree(): Promise<ApplicationTreeViewItem[]> {
+		const treeItems: ApplicationTreeViewItem[] = [];
 
-		// load deployment kustomizations
+		// load application kustomizations
     const kustomizations = await kubernetesTools.getKustomizations();
     if (kustomizations) {
-			for (const kustomizeDeployment of kustomizations.items) {
-				treeItems.push(new KustomizationTreeViewItem(kustomizeDeployment));
+			for (const kustomizeApplication of kustomizations.items) {
+				treeItems.push(new KustomizationTreeViewItem(kustomizeApplication));
 			}
     }
 
-		// load deployment helm releases
+		// load application helm releases
 		const helmReleases = await kubernetesTools.getHelmReleases();
 		if (helmReleases) {
 			for (const helmRelease of helmReleases.items) {
@@ -46,9 +46,9 @@ export class DeploymentTreeViewDataProvider extends TreeViewDataProvider {
 }
 
 /**
- * Defines Kustomization tree view item for display in GitOps Depoyments tree view.
+ * Defines Kustomization tree view item for display in GitOps Application tree view.
  */
-class KustomizationTreeViewItem extends DeploymentTreeViewItem {
+class KustomizationTreeViewItem extends ApplicationTreeViewItem {
 	constructor(kustomization: Kustomize) {
 		super({
 			label: `${TreeViewItemLabels.Kustomization}: ${kustomization.metadata?.name}`,
@@ -76,9 +76,9 @@ class KustomizationTreeViewItem extends DeploymentTreeViewItem {
 }
 
 /**
- * Defines Helm release tree view item for display in GitOps Deployments tree view.
+ * Defines Helm release tree view item for display in GitOps Applications tree view.
  */
-class HelmReleaseTreeViewItem extends DeploymentTreeViewItem {
+class HelmReleaseTreeViewItem extends ApplicationTreeViewItem {
 	constructor(helmRelease: HelmRelease) {
 		super({
 			label: `${TreeViewItemLabels.HelmRelease}: ${helmRelease.metadata?.name}`,
