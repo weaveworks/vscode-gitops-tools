@@ -134,13 +134,7 @@
 					"when": "view == gitops.views.clusters"
 				}
 			],
-			"view/item/context": [
-				{
-					"command": "gitops.editor.openResource",
-					"group": "inline",
-					"when": "viewItem == cluster"
-				}
-			],
+			"view/item/context": [],
 			"commandPalette": [
 				{
 					"command": "gitops.editor.openResource",
