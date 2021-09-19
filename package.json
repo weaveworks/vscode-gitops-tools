@@ -158,7 +158,13 @@
 					"when": "view == gitops.views.applications"
 				}
 			],
-			"view/item/context": [],
+			"view/item/context": [
+				{
+					"command": "gitops.editor.openResource",
+					"group": "inline",
+					"when": "viewItem == cluster"
+				}
+			],
 			"commandPalette": [
 				{
 					"command": "gitops.editor.openResource",
