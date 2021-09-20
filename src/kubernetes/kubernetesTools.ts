@@ -10,6 +10,7 @@ import { HelmRepositoryResult } from './helmRepository';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
 import { KustomizeResult } from './kustomize';
+import { NamespaceResult } from './namespace';
 
 
 /**
@@ -76,12 +77,15 @@ class KubernetesTools {
 	/**
 	 * Sets current kubectl context.
 	 * @param contextName Kubectl context name to use.
-	 * @returns True if kubectl context was changed, and false or undefined otherwise.
+	 * @returns `undefined` in case of an error or Object with information about
+	 * whether or not context was switched or didn't need it (current).
 	 */
-	async setCurrentContext(contextName: string): Promise<undefined | boolean> {
+	async setCurrentContext(contextName: string): Promise<undefined | { isChanged: boolean;	}> {
 		const currentContext = await this.getCurrentContext();
 		if (currentContext && currentContext === contextName) {
-			return;
+			return {
+				isChanged: false,
+			};
 		}
 
 		const setContextShellResult = await this.invokeKubectlCommand(`config use-context ${contextName}`);
@@ -91,7 +95,10 @@ class KubernetesTools {
 		}
 
 		setContext(ContextTypes.NoClusterSelected, false);
-		return true;
+
+		return {
+			isChanged: true,
+		};
 	}
 
 	/**
@@ -175,6 +182,21 @@ class KubernetesTools {
 			return;
 		}
 		return parseJson(fluxDeploymentShellResult.stdout);
+	}
+
+	/**
+	 * Return true if flux enabled in the current cluster.
+	 * Function checks if cluster contains `flux-system` namespace.
+	 * @param clusterName target cluster name
+	 */
+	async isFluxInstalled(clusterName: string) {
+		const namespacesShellResult = await this.invokeKubectlCommand(`get ns --context ${clusterName} -o json`);
+		if (!namespacesShellResult || namespacesShellResult.stderr) {
+			console.warn(`Failed to get namespaces: ${namespacesShellResult?.stderr}`);
+			return;
+		}
+		const namespaces: NamespaceResult = parseJson(namespacesShellResult.stdout);
+		return namespaces.items.some(namespace => namespace.metadata.name === 'flux-system');
 	}
 
 	/**

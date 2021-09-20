@@ -21,6 +21,7 @@ export enum KubernetesObjectKinds {
 	HelmRelease = 'HelmRelease',
 	Kustomization = 'Kustomization',
 	Deployment = 'Deployment',
+	Namespace = 'Namespace',
 }
 
 /**

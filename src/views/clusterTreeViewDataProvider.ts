@@ -1,6 +1,8 @@
 import {
 	ExtensionContext,
-	MarkdownString
+	MarkdownString,
+	ThemeColor,
+	ThemeIcon
 } from 'vscode';
 import { KubectlCommands } from '../commands';
 import { FileTypes } from '../fileTypes';
@@ -51,6 +53,10 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
 			}
 			treeItems.push(clusterTreeViewItem);
     }
+
+		// Set context and icons before returning tree view items
+		await Promise.all(treeItems.map((clusterTreeViewItem) => clusterTreeViewItem.setContext()));
+
 		statusBar.hide();
     return treeItems;
   }
@@ -61,7 +67,14 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
  * configured kubernetes clusters in GitOps Clusters tree view.
  */
 export class ClusterTreeViewItem extends TreeViewItem {
+	/**
+	 * Cluster name
+	 */
 	name: string;
+	/**
+	 * Whether or not flux is installed on this cluster
+	 */
+	isFlux: boolean = false;
 
 	/**
 	 * Creates new Cluster tree view item for display.
@@ -73,8 +86,6 @@ export class ClusterTreeViewItem extends TreeViewItem {
 			description: cluster.cluster.server,
 		});
 
-		// set context type value for cluster commands
-		this.contextValue = TreeViewItemContext.Cluster;
 		this.name = cluster.name;
 
 		// show markdown tooltip
@@ -92,6 +103,19 @@ export class ClusterTreeViewItem extends TreeViewItem {
 			arguments: [this.name],
 			title: 'Set current context',
 		};
+	}
+
+	/**
+	 * Set context for active cluster (whether or not flux enabled)
+	 */
+	async setContext() {
+		this.isFlux = (await kubernetesTools.isFluxInstalled(this.name)) || false;
+		if (this.isFlux) {
+			this.contextValue = TreeViewItemContext.ClusterFlux;
+			this.setIcon(new ThemeIcon('pass-filled', new ThemeColor('terminal.ansiGreen')));
+		} else {
+			this.contextValue = TreeViewItemContext.Cluster;
+		}
 	}
 
 	/**

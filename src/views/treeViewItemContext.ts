@@ -4,6 +4,7 @@
  */
  export const enum TreeViewItemContext {
 	Cluster = 'cluster',
+	ClusterFlux = 'clusterFlux',
 	Deployment = 'deployment',
 	Kustomization = 'kustomization',
 	HelmRelease = 'helmRelease',

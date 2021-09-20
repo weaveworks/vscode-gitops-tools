@@ -34,6 +34,8 @@
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.flux.checkPrerequisites",
+		"onCommand:gitops.flux.install",
+		"onCommand:gitops.flux.uninstall",
 		"onCommand:gitops.views.refreshTreeViews",
 		"onCommand:gitops.views.refreshSourceTreeView",
 		"onCommand:gitops.views.refreshApplicationTreeView",
@@ -55,6 +57,14 @@
 				"command": "gitops.flux.checkPrerequisites",
 				"title": "Flux Check Prerequisites",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.flux.install",
+				"title": "Enable GitOps"
+			},
+			{
+				"command": "gitops.flux.uninstall",
+				"title": "Disable GitOps"
 			},
 			{
 				"command": "gitops.views.refreshTreeViews",
@@ -162,12 +172,28 @@
 				{
 					"command": "gitops.editor.openResource",
 					"group": "inline",
-					"when": "viewItem == cluster"
+					"when": "view == gitops.views.clusters && viewItem == cluster"
+				},
+				{
+					"command": "gitops.flux.install",
+					"when": "view == gitops.views.clusters && viewItem == cluster"
+				},
+				{
+					"command": "gitops.flux.uninstall",
+					"when": "view == gitops.views.clusters && viewItem == clusterFlux"
 				}
 			],
 			"commandPalette": [
 				{
 					"command": "gitops.editor.openResource",
+					"when": "never"
+				},
+				{
+					"command": "gitops.flux.install",
+					"when": "never"
+				},
+				{
+					"command": "gitops.flux.uninstall",
 					"when": "never"
 				}
 			]

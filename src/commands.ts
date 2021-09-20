@@ -1,18 +1,18 @@
 import {
-	commands,
-	window,
-	workspace,
-	Disposable,
+	commands, Disposable,
 	ExtensionContext,
-	Uri
+	Uri, window,
+	workspace
 } from 'vscode';
+import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
+import { ClusterTreeViewItem } from './views/clusterTreeViewDataProvider';
 import {
 	refreshApplicationTreeView,
+	refreshClusterTreeView,
 	refreshSourceTreeView,
 	refreshTreeViews
 } from './views/treeViews';
-import { runTerminalCommand } from './gitOps';
 
 /**
  * GitOps/vscode editor commands.
@@ -44,7 +44,14 @@ export enum KubectlCommands {
  * Flux commands.
  */
  export enum FluxCommands {
-	CheckPrerequisites = 'gitops.flux.checkPrerequisites'
+	CheckPrerequisites = 'gitops.flux.checkPrerequisites',
+	EnableGitOps = 'gitops.flux.install',
+	DisableGitOps = 'gitops.flux.uninstall',
+}
+
+export const enum TerminalCLICommands {
+	Flux = 'flux',
+	Kubectl = 'kubectl',
 }
 
 let _context: ExtensionContext;
@@ -61,6 +68,13 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(ViewCommands.RefreshSourceTreeView, refreshSourceTreeView);
 	registerCommand(ViewCommands.RefreshApplicationTreeView, refreshApplicationTreeView);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
+
+	registerCommand(FluxCommands.EnableGitOps, (clusterTreeItem: ClusterTreeViewItem) => {
+		enableDisableGitOps(clusterTreeItem, true);
+	});
+	registerCommand(FluxCommands.DisableGitOps, (clusterTreeItem: ClusterTreeViewItem) => {
+		enableDisableGitOps(clusterTreeItem, false);
+	});
 
 	// add open gitops resource in vscode editor command
 	context.subscriptions.push(
@@ -92,14 +106,14 @@ function registerCommand(commandName: string, callback: (...args: any[]) => any,
  * Outputs kubectl version in gitops terminal.
  */
 async function showKubectlVersion() {
-	runTerminalCommand(_context, 'kubectl', 'version');
+	runTerminalCommand(_context, TerminalCLICommands.Kubectl, 'version');
 }
 
 /**
  * Runs Flux check --pre command in gitops terminal.
  */
  async function checkFluxPrerequisites() {
-	runTerminalCommand(_context, 'flux', 'check --pre');
+	runTerminalCommand(_context, TerminalCLICommands.Flux, 'check --pre');
 }
 
 /**
@@ -107,8 +121,25 @@ async function showKubectlVersion() {
  * @param contextName Kubernetes cluster context name.
  */
 export async function setKubernetesClusterContext(contextName: string) {
-	const success = await kubernetesTools.setCurrentContext(contextName);
-	if (success) {
+	const setContextResult = await kubernetesTools.setCurrentContext(contextName);
+	if (setContextResult?.isChanged) {
 		refreshTreeViews();
 	}
+}
+
+/**
+ * Install or uninstall flux from the passed cluster.
+ * @param clusterTreeItem target cluster tree view item
+ * @param enable Specifies if function should install or uninstall
+ */
+export async function enableDisableGitOps(clusterTreeItem: ClusterTreeViewItem, enable: boolean) {
+	// Switch current context if needed
+	const setContextResult = await kubernetesTools.setCurrentContext(clusterTreeItem.name);
+	if (!setContextResult) {
+		window.showErrorMessage('Coundn\'t set current context');
+		return;
+	}
+	refreshClusterTreeView();
+
+	runTerminalCommand(_context, TerminalCLICommands.Flux, enable ? 'install' : 'uninstall');
 }
