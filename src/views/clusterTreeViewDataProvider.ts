@@ -109,6 +109,8 @@ export class ClusterTreeViewItem extends TreeViewItem {
 			`${ResourceTypes.Namespace}/${cluster.name}`,
 			FileTypes.Yaml);
 
+		this.setIcon(new ThemeIcon('cloud'));
+
 		// set current context command to change selected cluster
 		this.command = {
 			command: KubectlCommands.SetCurrentContext,
