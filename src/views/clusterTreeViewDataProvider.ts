@@ -54,12 +54,24 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
 			treeItems.push(clusterTreeViewItem);
     }
 
-		// Set context and icons before returning tree view items
-		await Promise.all(treeItems.map((clusterTreeViewItem) => clusterTreeViewItem.setContext()));
+		// Do not wait for context and icons (can take a few seconds)
+		this.updateContextAndIcons(treeItems);
 
 		statusBar.hide();
     return treeItems;
   }
+
+	/**
+	 * Update vscode context and tree view icons
+	 * after tree view items become visible.
+	 * @param treeItems All cluster tree items.
+	 */
+	async updateContextAndIcons(treeItems: ClusterTreeViewItem[]) {
+		for (const treeItem of treeItems) {
+			await treeItem.setContext();
+			this.refresh(treeItem);
+		}
+	}
 }
 
 /**
