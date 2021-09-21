@@ -26,7 +26,7 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
    * Creates Source tree view items for the currently selected kubernetes cluster.
    * @returns Source tree view items to display.
    */
-	 async buildTree(): Promise<SourceTreeViewItem[]> {
+	async buildTree(): Promise<SourceTreeViewItem[]> {
 		const treeItems: SourceTreeViewItem[] = [];
 
 		// load git repositories for the current cluster
@@ -59,12 +59,19 @@ export class SourceTreeViewDataProvider extends TreeViewDataProvider {
 /**
  *  Defines GitRepository tree view item for display in GitOps Sources tree view.
  */
-class GitRepositoryTreeViewItem extends SourceTreeViewItem {
+export class GitRepositoryTreeViewItem extends SourceTreeViewItem {
+	/**
+	 * All of the kubernetes resource fetched data.
+	 */
+	resource: GitRepository;
+
 	constructor(gitRepository: GitRepository) {
 		super({
 			label: `${TreeViewItemLabels.GitRepository}: ${gitRepository.metadata?.name}`,
 			description: shortenRevision(gitRepository.status.artifact?.revision),
 		});
+
+		this.resource = gitRepository;
 
 		// set context type value for git repository commands
 		this.contextValue = TreeViewItemContext.GitRepository;
@@ -90,12 +97,19 @@ class GitRepositoryTreeViewItem extends SourceTreeViewItem {
 /**
  *  Defines HelmRepository tree view item for display in GitOps Sources tree view.
  */
-class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
+export class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
+	/**
+	 * All of the kubernetes resource fetched data.
+	 */
+	resource: HelmRepository;
+
 	constructor(helmRepository: HelmRepository) {
 		super({
 			label: `${TreeViewItemLabels.HelmRepositry}: ${helmRepository.metadata?.name}`,
 			description: shortenRevision(helmRepository.status.artifact?.revision),
 		});
+
+		this.resource = helmRepository;
 
 		// set context type value for helm repository commands
 		this.contextValue = TreeViewItemContext.HelmRepository;
@@ -121,12 +135,19 @@ class HelmRepositoryTreeViewItem extends SourceTreeViewItem {
 /**
  *  Defines Bucket tree view item for display in GitOps Sources tree view.
  */
-class BucketTreeViewItem extends SourceTreeViewItem {
+export class BucketTreeViewItem extends SourceTreeViewItem {
+	/**
+	 * All of the kubernetes resource fetched data.
+	 */
+	resource: Bucket;
+
 	constructor(bucket: Bucket) {
 		super({
 			label: `${TreeViewItemLabels.Bucket}: ${bucket.metadata?.name}`,
 			description: shortenRevision(bucket.status.artifact?.revision),
 		});
+
+		this.resource = bucket;
 
 		// set context type value for bucket commands
 		this.contextValue = TreeViewItemContext.Bucket;

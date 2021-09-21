@@ -60,11 +60,18 @@
 			},
 			{
 				"command": "gitops.flux.install",
-				"title": "Enable GitOps"
+				"title": "Enable GitOps",
+				"category": "GitOps"
 			},
 			{
 				"command": "gitops.flux.uninstall",
-				"title": "Disable GitOps"
+				"title": "Disable GitOps",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.flux.reconcileSource",
+				"title": "Reconcile Source",
+				"category": "GitOps"
 			},
 			{
 				"command": "gitops.views.refreshTreeViews",
@@ -181,6 +188,10 @@
 				{
 					"command": "gitops.flux.uninstall",
 					"when": "view == gitops.views.clusters && viewItem == clusterFlux"
+				},
+				{
+					"command": "gitops.flux.reconcileSource",
+					"when": "view == gitops.views.sources && viewItem =~ /^(gitRepository|helmRepository|bucket)$/"
 				}
 			],
 			"commandPalette": [
@@ -194,6 +205,10 @@
 				},
 				{
 					"command": "gitops.flux.uninstall",
+					"when": "never"
+				},
+				{
+					"command": "gitops.flux.reconcileSource",
 					"when": "never"
 				}
 			]

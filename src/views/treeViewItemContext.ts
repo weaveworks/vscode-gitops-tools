@@ -3,13 +3,17 @@
  * GitOps tree view item context values.
  */
  export const enum TreeViewItemContext {
+	// Cluster tree view
 	Cluster = 'cluster',
 	ClusterFlux = 'clusterFlux',
 	Deployment = 'deployment',
+	// Sources tree view
+	GitRepository = 'gitRepository',
+	HelmRepository = 'helmRepository',
+	Bucket = 'bucket',
+	// Applications tree view
 	Kustomization = 'kustomization',
 	HelmRelease = 'helmRelease',
-	HelmRepository = 'helmRepository',
-	GitRepository = 'gitRepository',
-	Bucket = 'bucket',
+	// Documentation tree view
 	DocumentationLink = 'documentationLink',
 }

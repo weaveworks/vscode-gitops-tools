@@ -6,7 +6,9 @@ import {
 } from 'vscode';
 import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
+import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { ClusterTreeViewItem } from './views/clusterTreeViewDataProvider';
+import { BucketTreeViewItem, GitRepositoryTreeViewItem, HelmRepositoryTreeViewItem } from './views/sourceTreeViewDataProvider';
 import {
 	refreshApplicationTreeView,
 	refreshClusterTreeView,
@@ -47,8 +49,12 @@ export enum KubectlCommands {
 	CheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	EnableGitOps = 'gitops.flux.install',
 	DisableGitOps = 'gitops.flux.uninstall',
+	ReconcileSource = 'gitops.flux.reconcileSource',
 }
 
+/**
+ * Cli executable names.
+ */
 export const enum TerminalCLICommands {
 	Flux = 'flux',
 	Kubectl = 'kubectl',
@@ -61,13 +67,14 @@ let _context: ExtensionContext;
  * @param context VSCode extension context.
  */
 export function registerCommands(context: ExtensionContext) {
-  _context = context;
-  registerCommand(KubectlCommands.Version, showKubectlVersion);
+	_context = context;
+	registerCommand(KubectlCommands.Version, showKubectlVersion);
 	registerCommand(KubectlCommands.SetCurrentContext, setKubernetesClusterContext);
 	registerCommand(ViewCommands.RefreshTreeViews, refreshTreeViews);
 	registerCommand(ViewCommands.RefreshSourceTreeView, refreshSourceTreeView);
 	registerCommand(ViewCommands.RefreshApplicationTreeView, refreshApplicationTreeView);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
+	registerCommand(FluxCommands.ReconcileSource, reconcileSource);
 
 	registerCommand(FluxCommands.EnableGitOps, (clusterTreeItem: ClusterTreeViewItem) => {
 		enableDisableGitOps(clusterTreeItem, true);
@@ -78,15 +85,15 @@ export function registerCommands(context: ExtensionContext) {
 
 	// add open gitops resource in vscode editor command
 	context.subscriptions.push(
-    commands.registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
-      workspace.openTextDocument(uri).then((document) => {
+		commands.registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
+			workspace.openTextDocument(uri).then((document) => {
 				if (document) {
 					window.showTextDocument(document);
 				}
-      },
+			},
 			(error) => window.showErrorMessage(`Error loading document: ${error}`));
-    })
-  );
+		})
+	);
 }
 
 /**
@@ -97,9 +104,9 @@ export function registerCommands(context: ExtensionContext) {
  * @returns Disposable which unregisters this command on disposal.
  */
 function registerCommand(commandName: string, callback: (...args: any[]) => any, thisArg?: any): Disposable {
-  const command: Disposable = commands.registerCommand(commandName, callback);
-  _context.subscriptions.push(command);
-  return command;
+	const command: Disposable = commands.registerCommand(commandName, callback);
+	_context.subscriptions.push(command);
+	return command;
 }
 
 /**
@@ -142,4 +149,25 @@ export async function enableDisableGitOps(clusterTreeItem: ClusterTreeViewItem, 
 	refreshClusterTreeView();
 
 	runTerminalCommand(_context, TerminalCLICommands.Flux, enable ? 'install' : 'uninstall');
+}
+
+/**
+ * Invoke reconcile of a specific source.
+ * @param source Target source tree view item.
+ */
+export async function reconcileSource(source: GitRepositoryTreeViewItem | HelmRepositoryTreeViewItem | BucketTreeViewItem) {
+	/**
+	 * Accepted source names in flux: `git`, `helm`, `bucket`.
+	 * Can be checked with: `flux reconcile source --help`
+	 */
+	const sourceType = source.resource.kind === KubernetesObjectKinds.GitRepository ? 'git' :
+		source.resource.kind === KubernetesObjectKinds.HelmRepository ? 'helm' :
+		source.resource.kind === KubernetesObjectKinds.Bucket ? 'bucket' :
+		'unknown';
+	if (sourceType === 'unknown') {
+		window.showErrorMessage(`Unknown resource kind ${source.resource.kind}`);
+		return;
+	}
+
+	runTerminalCommand(_context, TerminalCLICommands.Flux, `reconcile source ${sourceType} ${source.resource.metadata.name} -n ${source.resource.metadata.namespace}`);
 }
