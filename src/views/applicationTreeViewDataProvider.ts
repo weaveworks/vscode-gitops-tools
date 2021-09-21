@@ -48,11 +48,19 @@ export class ApplicationTreeViewDataProvider extends TreeViewDataProvider {
 /**
  * Defines Kustomization tree view item for display in GitOps Application tree view.
  */
-class KustomizationTreeViewItem extends ApplicationTreeViewItem {
+export class KustomizationTreeViewItem extends ApplicationTreeViewItem {
+
+	/**
+	 * All of the kubernetes resource fetched data.
+	 */
+	resource: Kustomize;
+
 	constructor(kustomization: Kustomize) {
 		super({
 			label: `${TreeViewItemLabels.Kustomization}: ${kustomization.metadata?.name}`,
 		});
+
+		this.resource = kustomization;
 
 		// set context type value for kustomization commands
 		this.contextValue = TreeViewItemContext.Kustomization;
@@ -78,11 +86,19 @@ class KustomizationTreeViewItem extends ApplicationTreeViewItem {
 /**
  * Defines Helm release tree view item for display in GitOps Applications tree view.
  */
-class HelmReleaseTreeViewItem extends ApplicationTreeViewItem {
+export class HelmReleaseTreeViewItem extends ApplicationTreeViewItem {
+
+	/**
+	 * All of the kubernetes resource fetched data.
+	 */
+	resource: HelmRelease;
+
 	constructor(helmRelease: HelmRelease) {
 		super({
 			label: `${TreeViewItemLabels.HelmRelease}: ${helmRelease.metadata?.name}`,
 		});
+
+		this.resource = helmRelease;
 
 		// set context type value for helm release commands
 		this.contextValue = TreeViewItemContext.HelmRelease;
