@@ -1,12 +1,16 @@
-import { MarkdownString } from 'vscode';
+import {
+	MarkdownString,
+	ThemeColor,
+	ThemeIcon
+} from 'vscode';
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { Deployment } from '../../kubernetes/deployment';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../../utils/stringUtils';
-import { TreeNode } from './treeNode';
 import { NodeContext } from './nodeContext';
+import { TreeNode } from './treeNode';
 
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.
@@ -39,6 +43,13 @@ export class ClusterDeploymentNode extends TreeNode {
 			arguments: [this.resourceUri],
 			title: 'View Resource',
 		};
+
+		// change icons to visually indicate the state of deployment
+		if (deployment.status.readyReplicas === deployment.status.replicas) {
+			this.setStatus('ready');
+		} else {
+			this.setStatus('failed');
+		}
 	}
 
 	/**
@@ -66,6 +77,18 @@ export class ClusterDeploymentNode extends TreeNode {
 	getFluxControllerVersion(deployment: Deployment): string {
 		const fluxControllerContainer = deployment.spec.template.spec?.containers?.find(container => /fluxcd.+controller.+/.test(container.image || ''));
 		return fluxControllerContainer?.image?.split(':')[1] || '';
+	}
+
+	/**
+	 * Show status of deployment by changing the icon.
+	 * @param status Status of this deployment.
+	 */
+	setStatus(status: 'ready' | 'failed') {
+		if (status === 'ready') {
+			this.setIcon(new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen')));
+		} else if (status === 'failed') {
+			this.setIcon(new ThemeIcon('warning', new ThemeColor('editorWarning.foreground')));
+		}
 	}
 }
 
