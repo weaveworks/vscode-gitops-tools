@@ -9,7 +9,7 @@ import { TreeNode } from './treeNode';
 /**
  * Defines tree view data provider base class for all GitOps tree views.
  */
-export class TreeViewDataProvider implements TreeDataProvider<TreeItem> {
+export class DataProvider implements TreeDataProvider<TreeItem> {
   private treeItems: TreeItem[] | null = null;
   private _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
   readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;

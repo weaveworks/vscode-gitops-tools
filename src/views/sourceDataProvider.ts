@@ -6,7 +6,7 @@ import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRepository } from '../kubernetes/helmRepository';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { TreeViewDataProvider } from './dataProvider';
+import { DataProvider } from './dataProvider';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 import { SourceNode } from './sourceNode';
@@ -17,7 +17,7 @@ import { shortenRevision } from '../utils/stringUtils';
  * Defines Sources data provider for loading Git/Helm repositories
  * and Buckets in GitOps Sources tree view.
  */
-export class SourceTreeViewDataProvider extends TreeViewDataProvider {
+export class SourceDataProvider extends DataProvider {
 	constructor(private extensionContext: ExtensionContext) {
 		super();
 	}

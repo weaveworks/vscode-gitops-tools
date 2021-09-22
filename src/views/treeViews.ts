@@ -4,16 +4,16 @@ import {
 	TreeView,
 	window
 } from 'vscode';
-import { ClusterTreeViewDataProvider } from './clusterDataProvider';
-import { ApplicationTreeViewDataProvider } from './applicationDataProvider';
-import { DocumentationTreeViewDataProvider } from './documentationDataProvider';
-import { SourceTreeViewDataProvider } from './sourceDataProvider';
+import { ClusterDataProvider } from './clusterDataProvider';
+import { ApplicationDataProvider } from './applicationDataProvider';
+import { DocumentationDataProvider } from './documentationDataProvider';
+import { SourceDataProvider } from './sourceDataProvider';
 import { Views } from './views';
 
-let clusterTreeViewProvider: ClusterTreeViewDataProvider;
-let sourceTreeViewProvider: SourceTreeViewDataProvider;
-let applicationTreeViewProvider: ApplicationTreeViewDataProvider;
-let documentationTreeViewProvider: DocumentationTreeViewDataProvider;
+let clusterTreeViewProvider: ClusterDataProvider;
+let sourceTreeViewProvider: SourceDataProvider;
+let applicationTreeViewProvider: ApplicationDataProvider;
+let documentationTreeViewProvider: DocumentationDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
@@ -26,10 +26,10 @@ let documentationTreeView: TreeView<TreeItem>;
  */
 export function createTreeViews(extensionContext: ExtensionContext) {
 	// create gitops tree view data providers
-	clusterTreeViewProvider = new ClusterTreeViewDataProvider(extensionContext);
-	sourceTreeViewProvider =  new SourceTreeViewDataProvider(extensionContext);
-	applicationTreeViewProvider = new ApplicationTreeViewDataProvider(extensionContext);
-	documentationTreeViewProvider = new DocumentationTreeViewDataProvider();
+	clusterTreeViewProvider = new ClusterDataProvider(extensionContext);
+	sourceTreeViewProvider =  new SourceDataProvider(extensionContext);
+	applicationTreeViewProvider = new ApplicationDataProvider(extensionContext);
+	documentationTreeViewProvider = new DocumentationDataProvider();
 
 	// create gitops sidebar tree views
   clusterTreeView = window.createTreeView(Views.ClusterView, {

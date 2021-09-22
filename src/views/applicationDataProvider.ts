@@ -5,7 +5,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { Kustomize } from '../kubernetes/kustomize';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { TreeViewDataProvider } from './dataProvider';
+import { DataProvider } from './dataProvider';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 import { ApplicationNode } from './applicationNode';
@@ -14,7 +14,7 @@ import { ApplicationNode } from './applicationNode';
  * Defines Applications data provider for loading Kustomizations
  * and Helm Releases in GitOps Depoloyments tree view.
  */
-export class ApplicationTreeViewDataProvider extends TreeViewDataProvider {
+export class ApplicationDataProvider extends DataProvider {
 	constructor(private extensionContext: ExtensionContext) {
 		super();
 	}

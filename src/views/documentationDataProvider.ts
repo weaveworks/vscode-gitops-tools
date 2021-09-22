@@ -6,10 +6,10 @@ import {
 import { ViewCommands } from '../commands';
 import { DocumentationLinks } from './documentationConfig';
 import { Link } from './link';
-import { TreeViewDataProvider } from './dataProvider';
+import { DataProvider } from './dataProvider';
 import { TreeNode } from './treeNode';
 
-export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
+export class DocumentationDataProvider extends DataProvider {
 
   /**
    * Creates documentation tree view from documenation links config.

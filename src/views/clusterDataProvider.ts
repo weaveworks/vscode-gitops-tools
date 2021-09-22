@@ -9,7 +9,7 @@ import { FileTypes } from '../fileTypes';
 import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { TreeViewDataProvider } from './dataProvider';
+import { DataProvider } from './dataProvider';
 import { TreeNode } from './treeNode';
 import { NodeContext } from './nodeContext';
 import { ClusterDeploymentNode } from './clusterDeploymentNode';
@@ -21,7 +21,7 @@ import { createMarkdownTable } from '../utils/stringUtils';
  * Defines Clusters data provider for loading configured kubernetes clusters
  * and contexts in GitOps Clusters tree view.
  */
-export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
+export class ClusterDataProvider extends DataProvider {
 	constructor(private extensionContext: ExtensionContext) {
 		super();
 	}
