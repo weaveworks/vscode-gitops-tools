@@ -9,7 +9,9 @@ import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { HelmReleaseNode, KustomizationNode } from './views/applicationDataProvider';
 import { ClusterNode } from './views/clusterNode';
-import { BucketNode, GitRepositoryNode, HelmRepositoryNode } from './views/sourceDataProvider';
+import { BucketNode } from './views/bucketNode';
+import { GitRepositoryNode } from './views/gitRepositoryNode';
+import { HelmRepositoryNode } from './views/helmRepositoryNode';
 import {
 	refreshApplicationTreeView,
 	refreshClusterTreeView,
