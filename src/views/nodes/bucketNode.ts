@@ -1,12 +1,12 @@
-import { EditorCommands } from '../commands';
-import { FileTypes } from '../fileTypes';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { Bucket } from '../kubernetes/bucket';
+import { EditorCommands } from '../../commands';
+import { FileTypes } from '../../fileTypes';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
+import { Bucket } from '../../kubernetes/bucket';
 import { SourceNode } from './sourceNode';
 import { NodeLabels } from './nodeLabels';
 import { NodeContext } from './nodeContext';
-import { shortenRevision } from '../utils/stringUtils';
+import { shortenRevision } from '../../utils/stringUtils';
 
 /**
  * Defines Bucket tree view item for display in GitOps Sources tree view.

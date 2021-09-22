@@ -1,7 +1,7 @@
 import { MarkdownString } from 'vscode';
-import { HelmRelease } from '../kubernetes/helmRelease';
-import { Kustomize } from '../kubernetes/kustomize';
-import { createMarkdownTable } from '../utils/stringUtils';
+import { HelmRelease } from '../../kubernetes/helmRelease';
+import { Kustomize } from '../../kubernetes/kustomize';
+import { createMarkdownTable } from '../../utils/stringUtils';
 import { TreeNode } from './treeNode';
 
 /**

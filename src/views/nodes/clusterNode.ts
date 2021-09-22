@@ -3,14 +3,14 @@ import {
 	ThemeColor,
 	ThemeIcon
 } from 'vscode';
-import { KubectlCommands } from '../commands';
-import { FileTypes } from '../fileTypes';
-import { Cluster } from '../kubernetes/kubernetesConfig';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../kubernetes/kubernetesTypes';
+import { KubectlCommands } from '../../commands';
+import { FileTypes } from '../../fileTypes';
+import { Cluster } from '../../kubernetes/kubernetesConfig';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
 import { TreeNode } from './treeNode';
 import { NodeContext } from './nodeContext';
-import { createMarkdownTable } from '../utils/stringUtils';
+import { createMarkdownTable } from '../../utils/stringUtils';
 
 /**
  * Defines Cluster tree view item for displaying

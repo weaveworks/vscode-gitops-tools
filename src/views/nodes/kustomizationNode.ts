@@ -1,8 +1,8 @@
-import { EditorCommands } from '../commands';
-import { FileTypes } from '../fileTypes';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { Kustomize } from '../kubernetes/kustomize';
+import { EditorCommands } from '../../commands';
+import { FileTypes } from '../../fileTypes';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
+import { Kustomize } from '../../kubernetes/kustomize';
 import { ApplicationNode } from './applicationNode';
 import { NodeLabels } from './nodeLabels';
 import { NodeContext } from './nodeContext';

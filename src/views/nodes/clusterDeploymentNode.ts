@@ -1,10 +1,10 @@
 import { MarkdownString } from 'vscode';
-import { EditorCommands } from '../commands';
-import { FileTypes } from '../fileTypes';
-import { Deployment } from '../kubernetes/deployment';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { createMarkdownTable } from '../utils/stringUtils';
+import { EditorCommands } from '../../commands';
+import { FileTypes } from '../../fileTypes';
+import { Deployment } from '../../kubernetes/deployment';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
+import { createMarkdownTable } from '../../utils/stringUtils';
 import { TreeNode } from './treeNode';
 import { NodeContext } from './nodeContext';
 

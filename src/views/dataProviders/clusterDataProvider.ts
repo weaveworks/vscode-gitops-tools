@@ -1,8 +1,8 @@
 import { ExtensionContext } from 'vscode';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { DataProvider } from './dataProvider';
-import { ClusterNode } from '../clusterNode';
-import { ClusterDeploymentNode } from '../clusterDeploymentNode';
+import { ClusterNode } from '../nodes/clusterNode';
+import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { statusBar } from '../../statusBar';
 
 /**

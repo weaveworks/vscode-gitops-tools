@@ -1,8 +1,8 @@
 import { MarkdownString } from 'vscode';
-import { Bucket } from '../kubernetes/bucket';
-import { GitRepository } from '../kubernetes/gitRepository';
-import { HelmRepository } from '../kubernetes/helmRepository';
-import { createMarkdownTable } from '../utils/stringUtils';
+import { Bucket } from '../../kubernetes/bucket';
+import { GitRepository } from '../../kubernetes/gitRepository';
+import { HelmRepository } from '../../kubernetes/helmRepository';
+import { createMarkdownTable } from '../../utils/stringUtils';
 import { TreeNode } from './treeNode';
 
 /**

@@ -1,8 +1,8 @@
-import { EditorCommands } from '../commands';
-import { FileTypes } from '../fileTypes';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { HelmRelease } from '../kubernetes/helmRelease';
+import { EditorCommands } from '../../commands';
+import { FileTypes } from '../../fileTypes';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
+import { HelmRelease } from '../../kubernetes/helmRelease';
 import { ApplicationNode } from './applicationNode';
 import { NodeLabels } from './nodeLabels';
 import { NodeContext } from './nodeContext';

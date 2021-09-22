@@ -1,12 +1,12 @@
-import { EditorCommands } from '../commands';
-import { FileTypes } from '../fileTypes';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { HelmRepository } from '../kubernetes/helmRepository';
+import { EditorCommands } from '../../commands';
+import { FileTypes } from '../../fileTypes';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
+import { HelmRepository } from '../../kubernetes/helmRepository';
 import { SourceNode } from './sourceNode';
 import { NodeLabels } from './nodeLabels';
 import { NodeContext } from './nodeContext';
-import { shortenRevision } from '../utils/stringUtils';
+import { shortenRevision } from '../../utils/stringUtils';
 
 /**
  * Defines HelmRepository tree view item for display in GitOps Sources tree view.
