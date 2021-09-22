@@ -7,7 +7,7 @@ import { ViewCommands } from '../commands';
 import { DocumentationLinks } from './documentationConfig';
 import { Link } from './link';
 import { TreeViewDataProvider } from './treeViewDataProvider';
-import { TreeViewItem } from './treeNode';
+import { TreeNode } from './treeNode';
 
 export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
 
@@ -15,15 +15,15 @@ export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
    * Creates documentation tree view from documenation links config.
    * @returns Documentation tree view items to display.
    */
-  buildTree(): Promise<TreeViewItem[]> {
-    const treeNodes: Array<TreeViewItem> = [];
+  buildTree(): Promise<TreeNode[]> {
+    const treeNodes: Array<TreeNode> = [];
     DocumentationLinks.forEach(link => {
-      let treeNode = this.createLinkTreeViewItem(link, false); // no icon
+      let treeNode = this.createLinkNode(link, false); // no icon
       treeNode.collapsibleState = TreeItemCollapsibleState.Expanded;
       treeNodes.push(treeNode);
       // add doc section links
       link.links?.forEach(childLink => {
-        let childNode: TreeViewItem = this.createLinkTreeViewItem(childLink);
+        let childNode: TreeNode = this.createLinkNode(childLink);
         childNode.parent = treeNode;
         treeNode.addChild(childNode);
       });
@@ -37,18 +37,18 @@ export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
    * @param showLinkIcon Optionally set link node icon.
    * @returns Link tree view item.
    */
-  private createLinkTreeViewItem(link: Link, showLinkIcon = true): TreeViewItem {
+  private createLinkNode(link: Link, showLinkIcon = true): TreeNode {
     let args: Array<Uri> = [];
     args.push(Uri.parse(link.url));
-    let treeViewItem = new TreeViewItem({
+    let linkNode = new TreeNode({
       label: link.title,
       tooltip: link.url,
       commandString: ViewCommands.Open,
       args
     });
     if (showLinkIcon) {
-      treeViewItem.setIcon(new ThemeIcon('link-external'));
+      linkNode.setIcon(new ThemeIcon('link-external'));
     }
-    return treeViewItem;
+    return linkNode;
   }
 }

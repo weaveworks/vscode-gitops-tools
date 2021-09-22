@@ -3,12 +3,12 @@ import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRepository } from '../kubernetes/helmRepository';
 import { createMarkdownTable } from '../utils/stringUtils';
-import { TreeViewItem } from './treeNode';
+import { TreeNode } from './treeNode';
 
 /**
  * Base class for all the Source tree view items.
  */
- export class SourceTreeViewItem extends TreeViewItem {
+ export class SourceNode extends TreeNode {
 
 	/**
 	 * Creates markdwon string for Source tree view item tooltip.

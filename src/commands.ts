@@ -7,9 +7,9 @@ import {
 import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
-import { HelmReleaseTreeViewItem, KustomizationTreeViewItem } from './views/applicationTreeViewDataProvider';
-import { ClusterTreeViewItem } from './views/clusterTreeViewDataProvider';
-import { BucketTreeViewItem, GitRepositoryTreeViewItem, HelmRepositoryTreeViewItem } from './views/sourceTreeViewDataProvider';
+import { HelmReleaseNode, KustomizationNode } from './views/applicationTreeViewDataProvider';
+import { ClusterNode } from './views/clusterTreeViewDataProvider';
+import { BucketNode, GitRepositoryNode, HelmRepositoryNode } from './views/sourceTreeViewDataProvider';
 import {
 	refreshApplicationTreeView,
 	refreshClusterTreeView,
@@ -79,10 +79,10 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(FluxCommands.ReconcileSource, reconcileSource);
 	registerCommand(FluxCommands.ReconcileApplication, reconcileApplication);
 
-	registerCommand(FluxCommands.EnableGitOps, (clusterTreeItem: ClusterTreeViewItem) => {
+	registerCommand(FluxCommands.EnableGitOps, (clusterTreeItem: ClusterNode) => {
 		enableDisableGitOps(clusterTreeItem, true);
 	});
-	registerCommand(FluxCommands.DisableGitOps, (clusterTreeItem: ClusterTreeViewItem) => {
+	registerCommand(FluxCommands.DisableGitOps, (clusterTreeItem: ClusterNode) => {
 		enableDisableGitOps(clusterTreeItem, false);
 	});
 
@@ -142,7 +142,7 @@ export async function setKubernetesClusterContext(contextName: string) {
  * @param clusterTreeItem target cluster tree view item
  * @param enable Specifies if function should install or uninstall
  */
-export async function enableDisableGitOps(clusterTreeItem: ClusterTreeViewItem, enable: boolean) {
+export async function enableDisableGitOps(clusterTreeItem: ClusterNode, enable: boolean) {
 	// Switch current context if needed
 	const setContextResult = await kubernetesTools.setCurrentContext(clusterTreeItem.name);
 	if (!setContextResult) {
@@ -158,7 +158,7 @@ export async function enableDisableGitOps(clusterTreeItem: ClusterTreeViewItem, 
  * Invoke flux reconcile of a specific source.
  * @param source Target source tree view item.
  */
-export async function reconcileSource(source: GitRepositoryTreeViewItem | HelmRepositoryTreeViewItem | BucketTreeViewItem) {
+export async function reconcileSource(source: GitRepositoryNode | HelmRepositoryNode | BucketNode) {
 	/**
 	 * Accepted source names in flux: `git`, `helm`, `bucket`.
 	 * Can be checked with: `flux reconcile source --help`
@@ -179,7 +179,7 @@ export async function reconcileSource(source: GitRepositoryTreeViewItem | HelmRe
  * Invoke flux reconcile of a specific application.
  * @param application Target application tree view item.
  */
-export async function reconcileApplication(application: KustomizationTreeViewItem | HelmReleaseTreeViewItem) {
+export async function reconcileApplication(application: KustomizationNode | HelmReleaseNode) {
 	/**
 	 * Accepted application names in flux: `kustomization`, `helmrelease`.
 	 * Can be checked with: `flux reconcile --help`

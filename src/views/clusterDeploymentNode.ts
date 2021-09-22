@@ -5,13 +5,13 @@ import { Deployment } from '../kubernetes/deployment';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../utils/stringUtils';
-import { TreeViewItem } from './treeNode';
-import { TreeViewItemContext } from './treeViewItemContext';
+import { TreeNode } from './treeNode';
+import { NodeContext } from './treeViewItemContext';
 
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.
  */
-export class ClusterDeploymentTreeViewItem extends TreeViewItem {
+export class ClusterDeploymentNode extends TreeNode {
 	constructor(deployment: Deployment) {
 		super({
 			label: deployment.metadata.name || '',
@@ -21,7 +21,7 @@ export class ClusterDeploymentTreeViewItem extends TreeViewItem {
 		this.label = `${deployment.metadata.name} ${this.getFluxControllerVersion(deployment)}`;
 
 		// set context type value for controller commands
-		this.contextValue = TreeViewItemContext.Deployment;
+		this.contextValue = NodeContext.Deployment;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(deployment);

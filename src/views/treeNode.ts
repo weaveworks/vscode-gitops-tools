@@ -9,9 +9,9 @@ import {
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
-export class TreeViewItem extends TreeItem {
-  parent: TreeViewItem | undefined;
-  children: TreeViewItem[] = [];
+export class TreeNode extends TreeItem {
+  parent: TreeNode | undefined;
+  children: TreeNode[] = [];
 
 	/**
 	 * Creates new tree view item.
@@ -70,7 +70,7 @@ export class TreeViewItem extends TreeItem {
 	 * @param child Child tree view item to add.
 	 * @returns Updated tree view itme with added child.
 	 */
-  addChild(child: TreeViewItem) {
+  addChild(child: TreeNode) {
     this.children.push(child);
     if (this.children.length) {
 			// update collapse/expand state

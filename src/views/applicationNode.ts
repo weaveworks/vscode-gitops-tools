@@ -2,12 +2,12 @@ import { MarkdownString } from 'vscode';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { Kustomize } from '../kubernetes/kustomize';
 import { createMarkdownTable } from '../utils/stringUtils';
-import { TreeViewItem } from './treeNode';
+import { TreeNode } from './treeNode';
 
 /**
  * Base class for all Application tree view items.
  */
-export class ApplicationTreeViewItem extends TreeViewItem {
+export class ApplicationNode extends TreeNode {
 
 	/**
 	 * Creates markdwon string for Application tree view item tooltip.

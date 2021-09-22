@@ -2,7 +2,7 @@
 /**
  * GitOps tree view item context values.
  */
- export const enum TreeViewItemContext {
+ export const enum NodeContext {
 	// Cluster tree view
 	Cluster = 'cluster',
 	ClusterFlux = 'clusterFlux',

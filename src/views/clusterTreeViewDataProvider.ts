@@ -10,9 +10,9 @@ import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
-import { TreeViewItem } from './treeNode';
-import { TreeViewItemContext } from './treeViewItemContext';
-import { ClusterDeploymentTreeViewItem } from './clusterDeploymentNode';
+import { TreeNode } from './treeNode';
+import { NodeContext } from './treeViewItemContext';
+import { ClusterDeploymentNode } from './clusterDeploymentNode';
 import { statusBar } from '../statusBar';
 import { createMarkdownTable } from '../utils/stringUtils';
 
@@ -30,28 +30,28 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
    * Creates Clusters tree view items from local kubernetes config.
    * @returns Cluster tree view items to display.
    */
-  async buildTree(): Promise<ClusterTreeViewItem[]> {
+  async buildTree(): Promise<ClusterNode[]> {
 		// load configured kubernetes clusters
     const clusters = await kubernetesTools.getClusters();
     if (!clusters) {
       return [];
     }
-    const treeItems: ClusterTreeViewItem[] = [];
+    const treeItems: ClusterNode[] = [];
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
     for (const cluster of clusters) {
-			const clusterTreeViewItem = new ClusterTreeViewItem(cluster);
+			const clusterNode = new ClusterNode(cluster);
 			if (cluster.name === currentContext) {
-				clusterTreeViewItem.makeCollapsible();
+				clusterNode.makeCollapsible();
 				// load flux system deployments
 				const fluxDeployments = await kubernetesTools.getFluxDeployments();
 				if (fluxDeployments) {
-					clusterTreeViewItem.expand();
+					clusterNode.expand();
 					for (const deployment of fluxDeployments.items) {
-						clusterTreeViewItem.addChild(new ClusterDeploymentTreeViewItem(deployment));
+						clusterNode.addChild(new ClusterDeploymentNode(deployment));
 					}
 				}
 			}
-			treeItems.push(clusterTreeViewItem);
+			treeItems.push(clusterNode);
     }
 
 		// Do not wait for context and icons (can take a few seconds)
@@ -66,7 +66,7 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
 	 * after tree view items become visible.
 	 * @param treeItems All cluster tree items.
 	 */
-	async updateContextAndIcons(treeItems: ClusterTreeViewItem[]) {
+	async updateContextAndIcons(treeItems: ClusterNode[]) {
 		for (const treeItem of treeItems) {
 			await treeItem.setContext();
 			this.refresh(treeItem);
@@ -78,7 +78,7 @@ export class ClusterTreeViewDataProvider extends TreeViewDataProvider {
  * Defines Cluster tree view item for displaying
  * configured kubernetes clusters in GitOps Clusters tree view.
  */
-export class ClusterTreeViewItem extends TreeViewItem {
+export class ClusterNode extends TreeNode {
 	/**
 	 * Cluster name
 	 */
@@ -125,10 +125,10 @@ export class ClusterTreeViewItem extends TreeViewItem {
 	async setContext() {
 		this.isFlux = (await kubernetesTools.isFluxInstalled(this.name)) || false;
 		if (this.isFlux) {
-			this.contextValue = TreeViewItemContext.ClusterFlux;
+			this.contextValue = NodeContext.ClusterFlux;
 			this.setIcon(new ThemeIcon('pass-filled', new ThemeColor('terminal.ansiGreen')));
 		} else {
-			this.contextValue = TreeViewItemContext.Cluster;
+			this.contextValue = NodeContext.Cluster;
 		}
 	}
 

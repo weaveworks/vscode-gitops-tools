@@ -4,7 +4,7 @@ import {
   TreeDataProvider,
   TreeItem
 } from 'vscode';
-import { TreeViewItem } from './treeNode';
+import { TreeNode } from './treeNode';
 
 /**
  * Defines tree view data provider base class for all GitOps tree views.
@@ -38,7 +38,7 @@ export class TreeViewDataProvider implements TreeDataProvider<TreeItem> {
 	 * @returns Parent tree item or null for the top level nodes.
 	 */
   public getParent(element: TreeItem): TreeItem | null {
-    if (element instanceof TreeViewItem && element.parent) {
+    if (element instanceof TreeNode && element.parent) {
       return element.parent;
     }
     return null;
@@ -55,7 +55,7 @@ export class TreeViewDataProvider implements TreeDataProvider<TreeItem> {
       this.treeItems = await this.buildTree();
     }
 
-    if (element instanceof TreeViewItem) {
+    if (element instanceof TreeNode) {
       return element.children;
     }
 
@@ -71,7 +71,7 @@ export class TreeViewDataProvider implements TreeDataProvider<TreeItem> {
 	 * Creates initial tree view items collection.
 	 * @returns
 	 */
-  buildTree(): Promise<TreeViewItem[]> {
+  buildTree(): Promise<TreeNode[]> {
     return Promise.resolve([]);
   }
 }

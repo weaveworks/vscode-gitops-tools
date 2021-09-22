@@ -6,9 +6,9 @@ import { HelmRelease } from '../kubernetes/helmRelease';
 import { Kustomize } from '../kubernetes/kustomize';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
-import { TreeViewItemContext } from './treeViewItemContext';
-import { TreeViewItemLabels } from './treeViewItemLabels';
-import { ApplicationTreeViewItem } from './applicationNode';
+import { NodeContext } from './treeViewItemContext';
+import { NodeLabels } from './treeViewItemLabels';
+import { ApplicationNode } from './applicationNode';
 
 /**
  * Defines Applications data provider for loading Kustomizations
@@ -23,14 +23,14 @@ export class ApplicationTreeViewDataProvider extends TreeViewDataProvider {
    * Creates Application tree view items for the currently selected kubernetes cluster.
    * @returns Application tree view items to display.
    */
-  async buildTree(): Promise<ApplicationTreeViewItem[]> {
-		const treeItems: ApplicationTreeViewItem[] = [];
+  async buildTree(): Promise<ApplicationNode[]> {
+		const treeItems: ApplicationNode[] = [];
 
 		// load application kustomizations
     const kustomizations = await kubernetesTools.getKustomizations();
     if (kustomizations) {
 			for (const kustomizeApplication of kustomizations.items) {
-				treeItems.push(new KustomizationTreeViewItem(kustomizeApplication));
+				treeItems.push(new KustomizationNode(kustomizeApplication));
 			}
     }
 
@@ -38,7 +38,7 @@ export class ApplicationTreeViewDataProvider extends TreeViewDataProvider {
 		const helmReleases = await kubernetesTools.getHelmReleases();
 		if (helmReleases) {
 			for (const helmRelease of helmReleases.items) {
-				treeItems.push(new HelmReleaseTreeViewItem(helmRelease));
+				treeItems.push(new HelmReleaseNode(helmRelease));
 			}
 		}
     return treeItems;
@@ -48,7 +48,7 @@ export class ApplicationTreeViewDataProvider extends TreeViewDataProvider {
 /**
  * Defines Kustomization tree view item for display in GitOps Application tree view.
  */
-export class KustomizationTreeViewItem extends ApplicationTreeViewItem {
+export class KustomizationNode extends ApplicationNode {
 
 	/**
 	 * All of the kubernetes resource fetched data.
@@ -57,13 +57,13 @@ export class KustomizationTreeViewItem extends ApplicationTreeViewItem {
 
 	constructor(kustomization: Kustomize) {
 		super({
-			label: `${TreeViewItemLabels.Kustomization}: ${kustomization.metadata?.name}`,
+			label: `${NodeLabels.Kustomization}: ${kustomization.metadata?.name}`,
 		});
 
 		this.resource = kustomization;
 
 		// set context type value for kustomization commands
-		this.contextValue = TreeViewItemContext.Kustomization;
+		this.contextValue = NodeContext.Kustomization;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(kustomization);
@@ -86,7 +86,7 @@ export class KustomizationTreeViewItem extends ApplicationTreeViewItem {
 /**
  * Defines Helm release tree view item for display in GitOps Applications tree view.
  */
-export class HelmReleaseTreeViewItem extends ApplicationTreeViewItem {
+export class HelmReleaseNode extends ApplicationNode {
 
 	/**
 	 * All of the kubernetes resource fetched data.
@@ -95,13 +95,13 @@ export class HelmReleaseTreeViewItem extends ApplicationTreeViewItem {
 
 	constructor(helmRelease: HelmRelease) {
 		super({
-			label: `${TreeViewItemLabels.HelmRelease}: ${helmRelease.metadata?.name}`,
+			label: `${NodeLabels.HelmRelease}: ${helmRelease.metadata?.name}`,
 		});
 
 		this.resource = helmRelease;
 
 		// set context type value for helm release commands
-		this.contextValue = TreeViewItemContext.HelmRelease;
+		this.contextValue = NodeContext.HelmRelease;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(helmRelease);
