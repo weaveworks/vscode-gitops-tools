@@ -10,9 +10,9 @@ import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
-import { TreeViewItem } from './treeViewItem';
+import { TreeViewItem } from './treeNode';
 import { TreeViewItemContext } from './treeViewItemContext';
-import { ClusterDeploymentTreeViewItem } from './clusterDeploymentTreeViewItem';
+import { ClusterDeploymentTreeViewItem } from './clusterDeploymentNode';
 import { statusBar } from '../statusBar';
 import { createMarkdownTable } from '../utils/stringUtils';
 

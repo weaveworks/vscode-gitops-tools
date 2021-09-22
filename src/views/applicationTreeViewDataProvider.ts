@@ -8,7 +8,7 @@ import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItemContext } from './treeViewItemContext';
 import { TreeViewItemLabels } from './treeViewItemLabels';
-import { ApplicationTreeViewItem } from './applicationTreeViewItem';
+import { ApplicationTreeViewItem } from './applicationNode';
 
 /**
  * Defines Applications data provider for loading Kustomizations

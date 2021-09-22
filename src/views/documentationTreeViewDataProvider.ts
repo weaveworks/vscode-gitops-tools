@@ -7,7 +7,7 @@ import { ViewCommands } from '../commands';
 import { DocumentationLinks } from './documentationConfig';
 import { Link } from './link';
 import { TreeViewDataProvider } from './treeViewDataProvider';
-import { TreeViewItem } from './treeViewItem';
+import { TreeViewItem } from './treeNode';
 
 export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
 

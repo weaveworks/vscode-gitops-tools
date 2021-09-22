@@ -5,7 +5,7 @@ import { Deployment } from '../kubernetes/deployment';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../utils/stringUtils';
-import { TreeViewItem } from './treeViewItem';
+import { TreeViewItem } from './treeNode';
 import { TreeViewItemContext } from './treeViewItemContext';
 
 /**

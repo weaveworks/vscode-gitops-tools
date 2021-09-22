@@ -9,7 +9,7 @@ import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeViewItemContext } from './treeViewItemContext';
 import { TreeViewItemLabels } from './treeViewItemLabels';
-import { SourceTreeViewItem } from './sourceTreeViewItem';
+import { SourceTreeViewItem } from './sourceNode';
 import { shortenRevision } from '../utils/stringUtils';
 
 

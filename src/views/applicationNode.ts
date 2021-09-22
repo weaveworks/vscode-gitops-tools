@@ -2,7 +2,7 @@ import { MarkdownString } from 'vscode';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { Kustomize } from '../kubernetes/kustomize';
 import { createMarkdownTable } from '../utils/stringUtils';
-import { TreeViewItem } from './treeViewItem';
+import { TreeViewItem } from './treeNode';
 
 /**
  * Base class for all Application tree view items.
