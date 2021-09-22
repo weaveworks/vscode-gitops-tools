@@ -1,9 +1,9 @@
 import { ExtensionContext } from 'vscode';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { DataProvider } from './dataProvider';
-import { ApplicationNode } from './applicationNode';
-import { KustomizationNode } from './kustomizationNode';
-import { HelmReleaseNode } from './helmReleaseNode';
+import { ApplicationNode } from '../applicationNode';
+import { KustomizationNode } from '../kustomizationNode';
+import { HelmReleaseNode } from '../helmReleaseNode';
 
 /**
  * Defines Applications data provider for loading Kustomizations

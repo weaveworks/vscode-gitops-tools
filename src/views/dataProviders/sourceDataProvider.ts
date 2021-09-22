@@ -1,10 +1,10 @@
 import { ExtensionContext } from 'vscode';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { DataProvider } from './dataProvider';
-import { BucketNode } from './bucketNode';
-import { GitRepositoryNode } from './gitRepositoryNode';
-import { HelmRepositoryNode } from './helmRepositoryNode';
-import { SourceNode } from './sourceNode';
+import { BucketNode } from '../bucketNode';
+import { GitRepositoryNode } from '../gitRepositoryNode';
+import { HelmRepositoryNode } from '../helmRepositoryNode';
+import { SourceNode } from '../sourceNode';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories

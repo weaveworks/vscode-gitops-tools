@@ -7,11 +7,12 @@ import {
 import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
-import { HelmReleaseNode, KustomizationNode } from './views/applicationDataProvider';
 import { ClusterNode } from './views/clusterNode';
 import { BucketNode } from './views/bucketNode';
 import { GitRepositoryNode } from './views/gitRepositoryNode';
 import { HelmRepositoryNode } from './views/helmRepositoryNode';
+import { HelmReleaseNode } from './views/helmReleaseNode';
+import { KustomizationNode } from './views/kustomizationNode';
 import {
 	refreshApplicationTreeView,
 	refreshClusterTreeView,

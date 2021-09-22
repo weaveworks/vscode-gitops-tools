@@ -1,9 +1,9 @@
 import { ExtensionContext } from 'vscode';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { DataProvider } from './dataProvider';
-import { ClusterNode } from './clusterNode';
-import { ClusterDeploymentNode } from './clusterDeploymentNode';
-import { statusBar } from '../statusBar';
+import { ClusterNode } from '../clusterNode';
+import { ClusterDeploymentNode } from '../clusterDeploymentNode';
+import { statusBar } from '../../statusBar';
 
 /**
  * Defines Clusters data provider for loading configured kubernetes clusters

@@ -3,11 +3,11 @@ import {
   TreeItemCollapsibleState,
   Uri
 } from 'vscode';
-import { ViewCommands } from '../commands';
-import { DocumentationLinks } from './documentationConfig';
-import { Link } from './link';
+import { ViewCommands } from '../../commands';
+import { DocumentationLinks } from '../documentationConfig';
+import { Link } from '../link';
 import { DataProvider } from './dataProvider';
-import { TreeNode } from './treeNode';
+import { TreeNode } from '../treeNode';
 
 export class DocumentationDataProvider extends DataProvider {
 

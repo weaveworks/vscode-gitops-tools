@@ -4,7 +4,7 @@ import {
   TreeDataProvider,
   TreeItem
 } from 'vscode';
-import { TreeNode } from './treeNode';
+import { TreeNode } from '../treeNode';
 
 /**
  * Defines tree view data provider base class for all GitOps tree views.
