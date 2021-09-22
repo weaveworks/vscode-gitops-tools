@@ -5,7 +5,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { Kustomize } from '../kubernetes/kustomize';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { TreeViewDataProvider } from './treeViewDataProvider';
+import { TreeViewDataProvider } from './dataProvider';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 import { ApplicationNode } from './applicationNode';

@@ -6,7 +6,7 @@ import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRepository } from '../kubernetes/helmRepository';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { TreeViewDataProvider } from './treeViewDataProvider';
+import { TreeViewDataProvider } from './dataProvider';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 import { SourceNode } from './sourceNode';

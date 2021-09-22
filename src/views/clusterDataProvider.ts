@@ -9,7 +9,7 @@ import { FileTypes } from '../fileTypes';
 import { Cluster } from '../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
-import { TreeViewDataProvider } from './treeViewDataProvider';
+import { TreeViewDataProvider } from './dataProvider';
 import { TreeNode } from './treeNode';
 import { NodeContext } from './nodeContext';
 import { ClusterDeploymentNode } from './clusterDeploymentNode';

@@ -4,10 +4,10 @@ import {
 	TreeView,
 	window
 } from 'vscode';
-import { ClusterTreeViewDataProvider } from './clusterTreeViewDataProvider';
-import { ApplicationTreeViewDataProvider } from './applicationTreeViewDataProvider';
-import { DocumentationTreeViewDataProvider } from './documentationTreeViewDataProvider';
-import { SourceTreeViewDataProvider } from './sourceTreeViewDataProvider';
+import { ClusterTreeViewDataProvider } from './clusterDataProvider';
+import { ApplicationTreeViewDataProvider } from './applicationDataProvider';
+import { DocumentationTreeViewDataProvider } from './documentationDataProvider';
+import { SourceTreeViewDataProvider } from './sourceDataProvider';
 import { Views } from './views';
 
 let clusterTreeViewProvider: ClusterTreeViewDataProvider;

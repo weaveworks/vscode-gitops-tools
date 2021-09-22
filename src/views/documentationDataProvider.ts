@@ -6,7 +6,7 @@ import {
 import { ViewCommands } from '../commands';
 import { DocumentationLinks } from './documentationConfig';
 import { Link } from './link';
-import { TreeViewDataProvider } from './treeViewDataProvider';
+import { TreeViewDataProvider } from './dataProvider';
 import { TreeNode } from './treeNode';
 
 export class DocumentationTreeViewDataProvider extends TreeViewDataProvider {
