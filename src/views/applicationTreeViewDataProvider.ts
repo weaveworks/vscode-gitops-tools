@@ -6,8 +6,8 @@ import { HelmRelease } from '../kubernetes/helmRelease';
 import { Kustomize } from '../kubernetes/kustomize';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
-import { NodeContext } from './treeViewItemContext';
-import { NodeLabels } from './treeViewItemLabels';
+import { NodeContext } from './nodeContext';
+import { NodeLabels } from './nodeLabels';
 import { ApplicationNode } from './applicationNode';
 
 /**

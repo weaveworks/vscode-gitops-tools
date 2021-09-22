@@ -11,7 +11,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { TreeViewDataProvider } from './treeViewDataProvider';
 import { TreeNode } from './treeNode';
-import { NodeContext } from './treeViewItemContext';
+import { NodeContext } from './nodeContext';
 import { ClusterDeploymentNode } from './clusterDeploymentNode';
 import { statusBar } from '../statusBar';
 import { createMarkdownTable } from '../utils/stringUtils';

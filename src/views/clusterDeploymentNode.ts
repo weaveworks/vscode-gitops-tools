@@ -6,7 +6,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../utils/stringUtils';
 import { TreeNode } from './treeNode';
-import { NodeContext } from './treeViewItemContext';
+import { NodeContext } from './nodeContext';
 
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.
