@@ -8,7 +8,7 @@ import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { HelmReleaseNode, KustomizationNode } from './views/applicationDataProvider';
-import { ClusterNode } from './views/clusterDataProvider';
+import { ClusterNode } from './views/clusterNode';
 import { BucketNode, GitRepositoryNode, HelmRepositoryNode } from './views/sourceDataProvider';
 import {
 	refreshApplicationTreeView,
