@@ -15,11 +15,13 @@ GitOps extension provides integration with [Kubernetes Tools](https://marketplac
 
 # Features
 
-- Custom GitOps sidebar and integrated terminal
+- Access to custom GitOps sidebar and integrated `gitops` terminal
 - Clusters view with configured Kubernetes clusters from `kubectl`
-- [GitOps Toolkit components](https://fluxcd.io/docs/components/) and versions info for the Flux enabled clusters
+- Enable/Disable GitOps Cluster operations support
+- [GitOps Toolkit components](https://fluxcd.io/docs/components/) and versions info for the GitOps enabled clusters
 - Sources view with Git/Helm Repositories and Buckets info for the selected cluster
 - Applications view with Kustomizations and Helm Releases for the selected cluster
+- Reconcile Sources and Applications deployments on demand
 - Rich Kubernetes Object info tooltips with quick overviews for the loaded Clusters, Sources, and Applications
 - Loading of full Kubernetes Object `.yaml` configs in VSCode Editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
 - Integrated [GitOps](https://www.weave.works/technologies/gitops/) Documentation view with links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics
