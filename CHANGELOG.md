@@ -2,6 +2,25 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.4.0 - [2021-09-23]
+
+- [#17](https://github.com/weaveworks/vscode-gitops-tools/issues/17)
+Enable GitOps for existing, not AKS, Kubernetes cluster
+- [#42](https://github.com/weaveworks/vscode-gitops-tools/issues/42)
+Allow instant reconciliation of any source
+- [#43](https://github.com/weaveworks/vscode-gitops-tools/issues/43)
+Allow instant reconciliation of any application
+- [#70](https://github.com/weaveworks/vscode-gitops-tools/issues/70)
+Add GitOps enabled Cluster indicator icons
+- [#73](https://github.com/weaveworks/vscode-gitops-tools/issues/73)
+Change title of Deployments tree view to Applications
+- [#75](https://github.com/weaveworks/vscode-gitops-tools/issues/75)
+Add Refresh to Sources and Applications tree view
+- [#76](https://github.com/weaveworks/vscode-gitops-tools/issues/76)
+Refactor tree view data providers and rename tree view items types to tree nodes to keep them short
+- [#79](https://github.com/weaveworks/vscode-gitops-tools/issues/79)
+Package Sprint 4 release
+
 # v0.3.0 - [2021-09-15]
 
 - [#36](https://github.com/weaveworks/vscode-gitops-tools/issues/36)
