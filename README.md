@@ -9,22 +9,22 @@
   <br />
 </h1>
 
-GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Applications in Visual Studio Code IDE.
+GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Application deployments in Visual Studio Code IDE.
 
 ![VSCode GitOps Tools](docs/images/vscode-gitops-tools.png)
 
 # Features
 
 - Access to custom GitOps sidebar and integrated `gitops` terminal
-- Clusters view with configured Kubernetes clusters from `kubectl`
+- View configured Kubernetes Clusters from `kubectl`
 - Enable/Disable GitOps Cluster operations support
-- [GitOps Toolkit components](https://fluxcd.io/docs/components/) and versions info for the GitOps enabled clusters
-- Sources view with Git/Helm Repositories and Buckets info for the selected cluster
-- Applications view with Kustomizations and Helm Releases for the selected cluster
-- Reconcile Sources and Applications deployments on demand
-- Rich Kubernetes Object info tooltips with quick overviews for the loaded Clusters, Sources, and Applications
-- Loading of full Kubernetes Object `.yaml` configs in VSCode Editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
-- Integrated [GitOps](https://www.weave.works/technologies/gitops/) Documentation view with links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics
+- View [GitOps Toolkit components](https://fluxcd.io/docs/components/) and versions info for the GitOps enabled clusters
+- View Git/Helm Repositories and Bucket Sources info for the selected cluster
+- View Application Kustomizations and Helm Releases for the selected cluster
+- Reconcile Sources and Application deployments on demand
+- Preview short Kubernetes Object info in rich markdown table tooltips on hover for the loaded Clusters, Sources, and Applications
+- Load Kubernetes Object manifest `.yaml` configs in vscode editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
+- Open [GitOps](https://www.weave.works/technologies/gitops/) Documentation links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics in your default web browser
 
 # Dependencies
 
