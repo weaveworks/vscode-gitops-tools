@@ -54,6 +54,12 @@ You can access GitOps tools check, CLI dependendency versions, Clusters, Sources
 
 ![VSCode GitOps Commands](docs/images/vscode-gitops-commands.png)
 
+# GitOps Feature Contributions
+
+GitOps extension contributes the following Commands, View Containers, Views, and Activation Events to VSCode IDE for working with GitOps Kubernetes clusters:
+
+![VSCode GitOps Features](docs/images/vscode-gitops-features.png)
+
 # Dev Build
 
 Use the following commands to build GitOps vscode extension locally for testing, debugging, and submitting pull requests (PRs):

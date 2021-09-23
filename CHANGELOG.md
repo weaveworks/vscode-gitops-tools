@@ -20,6 +20,8 @@ Add Refresh to Sources and Applications tree view
 Refactor tree view data providers and rename tree view items types to tree nodes to keep them short
 - [#79](https://github.com/weaveworks/vscode-gitops-tools/issues/79)
 Package Sprint 4 release
+- [#81](https://github.com/weaveworks/vscode-gitops-tools/issues/81)
+Add GitOps Feature Contributions section to docs
 
 # v0.3.0 - [2021-09-15]
 
