@@ -2,7 +2,7 @@
 	"name": "vscode-gitops-tools",
 	"displayName": "GitOps Tools",
 	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"publisher": "weaveworks",
 	"engines": {
 		"vscode": "^1.59.0"
@@ -247,6 +247,7 @@
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^8.2.3",
 		"@types/node": "14.x",
+		"@types/shelljs": "^0.8.9",
 		"@types/vscode": "^1.59.0",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
@@ -261,6 +262,7 @@
 	},
 	"dependencies": {
 		"@kubernetes/client-node": "^0.15.1",
+		"shelljs": "^0.8.4",
 		"vscode-kubernetes-tools-api": "^1.3.0"
 	}
 }
