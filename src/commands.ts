@@ -4,7 +4,7 @@ import {
 	Uri, window,
 	workspace
 } from 'vscode';
-import { runTerminalCommand } from './gitOps';
+import { runTerminalCommand } from './terminal';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { shell } from './shell';
