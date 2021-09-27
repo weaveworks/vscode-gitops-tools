@@ -5,7 +5,7 @@ import {
 
 export let outputChannel: OutputChannel;
 
-const outputChannelName: string = 'GitOps Output';
+const outputChannelName: string = 'GitOps';
 
 export async function sendToOutputChannel(message: string = '', addNewline: boolean = true, channel?: OutputChannel) : Promise<void> {
 	// create output channel
