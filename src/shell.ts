@@ -2,6 +2,7 @@ import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
 import { window, workspace } from 'vscode';
 import { sendToOutputChannel } from './output';
+import { statusBar } from './statusBar';
 
 // 🚧 WORK IN PROGRESS.
 
@@ -124,6 +125,7 @@ async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefine
  */
 async function execWithOutput(cmd: string) {
 	return new Promise<ShellResult>((resolve) => {
+		statusBar.show('GitOps: Running CLI command');
 		sendToOutputChannel(`> ${cmd}`);
 
 		const childProcess = shelljs.exec(cmd, { async: true });
@@ -138,6 +140,7 @@ async function execWithOutput(cmd: string) {
 			sendToOutputChannel(data, false);
 		});
 		childProcess.on('exit', function(code: number) {
+			statusBar.hide();
 			resolve({
 				code,
 				stdout,
