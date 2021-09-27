@@ -49,7 +49,8 @@ export enum KubectlCommands {
 /**
  * Flux commands.
  */
- export enum FluxCommands {
+export enum FluxCommands {
+  Check = 'gitops.flux.check',
 	CheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	EnableGitOps = 'gitops.flux.install',
 	DisableGitOps = 'gitops.flux.uninstall',
@@ -78,6 +79,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(ViewCommands.RefreshTreeViews, refreshTreeViews);
 	registerCommand(ViewCommands.RefreshSourceTreeView, refreshSourceTreeView);
 	registerCommand(ViewCommands.RefreshApplicationTreeView, refreshApplicationTreeView);
+	registerCommand(FluxCommands.Check, checkFlux);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(FluxCommands.ReconcileSource, reconcileSource);
 	registerCommand(FluxCommands.ReconcileApplication, reconcileApplication);
@@ -123,9 +125,16 @@ async function showKubectlVersion() {
 }
 
 /**
- * Runs Flux check --pre command in gitops terminal.
+ * Runs `flux check` command for selected cluster in gitops terminal.
  */
- async function checkFluxPrerequisites() {
+async function checkFlux(clusterNode: ClusterNode) {
+	runTerminalCommand(_context, TerminalCLICommands.Flux, `check --context ${clusterNode.name}`);
+}
+
+/**
+ * Runs `flux check --pre` command in gitops terminal.
+ */
+async function checkFluxPrerequisites() {
 	runTerminalCommand(_context, TerminalCLICommands.Flux, 'check --pre');
 }
 

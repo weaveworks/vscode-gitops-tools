@@ -33,6 +33,7 @@
 	},
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
+		"onCommand:gitops.flux.check",
 		"onCommand:gitops.flux.checkPrerequisites",
 		"onCommand:gitops.flux.install",
 		"onCommand:gitops.flux.uninstall",
@@ -53,6 +54,11 @@
 			{
 				"command": "gitops.kubectl.version",
 				"title": "Kubectl Version",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.flux.check",
+				"title": "Flux Check",
 				"category": "GitOps"
 			},
 			{
@@ -184,9 +190,8 @@
 			],
 			"view/item/context": [
 				{
-					"command": "gitops.editor.openResource",
-					"group": "inline",
-					"when": "view == gitops.views.clusters && viewItem == cluster"
+					"command": "gitops.flux.check",
+					"when": "view == gitops.views.clusters && viewItem =~ /^(cluster|clusterFlux)$/"
 				},
 				{
 					"command": "gitops.flux.install",
