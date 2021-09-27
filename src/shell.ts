@@ -124,6 +124,8 @@ async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefine
  */
 async function execWithOutput(cmd: string) {
 	return new Promise<ShellResult>((resolve) => {
+		sendToOutputChannel(`> ${cmd}`);
+
 		const childProcess = shelljs.exec(cmd, { async: true });
 		let stdout = '';
 		let stderr = '';
