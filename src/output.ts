@@ -7,7 +7,7 @@ export let outputChannel: OutputChannel;
 
 const outputChannelName: string = 'GitOps Output';
 
-export async function sendToOutputChannel(message: string = '', channel?: OutputChannel) : Promise<void> {
+export async function sendToOutputChannel(message: string = '', addNewline: boolean = true, channel?: OutputChannel) : Promise<void> {
 	// create output channel
 	if (!outputChannel) {
 		outputChannel = window.createOutputChannel(outputChannelName);
@@ -18,8 +18,8 @@ export async function sendToOutputChannel(message: string = '', channel?: Output
 
   // add output message
 	if (channel) {
-    channel.show(true);
-		if (!message.endsWith('\n')) {
+		channel.show(true);
+		if (addNewline && !message.endsWith('\n')) {
 			message = `${message} \n`;
 		}
 		channel.append(message);

@@ -7,11 +7,12 @@ import {
 import { runTerminalCommand } from './gitOps';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
-import { ClusterNode } from './views/nodes/clusterNode';
+import { shell } from './shell';
 import { BucketNode } from './views/nodes/bucketNode';
+import { ClusterNode } from './views/nodes/clusterNode';
 import { GitRepositoryNode } from './views/nodes/gitRepositoryNode';
-import { HelmRepositoryNode } from './views/nodes/helmRepositoryNode';
 import { HelmReleaseNode } from './views/nodes/helmReleaseNode';
+import { HelmRepositoryNode } from './views/nodes/helmRepositoryNode';
 import { KustomizationNode } from './views/nodes/kustomizationNode';
 import {
 	refreshApplicationTreeView,
@@ -161,9 +162,29 @@ export async function enableDisableGitOps(clusterTreeItem: ClusterNode, enable: 
 		window.showErrorMessage('Coundn\'t set current context');
 		return;
 	}
-	refreshClusterTreeView();
 
-	runTerminalCommand(_context, TerminalCLICommands.Flux, enable ? 'install' : 'uninstall');
+	// Refresh if context was changed
+	if (setContextResult.isChanged) {
+		refreshClusterTreeView();
+	}
+
+	// Prompt for confirmation when uninstalling
+	if (!enable) {
+		const confirmButton = 'Uninstall';
+		const confirm = await window.showWarningMessage(`Do you want to uninstall flux from "${clusterTreeItem.name}" cluster?`, {
+			modal: true,
+		}, confirmButton);
+		if (confirm !== confirmButton) {
+			return;
+		}
+	}
+
+	await shell.execWithOutput(`${TerminalCLICommands.Flux} ${enable ? 'install' : 'uninstall --silent'}`);
+
+	// Refresh now that flux is installed or uninstalled
+	setTimeout(() => {
+		refreshClusterTreeView();
+	}, 3000);
 }
 
 /**

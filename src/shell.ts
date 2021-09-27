@@ -95,23 +95,23 @@ function platform(): Platform {
     }
 }
 
-// function execOpts(): any {
-//     let env = process.env;
-//     if (isWindows()) {
-//         env = Object.assign({ }, env, { HOME: home() });
-//     }
-//     env = shellEnvironment(env);
-//     const opts = {
-//         cwd: workspace.rootPath,
-//         env: env,
-//         async: true
-//     };
-//     return opts;
-// }
+function execOpts(): any {
+    // let env = process.env;
+    // if (isWindows()) {
+    //     env = Object.assign({ }, env, { HOME: home() });
+    // }
+    // env = shellEnvironment(env);
+    const opts: shelljs.ExecOptions = {
+        // cwd: workspace.rootPath,
+        // env: env,
+        async: true,
+    };
+    return opts;
+}
 
 async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefined> {
     try {
-        return await execCore(cmd, /* execOpts() */ {}, null, stdin);// TODO: do we need execOpts()?
+        return await execCore(cmd, execOpts(), null, stdin);
     } catch (ex) {
         window.showErrorMessage(String(ex));
         return undefined;
@@ -120,17 +120,29 @@ async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefine
 
 /**
  * Execute command in cli and send the text to vscode output view.
+ * @param cmd CLI command string
  */
-async function execWithOutput(cmd: string, stdin?: string) {
-	const shellResult = await exec(cmd, stdin);
-
-	if (shellResult?.code === 0 && shellResult.stderr.length === 0) {
-		sendToOutputChannel(shellResult.stdout);
-	} else {
-		sendToOutputChannel(shellResult?.stderr);
-	}
-
-	return shellResult;
+async function execWithOutput(cmd: string) {
+	return new Promise<ShellResult>((resolve) => {
+		const childProcess = shelljs.exec(cmd, { async: true });
+		let stdout = '';
+		let stderr = '';
+		childProcess.stdout?.on('data', function(data) {
+			stdout += data;
+			sendToOutputChannel(data, false);
+		});
+		childProcess.stderr?.on('data', function(data) {
+			stderr += data;
+			sendToOutputChannel(data, false);
+		});
+		childProcess.on('exit', function(code: number) {
+			resolve({
+				code,
+				stdout,
+				stderr,
+			});
+		});
+	});
 }
 
 function execCore(cmd: string, opts: any, callback?: ((proc: ChildProcess) => void) | null, stdin?: string): Promise<ShellResult> {
