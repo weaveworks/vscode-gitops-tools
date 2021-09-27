@@ -58,7 +58,7 @@
 			},
 			{
 				"command": "gitops.flux.check",
-				"title": "Flux Check",
+				"title": "Show Cluster Info",
 				"category": "GitOps"
 			},
 			{
@@ -213,6 +213,10 @@
 			"commandPalette": [
 				{
 					"command": "gitops.editor.openResource",
+					"when": "never"
+				},
+				{
+					"command": "gitops.flux.check",
 					"when": "never"
 				},
 				{
