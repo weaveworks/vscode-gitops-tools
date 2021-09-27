@@ -1,16 +1,13 @@
-import {
-	MarkdownString,
-	ThemeColor,
-	ThemeIcon
-} from 'vscode';
+import * as path from 'path';
+import { MarkdownString } from 'vscode';
 import { KubectlCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { TreeNode } from './treeNode';
-import { NodeContext } from './nodeContext';
 import { createMarkdownTable } from '../../utils/stringUtils';
+import { NodeContext } from './nodeContext';
+import { TreeNode } from './treeNode';
 
 /**
  * Defines Cluster tree view item for displaying
@@ -49,7 +46,10 @@ import { createMarkdownTable } from '../../utils/stringUtils';
 			`${ResourceTypes.Namespace}/${cluster.name}`,
 			FileTypes.Yaml);
 
-		this.setIcon(new ThemeIcon('cloud'));
+		this.setIcon({
+			light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', 'cloud.svg'),// TODO: put path logic into base class
+			dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'cloud.svg'),// TODO: use context.asAbsolutePath()
+		});
 
 		// set current context command to change selected cluster
 		this.command = {
@@ -66,7 +66,10 @@ import { createMarkdownTable } from '../../utils/stringUtils';
 		this.isFlux = (await kubernetesTools.isFluxInstalled(this.name)) || false;
 		if (this.isFlux) {
 			this.contextValue = NodeContext.ClusterFlux;
-			this.setIcon(new ThemeIcon('pass-filled', new ThemeColor('terminal.ansiGreen')));
+			this.setIcon({
+				light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', 'cloud-gitops.svg'),
+				dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'cloud-gitops.svg'),
+			});
 		} else {
 			this.contextValue = NodeContext.Cluster;
 		}
