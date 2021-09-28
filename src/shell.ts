@@ -135,10 +135,12 @@ async function execWithOutput(cmd: string, revealOutputView: boolean = true) {
 		childProcess.stdout?.on('data', function(data) {
 			stdout += data;
 			sendToOutputChannel(data, false, false);
+			statusBar.show(data.split('\n')[0]);
 		});
 		childProcess.stderr?.on('data', function(data) {
 			stderr += data;
 			sendToOutputChannel(data, false, false);
+			statusBar.show(data.split('\n')[0]);
 		});
 		childProcess.on('exit', function(code: number) {
 			statusBar.hide();
