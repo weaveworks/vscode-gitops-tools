@@ -1,9 +1,13 @@
 import { ExtensionContext } from 'vscode';
+import {
+	ContextTypes,
+	setContext
+} from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { DataProvider } from './dataProvider';
 import { ApplicationNode } from '../nodes/applicationNode';
-import { KustomizationNode } from '../nodes/kustomizationNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
+import { KustomizationNode } from '../nodes/kustomizationNode';
+import { DataProvider } from './dataProvider';
 
 /**
  * Defines Applications data provider for loading Kustomizations
@@ -21,6 +25,8 @@ export class ApplicationDataProvider extends DataProvider {
   async buildTree(): Promise<ApplicationNode[]> {
 		const treeItems: ApplicationNode[] = [];
 
+		setContext(ContextTypes.LoadingApplications, true);
+
 		// load application kustomizations
     const kustomizations = await kubernetesTools.getKustomizations();
     if (kustomizations) {
@@ -36,6 +42,9 @@ export class ApplicationDataProvider extends DataProvider {
 				treeItems.push(new HelmReleaseNode(helmRelease));
 			}
 		}
+
+		setContext(ContextTypes.LoadingApplications, false);
+
     return treeItems;
   }
 }

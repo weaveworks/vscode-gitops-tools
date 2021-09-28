@@ -32,6 +32,7 @@ export class ClusterDataProvider extends DataProvider {
     for (const cluster of clusters) {
 			const clusterNode = new ClusterNode(cluster);
 			if (cluster.name === currentContext) {
+				clusterNode.isCurrent = true;
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 				// load flux system deployments

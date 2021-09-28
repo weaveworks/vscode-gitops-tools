@@ -147,8 +147,13 @@
 			},
 			{
 				"view": "gitops.views.sources",
+				"contents": "[Enable GitOps](command:gitops.flux.install)\n\nfor the selected Cluster to view Sources",
+				"when": "gitops:currentClusterFluxNotInstalled"
+			},
+			{
+				"view": "gitops.views.sources",
 				"contents": "Loading Sources ...",
-				"when": "!gitops:noClusterSelected"
+				"when": "gitops:loadingSources"
 			},
 			{
 				"view": "gitops.views.sources",
@@ -157,8 +162,13 @@
 			},
 			{
 				"view": "gitops.views.applications",
+				"contents": "[Enable GitOps](command:gitops.flux.install)\n\nfor the selected Cluster to view Applications",
+				"when": "gitops:currentClusterFluxNotInstalled"
+			},
+			{
+				"view": "gitops.views.applications",
 				"contents": "Loading Applications ...",
-				"when": "!gitops:noClusterSelected"
+				"when": "gitops:loadingApplications"
 			},
 			{
 				"view": "gitops.views.applications",

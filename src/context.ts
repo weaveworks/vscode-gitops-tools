@@ -6,18 +6,24 @@ import { ViewCommands } from './commands';
  */
 export const enum ContextTypes {
 	NoClusterSelected = 'gitops:noClusterSelected',
+	CurrentClusterFluxNotInstalled = 'gitops:currentClusterFluxNotInstalled',
+	LoadingSources = 'gitops:loadingSources',
+	LoadingApplications = 'gitops:loadingApplications',
 }
 
 /**
  * Mapping between context name and value.
- **/
+ */
 interface ContextValues {
 	[ContextTypes.NoClusterSelected]: boolean;
+	[ContextTypes.CurrentClusterFluxNotInstalled]: boolean;
+	[ContextTypes.LoadingSources]: boolean;
+	[ContextTypes.LoadingApplications]: boolean;
 }
 
 /**
  * GitOps context key.
- **/
+ */
 export type ContextKey = keyof ContextValues;
 
 /**

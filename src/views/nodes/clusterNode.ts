@@ -1,6 +1,10 @@
 import * as path from 'path';
 import { MarkdownString } from 'vscode';
 import { KubectlCommands } from '../../commands';
+import {
+	ContextTypes,
+	setContext
+} from '../../context';
 import { FileTypes } from '../../fileTypes';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
@@ -19,6 +23,11 @@ import { TreeNode } from './treeNode';
 	 * Cluster name
 	 */
 	name: string;
+
+	/**
+	 * Current/active cluster.
+	 */
+	isCurrent: boolean = false;
 
 	/**
 	 * Whether or not flux is installed on this cluster
@@ -64,6 +73,12 @@ import { TreeNode } from './treeNode';
 	 */
 	async setContext() {
 		this.isFlux = (await kubernetesTools.isFluxInstalled(this.name)) || false;
+
+		// Update vscode context for welcome view of other tree views
+		if (this.isCurrent) {
+			setContext(ContextTypes.CurrentClusterFluxNotInstalled, !this.isFlux);
+		}
+
 		if (this.isFlux) {
 			this.contextValue = NodeContext.ClusterFlux;
 			this.setIcon({

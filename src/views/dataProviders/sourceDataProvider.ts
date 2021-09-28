@@ -5,6 +5,7 @@ import { BucketNode } from '../nodes/bucketNode';
 import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
 import { SourceNode } from '../nodes/sourceNode';
+import { ContextTypes, setContext } from '../../context';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
@@ -21,6 +22,8 @@ export class SourceDataProvider extends DataProvider {
    */
 	async buildTree(): Promise<SourceNode[]> {
 		const treeItems: SourceNode[] = [];
+
+		setContext(ContextTypes.LoadingSources, true);
 
 		// load git repositories for the current cluster
 		const gitRepositories = await kubernetesTools.getGitRepositories();
@@ -45,6 +48,9 @@ export class SourceDataProvider extends DataProvider {
 				treeItems.push(new BucketNode(bucket));
 			}
 		}
+
+		setContext(ContextTypes.LoadingSources, false);
+
     return treeItems;
   }
 }

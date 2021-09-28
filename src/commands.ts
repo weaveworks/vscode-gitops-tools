@@ -151,31 +151,35 @@ export async function setKubernetesClusterContext(contextName: string) {
 }
 
 /**
- * Install or uninstall flux from the passed cluster.
+ * Install or uninstall flux from the passed or current cluster (if first argument is undefined)
  * @param clusterTreeItem target cluster tree view item
  * @param enable Specifies if function should install or uninstall
  */
-export async function enableDisableGitOps(clusterTreeItem: ClusterNode, enable: boolean) {
-	// Switch current context if needed
-	const setContextResult = await kubernetesTools.setCurrentContext(clusterTreeItem.name);
-	if (!setContextResult) {
-		window.showErrorMessage('Coundn\'t set current context');
-		return;
-	}
+export async function enableDisableGitOps(clusterTreeItem: ClusterNode | undefined, enable: boolean) {
+	if (clusterTreeItem) {
+		// Command was called from context menu (clusterTreeItem is defined)
 
-	// Refresh if context was changed
-	if (setContextResult.isChanged) {
-		refreshClusterTreeView();
-	}
-
-	// Prompt for confirmation when uninstalling
-	if (!enable) {
-		const confirmButton = 'Uninstall';
-		const confirm = await window.showWarningMessage(`Do you want to uninstall flux from "${clusterTreeItem.name}" cluster?`, {
-			modal: true,
-		}, confirmButton);
-		if (confirm !== confirmButton) {
+		// Switch current context if needed
+		const setContextResult = await kubernetesTools.setCurrentContext(clusterTreeItem.name);
+		if (!setContextResult) {
+			window.showErrorMessage('Coundn\'t set current context');
 			return;
+		}
+
+		// Refresh if context was changed
+		if (setContextResult.isChanged) {
+			refreshClusterTreeView();
+		}
+
+		// Prompt for confirmation when uninstalling
+		if (!enable) {
+			const confirmButton = 'Uninstall';
+			const confirm = await window.showWarningMessage(`Do you want to uninstall flux from "${clusterTreeItem.name}" cluster?`, {
+				modal: true,
+			}, confirmButton);
+			if (confirm !== confirmButton) {
+				return;
+			}
 		}
 	}
 
