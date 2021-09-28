@@ -28,7 +28,7 @@ interface KubectlVersionResult {
  * json format.
  */
 export async function getKubectlVersion(): Promise<KubectlVersionResult | undefined> {
-	const shellResult = await shell.execWithOutput('kubectl version -o json', false);
+	const shellResult = await shell.exec('kubectl version -o json');
 	if (!shellResult) {
 		return;
 	}
@@ -41,7 +41,7 @@ export async function getKubectlVersion(): Promise<KubectlVersionResult | undefi
  * Return flux version string.
  */
 export async function getFluxVersion() {
-	const shellResult = await shell.execWithOutput('flux --version', false);
+	const shellResult = await shell.exec('flux --version');
 	if (!shellResult) {
 		return;
 	}
