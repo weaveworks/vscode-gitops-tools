@@ -1,9 +1,11 @@
 import { ExtensionContext } from 'vscode';
+import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { DataProvider } from './dataProvider';
-import { ClusterNode } from '../nodes/clusterNode';
-import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { statusBar } from '../../statusBar';
+import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
+import { ClusterNode } from '../nodes/clusterNode';
+import { refreshClusterTreeView } from '../treeViews';
+import { DataProvider } from './dataProvider';
 
 /**
  * Defines Clusters data provider for loading configured kubernetes clusters
@@ -25,10 +27,12 @@ export class ClusterDataProvider extends DataProvider {
       return [];
     }
     const treeItems: ClusterNode[] = [];
+		let currentContextTreeItem: ClusterNode | undefined;
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
     for (const cluster of clusters) {
 			const clusterNode = new ClusterNode(cluster);
 			if (cluster.name === currentContext) {
+				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 				// load flux system deployments
 				const fluxDeployments = await kubernetesTools.getFluxDeployments();
@@ -45,6 +49,9 @@ export class ClusterDataProvider extends DataProvider {
 		// Do not wait for context and icons (can take a few seconds)
 		this.updateContextAndIcons(treeItems);
 
+		// Update async status of the deployments (flux commands take even longer)
+		this.updateDeploymentStatus(currentContextTreeItem);
+
 		statusBar.hide();
     return treeItems;
   }
@@ -58,6 +65,39 @@ export class ClusterDataProvider extends DataProvider {
 		for (const treeItem of treeItems) {
 			await treeItem.setContext();
 			this.refresh(treeItem);
+		}
+	}
+
+	/**
+	 * Update deployment status for flux controllers.
+	 * Get status from running flux commands instead of kubectl.
+	 */
+	async updateDeploymentStatus(clusterNode?: ClusterNode) {
+		if (!clusterNode) {
+			return;
+		}
+		const fluxCheckResult = await fluxTools.check();
+		if (!fluxCheckResult) {
+			return;
+		}
+
+		// Match controllers fetched with flux with controllers
+		// fetched with kubectl and update tree nodes.
+		for (const clusterController of (clusterNode.children as ClusterDeploymentNode[])) {
+			for (const controller of fluxCheckResult.controllers) {
+				const clusterControllerName = clusterController.resource.metadata.name?.trim();
+				const deploymentName = controller.name.trim();
+
+				if (clusterControllerName === deploymentName) {
+					clusterController.description = controller.status;
+					if (controller.success) {
+						clusterController.setStatus('success');
+					} else {
+						clusterController.setStatus('failure');
+					}
+				}
+			}
+			refreshClusterTreeView(clusterController);
 		}
 	}
 }

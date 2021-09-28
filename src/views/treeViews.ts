@@ -65,9 +65,11 @@ export function createTreeViews(extensionContext: ExtensionContext) {
 
 /**
  * Reloads configured clusters tree view via kubectl.
+ * When an argument is passed - only that tree item
+ * and its children are updated.
  */
-export function refreshClusterTreeView() {
-	clusterTreeViewProvider.refresh();
+export function refreshClusterTreeView(treeItem?: TreeItem) {
+	clusterTreeViewProvider.refresh(treeItem);
 }
 
 /**

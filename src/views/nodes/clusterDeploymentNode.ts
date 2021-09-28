@@ -16,13 +16,22 @@ import { TreeNode } from './treeNode';
  * Defines deployment tree view item for display in GitOps Clusters tree view.
  */
 export class ClusterDeploymentNode extends TreeNode {
+
+	/**
+	 * Cluster deployment kubernetes resource object
+	 */
+	resource: Deployment;
+
 	constructor(deployment: Deployment) {
 		super({
 			label: deployment.metadata.name || '',
-			description: `${deployment.status.readyReplicas}/${deployment.status.replicas}`,
 		});
 
-		this.label = `${deployment.metadata.name} ${this.getFluxControllerVersion(deployment)}`;
+		this.resource = deployment;
+
+		this.label = this.getImageName(deployment);
+
+		this.setIcon(new ThemeIcon('circle-large-outline'));
 
 		// set context type value for controller commands
 		this.contextValue = NodeContext.Deployment;
@@ -31,7 +40,7 @@ export class ClusterDeploymentNode extends TreeNode {
 		this.tooltip = this.getMarkdown(deployment);
 
 		// set resource Uri to open controller document in editor
-		this.resourceUri = kubernetesTools.getResourceUri(
+		const resourceUri = kubernetesTools.getResourceUri(
 			deployment.metadata?.namespace,
 			`${ResourceTypes.Deployment}/${deployment.metadata?.name}`,
 			FileTypes.Yaml
@@ -40,16 +49,9 @@ export class ClusterDeploymentNode extends TreeNode {
 		// set open resource in editor command
 		this.command = {
 			command: EditorCommands.OpenResource,
-			arguments: [this.resourceUri],
+			arguments: [resourceUri],
 			title: 'View Resource',
 		};
-
-		// change icons to visually indicate the state of deployment
-		if (deployment.status.readyReplicas === deployment.status.replicas) {
-			this.setStatus('ready');
-		} else {
-			this.setStatus('failed');
-		}
 	}
 
 	/**
@@ -70,23 +72,23 @@ export class ClusterDeploymentNode extends TreeNode {
 	}
 
 	/**
-	 * Get version of the flux controller
-	 * @param deployment Deployment kubernetes object
+	 * Return the name of the image of the container
+	 * @param deployment Flux deployment kubernetes object
 	 * @returns Version of the flux controller or an empty string
 	 */
-	getFluxControllerVersion(deployment: Deployment): string {
+	getImageName(deployment: Deployment): string {
 		const fluxControllerContainer = deployment.spec.template.spec?.containers?.find(container => /fluxcd.+controller.+/.test(container.image || ''));
-		return fluxControllerContainer?.image?.split(':')[1] || '';
+		return fluxControllerContainer?.image || '';
 	}
 
 	/**
 	 * Show status of deployment by changing the icon.
 	 * @param status Status of this deployment.
 	 */
-	setStatus(status: 'ready' | 'failed') {
-		if (status === 'ready') {
+	setStatus(status: 'success' | 'failure') {
+		if (status === 'success') {
 			this.setIcon(new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen')));
-		} else if (status === 'failed') {
+		} else if (status === 'failure') {
 			this.setIcon(new ThemeIcon('warning', new ThemeColor('editorWarning.foreground')));
 		}
 	}
