@@ -8,10 +8,7 @@ import {
 	registerCommands
 } from './commands';
 import { statusBar } from './statusBar';
-import {
-	promptToInstallFlux,
-	promptToInstallKubectl
-} from './install';
+import { promptToInstallFlux } from './install';
 
 /**
  * Activates GitOps extension.
@@ -28,9 +25,6 @@ export function activate(context: ExtensionContext) {
 
 	// register gitops commands
 	registerCommands(context);
-
-	// show error notification if kubectl is not installed
-	promptToInstallKubectl();
 
 	// show error notification if flux is not installed
 	promptToInstallFlux();

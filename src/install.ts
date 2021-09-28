@@ -51,22 +51,6 @@ export async function getFluxVersion() {
 }
 
 /**
- * Show notification with button to install kubectl
- * (only when kubectl was not found).
- */
-export async function promptToInstallKubectl() {
-	const kubectlVersion = await getKubectlVersion();
-
-	if (!kubectlVersion) {
-		const installButton = 'Install kubectl';
-		const confirm = await window.showErrorMessage('kubectl is not installed. It is required for GitOps extension.', installButton);
-		if (confirm === installButton) {
-			commands.executeCommand('vscode.open', Uri.parse('https://kubectl.docs.kubernetes.io/installation/kubectl/'));
-		}
-	}
-}
-
-/**
  * Show notification with button to install flux
  * (only when flux was not found).
  */
