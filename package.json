@@ -148,12 +148,12 @@
 			{
 				"view": "gitops.views.sources",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources",
-				"when": "gitops:currentClusterFluxNotInstalled"
+				"when": "gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected"
 			},
 			{
 				"view": "gitops.views.sources",
 				"contents": "Loading Sources ...",
-				"when": "gitops:loadingSources"
+				"when": "gitops:loadingSources && !gitops:noClusterSelected"
 			},
 			{
 				"view": "gitops.views.sources",
@@ -168,7 +168,7 @@
 			{
 				"view": "gitops.views.applications",
 				"contents": "Loading Applications ...",
-				"when": "gitops:loadingApplications"
+				"when": "gitops:loadingApplications && !gitops:noClusterSelected"
 			},
 			{
 				"view": "gitops.views.applications",
