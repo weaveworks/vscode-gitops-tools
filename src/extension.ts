@@ -5,10 +5,13 @@ import {
 import { createTreeViews } from './views/treeViews';
 import {
 	FluxCommands,
-	KubectlCommands,
 	registerCommands
 } from './commands';
 import { statusBar } from './statusBar';
+import {
+	promptToInstallFlux,
+	promptToInstallKubectl
+} from './install';
 
 /**
  * Activates GitOps extension.
@@ -26,8 +29,11 @@ export function activate(context: ExtensionContext) {
 	// register gitops commands
 	registerCommands(context);
 
-	// show kubectl version in gitops terminal
-	commands.executeCommand(KubectlCommands.Version);
+	// show error notification if kubectl is not installed
+	promptToInstallKubectl();
+
+	// show error notification if flux is not installed
+	promptToInstallFlux();
 
 	// run Flux prerequisites check
 	commands.executeCommand(FluxCommands.CheckPrerequisites);

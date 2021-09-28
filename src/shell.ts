@@ -35,7 +35,7 @@ export interface Shell {
     platform(): Platform;
     exec(cmd: string, stdin?: string): Promise<ShellResult | undefined>;
     execCore(cmd: string, opts: any, callback?: (proc: ChildProcess) => void, stdin?: string): Promise<ShellResult>;
-		execWithOutput(cmd: string, stdin?: string): Promise<ShellResult | undefined>;
+		execWithOutput(cmd: string, revealOutputView?: boolean): Promise<ShellResult | undefined>;
 		// fileUri(filePath: string): Uri;
 		// home(): string;
 		// combinePath(basePath: string, relativePath: string): string;
@@ -122,22 +122,23 @@ async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefine
 /**
  * Execute command in cli and send the text to vscode output view.
  * @param cmd CLI command string
+ * @param revealOutputView Whether or not to show output view.
  */
-async function execWithOutput(cmd: string) {
+async function execWithOutput(cmd: string, revealOutputView: boolean = true) {
 	return new Promise<ShellResult>((resolve) => {
 		statusBar.show('GitOps: Running CLI command');
-		sendToOutputChannel(`> ${cmd}`);
+		sendToOutputChannel(`> ${cmd}`, true, revealOutputView);
 
 		const childProcess = shelljs.exec(cmd, { async: true });
 		let stdout = '';
 		let stderr = '';
 		childProcess.stdout?.on('data', function(data) {
 			stdout += data;
-			sendToOutputChannel(data, false);
+			sendToOutputChannel(data, false, false);
 		});
 		childProcess.stderr?.on('data', function(data) {
 			stderr += data;
-			sendToOutputChannel(data, false);
+			sendToOutputChannel(data, false, false);
 		});
 		childProcess.on('exit', function(code: number) {
 			statusBar.hide();
