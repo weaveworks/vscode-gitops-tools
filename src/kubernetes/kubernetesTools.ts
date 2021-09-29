@@ -226,7 +226,6 @@ class KubernetesTools {
 			return;
 		}
 		const query = `get ${resourceKinds.join(',')} -l kustomize.toolkit.fluxcd.io/name=${kustomizeName} -n ${kustomizeNamespace} -o json`;
-		console.log(query);
 		const resourcesShellResult = await this.invokeKubectlCommand(query);
 		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
 			window.showErrorMessage(`Failed to get kustomization created resources: ${resourcesShellResult?.stderr}`);
