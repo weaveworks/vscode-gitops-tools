@@ -157,6 +157,11 @@
 			},
 			{
 				"view": "gitops.views.sources",
+				"contents": "No sources.",
+				"when": "!gitops:loadingSources && !gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected && gitops:noSources"
+			},
+			{
+				"view": "gitops.views.sources",
 				"contents": "Select GitOps Cluster to view Sources",
 				"when": "gitops:noClusterSelected"
 			},
@@ -169,6 +174,11 @@
 				"view": "gitops.views.applications",
 				"contents": "Loading Applications ...",
 				"when": "gitops:loadingApplications && !gitops:noClusterSelected"
+			},
+			{
+				"view": "gitops.views.applications",
+				"contents": "No applications.",
+				"when": "!gitops:loadingApplications && !gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected && gitops:noApplications"
 			},
 			{
 				"view": "gitops.views.applications",

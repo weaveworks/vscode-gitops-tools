@@ -9,6 +9,8 @@ export const enum ContextTypes {
 	CurrentClusterFluxNotInstalled = 'gitops:currentClusterFluxNotInstalled',
 	LoadingSources = 'gitops:loadingSources',
 	LoadingApplications = 'gitops:loadingApplications',
+	NoSources = 'gitops:noSources',
+	NoApplications = 'gitops:noApplications',
 }
 
 /**
@@ -19,6 +21,8 @@ interface ContextValues {
 	[ContextTypes.CurrentClusterFluxNotInstalled]: boolean;
 	[ContextTypes.LoadingSources]: boolean;
 	[ContextTypes.LoadingApplications]: boolean;
+	[ContextTypes.NoSources]: boolean;
+	[ContextTypes.NoApplications]: boolean;
 }
 
 /**

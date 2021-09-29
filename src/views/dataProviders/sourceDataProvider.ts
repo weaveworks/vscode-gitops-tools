@@ -50,6 +50,7 @@ export class SourceDataProvider extends DataProvider {
 		}
 
 		setContext(ContextTypes.LoadingSources, false);
+		setContext(ContextTypes.NoSources, treeItems.length === 0);
 
     return treeItems;
   }

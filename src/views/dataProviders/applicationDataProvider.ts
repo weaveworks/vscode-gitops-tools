@@ -44,6 +44,7 @@ export class ApplicationDataProvider extends DataProvider {
 		}
 
 		setContext(ContextTypes.LoadingApplications, false);
+		setContext(ContextTypes.NoApplications, treeItems.length === 0);
 
     return treeItems;
   }
