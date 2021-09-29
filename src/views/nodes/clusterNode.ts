@@ -50,7 +50,7 @@ import { TreeNode } from './treeNode';
 		this.tooltip = this.getMarkdown(cluster);
 
 		// set resource Uri to open cluster config in editor
-		this.resourceUri = kubernetesTools.getResourceUri(
+		const resourceUri = kubernetesTools.getResourceUri(
 			cluster.name,
 			`${ResourceTypes.Namespace}/${cluster.name}`,
 			FileTypes.Yaml);
@@ -63,7 +63,7 @@ import { TreeNode } from './treeNode';
 		// set current context command to change selected cluster
 		this.command = {
 			command: KubectlCommands.SetCurrentContext,
-			arguments: [this.name],
+			arguments: [resourceUri],
 			title: 'Set current context',
 		};
 	}

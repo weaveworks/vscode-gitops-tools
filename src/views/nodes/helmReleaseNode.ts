@@ -36,7 +36,7 @@ import { NodeContext } from './nodeContext';
 		this.tooltip = this.getMarkdown(helmRelease);
 
 		// set resource Uri to open helm release config document in editor
-		this.resourceUri = kubernetesTools.getResourceUri(
+		const resourceUri = kubernetesTools.getResourceUri(
 			helmRelease.metadata?.namespace,
 			`${ResourceTypes.HelmRelease}/${helmRelease.metadata?.name}`,
 			FileTypes.Yaml);
@@ -44,7 +44,7 @@ import { NodeContext } from './nodeContext';
 		// set open resource in editor command
 		this.command = {
 			command: EditorCommands.OpenResource,
-			arguments: [this.resourceUri],
+			arguments: [resourceUri],
 			title: 'View Resource',
 		};
 

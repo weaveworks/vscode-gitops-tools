@@ -38,7 +38,7 @@ import { shortenRevision } from '../../utils/stringUtils';
 		this.tooltip = this.getMarkdown(bucket);
 
 		// set resource Uri to open bucket config document in editor
-		this.resourceUri = kubernetesTools.getResourceUri(
+		const resourceUri = kubernetesTools.getResourceUri(
 			bucket.metadata?.namespace,
 			`${ResourceTypes.Bucket}/${bucket.metadata?.name}`,
 			FileTypes.Yaml);
@@ -46,7 +46,7 @@ import { shortenRevision } from '../../utils/stringUtils';
 		// set open resource in editor command
 		this.command = {
 			command: EditorCommands.OpenResource,
-			arguments: [this.resourceUri],
+			arguments: [resourceUri],
 			title: 'View Resource',
 		};
 	}

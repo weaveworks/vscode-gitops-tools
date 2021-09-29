@@ -38,7 +38,7 @@ export class HelmRepositoryNode extends SourceNode {
 		this.tooltip = this.getMarkdown(helmRepository);
 
 		// set resource Uri to open helm repository config document in editor
-		this.resourceUri = kubernetesTools.getResourceUri(
+		const resourceUri = kubernetesTools.getResourceUri(
 			helmRepository.metadata?.namespace,
 			`${ResourceTypes.HelmRepository}/${helmRepository.metadata?.name}`,
 			FileTypes.Yaml);
@@ -46,7 +46,7 @@ export class HelmRepositoryNode extends SourceNode {
 		// set open resource in editor command
 		this.command = {
 			command: EditorCommands.OpenResource,
-			arguments: [this.resourceUri],
+			arguments: [resourceUri],
 			title: 'View Resource',
 		};
 	}
