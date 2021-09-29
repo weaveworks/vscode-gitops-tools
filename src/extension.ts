@@ -18,7 +18,7 @@ export function activate(context: ExtensionContext) {
 
 	// initialize gitops status bar
 	context.subscriptions.push(statusBar.status);
-	statusBar.show('Initializing GitOps');
+	statusBar.show('Initializing GitOps');// TODO: should be inside the Cluster tree view, status bar is being stuck forever when Clusters view is not visible
 
 	// create gitops tree views
 	createTreeViews(context);

@@ -4,6 +4,7 @@ import {
 	setContext
 } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { ApplicationNode } from '../nodes/applicationNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
 import { KustomizationNode } from '../nodes/kustomizationNode';
@@ -48,4 +49,14 @@ export class ApplicationDataProvider extends DataProvider {
 
     return treeItems;
   }
+
+	async getChildren(treeItem?: KustomizationNode | HelmReleaseNode) {
+
+		if (treeItem instanceof KustomizationNode) {
+			const resources = await kubernetesTools.getChildrenOfKustomization(treeItem.resource.metadata.name || '', treeItem.resource.metadata.namespace || '');
+			return resources?.items.map(resource => new AnyResourceNode(resource)) || [];
+		}
+
+		return await this.buildTree();
+	}
 }

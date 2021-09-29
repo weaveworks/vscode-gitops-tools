@@ -47,5 +47,7 @@ import { NodeContext } from './nodeContext';
 			arguments: [this.resourceUri],
 			title: 'View Resource',
 		};
+
+		this.makeCollapsible();
 	}
 }

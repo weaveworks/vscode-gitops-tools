@@ -1,3 +1,4 @@
+import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node';
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { ContextTypes, setContext } from '../context';
@@ -197,6 +198,42 @@ class KubernetesTools {
 		}
 		const namespaces: NamespaceResult = parseJson(namespacesShellResult.stdout);
 		return namespaces.items.some(namespace => namespace.metadata.name === 'flux-system');
+	}
+
+	/**
+	 * Return all available kubernetes resource kinds.
+	 */
+	async getAvailableResourceKinds(): Promise<string[] | undefined> {
+		const kindsShellResult = await this.invokeKubectlCommand('api-resources --verbs=list -o name');
+		if (!kindsShellResult || kindsShellResult.stderr) {
+			console.warn(`Failed to get namespaces: ${kindsShellResult?.stderr}`);
+			return;
+		}
+		const kinds = kindsShellResult.stdout
+			.split('\n')
+			.filter(kind => kind.length);
+		return kinds;
+	}
+
+	/**
+	 * Return all kubernetes resources that were created by a kustomize.
+	 * @param kustomizeName name of the kustomize object
+	 * @param kustomizeNamespace namespace of the kustomize object
+	 */
+	async getChildrenOfKustomization(kustomizeName: string, kustomizeNamespace: string): Promise<KubernetesListObject<KubernetesObject> | undefined> {
+		const resourceKinds = await this.getAvailableResourceKinds();
+		if (!resourceKinds) {
+			return;
+		}
+		const query = `get ${resourceKinds.join(',')} -l kustomize.toolkit.fluxcd.io/name=${kustomizeName} -n ${kustomizeNamespace} -o json`;
+		console.log(query);
+		const resourcesShellResult = await this.invokeKubectlCommand(query);
+		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
+			window.showErrorMessage(`Failed to get kustomization created resources: ${resourcesShellResult?.stderr}`);
+			return undefined;
+		}
+
+		return parseJson(resourcesShellResult.stdout);
 	}
 
 	/**
