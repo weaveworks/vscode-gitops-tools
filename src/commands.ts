@@ -4,10 +4,10 @@ import {
 	Uri, window,
 	workspace
 } from 'vscode';
-import { runTerminalCommand } from './terminal';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { shell } from './shell';
+import { runTerminalCommand } from './terminal';
 import { BucketNode } from './views/nodes/bucketNode';
 import { ClusterNode } from './views/nodes/clusterNode';
 import { GitRepositoryNode } from './views/nodes/gitRepositoryNode';
@@ -170,17 +170,16 @@ export async function enableDisableGitOps(clusterTreeItem: ClusterNode | undefin
 		if (setContextResult.isChanged) {
 			refreshClusterTreeView();
 		}
+	}
 
-		// Prompt for confirmation when uninstalling
-		if (!enable) {
-			const confirmButton = 'Uninstall';
-			const confirm = await window.showWarningMessage(`Do you want to uninstall flux from "${clusterTreeItem.name}" cluster?`, {
-				modal: true,
-			}, confirmButton);
-			if (confirm !== confirmButton) {
-				return;
-			}
-		}
+	// Prompt for confirmation
+	const confirmButton = enable ? 'Install' : 'Uninstall';
+	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterTreeItem?.name || 'current'} cluster?`;
+	const confirm = await window.showWarningMessage(confirmationMessage, {
+		modal: true,
+	}, confirmButton);
+	if (confirm !== confirmButton) {
+		return;
 	}
 
 	await shell.execWithOutput(`${TerminalCLICommands.Flux} ${enable ? 'install' : 'uninstall --silent'}`);
