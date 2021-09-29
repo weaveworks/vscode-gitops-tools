@@ -1,3 +1,4 @@
+import { window } from 'vscode';
 import { shell } from '../shell';
 
 /**
@@ -43,9 +44,15 @@ class FluxTools {
 	 */
 	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[] } | undefined> {
 		const result = await shell.exec('flux check');
+
 		if (result?.code !== 0) {
+			const stderr = result?.stderr;
+			if (stderr) {
+				window.showErrorMessage(String(result?.stderr || ''));
+			}
 			return undefined;
 		}
+
 		const prerequisites: string[] = [];
 		const controllers: string[] = [];
 		let stage: 'prerequisites' | 'controllers' | '' = '';
