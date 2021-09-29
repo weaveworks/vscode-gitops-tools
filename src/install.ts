@@ -58,7 +58,7 @@ export async function promptToInstallFlux() {
 	const fluxVersion = await getFluxVersion();
 
 	if (!fluxVersion) {
-		const installButton = 'Installation page';
+		const installButton = 'Install Flux';
 		const confirm = await window.showErrorMessage('flux is not installed. It is required for GitOps extension.', installButton);
 		if (confirm === installButton) {
 			commands.executeCommand('vscode.open', Uri.parse('https://fluxcd.io/docs/installation/'));
