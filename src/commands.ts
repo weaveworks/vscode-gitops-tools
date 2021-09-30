@@ -208,7 +208,9 @@ export async function reconcileSource(source: GitRepositoryNode | HelmRepository
 		return;
 	}
 
-	runTerminalCommand(_context, TerminalCLICommands.Flux, `reconcile source ${sourceType} ${source.resource.metadata.name} -n ${source.resource.metadata.namespace}`);
+	await shell.execWithOutput(`${TerminalCLICommands.Flux} reconcile source ${sourceType} ${source.resource.metadata.name} -n ${source.resource.metadata.namespace}`);
+
+	refreshSourceTreeView();
 }
 
 /**
@@ -228,5 +230,7 @@ export async function reconcileApplication(application: KustomizationNode | Helm
 		return;
 	}
 
-	runTerminalCommand(_context, TerminalCLICommands.Flux, `reconcile ${applicationType} ${application.resource.metadata.name} -n ${application.resource.metadata.namespace}`);
+	await shell.execWithOutput(`${TerminalCLICommands.Flux} reconcile ${applicationType} ${application.resource.metadata.name} -n ${application.resource.metadata.namespace}`);
+
+	refreshApplicationTreeView();
 }

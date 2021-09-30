@@ -9,6 +9,7 @@ import { ApplicationDataProvider } from './dataProviders/applicationDataProvider
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { Views } from './views';
+import { TreeNode } from './nodes/treeNode';
 
 let clusterTreeViewProvider: ClusterDataProvider;
 let sourceTreeViewProvider: SourceDataProvider;
@@ -68,20 +69,20 @@ export function createTreeViews(extensionContext: ExtensionContext) {
  * When an argument is passed - only that tree item
  * and its children are updated.
  */
-export function refreshClusterTreeView(treeItem?: TreeItem) {
-	clusterTreeViewProvider.refresh(treeItem);
+export function refreshClusterTreeView(node?: TreeNode) {
+	clusterTreeViewProvider.refresh(node);
 }
 
 /**
  * Reloads sources tree view for the selected cluster.
  */
-export function refreshSourceTreeView() {
-	sourceTreeViewProvider.refresh();
+export function refreshSourceTreeView(node?: TreeNode) {
+	sourceTreeViewProvider.refresh(node);
 }
 
 /**
  * Reloads applications tree view for the selected cluster.
  */
-export function refreshApplicationTreeView() {
-	applicationTreeViewProvider.refresh();
+export function refreshApplicationTreeView(node?: TreeNode) {
+	applicationTreeViewProvider.refresh(node);
 }
