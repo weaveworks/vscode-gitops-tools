@@ -15,10 +15,12 @@ GitOps extension provides integration with [Kubernetes Tools](https://marketplac
 
 # Features
 
-- Access to custom GitOps sidebar and integrated `gitops` terminal
+- Access to custom GitOps sidebar
+- Use integrated `gitops` terminal
+- View GitOps Output panel with CLI command traces for diagnostics
 - View configured Kubernetes Clusters from `kubectl`
 - Enable/Disable GitOps Cluster operations support
-- View [GitOps Toolkit components](https://fluxcd.io/docs/components/) and versions info for the GitOps enabled clusters
+- View [GitOps Toolkit components](https://fluxcd.io/docs/components/), version info, and deployment status for the GitOps enabled clusters and Flux controllers
 - View Git/Helm Repositories and Bucket Sources info for the selected cluster
 - View Application Kustomizations and Helm Releases for the selected cluster
 - Reconcile Sources and Application deployments on demand
