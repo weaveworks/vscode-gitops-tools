@@ -94,13 +94,13 @@
 			},
 			{
 				"command": "gitops.views.refreshSourceTreeView",
-				"title": "Refresh Sources view",
+				"title": "Refresh Sources View",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
 			{
 				"command": "gitops.views.refreshApplicationTreeView",
-				"title": "Refresh Applications view",
+				"title": "Refresh Applications View",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
