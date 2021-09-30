@@ -1,6 +1,6 @@
 import {
-  OutputChannel,
-  window
+	OutputChannel,
+	window
 } from 'vscode';
 
 export let outputChannel: OutputChannel;
@@ -33,4 +33,8 @@ export async function sendToOutputChannel(
   else {
 		console.log(message);
 	}
+}
+
+export function showOutputChannel() {
+	outputChannel.show();
 }

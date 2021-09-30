@@ -109,6 +109,11 @@
 				"title": "View Config",
 				"category": "GitOps",
 				"icon": "$(symbol-reference)"
+			},
+			{
+				"command": "gitops.output.show",
+				"title": "Show Output",
+				"category": "GitOps"
 			}
 		],
 		"viewsContainers": {

@@ -6,6 +6,7 @@ import {
 } from 'vscode';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
+import { showOutputChannel } from './output';
 import { shell } from './shell';
 import { runTerminalCommand } from './terminal';
 import { BucketNode } from './views/nodes/bucketNode';
@@ -26,6 +27,10 @@ import {
  */
 export enum EditorCommands {
 	OpenResource = 'gitops.editor.openResource'
+}
+
+export const enum OutputCommands {
+	ShowOutputChannel = 'gitops.output.show',
 }
 
 /**
@@ -84,6 +89,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(FluxCommands.ReconcileSource, reconcileSource);
 	registerCommand(FluxCommands.ReconcileApplication, reconcileApplication);
+	registerCommand(OutputCommands.ShowOutputChannel, showOutputChannel);
 
 	registerCommand(FluxCommands.EnableGitOps, (clusterTreeItem: ClusterNode) => {
 		enableDisableGitOps(clusterTreeItem, true);

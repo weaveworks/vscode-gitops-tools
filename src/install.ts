@@ -1,8 +1,9 @@
 import {
-    commands,
-    Uri,
-    window
+	commands,
+	Uri,
+	window
 } from 'vscode';
+import { OutputCommands } from './commands';
 import { shell } from './shell';
 import { parseJson } from './utils/jsonUtils';
 
@@ -62,6 +63,22 @@ export async function promptToInstallFlux() {
 		const confirm = await window.showErrorMessage('flux is not installed. It is required for GitOps extension.', installButton);
 		if (confirm === installButton) {
 			commands.executeCommand('vscode.open', Uri.parse('https://fluxcd.io/docs/installation/'));
+		}
+	}
+}
+
+/**
+ * Show warning notification only in case the
+ * flux prerequisite check has failed.
+ */
+export async function checkPrerequisites() {
+	const prerequisiteShellResult = await shell.execWithOutput('flux check --pre', false);
+
+	if (prerequisiteShellResult?.code !== 0) {
+		const showOutput = 'Show Output';
+		const showOutputConfirm = await window.showWarningMessage('Flux prerequisites check failed.', showOutput);
+		if (showOutput === showOutputConfirm) {
+			commands.executeCommand(OutputCommands.ShowOutputChannel);
 		}
 	}
 }

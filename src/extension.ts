@@ -1,14 +1,8 @@
-import {
-	commands,
-	ExtensionContext
-} from 'vscode';
+import { ExtensionContext } from 'vscode';
 import { createTreeViews } from './views/treeViews';
-import {
-	FluxCommands,
-	registerCommands
-} from './commands';
+import { registerCommands } from './commands';
 import { statusBar } from './statusBar';
-import { promptToInstallFlux } from './install';
+import { checkPrerequisites, promptToInstallFlux } from './install';
 
 /**
  * Activates GitOps extension.
@@ -30,7 +24,7 @@ export function activate(context: ExtensionContext) {
 	promptToInstallFlux();
 
 	// run Flux prerequisites check
-	commands.executeCommand(FluxCommands.CheckPrerequisites);
+	checkPrerequisites();
 }
 
 export function deactivate() {}
