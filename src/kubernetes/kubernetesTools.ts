@@ -206,7 +206,7 @@ class KubernetesTools {
 	async getAvailableResourceKinds(): Promise<string[] | undefined> {
 		const kindsShellResult = await this.invokeKubectlCommand('api-resources --verbs=list -o name');
 		if (!kindsShellResult || kindsShellResult.stderr) {
-			console.warn(`Failed to get namespaces: ${kindsShellResult?.stderr}`);
+			console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
 			return;
 		}
 		const kinds = kindsShellResult.stdout
