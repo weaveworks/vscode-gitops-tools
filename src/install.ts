@@ -29,7 +29,7 @@ interface KubectlVersionResult {
  * json format.
  */
 export async function getKubectlVersion(): Promise<KubectlVersionResult | undefined> {
-	const shellResult = await shell.execWithOutput('kubectl version -o json', false);
+	const shellResult = await shell.exec('kubectl version -o json');
 	if (!shellResult) {
 		return;
 	}
