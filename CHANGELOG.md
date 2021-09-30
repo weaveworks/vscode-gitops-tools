@@ -2,6 +2,37 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.5.0 - [2021-09-30]
+
+- [#27](https://github.com/weaveworks/vscode-gitops-tools/issues/27)
+Add Install Flux CLI prompt info message
+- [#29](https://github.com/weaveworks/vscode-gitops-tools/issues/29)
+Check installed kubectl version on GitOps Terminal initialization and prompt for install
+- [#44](https://github.com/weaveworks/vscode-gitops-tools/issues/44)
+Show first level of objects created as children of an Application of type Kustomization
+- [#48](https://github.com/weaveworks/vscode-gitops-tools/issues/48)
+Add flux.ts pseudo-terminal for integrating Flux CLI commands
+- [#67](https://github.com/weaveworks/vscode-gitops-tools/issues/67)
+Finish Open Cluster info implementation on cluster node click
+- [#69](https://github.com/weaveworks/vscode-gitops-tools/issues/69)
+Prompt to Install GitOps in Sources and Applications tree views for the selected Cluster without GitOps Enabled
+- [#71](https://github.com/weaveworks/vscode-gitops-tools/issues/71)
+When flux install is complete, cluster list should auto-refresh
+- [#74](https://github.com/weaveworks/vscode-gitops-tools/issues/74)
+Add Cluster and Flux Controller deployment state icons
+- [#77](https://github.com/weaveworks/vscode-gitops-tools/issues/77)
+Create Flux command/status output parser
+- [#78](https://github.com/weaveworks/vscode-gitops-tools/issues/78)
+Use vscode cloud icon for cluster nodes
+- [#80](https://github.com/weaveworks/vscode-gitops-tools/issues/80)
+Change Refresh Sources and Applications command labels to match other focus view commands
+- [#88](https://github.com/weaveworks/vscode-gitops-tools/issues/88)
+Remove yaml icons from app and source tree nodes
+- [#89](https://github.com/weaveworks/vscode-gitops-tools/issues/89)
+Add Confirmation dialog when enabling gitops on a cluster
+- [#91](https://github.com/weaveworks/vscode-gitops-tools/issues/91)
+Package Sprint 5 release
+
 # v0.4.0 - [2021-09-23]
 
 - [#17](https://github.com/weaveworks/vscode-gitops-tools/issues/17)
