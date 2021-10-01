@@ -20,16 +20,16 @@ export class ClusterDataProvider extends DataProvider {
    * Creates Clusters tree view items from local kubernetes config.
    * @returns Cluster tree view items to display.
    */
-  async buildTree(): Promise<ClusterNode[]> {
+	async buildTree(): Promise<ClusterNode[]> {
 		// load configured kubernetes clusters
-    const clusters = await kubernetesTools.getClusters();
-    if (!clusters) {
-      return [];
-    }
-    const treeItems: ClusterNode[] = [];
+		const clusters = await kubernetesTools.getClusters();
+		if (!clusters) {
+			return [];
+		}
+		const treeItems: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
-    for (const cluster of clusters) {
+		for (const cluster of clusters) {
 			const clusterNode = new ClusterNode(cluster);
 			if (cluster.name === currentContext) {
 				clusterNode.isCurrent = true;
@@ -45,7 +45,7 @@ export class ClusterDataProvider extends DataProvider {
 				}
 			}
 			treeItems.push(clusterNode);
-    }
+		}
 
 		// Do not wait for context and icons (can take a few seconds)
 		this.updateContextAndIcons(treeItems);
@@ -54,8 +54,8 @@ export class ClusterDataProvider extends DataProvider {
 		this.updateDeploymentStatus(currentContextTreeItem);
 
 		statusBar.hide();
-    return treeItems;
-  }
+		return treeItems;
+	}
 
 	/**
 	 * Update vscode context and tree view icons

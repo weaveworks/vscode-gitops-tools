@@ -129,7 +129,7 @@ export interface ObjectMeta {
 	 * They are not queryable and should be preserved when modifying objects.
 	 * @see http://kubernetes.io/docs/user-guide/annotations
 	 */
-	annotations?: { [key: string]: string };
+	annotations?: { [key: string]: string; };
 
 	/**
 	 * The name of the cluster which the object belongs to.
@@ -244,7 +244,7 @@ export interface ObjectMeta {
 	 * May match selectors of replication controllers and services.
 	 * @see http://kubernetes.io/docs/user-guide/labels
 	 */
-	labels?: { [key: string]: string };
+	labels?: { [key: string]: string; };
 
 	/**
 	 * ManagedFields maps workflow-id and version to the set of fields

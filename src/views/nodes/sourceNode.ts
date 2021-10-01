@@ -8,7 +8,7 @@ import { TreeNode } from './treeNode';
 /**
  * Base class for all the Source tree view items.
  */
- export class SourceNode extends TreeNode {
+export class SourceNode extends TreeNode {
 
 	/**
 	 * Creates markdwon string for Source tree view item tooltip.

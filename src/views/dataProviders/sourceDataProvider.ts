@@ -1,11 +1,11 @@
 import { ExtensionContext } from 'vscode';
+import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { DataProvider } from './dataProvider';
 import { BucketNode } from '../nodes/bucketNode';
 import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
 import { SourceNode } from '../nodes/sourceNode';
-import { ContextTypes, setContext } from '../../context';
+import { DataProvider } from './dataProvider';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
@@ -52,6 +52,6 @@ export class SourceDataProvider extends DataProvider {
 		setContext(ContextTypes.LoadingSources, false);
 		setContext(ContextTypes.NoSources, treeItems.length === 0);
 
-    return treeItems;
-  }
+		return treeItems;
+	}
 }

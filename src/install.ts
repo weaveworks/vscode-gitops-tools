@@ -1,8 +1,4 @@
-import {
-	commands,
-	Uri,
-	window
-} from 'vscode';
+import { commands, Uri, window } from 'vscode';
 import { OutputCommands } from './commands';
 import { shell } from './shell';
 import { parseJson } from './utils/jsonUtils';

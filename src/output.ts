@@ -1,7 +1,4 @@
-import {
-	OutputChannel,
-	window
-} from 'vscode';
+import { OutputChannel, window } from 'vscode';
 
 export let outputChannel: OutputChannel;
 
@@ -11,7 +8,7 @@ export async function sendToOutputChannel(
 	message: string = '',
 	addNewline: boolean = true,
 	revealOutputView: boolean = true,
-	channel?: OutputChannel) : Promise<void> {
+	channel?: OutputChannel): Promise<void> {
 	// create output channel
 	if (!outputChannel) {
 		outputChannel = window.createOutputChannel(outputChannelName);
@@ -20,7 +17,7 @@ export async function sendToOutputChannel(
 		channel = outputChannel;
 	}
 
-  // add output message
+	// add output message
 	if (channel) {
 		if (revealOutputView) {
 			channel.show(true);
@@ -29,8 +26,7 @@ export async function sendToOutputChannel(
 			message = `${message} \n`;
 		}
 		channel.append(message);
-	}
-  else {
+	} else {
 		console.log(message);
 	}
 }

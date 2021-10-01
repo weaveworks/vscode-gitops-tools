@@ -1,12 +1,4 @@
-import {
-	DeploymentCondition,
-	KubernetesJSON,
-	LocalObjectReference,
-	KubernetesObject,
-	ObjectMeta,
-	ResultMetadata,
-	KubernetesObjectKinds
-} from './kubernetesTypes';
+import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from './kubernetesTypes';
 
 /**
  * Kustomizations result from running
@@ -57,7 +49,7 @@ export interface Kustomize extends KubernetesObject {
 		 * When not specified, the controller uses the KustomizationSpec.Interval value
 		 * to retry failures.
 		 */
-		readonly retryInterval?: string
+		readonly retryInterval?: string;
 
 		// KubeConfig references a Kubernetes secret that contains a kubeconfig file
 		readonly kubeConfig?: KubeConfig;
@@ -130,7 +122,7 @@ export interface Kustomize extends KubernetesObject {
 		 * due to an immutable field change.
 		 */
 		readonly force?: boolean;
-	}
+	};
 
 	/**
 	 * Deployment kustomization status.
@@ -156,7 +148,7 @@ export interface Kustomize extends KubernetesObject {
 
 		// The last successfully applied revision metadata
 		readonly snapshot: Snapshot;
-	}
+	};
 }
 
 /**
@@ -184,7 +176,7 @@ interface PostBuild {
 		 * Should reside in the same namespace as the referring resource.
 		 */
 		readonly name: string;
-	}
+	};
 }
 
 export interface DependsOn {
@@ -274,7 +266,7 @@ interface Snapshot {
 
 		// The list of Kubernetes kinds
 		readonly kinds: Record<string, string>;
-	}[]
+	}[];
 }
 
 export interface KubeConfig {

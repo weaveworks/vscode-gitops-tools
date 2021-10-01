@@ -1,17 +1,17 @@
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
+import { GitRepository } from '../../kubernetes/gitRepository';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { GitRepository } from '../../kubernetes/gitRepository';
-import { SourceNode } from './sourceNode';
-import { NodeLabels } from './nodeLabels';
-import { NodeContext } from './nodeContext';
 import { shortenRevision } from '../../utils/stringUtils';
+import { NodeContext } from './nodeContext';
+import { NodeLabels } from './nodeLabels';
+import { SourceNode } from './sourceNode';
 
 /**
  * Defines GitRepository tree view item for display in GitOps Sources tree view.
  */
- export class GitRepositoryNode extends SourceNode {
+export class GitRepositoryNode extends SourceNode {
 
 	/**
 	 * Git repository kubernetes resource object

@@ -1,11 +1,4 @@
-import {
-	Artifact,
-	DeploymentCondition,
-	KubernetesObject,
-	KubernetesObjectKinds,
-	ObjectMeta,
-	ResultMetadata
-} from './kubernetesTypes';
+import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from './kubernetesTypes';
 
 /**
  * Buckets result from running
@@ -51,7 +44,7 @@ export interface Bucket extends KubernetesObject {
 		readonly region?: string;
 
 		// The name of the secret containing authentication credentials for the Bucket
-		readonly secretRef?: { name?: string };
+		readonly secretRef?: { name?: string; };
 
 		// The interval at which to check for bucket updates
 		readonly interval: string;
@@ -68,7 +61,7 @@ export interface Bucket extends KubernetesObject {
 
 		// This flag tells the controller to suspend the reconciliation of this source
 		readonly suspend?: boolean;
-	}
+	};
 
 	/**
 	 * Bucket source status info.

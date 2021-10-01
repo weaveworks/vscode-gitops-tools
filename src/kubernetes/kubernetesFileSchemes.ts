@@ -9,5 +9,5 @@ export enum KubernetesFileSchemes {
 	ReadonlyResource = 'k8smsxro',
 	KubectlResource = 'loadkubernetescore',
 	DescribeResource = 'kubernetesdescribe',
-	HelmResource = 'helmget'
+	HelmResource = 'helmget',
 }

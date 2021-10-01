@@ -7,7 +7,7 @@ import { TreeNode } from './treeNode';
 /**
  * Defines any kubernetes resourse.
  */
- export class AnyResourceNode extends TreeNode {
+export class AnyResourceNode extends TreeNode {
 
 	/**
 	 * kubernetes resource metadata
@@ -26,7 +26,7 @@ import { TreeNode } from './treeNode';
 		const resourceUri = kubernetesTools.getResourceUri(
 			anyResource.metadata?.namespace,
 			`${anyResource.kind}/${anyResource.metadata?.name}`,
-			FileTypes.Yaml
+			FileTypes.Yaml,
 		);
 
 		// set open resource in editor command

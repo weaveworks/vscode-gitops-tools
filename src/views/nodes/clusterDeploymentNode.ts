@@ -1,8 +1,4 @@
-import {
-	MarkdownString,
-	ThemeColor,
-	ThemeIcon
-} from 'vscode';
+import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { Deployment } from '../../kubernetes/deployment';
@@ -43,7 +39,7 @@ export class ClusterDeploymentNode extends TreeNode {
 		const resourceUri = kubernetesTools.getResourceUri(
 			deployment.metadata?.namespace,
 			`${ResourceTypes.Deployment}/${deployment.metadata?.name}`,
-			FileTypes.Yaml
+			FileTypes.Yaml,
 		);
 
 		// set open resource in editor command

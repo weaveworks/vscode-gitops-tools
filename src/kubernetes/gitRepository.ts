@@ -1,12 +1,4 @@
-import {
-	Artifact,
-	DeploymentCondition,
-	LocalObjectReference,
-	KubernetesObject,
-	KubernetesObjectKinds,
-	ObjectMeta,
-	ResultMetadata
-} from './kubernetesTypes';
+import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from './kubernetesTypes';
 
 /**
  * Git repositories result from running
@@ -82,7 +74,7 @@ export interface GitRepository extends KubernetesObject {
 
 		// Extra git repositories to map into the repository
 		readonly include?: GitRepositoryInclude[];
-	}
+	};
 
 	/**
 	 * Git repository source status info.
@@ -102,7 +94,7 @@ export interface GitRepository extends KubernetesObject {
 
 		// Artifact represents the output of the last successful repository sync
 		readonly artifact?: Artifact;
-	}
+	};
 }
 
 /**

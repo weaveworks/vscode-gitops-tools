@@ -42,7 +42,7 @@ class FluxTools {
 	 *
 	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
-	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[] } | undefined> {
+	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
 		const result = await shell.execWithOutput('flux check', false);
 
 		if (result?.code !== 0) {
@@ -85,7 +85,7 @@ class FluxTools {
 
 		// Parse controllers
 		const parsedControllers: FluxController[] = [];
-		for (let i = 0; i < controllers.length; i+= 2) {
+		for (let i = 0; i < controllers.length; i += 2) {
 			const controllerStatus = controllers[i];
 			const controllerImageName = controllers[i + 1];
 

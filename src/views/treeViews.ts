@@ -1,15 +1,10 @@
-import {
-	ExtensionContext,
-	TreeItem,
-	TreeView,
-	window
-} from 'vscode';
-import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
+import { ExtensionContext, TreeItem, TreeView, window } from 'vscode';
 import { ApplicationDataProvider } from './dataProviders/applicationDataProvider';
+import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
-import { Views } from './views';
 import { TreeNode } from './nodes/treeNode';
+import { Views } from './views';
 
 let clusterTreeViewProvider: ClusterDataProvider;
 let sourceTreeViewProvider: SourceDataProvider;
@@ -33,20 +28,20 @@ export function createTreeViews(extensionContext: ExtensionContext) {
 	documentationTreeViewProvider = new DocumentationDataProvider();
 
 	// create gitops sidebar tree views
-  clusterTreeView = window.createTreeView(Views.ClusterView, {
-    treeDataProvider: clusterTreeViewProvider,
-    showCollapseAll: true,
-  });
+	clusterTreeView = window.createTreeView(Views.ClusterView, {
+		treeDataProvider: clusterTreeViewProvider,
+		showCollapseAll: true,
+	});
 
 	sourceTreeView = window.createTreeView(Views.SourceView, {
-    treeDataProvider: sourceTreeViewProvider,
-    showCollapseAll: true,
-  });
+		treeDataProvider: sourceTreeViewProvider,
+		showCollapseAll: true,
+	});
 
 	applicationTreeView = window.createTreeView(Views.ApplicationView, {
-    treeDataProvider: applicationTreeViewProvider,
-    showCollapseAll: true,
-  });
+		treeDataProvider: applicationTreeViewProvider,
+		showCollapseAll: true,
+	});
 
 	// create documentation links sidebar tree view
 	documentationTreeView = window.createTreeView(Views.DocumentationView, {
@@ -58,7 +53,7 @@ export function createTreeViews(extensionContext: ExtensionContext) {
 /**
  * Refreshes all GitOps tree views.
  */
- export function refreshTreeViews() {
+export function refreshTreeViews() {
 	refreshClusterTreeView();
 	refreshSourceTreeView();
 	refreshApplicationTreeView();

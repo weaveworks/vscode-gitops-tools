@@ -1,12 +1,4 @@
-import {
-	Artifact,
-	DeploymentCondition,
-	LocalObjectReference,
-	KubernetesObject,
-	KubernetesObjectKinds,
-	ObjectMeta,
-	ResultMetadata
-} from './kubernetesTypes';
+import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from './kubernetesTypes';
 
 /**
  * Helm repositories result from running
@@ -15,7 +7,7 @@ import {
 export interface HelmRepositoryResult {
 	readonly apiVersion: string;
 	readonly kind: KubernetesObjectKinds.List;
-	readonly items: HelmRepository[]
+	readonly items: HelmRepository[];
 	readonly metadata: ResultMetadata;
 }
 
@@ -63,7 +55,7 @@ export interface HelmRepository extends KubernetesObject {
 
 		// This flag tells the controller to suspend the reconciliation of this source
 		readonly suspend?: boolean;
-	}
+	};
 
 	/**
 	 * Helm repository status info.
@@ -83,5 +75,5 @@ export interface HelmRepository extends KubernetesObject {
 
 		// Artifact represents the output of the last successful repository sync
 		readonly artifact?: Artifact;
-	}
+	};
 }

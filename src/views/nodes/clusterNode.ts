@@ -1,14 +1,9 @@
 import * as path from 'path';
 import { MarkdownString } from 'vscode';
 import { KubectlCommands } from '../../commands';
-import {
-	ContextTypes,
-	setContext
-} from '../../context';
-import { FileTypes } from '../../fileTypes';
+import { ContextTypes, setContext } from '../../context';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../../utils/stringUtils';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
@@ -17,7 +12,7 @@ import { TreeNode } from './treeNode';
  * Defines Cluster tree view item for displaying
  * configured kubernetes clusters in GitOps Clusters tree view.
  */
- export class ClusterNode extends TreeNode {
+export class ClusterNode extends TreeNode {
 
 	/**
 	 * Cluster name

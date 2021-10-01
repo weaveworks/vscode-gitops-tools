@@ -1,8 +1,4 @@
-import {
-	window,
-	StatusBarItem,
-	StatusBarAlignment
-} from 'vscode';
+import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 
 /**
  * Status bar to use for all GitOps status updates.
@@ -28,8 +24,7 @@ class StatusBar {
 		if (message) {
 			this.status.text = `$(sync~spin) ${message}`;
 			this.status.show();
-		}
-		else {
+		} else {
 			this.hide();
 		}
 	}
