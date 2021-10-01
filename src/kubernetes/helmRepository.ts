@@ -28,7 +28,9 @@ export interface HelmRepository extends KubernetesObject {
 	 */
 	readonly spec: {
 
-		// The Helm repository URL, a valid URL contains at least a protocol and host
+		/**
+		 * The Helm repository URL, a valid URL contains at least a protocol and host
+		 */
 		readonly url: string;
 
 		/**
@@ -47,13 +49,19 @@ export interface HelmRepository extends KubernetesObject {
 		 */
 		readonly passCredentials?: boolean;
 
-		// The interval at which to check the upstream for updates
+		/**
+		 * The interval at which to check the upstream for updates
+		 */
 		readonly interval: string;
 
-		// The timeout of index downloading, defaults to 60s
+		/**
+		 * The timeout of index downloading, defaults to 60s
+		 */
 		readonly timeout?: string;
 
-		// This flag tells the controller to suspend the reconciliation of this source
+		/**
+		 * This flag tells the controller to suspend the reconciliation of this source
+		 */
 		readonly suspend?: boolean;
 	};
 
@@ -64,16 +72,24 @@ export interface HelmRepository extends KubernetesObject {
 	 */
 	readonly status: {
 
-		// ObservedGeneration is the last observed generation
+		/**
+		 * ObservedGeneration is the last observed generation
+		 */
 		readonly observedGeneration?: number;
 
-		// Conditions holds the conditions for the HelmRepository
+		/**
+		 * Conditions holds the conditions for the HelmRepository
+		 */
 		readonly conditions?: DeploymentCondition[];
 
-		// URL is the download link for the last index fetched
+		/**
+		 * URL is the download link for the last index fetched
+		 */
 		readonly url?: string;
 
-		// Artifact represents the output of the last successful repository sync
+		/**
+		 * Artifact represents the output of the last successful repository sync
+		 */
 		readonly artifact?: Artifact;
 	};
 }

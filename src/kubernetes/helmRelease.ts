@@ -96,19 +96,29 @@ export interface HelmRelease extends KubernetesObject {
 		 */
 		readonly serviceAccountName?: string;
 
-		// Install holds the configuration for Helm install actions for this HelmRelease
+		/**
+		 * Install holds the configuration for Helm install actions for this HelmRelease
+		 */
 		readonly install?: Install;
 
-		// Upgrade holds the configuration for Helm upgrade actions for this HelmRelease
+		/**
+		 * Upgrade holds the configuration for Helm upgrade actions for this HelmRelease
+		 */
 		readonly upgrade?: Upgrade;
 
-		// Test holds the configuration for Helm test actions for this HelmRelease
+		/**
+		 * Test holds the configuration for Helm test actions for this HelmRelease
+		 */
 		readonly test?: Test;
 
-		// Rollback holds the configuration for Helm rollback actions for this HelmRelease
+		/**
+		 * Rollback holds the configuration for Helm rollback actions for this HelmRelease
+		 */
 		readonly rollback?: Rollback;
 
-		// Uninstall holds the configuration for Helm uninstall actions for this HelmRelease
+		/**
+		 * Uninstall holds the configuration for Helm uninstall actions for this HelmRelease
+		 */
 		readonly uninstall?: Uninstall;
 
 		/**
@@ -117,7 +127,9 @@ export interface HelmRelease extends KubernetesObject {
 		 */
 		readonly valuesFrom?: ValuesReference;
 
-		// Values holds the values for this Helm release
+		/**
+		 * Values holds the values for this Helm release
+		 */
 		readonly values?: KubernetesJSON;
 
 		/**
@@ -134,21 +146,24 @@ export interface HelmRelease extends KubernetesObject {
 	 */
 	readonly status: {
 
-		// ObservedGeneration is the last observed generation
+		/**
+		 * ObservedGeneration is the last observed generation
+		 */
 		readonly observedGeneration?: number;
 
 		/**
-		 * https://pkg.go.dev/github.com/fluxcd/pkg/apis/meta?utm_source=godoc#ReconcileRequestStatus
+		 * Conditions holds the conditions for the HelmRelease
 		 */
-		// readonly ReconcileRequestStatus: // TODO: is this commented out to define later ???
-
-		// Conditions holds the conditions for the HelmRelease
 		readonly conditions?: DeploymentCondition;
 
-		// LastAppliedRevision is the revision of the last successfully applied source
+		/**
+		 * LastAppliedRevision is the revision of the last successfully applied source
+		 */
 		readonly lastAppliedRevision?: string;
 
-		// LastAttemptedRevision is the revision of the last reconciliation attempt
+		/**
+		 * LastAttemptedRevision is the revision of the last reconciliation attempt
+		 */
 		readonly lastAttemptedRevision?: string;
 
 		/**
@@ -157,7 +172,9 @@ export interface HelmRelease extends KubernetesObject {
 		 */
 		readonly lastAttemptedValuesChecksum?: string;
 
-		// LastReleaseRevision is the revision of the last successful Helm release
+		/**
+		 * LastReleaseRevision is the revision of the last successful Helm release
+		 */
 		readonly lastReleaseRevision?: number;
 
 		/**
@@ -195,7 +212,9 @@ interface HelmChartReleaseSpec {
 
 	readonly spec: {
 
-		// The name or path the Helm chart is available at in the SourceRef
+		/**
+		 * The name or path the Helm chart is available at in the SourceRef
+		 */
 		readonly chart: string;
 
 		/**
@@ -205,7 +224,9 @@ interface HelmChartReleaseSpec {
 		 */
 		readonly version?: string;
 
-		// The name and namespace of the v1beta1.Source the chart is available at
+		/**
+		 * The name and namespace of the v1beta1.Source the chart is available at
+		 */
 		readonly sourceRef: NamespacedObjectKindReference;
 
 		/**
@@ -265,7 +286,9 @@ interface Install {
 	 */
 	readonly disableWaitForJobs?: boolean;
 
-	// DisableHooks prevents hooks from running during the Helm install action.
+	/**
+	 * DisableHooks prevents hooks from running during the Helm install action.
+	 */
 	readonly disableHooks?: boolean;
 
 	/**
@@ -341,7 +364,9 @@ interface Upgrade {
 	 */
 	readonly disableWaitForJobs?: boolean;
 
-	// DisableHooks prevents hooks from running during the Helm install action
+	/**
+	 * DisableHooks prevents hooks from running during the Helm install action
+	 */
 	readonly disableHooks?: boolean;
 
 	/**
@@ -350,7 +375,9 @@ interface Upgrade {
 	 */
 	readonly disableOpenAPIValidation?: boolean;
 
-	// Force forces resource updates through a replacement strategy
+	/**
+	 * Force forces resource updates through a replacement strategy
+	 */
 	readonly force?: boolean;
 
 	/**
@@ -458,13 +485,19 @@ interface Rollback {
 	 */
 	disableWaitForJobs?: boolean;
 
-	// DisableHooks prevents hooks from running during the Helm rollback action
+	/**
+	 * DisableHooks prevents hooks from running during the Helm rollback action
+	 */
 	disableHooks?: boolean;
 
-	// Recreate performs pod restarts for the resource if applicable
+	/**
+	 * Recreate performs pod restarts for the resource if applicable
+	 */
 	recreate?: boolean;
 
-	// Force forces resource updates through a replacement strategy
+	/**
+	 * Force forces resource updates through a replacement strategy
+	 */
 	force?: boolean;
 
 	/**
@@ -500,7 +533,9 @@ interface Remediation {
 
 interface ValuesReference {
 
-	// Kind of the values referent, valid values are (‘Secret’, ‘ConfigMap’)
+	/**
+	 * Kind of the values referent, valid values are (‘Secret’, ‘ConfigMap’)
+	 */
 	readonly kind: string;
 
 	/**
@@ -532,7 +567,9 @@ interface ValuesReference {
 }
 
 interface PostRenderer {
-	// Kustomization to apply as PostRenderer
+	/**
+	 * Kustomization to apply as PostRenderer
+	 */
 	readonly kustomize: {
 		readonly patchesStrategicMerge?: Kustomize['spec']['patchesStrategicMerge'];
 		readonly patchesJson6902?: Kustomize['spec']['patchesJson6902'];

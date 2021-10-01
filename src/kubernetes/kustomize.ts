@@ -38,10 +38,14 @@ export interface Kustomize extends KubernetesObject {
 		 */
 		readonly dependsOn?: DependsOn;
 
-		// Decrypt Kubernetes secrets before applying them on the cluster
+		/**
+		 * Decrypt Kubernetes secrets before applying them on the cluster
+		 */
 		readonly decryption?: Decryption;
 
-		// The interval at which to reconcile the Kustomization
+		/**
+		 * The interval at which to reconcile the Kustomization
+		 */
 		readonly interval: string;
 
 		/**
@@ -51,7 +55,9 @@ export interface Kustomize extends KubernetesObject {
 		 */
 		readonly retryInterval?: string;
 
-		// KubeConfig references a Kubernetes secret that contains a kubeconfig file
+		/**
+		 * KubeConfig references a Kubernetes secret that contains a kubeconfig file
+		 */
 		readonly kubeConfig?: KubeConfig;
 
 		/**
@@ -67,10 +73,14 @@ export interface Kustomize extends KubernetesObject {
 		 */
 		readonly postBuild?: PostBuild;
 
-		// Prune enables garbage collection
+		/**
+		 * Prune enables garbage collection
+		 */
 		readonly prune: boolean;
 
-		// A list of resources to be included in the health assessment
+		/**
+		 * A list of resources to be included in the health assessment
+		 */
 		readonly healthChecks?: NamespacedObjectKindReference[];
 
 		/**
@@ -79,10 +89,14 @@ export interface Kustomize extends KubernetesObject {
 		 */
 		readonly patches?: Patch[];
 
-		// Strategic merge patches, defined as inline YAML objects
+		/**
+		 * Strategic merge patches, defined as inline YAML objects
+		 */
 		readonly patchesStrategicMerge?: KubernetesJSON;
 
-		// JSON 6902 patches, defined as inline YAML objects
+		/**
+		 * JSON 6902 patches, defined as inline YAML objects
+		 */
 		readonly patchesJson6902?: JSON6902Patch[];
 
 		/**
@@ -99,7 +113,9 @@ export interface Kustomize extends KubernetesObject {
 		 */
 		readonly serviceAccountName?: string;
 
-		// Reference of the source where the kustomization file is
+		/**
+		 * Reference of the source where the kustomization file is
+		 */
 		readonly sourceRef: NamespacedObjectKindReference;
 
 		/**
@@ -108,7 +124,9 @@ export interface Kustomize extends KubernetesObject {
 		 */
 		readonly suspend?: boolean;
 
-		// TargetNamespace sets or overrides the namespace in the kustomization.yaml file
+		/**
+		 * TargetNamespace sets or overrides the namespace in the kustomization.yaml file
+		 */
 		readonly targetNamespace?: string;
 
 		/**
@@ -130,23 +148,29 @@ export interface Kustomize extends KubernetesObject {
 	 * @see https://github.com/fluxcd/kustomize-controller/blob/main/docs/api/kustomize.md#kustomizationstatus
 	 */
 	readonly status: {
-		// ObservedGeneration is the last reconciled generation
+		/**
+		 * ObservedGeneration is the last reconciled generation
+		 */
 		readonly observedGeneration?: number;
 
+		/**
+		 * DeploymentCondition describes the state of a deployment at a certain point.
+		 */
 		readonly conditions?: DeploymentCondition[];
 
-		// The last successfully applied revision. The revision format for Git sources is
+		/**
+		 * The last successfully applied revision. The revision format for Git sources is
+		 */
 		readonly lastAppliedRevision?: string;
 
-		// LastAttemptedRevision is the revision of the last reconciliation attempt
+		/**
+		 * LastAttemptedRevision is the revision of the last reconciliation attempt
+		 */
 		readonly lastAttemptedRevision?: string;
 
 		/**
-		 * @see https://pkg.go.dev/github.com/fluxcd/pkg/apis/meta?utm_source=godoc#ReconcileRequestStatus
+		 * The last successfully applied revision metadata
 		 */
-		// readonly ReconcileRequestStatus?: // TODO: is this commented out to define later ???
-
-		// The last successfully applied revision metadata
 		readonly snapshot: Snapshot;
 	};
 }
@@ -166,9 +190,18 @@ interface PostBuild {
 	 */
 	readonly substitute?: Record<string, string>;
 
+	/**
+	 * SubstituteFrom holds references to ConfigMaps and Secrets
+	 * containing the variables and their values to be substituted
+	 * in the YAML manifests. The ConfigMap and the Secret data keys represent
+	 * the var names and they must match the vars declared in the manifests
+	 * for the substitution to happen.
+	 */
 	readonly substituteFrom?: {
 
-		// Kind of the values referent, valid values are (‘Secret’, ‘ConfigMap’)
+		/**
+		 * Kind of the values referent, valid values are (‘Secret’, ‘ConfigMap’)
+		 */
 		readonly kind: string;
 
 		/**
@@ -181,34 +214,50 @@ interface PostBuild {
 
 export interface DependsOn {
 
-	// Name holds the name reference of a dependency
+	/**
+	 * Name holds the name reference of a dependency
+	 */
 	readonly name: string;
 
-	// Namespace holds the namespace reference of a dependency
+	/**
+	 * Namespace holds the namespace reference of a dependency
+	 */
 	readonly namespace?: string;
 }
 
 interface Decryption {
 
-	// Provider is the name of the decryption engine
+	/**
+	 * Provider is the name of the decryption engine
+	 */
 	readonly provider: string;
 
-	// The secret name containing the private OpenPGP keys used for decryption
+	/**
+	 * The secret name containing the private OpenPGP keys used for decryption
+	 */
 	readonly secretRef?: LocalObjectReference;
 }
 
 export interface NamespacedObjectKindReference {
 
-	// API version of the referent
+	/**
+	 * API version of the referent
+	 */
 	readonly apiVersion?: string;
 
-	// Kind of the referent
+	/**
+	 * Kind of the referent
+	 */
 	readonly kind: string;
 
-	// Name of the referent
+	/**
+	 * Name of the referent
+	 */
 	readonly name: string;
 
-	// Namespace of the referent, defaults to the Kustomization namespace
+	/**
+	 * Namespace of the referent, defaults to the Kustomization namespace
+	 */
 	readonly namespace?: string;
 }
 
@@ -241,30 +290,46 @@ interface Selector {
 
 interface Image {
 
-	// Name is a tag-less image name
+	/**
+	 * Name is a tag-less image name
+	 */
 	readonly name: string;
 
-	// NewName is the value used to replace the original name
+	/**
+	 * NewName is the value used to replace the original name
+	 */
 	readonly newName?: string;
 
-	// NewTag is the value used to replace the original tag
+	/**
+	 * NewTag is the value used to replace the original tag
+	 */
 	readonly newTag?: string;
 
-	// Digest is the value used to replace the original image tag
+	/**
+	 * Digest is the value used to replace the original image tag
+	 */
 	readonly digest?: string;
 }
 
 interface Snapshot {
 
-	// The manifests sha1 checksum
+	/**
+	 * The manifests sha1 checksum
+	 */
 	readonly checksum: string;
 
-	// A list of Kubernetes kinds grouped by namespace
+	/**
+	 * A list of Kubernetes kinds grouped by namespace
+	 */
 	readonly entries: {
-		// The namespace of this entry
+		/**
+		 * The namespace of this entry
+		 */
 		readonly namespace?: string;
 
-		// The list of Kubernetes kinds
+		/**
+		 * The list of Kubernetes kinds
+		 */
 		readonly kinds: Record<string, string>;
 	}[];
 }
