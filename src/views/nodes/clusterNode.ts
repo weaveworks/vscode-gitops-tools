@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { MarkdownString } from 'vscode';
 import { KubectlCommands } from '../../commands';
 import { ContextTypes, setContext } from '../../context';
@@ -42,10 +41,7 @@ export class ClusterNode extends TreeNode {
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(cluster);
 
-		this.setIcon({
-			light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', 'cloud.svg'),// TODO: put path logic into base class
-			dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'cloud.svg'),// TODO: use context.asAbsolutePath()
-		});
+		this.setIcon('cloud');
 
 		// set current context command to change selected cluster
 		this.command = {
@@ -68,10 +64,7 @@ export class ClusterNode extends TreeNode {
 
 		if (this.isFlux) {
 			this.contextValue = NodeContext.ClusterFlux;
-			this.setIcon({
-				light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', 'cloud-gitops.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'cloud-gitops.svg'),
-			});
+			this.setIcon('cloud-gitops');
 		} else {
 			this.contextValue = NodeContext.Cluster;
 		}

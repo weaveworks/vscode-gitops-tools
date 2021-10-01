@@ -1,4 +1,5 @@
 import { ExtensionContext } from 'vscode';
+import { setExtensionContext } from './asAbsolutePath';
 import { registerCommands } from './commands';
 import { checkPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
@@ -9,6 +10,9 @@ import { createTreeViews } from './views/treeViews';
  * @param context VSCode extension context.
  */
 export function activate(context: ExtensionContext) {
+
+	// Keep a reference to the extension context
+	setExtensionContext(context);
 
 	// initialize gitops status bar
 	context.subscriptions.push(statusBar.status);

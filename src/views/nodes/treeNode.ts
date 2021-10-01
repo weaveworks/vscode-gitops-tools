@@ -1,10 +1,19 @@
-import { MarkdownString, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { asAbsolutePath } from '../../asAbsolutePath';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
 export class TreeNode extends TreeItem {
+
+	/**
+	 * Reference to the parent node (if exists).
+	 */
 	parent: TreeNode | undefined;
+
+	/**
+	 * Reference to all the child nodes.
+	 */
 	children: TreeNode[] = [];
 
 	/**
@@ -31,10 +40,20 @@ export class TreeNode extends TreeItem {
 
 	/**
 	 * Sets tree view item icon.
+	 *
+	 * When passing a string - pick an item from a
+	 * relative file path `resouces/icons/(dark|light)/${icon}.svg`
 	 * @param icon Theme icon, uri or light/dark svg icon path.
 	 */
-	setIcon(icon: ThemeIcon | Uri | {light: string; dark: string;}) {
-		this.iconPath = icon;
+	setIcon(icon: string | ThemeIcon | Uri) {
+		if (typeof icon === 'string') {
+			this.iconPath = {
+				light: asAbsolutePath(`resources/icons/light/${icon}.svg`),
+				dark: asAbsolutePath(`resources/icons/dark/${icon}.svg`),
+			};
+		} else {
+			this.iconPath = icon;
+		}
 	}
 
 	/**
