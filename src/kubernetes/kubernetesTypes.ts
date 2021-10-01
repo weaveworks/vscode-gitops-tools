@@ -13,7 +13,7 @@ export interface KubernetesObject {
 /**
  * Defines supported Kubernetes object kinds.
  */
-export enum KubernetesObjectKinds {
+export const enum KubernetesObjectKinds {
 	List = 'List',
 	Bucket = 'Bucket',
 	GitRepository = 'GitRepository',
@@ -28,7 +28,7 @@ export enum KubernetesObjectKinds {
  * Defines supported resource types
  * to construct resource Uri.
  */
-export enum ResourceTypes {
+export const enum ResourceTypes {
 	Bucket = 'buckets.source.toolkit.fluxcd.io',
 	GitRepository = 'gitrepo',
 	HelmRepository = 'helmrepo',

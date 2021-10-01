@@ -15,7 +15,7 @@ import { refreshApplicationTreeView, refreshClusterTreeView, refreshSourceTreeVi
 /**
  * GitOps/vscode editor commands.
  */
-export enum EditorCommands {
+export const enum EditorCommands {
 	OpenResource = 'gitops.editor.openResource',
 }
 
@@ -26,7 +26,7 @@ export const enum OutputCommands {
 /**
  * GitOps View commands.
  */
-export enum ViewCommands {
+export const enum ViewCommands {
 	Open = 'vscode.open',
 	SetContext = 'setContext',
 	RefreshTreeViews = 'gitops.views.refreshTreeViews',
@@ -37,7 +37,7 @@ export enum ViewCommands {
 /**
  * Kubectl commands.
  */
-export enum KubectlCommands {
+export const enum KubectlCommands {
 	Version = 'gitops.kubectl.version',
 	SetCurrentContext = 'gitops.kubectl.setCurrentContext',
 }
@@ -45,7 +45,7 @@ export enum KubectlCommands {
 /**
  * Flux commands.
  */
-export enum FluxCommands {
+export const enum FluxCommands {
 	Check = 'gitops.flux.check',
 	CheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	EnableGitOps = 'gitops.flux.install',
