@@ -4,6 +4,7 @@ import { ContextTypes, setContext } from '../../context';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { createMarkdownTable } from '../../utils/stringUtils';
+import { refreshClusterTreeView } from '../treeViews';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
@@ -49,12 +50,14 @@ export class ClusterNode extends TreeNode {
 			arguments: [this.name],
 			title: 'Set current context',
 		};
+
+		this.updateNodeContext();
 	}
 
 	/**
-	 * Set context for active cluster (whether or not flux enabled)
+	 * Set context (flux enabled or not) and icon for the active cluster
 	 */
-	async setContext() {
+	async updateNodeContext() {
 		this.isFlux = (await kubernetesTools.isFluxInstalled(this.name)) || false;
 
 		// Update vscode context for welcome view of other tree views
@@ -68,6 +71,8 @@ export class ClusterNode extends TreeNode {
 		} else {
 			this.contextValue = NodeContext.Cluster;
 		}
+
+		refreshClusterTreeView(this);
 	}
 
 	/**

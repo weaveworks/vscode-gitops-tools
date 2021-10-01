@@ -43,26 +43,11 @@ export class ClusterDataProvider extends DataProvider {
 			treeItems.push(clusterNode);
 		}
 
-		// Do not wait for context and icons (can take a few seconds)
-		this.updateContextAndIcons(treeItems);
-
-		// Update async status of the deployments (flux commands take even longer)
+		// Update async status of the deployments (flux commands take a while to run)
 		this.updateDeploymentStatus(currentContextTreeItem);
 
 		statusBar.hide();
 		return treeItems;
-	}
-
-	/**
-	 * Update vscode context and tree view icons
-	 * after tree view items become visible.
-	 * @param treeItems All cluster tree items.
-	 */
-	async updateContextAndIcons(treeItems: ClusterNode[]) {
-		for (const treeItem of treeItems) {
-			await treeItem.setContext();
-			this.refresh(treeItem);
-		}
 	}
 
 	/**
