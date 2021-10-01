@@ -34,12 +34,10 @@ export class ClusterNode extends TreeNode {
 	 * @param cluster Cluster object info.
 	 */
 	constructor(cluster: Cluster) {
-		super({
-			label: cluster.name,
-			description: cluster.cluster.server,
-		});
+		super(cluster.name);
 
 		this.name = cluster.name;
+		this.description = cluster.cluster.server;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(cluster);

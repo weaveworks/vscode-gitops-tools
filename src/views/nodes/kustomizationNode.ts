@@ -22,9 +22,7 @@ export class KustomizationNode extends ApplicationNode {
 	 * @param kustomization Kustomize kubernetes object info.
 	 */
 	constructor(kustomization: Kustomize) {
-		super({
-			label: `${NodeLabels.Kustomization}: ${kustomization.metadata?.name}`,
-		});
+		super(`${NodeLabels.Kustomization}: ${kustomization.metadata?.name}`);
 
 		// save kustomization resource reference
 		this.resource = kustomization;

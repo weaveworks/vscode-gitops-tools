@@ -23,10 +23,9 @@ export class GitRepositoryNode extends SourceNode {
 	 * @param gitRepository Git repository kubernetes object info.
 	 */
 	constructor(gitRepository: GitRepository) {
-		super({
-			label: `${NodeLabels.GitRepository}: ${gitRepository.metadata?.name}`,
-			description: shortenRevision(gitRepository.status.artifact?.revision),
-		});
+		super(`${NodeLabels.GitRepository}: ${gitRepository.metadata?.name}`);
+
+		this.description = shortenRevision(gitRepository.status.artifact?.revision);
 
 		// save git repository resource reference
 		this.resource = gitRepository;

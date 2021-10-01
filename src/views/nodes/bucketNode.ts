@@ -23,10 +23,9 @@ export class BucketNode extends SourceNode {
 	 * @param bucket Bucket kubernetes object info.
 	 */
 	constructor(bucket: Bucket) {
-		super({
-			label: `${NodeLabels.Bucket}: ${bucket.metadata?.name}`,
-			description: shortenRevision(bucket.status.artifact?.revision),
-		});
+		super(`${NodeLabels.Bucket}: ${bucket.metadata?.name}`);
+
+		this.description = shortenRevision(bucket.status.artifact?.revision);
 
 		// save git repository resource reference
 		this.resource = bucket;

@@ -23,10 +23,9 @@ export class HelmRepositoryNode extends SourceNode {
 	 * @param helmRepository Helm repository kubernetes object info.
 	 */
 	constructor(helmRepository: HelmRepository) {
-		super({
-			label: `${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`,
-			description: shortenRevision(helmRepository.status.artifact?.revision),
-		});
+		super(`${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`);
+
+		this.description = shortenRevision(helmRepository.status.artifact?.revision);
 
 		// save helm repository resource reference
 		this.resource = helmRepository;

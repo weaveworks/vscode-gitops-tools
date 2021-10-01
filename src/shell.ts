@@ -10,8 +10,8 @@ import { statusBar } from './statusBar';
  * Get setting value of Kubernetes extension
  * of whether or not to use wsl on windows.
  *
- * TODO: remove wsl? This setting is not documented and may be removed in the future:
- * https://github.com/Azure/vscode-kubernetes-tools/issues/695#issuecomment-606047328
+ * Undocumented setting:
+ * https://github.com/Azure/vscode-kubernetes-tools/issues/695
  */
 export function getUseWsl(): boolean {
 	return workspace.getConfiguration('vs-kubernetes')['use-wsl'];

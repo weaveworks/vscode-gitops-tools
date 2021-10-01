@@ -19,9 +19,7 @@ export class ClusterDeploymentNode extends TreeNode {
 	resource: Deployment;
 
 	constructor(deployment: Deployment) {
-		super({
-			label: deployment.metadata.name || '',
-		});
+		super(deployment.metadata.name || '');
 
 		this.resource = deployment;
 

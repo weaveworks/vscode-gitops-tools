@@ -8,33 +8,11 @@ export class TreeNode extends TreeItem {
 	children: TreeNode[] = [];
 
 	/**
-	 * Creates new tree view item.
-	 * TODO: change params back to typed params this class had originally.
-	 * @param options Tree view item options.
+	 * Creates new tree node.
+	 * @param label Tree node label
 	 */
-	constructor({
-		label,
-		description,
-		tooltip,
-		commandString,
-		args,
-	}: {
-		label: string;
-		description?: string;
-		tooltip?: string | MarkdownString;
-		commandString?: string;
-		args?: unknown[];
-	}) {
+	constructor(label: string) {
 		super(label, TreeItemCollapsibleState.None);
-		this.tooltip = tooltip;
-		this.description = description;
-		if (commandString) {
-			this.command = {
-				command: commandString,
-				arguments: args,
-				title: typeof tooltip === 'string' ? tooltip : '',
-			};
-		}
 	}
 
 	/**

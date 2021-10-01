@@ -36,12 +36,13 @@ export class DocumentationDataProvider extends DataProvider {
 	private createLinkNode(link: Link, showLinkIcon = true): TreeNode {
 		let args: Uri[] = [];
 		args.push(Uri.parse(link.url));
-		let linkNode = new TreeNode({
-			label: link.title,
-			tooltip: link.url,
-			commandString: ViewCommands.Open,
-			args,
-		});
+		let linkNode = new TreeNode(link.title);
+		linkNode.tooltip = link.url;
+		linkNode.command = {
+			command: ViewCommands.Open,
+			arguments: args,
+			title: 'Open link',
+		};
 		if (showLinkIcon) {
 			linkNode.setIcon(new ThemeIcon('link-external'));
 		}

@@ -1,10 +1,5 @@
 import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from './kubernetesTypes';
-import {
-	DependsOn,
-	KubeConfig,
-	Kustomize,
-	NamespacedObjectKindReference
-} from './kustomize';
+import { DependsOn, KubeConfig, Kustomize, NamespacedObjectKindReference } from './kustomize';
 
 /**
  * Helm releases result from running
