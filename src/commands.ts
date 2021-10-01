@@ -89,16 +89,14 @@ export function registerCommands(context: ExtensionContext) {
 	});
 
 	// add open gitops resource in vscode editor command
-	context.subscriptions.push(
-		commands.registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
-			workspace.openTextDocument(uri).then(document => {
-				if (document) {
-					window.showTextDocument(document);
-				}
-			},
-			error => window.showErrorMessage(`Error loading document: ${error}`));
-		}),
-	);
+	registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
+		workspace.openTextDocument(uri).then(document => {
+			if (document) {
+				window.showTextDocument(document);
+			}
+		},
+		error => window.showErrorMessage(`Error loading document: ${error}`));
+	});
 }
 
 /**
@@ -109,7 +107,7 @@ export function registerCommands(context: ExtensionContext) {
  * @returns Disposable which unregisters this command on disposal.
  */
 function registerCommand(commandName: string, callback: (...args: any[])=> any, thisArg?: any): Disposable {
-	const command: Disposable = commands.registerCommand(commandName, callback);
+	const command: Disposable = commands.registerCommand(commandName, callback, thisArg);
 	_context.subscriptions.push(command);
 	return command;
 }
@@ -170,7 +168,7 @@ export async function enableDisableGitOps(clusterTreeItem: ClusterNode | undefin
 
 	// Prompt for confirmation
 	const confirmButton = enable ? 'Install' : 'Uninstall';
-	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterTreeItem?.name || 'current'} cluster?`;
+	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterTreeItem?.name || 'current'} cluster?`;// TODO: pass --context just in case or instead of context switching? also `--verbose` might be good
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);
