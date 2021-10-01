@@ -82,18 +82,10 @@ export class ClusterNode extends TreeNode {
 	/**
 	 * Creates markdwon string for the Cluster tree view item tooltip.
 	 * @param cluster Cluster info object.
-	 * @param showJsonConfig Optional show Json config flag for dev debug.
 	 * @returns Markdown string to use for Cluster tree view item tooltip.
 	 */
-	getMarkdown(cluster: Cluster,	showJsonConfig: boolean = false): MarkdownString {
-
-		const markdown: MarkdownString = createMarkdownTable(cluster);
-
-		if (showJsonConfig) {
-			markdown.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
-		}
-
-		return markdown;
+	getMarkdown(cluster: Cluster): MarkdownString {
+		return createMarkdownTable(cluster);
 	}
 
 }

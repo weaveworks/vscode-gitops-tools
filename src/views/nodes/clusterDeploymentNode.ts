@@ -53,18 +53,10 @@ export class ClusterDeploymentNode extends TreeNode {
 	/**
 	 * Creates markdown string for Deployment tree view item tooltip.
 	 * @param deployment controller object.
-	 * @param showJsonConfig Optional show Json config flag for dev debug.
 	 * @returns Markdown string to use for Deployment tree view item tooltip.
 	 */
-	getMarkdown(deployment: Deployment, showJsonConfig: boolean = false): MarkdownString {
-
-		const markdown: MarkdownString = createMarkdownTable(deployment);
-
-		if (showJsonConfig) {
-			markdown.appendCodeblock(JSON.stringify(deployment, null, '  '), 'json');
-		}
-
-		return markdown;
+	getMarkdown(deployment: Deployment): MarkdownString {
+		return createMarkdownTable(deployment);
 	}
 
 	/**

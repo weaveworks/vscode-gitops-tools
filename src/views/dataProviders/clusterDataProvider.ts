@@ -1,4 +1,3 @@
-import { ExtensionContext } from 'vscode';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
@@ -12,9 +11,6 @@ import { DataProvider } from './dataProvider';
  * and contexts in GitOps Clusters tree view.
  */
 export class ClusterDataProvider extends DataProvider {
-	constructor(private extensionContext: ExtensionContext) {
-		super();
-	}
 
 	/**
    * Creates Clusters tree view items from local kubernetes config.

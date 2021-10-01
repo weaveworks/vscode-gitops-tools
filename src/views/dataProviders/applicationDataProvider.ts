@@ -1,4 +1,3 @@
-import { ExtensionContext } from 'vscode';
 import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
@@ -12,9 +11,6 @@ import { DataProvider } from './dataProvider';
  * and Helm Releases in GitOps Applictions tree view.
  */
 export class ApplicationDataProvider extends DataProvider {
-	constructor(private extensionContext: ExtensionContext) {
-		super();
-	}
 
 	/**
    * Creates Application tree view items for the currently selected kubernetes cluster.

@@ -12,19 +12,10 @@ export class ApplicationNode extends TreeNode {
 	/**
 	 * Creates markdwon string for Application tree view item tooltip.
 	 * @param application Kustomize or HelmRelease application object.
-	 * @param showJsonConfig Optional show Json config for dev debug.
 	 * @returns Markdown string to use for Application tree view item tooltip.
 	 */
-	getMarkdown(application: Kustomize | HelmRelease,
-		showJsonConfig: boolean = false): MarkdownString {
-
-		const markdown: MarkdownString = createMarkdownTable(application);
-
-		if (showJsonConfig) {
-			markdown.appendCodeblock(JSON.stringify(application, null, '  '), 'json');
-		}
-
-		return markdown;
+	getMarkdown(application: Kustomize | HelmRelease): MarkdownString {
+		return createMarkdownTable(application);
 	}
 
 }

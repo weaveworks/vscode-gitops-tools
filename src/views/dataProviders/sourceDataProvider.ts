@@ -1,4 +1,3 @@
-import { ExtensionContext } from 'vscode';
 import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { BucketNode } from '../nodes/bucketNode';
@@ -12,9 +11,6 @@ import { DataProvider } from './dataProvider';
  * and Buckets in GitOps Sources tree view.
  */
 export class SourceDataProvider extends DataProvider {
-	constructor(private extensionContext: ExtensionContext) {
-		super();
-	}
 
 	/**
    * Creates Source tree view items for the currently selected kubernetes cluster.
