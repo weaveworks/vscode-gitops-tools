@@ -1,8 +1,7 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
-import { window, workspace } from 'vscode';
+import { ProgressLocation, window, workspace } from 'vscode';
 import { sendToOutputChannel } from './output';
-import { statusBar } from './statusBar';
 
 // 🚧 WORK IN PROGRESS.
 
@@ -124,39 +123,48 @@ async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefine
  * @param cmd CLI command string
  * @param revealOutputView Whether or not to show output view.
  */
-async function execWithOutput(cmd: string, revealOutputView: boolean = true) {
-	return new Promise<ShellResult>(resolve => {
-		statusBar.show('GitOps: Running CLI command');
+async function execWithOutput(cmd: string, revealOutputView: boolean = true): Promise<ShellResult> {
+
+	// Show vscode notification loading message
+	return window.withProgress({
+		location: ProgressLocation.Notification,
+		title: 'GitOps Running: ',
+	}, async progress => new Promise<ShellResult>(resolve => {
 		sendToOutputChannel(`> ${cmd}`, true, revealOutputView);
 
 		const childProcess = shelljs.exec(cmd, { async: true });
 		let stdout = '';
 		let stderr = '';
+
 		childProcess.stdout?.on('data', function(data) {
 			stdout += data;
 			sendToOutputChannel(data, false, false);
-			statusBar.show(data.split('\n')[0]);
+			progress.report({
+				message: data,
+			});
 		});
 		childProcess.stderr?.on('data', function(data) {
 			stderr += data;
 			sendToOutputChannel(data, false, false);
-			statusBar.show(data.split('\n').filter((line: string) => Boolean(line)).pop());
+			progress.report({
+				message: data,
+			});
 		});
+
 		childProcess.on('exit', function(code: number) {
-			statusBar.hide();
 			resolve({
 				code,
 				stdout,
 				stderr,
 			});
 		});
-	});
+	}));
 }
 
 function execCore(cmd: string, opts: any, callback?: ((proc: ChildProcess)=> void) | null, stdin?: string): Promise<ShellResult> {
 	return new Promise<ShellResult>(resolve => {
 		if (getUseWsl()) {
-			cmd = `wsl ${  cmd}`;
+			cmd = `wsl ${cmd}`;
 		}
 		const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => resolve({code : code, stdout : stdout, stderr : stderr}));
 		if (stdin) {
