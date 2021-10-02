@@ -1,8 +1,9 @@
 import { ExtensionContext } from 'vscode';
-import { createTreeViews } from './views/treeViews';
+import { setExtensionContext } from './asAbsolutePath';
 import { registerCommands } from './commands';
-import { statusBar } from './statusBar';
 import { checkPrerequisites, promptToInstallFlux } from './install';
+import { statusBar } from './statusBar';
+import { createTreeViews } from './views/treeViews';
 
 /**
  * Activates GitOps extension.
@@ -10,12 +11,15 @@ import { checkPrerequisites, promptToInstallFlux } from './install';
  */
 export function activate(context: ExtensionContext) {
 
+	// Keep a reference to the extension context
+	setExtensionContext(context);
+
 	// initialize gitops status bar
 	context.subscriptions.push(statusBar.status);
-	statusBar.show('Initializing GitOps');// TODO: should be inside the Cluster tree view, status bar is being stuck forever when Clusters view is not visible
+	statusBar.show('Initializing GitOps');
 
 	// create gitops tree views
-	createTreeViews(context);
+	createTreeViews();
 
 	// register gitops commands
 	registerCommands(context);

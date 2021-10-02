@@ -1,9 +1,4 @@
-import {
-  Disposable,
-  ExtensionContext,
-  Terminal,
-  window
-} from 'vscode';
+import { Disposable, ExtensionContext, Terminal, window } from 'vscode';
 
 const terminalName: string = 'gitops';
 
@@ -23,7 +18,7 @@ function getTerminal(context: ExtensionContext, workingDirectory?: string): Term
 		_disposable = window.onDidCloseTerminal((e: Terminal) => {
 			if (e.name === terminalName) {
 				_terminal = undefined;
-				_disposable!.dispose();
+				_disposable?.dispose();
 				_disposable = undefined;
 			}
 		});
@@ -50,10 +45,10 @@ function getTerminal(context: ExtensionContext, workingDirectory?: string): Term
  */
 export function runTerminalCommand(
 	context: ExtensionContext,
-  command: string,
-  args: string,
-  workingDirectory?: string): void {
-  const terminal = getTerminal(context, workingDirectory);
+	command: string,
+	args: string,
+	workingDirectory?: string): void {
+	const terminal = getTerminal(context, workingDirectory);
 	terminal.show(true);
 	terminal.sendText(`${command} ${args}`, true); // add new line
 }

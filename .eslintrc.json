@@ -12,6 +12,14 @@
 		"plugin:@typescript-eslint/recommended"
 	],
 	"rules": {
+		"@typescript-eslint/indent": [
+			"warn",
+			"tab",
+			{
+				"SwitchCase": 1
+			}
+		],
+		"@typescript-eslint/semi": "warn",
 		"@typescript-eslint/naming-convention": [
 			"warn",
 			{
@@ -21,7 +29,45 @@
 				]
 			}
 		],
-		"@typescript-eslint/semi": "warn",
+		"@typescript-eslint/comma-dangle": [
+			"warn",
+			{
+				"arrays": "always-multiline",
+				"objects": "always-multiline",
+				"imports": "never",
+				"exports": "never",
+				"functions": "always-multiline",
+				"enums": "always-multiline"
+			}
+		],
+		"@typescript-eslint/member-delimiter-style": [
+			"warn",
+			{
+				"multiline": {
+					"delimiter": "semi",
+					"requireLast": true
+				},
+				"singleline": {
+					"delimiter": "semi",
+					"requireLast": true
+				}
+			}
+		],
+		"@typescript-eslint/array-type": [
+			"warn",
+			{
+				"default": "array"
+			}
+		],
+		"@typescript-eslint/type-annotation-spacing": [
+			"warn",
+			{
+				"before": false,
+				"after": true
+			}
+		],
+		"@typescript-eslint/func-call-spacing": "warn",
+		"@typescript-eslint/prefer-for-of": "warn",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/no-empty-function": "off",
 		"@typescript-eslint/no-unused-vars": "off",
@@ -31,12 +77,35 @@
 			"warn",
 			"always"
 		],
-		"quotes": ["warn", "single"],
+		"quotes": [
+			"warn",
+			"single"
+		],
 		"curly": "warn",
+		"space-infix-ops": "warn",
+		"prefer-template": "warn",
+		"arrow-spacing": [
+			"warn",
+			{
+				"before": true,
+				"after": true
+			}
+		],
+		"arrow-parens": [
+			"warn",
+			"as-needed"
+		],
+		"arrow-body-style": [
+			"warn",
+			"as-needed"
+		],
 		"eqeqeq": "warn",
+		"brace-style": "warn",
 		"no-throw-literal": "warn",
 		"prefer-const": "off",
-		"semi": "off"
+		"semi": "off",
+		"indent": "off",
+		"comma-dangle": "off"
 	},
 	"ignorePatterns": [
 		"out",

@@ -1,8 +1,4 @@
-import {
-	MarkdownString,
-	ThemeColor,
-	ThemeIcon
-} from 'vscode';
+import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { Deployment } from '../../kubernetes/deployment';
@@ -23,9 +19,7 @@ export class ClusterDeploymentNode extends TreeNode {
 	resource: Deployment;
 
 	constructor(deployment: Deployment) {
-		super({
-			label: deployment.metadata.name || '',
-		});
+		super(deployment.metadata.name || '');
 
 		this.resource = deployment;
 
@@ -43,7 +37,7 @@ export class ClusterDeploymentNode extends TreeNode {
 		const resourceUri = kubernetesTools.getResourceUri(
 			deployment.metadata?.namespace,
 			`${ResourceTypes.Deployment}/${deployment.metadata?.name}`,
-			FileTypes.Yaml
+			FileTypes.Yaml,
 		);
 
 		// set open resource in editor command
@@ -57,18 +51,10 @@ export class ClusterDeploymentNode extends TreeNode {
 	/**
 	 * Creates markdown string for Deployment tree view item tooltip.
 	 * @param deployment controller object.
-	 * @param showJsonConfig Optional show Json config flag for dev debug.
 	 * @returns Markdown string to use for Deployment tree view item tooltip.
 	 */
-	getMarkdown(deployment: Deployment, showJsonConfig: boolean = false): MarkdownString {
-
-		const markdown: MarkdownString = createMarkdownTable(deployment);
-
-		if (showJsonConfig) {
-			markdown.appendCodeblock(JSON.stringify(deployment, null, '  '), 'json');
-		}
-
-		return markdown;
+	getMarkdown(deployment: Deployment): MarkdownString {
+		return createMarkdownTable(deployment);
 	}
 
 	/**

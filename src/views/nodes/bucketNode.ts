@@ -1,17 +1,17 @@
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
+import { Bucket } from '../../kubernetes/bucket';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { Bucket } from '../../kubernetes/bucket';
-import { SourceNode } from './sourceNode';
-import { NodeLabels } from './nodeLabels';
-import { NodeContext } from './nodeContext';
 import { shortenRevision } from '../../utils/stringUtils';
+import { NodeContext } from './nodeContext';
+import { NodeLabels } from './nodeLabels';
+import { SourceNode } from './sourceNode';
 
 /**
  * Defines Bucket tree view item for display in GitOps Sources tree view.
  */
- export class BucketNode extends SourceNode {
+export class BucketNode extends SourceNode {
 
 	/**
 	 * Bucket kubernetes resource object
@@ -23,10 +23,9 @@ import { shortenRevision } from '../../utils/stringUtils';
 	 * @param bucket Bucket kubernetes object info.
 	 */
 	constructor(bucket: Bucket) {
-		super({
-			label: `${NodeLabels.Bucket}: ${bucket.metadata?.name}`,
-			description: shortenRevision(bucket.status.artifact?.revision),
-		});
+		super(`${NodeLabels.Bucket}: ${bucket.metadata?.name}`);
+
+		this.description = shortenRevision(bucket.status.artifact?.revision);
 
 		// save git repository resource reference
 		this.resource = bucket;

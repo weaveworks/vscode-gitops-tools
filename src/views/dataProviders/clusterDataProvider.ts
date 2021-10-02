@@ -1,4 +1,3 @@
-import { ExtensionContext } from 'vscode';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
@@ -12,24 +11,21 @@ import { DataProvider } from './dataProvider';
  * and contexts in GitOps Clusters tree view.
  */
 export class ClusterDataProvider extends DataProvider {
-	constructor(private extensionContext: ExtensionContext) {
-		super();
-	}
 
 	/**
    * Creates Clusters tree view items from local kubernetes config.
    * @returns Cluster tree view items to display.
    */
-  async buildTree(): Promise<ClusterNode[]> {
+	async buildTree(): Promise<ClusterNode[]> {
 		// load configured kubernetes clusters
-    const clusters = await kubernetesTools.getClusters();
-    if (!clusters) {
-      return [];
-    }
-    const treeItems: ClusterNode[] = [];
+		const clusters = await kubernetesTools.getClusters();
+		if (!clusters) {
+			return [];
+		}
+		const treeItems: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
-    for (const cluster of clusters) {
+		for (const cluster of clusters) {
 			const clusterNode = new ClusterNode(cluster);
 			if (cluster.name === currentContext) {
 				clusterNode.isCurrent = true;
@@ -45,28 +41,13 @@ export class ClusterDataProvider extends DataProvider {
 				}
 			}
 			treeItems.push(clusterNode);
-    }
+		}
 
-		// Do not wait for context and icons (can take a few seconds)
-		this.updateContextAndIcons(treeItems);
-
-		// Update async status of the deployments (flux commands take even longer)
+		// Update async status of the deployments (flux commands take a while to run)
 		this.updateDeploymentStatus(currentContextTreeItem);
 
 		statusBar.hide();
-    return treeItems;
-  }
-
-	/**
-	 * Update vscode context and tree view icons
-	 * after tree view items become visible.
-	 * @param treeItems All cluster tree items.
-	 */
-	async updateContextAndIcons(treeItems: ClusterNode[]) {
-		for (const treeItem of treeItems) {
-			await treeItem.setContext();
-			this.refresh(treeItem);
-		}
+		return treeItems;
 	}
 
 	/**

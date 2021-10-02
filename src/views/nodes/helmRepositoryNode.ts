@@ -1,12 +1,12 @@
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
+import { HelmRepository } from '../../kubernetes/helmRepository';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { HelmRepository } from '../../kubernetes/helmRepository';
-import { SourceNode } from './sourceNode';
-import { NodeLabels } from './nodeLabels';
-import { NodeContext } from './nodeContext';
 import { shortenRevision } from '../../utils/stringUtils';
+import { NodeContext } from './nodeContext';
+import { NodeLabels } from './nodeLabels';
+import { SourceNode } from './sourceNode';
 
 /**
  * Defines HelmRepository tree view item for display in GitOps Sources tree view.
@@ -23,10 +23,9 @@ export class HelmRepositoryNode extends SourceNode {
 	 * @param helmRepository Helm repository kubernetes object info.
 	 */
 	constructor(helmRepository: HelmRepository) {
-		super({
-			label: `${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`,
-			description: shortenRevision(helmRepository.status.artifact?.revision),
-		});
+		super(`${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`);
+
+		this.description = shortenRevision(helmRepository.status.artifact?.revision);
 
 		// save helm repository resource reference
 		this.resource = helmRepository;

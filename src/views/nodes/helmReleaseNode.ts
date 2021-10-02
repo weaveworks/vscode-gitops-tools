@@ -1,30 +1,28 @@
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
+import { HelmRelease } from '../../kubernetes/helmRelease';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { HelmRelease } from '../../kubernetes/helmRelease';
 import { ApplicationNode } from './applicationNode';
-import { NodeLabels } from './nodeLabels';
 import { NodeContext } from './nodeContext';
+import { NodeLabels } from './nodeLabels';
 
 /**
  * Defines Helm release tree view item for display in GitOps Applications tree view.
  */
- export class HelmReleaseNode extends ApplicationNode {
+export class HelmReleaseNode extends ApplicationNode {
 
 	/**
 	 * Helm release kubernetes resource object
 	 */
- resource: HelmRelease;
+	resource: HelmRelease;
 
 	/**
 	 * Creates new helm release tree view item for display.
 	 * @param helmRelease Helm release kubernetes object info.
 	 */
 	constructor(helmRelease: HelmRelease) {
-		super({
-			label: `${NodeLabels.HelmRelease}: ${helmRelease.metadata?.name}`,
-		});
+		super(`${NodeLabels.HelmRelease}: ${helmRelease.metadata?.name}`);
 
 		// save helm release resource reference
 		this.resource = helmRelease;

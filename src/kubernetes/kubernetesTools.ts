@@ -10,6 +10,7 @@ import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
+import { KubectlVersionResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
 import { NamespaceResult } from './namespace';
 
@@ -236,6 +237,20 @@ class KubernetesTools {
 	}
 
 	/**
+	 * Return kubectl version (cluent + server) in
+	 * json format.
+	 */
+	async getKubectlVersion(): Promise<KubectlVersionResult | undefined> {
+		const shellResult = await this.invokeKubectlCommand('version -o json');
+		if (!shellResult) {
+			return;
+		}
+		if (shellResult.code === 0) {
+			return parseJson(shellResult.stdout);
+		}
+	}
+
+	/**
 	 * Gets resource Uri for loading kubernetes resource config in vscode editor.
 	 *
 	 * @see https://github.com/Azure/vscode-kubernetes-tools/blob/master/src/kuberesources.virtualfs.ts
@@ -258,7 +273,7 @@ class KubernetesTools {
 		}
 
 		// create virtual document file name with extension
-    const documentName: string = `${resourceName?.replace('/', '-')}${fileExtension}`;
+		const documentName: string = `${resourceName?.replace('/', '-')}${fileExtension}`;
 
 		// determine virtual resource file scheme
 		let scheme = KubernetesFileSchemes.Resource;
@@ -267,7 +282,7 @@ class KubernetesTools {
 		}
 
 		// determine virtual resource file authority
-    let authority: string = KubernetesFileSchemes.KubectlResource;
+		let authority: string = KubernetesFileSchemes.KubectlResource;
 		if (action === 'describe') {
 			authority = KubernetesFileSchemes.DescribeResource;
 		}
@@ -280,11 +295,11 @@ class KubernetesTools {
 
 		// create resource url
 		const nonce: number = new Date().getTime();
-    const url: string = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
+		const url: string = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
 		// console.debug(`gitops.kubernetesTools.getResourceUri: ${url}`);
 
 		// create resource uri
-    return Uri.parse(url);
+		return Uri.parse(url);
 	}
 
 }

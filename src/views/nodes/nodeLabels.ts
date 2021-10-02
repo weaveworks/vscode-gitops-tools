@@ -2,7 +2,7 @@
  * Defines kubernetes object type labels
  * for all GitOps tree view items.
  */
-export enum NodeLabels {
+export const enum NodeLabels {
 	Bucket = 'Bucket',
 	GitRepository = 'Git',
 	Kustomization = 'Kustomization',

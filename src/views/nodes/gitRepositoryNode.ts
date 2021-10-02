@@ -1,17 +1,17 @@
 import { EditorCommands } from '../../commands';
 import { FileTypes } from '../../fileTypes';
+import { GitRepository } from '../../kubernetes/gitRepository';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { GitRepository } from '../../kubernetes/gitRepository';
-import { SourceNode } from './sourceNode';
-import { NodeLabels } from './nodeLabels';
-import { NodeContext } from './nodeContext';
 import { shortenRevision } from '../../utils/stringUtils';
+import { NodeContext } from './nodeContext';
+import { NodeLabels } from './nodeLabels';
+import { SourceNode } from './sourceNode';
 
 /**
  * Defines GitRepository tree view item for display in GitOps Sources tree view.
  */
- export class GitRepositoryNode extends SourceNode {
+export class GitRepositoryNode extends SourceNode {
 
 	/**
 	 * Git repository kubernetes resource object
@@ -23,10 +23,9 @@ import { shortenRevision } from '../../utils/stringUtils';
 	 * @param gitRepository Git repository kubernetes object info.
 	 */
 	constructor(gitRepository: GitRepository) {
-		super({
-			label: `${NodeLabels.GitRepository}: ${gitRepository.metadata?.name}`,
-			description: shortenRevision(gitRepository.status.artifact?.revision),
-		});
+		super(`${NodeLabels.GitRepository}: ${gitRepository.metadata?.name}`);
+
+		this.description = shortenRevision(gitRepository.status.artifact?.revision);
 
 		// save git repository resource reference
 		this.resource = gitRepository;

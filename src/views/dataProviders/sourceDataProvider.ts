@@ -1,20 +1,16 @@
-import { ExtensionContext } from 'vscode';
+import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { DataProvider } from './dataProvider';
 import { BucketNode } from '../nodes/bucketNode';
 import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
 import { SourceNode } from '../nodes/sourceNode';
-import { ContextTypes, setContext } from '../../context';
+import { DataProvider } from './dataProvider';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
  * and Buckets in GitOps Sources tree view.
  */
 export class SourceDataProvider extends DataProvider {
-	constructor(private extensionContext: ExtensionContext) {
-		super();
-	}
 
 	/**
    * Creates Source tree view items for the currently selected kubernetes cluster.
@@ -52,6 +48,6 @@ export class SourceDataProvider extends DataProvider {
 		setContext(ContextTypes.LoadingSources, false);
 		setContext(ContextTypes.NoSources, treeItems.length === 0);
 
-    return treeItems;
-  }
+		return treeItems;
+	}
 }

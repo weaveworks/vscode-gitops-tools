@@ -13,7 +13,7 @@ export interface KubernetesObject {
 /**
  * Defines supported Kubernetes object kinds.
  */
-export enum KubernetesObjectKinds {
+export const enum KubernetesObjectKinds {
 	List = 'List',
 	Bucket = 'Bucket',
 	GitRepository = 'GitRepository',
@@ -28,7 +28,7 @@ export enum KubernetesObjectKinds {
  * Defines supported resource types
  * to construct resource Uri.
  */
-export enum ResourceTypes {
+export const enum ResourceTypes {
 	Bucket = 'buckets.source.toolkit.fluxcd.io',
 	GitRepository = 'gitrepo',
 	HelmRepository = 'helmrepo',
@@ -38,12 +38,36 @@ export enum ResourceTypes {
 	Deployment = 'deployment',
 }
 
+interface KubectlVersion {
+	major: string;
+	minor: string;
+	gitVersion: string;
+	gitCommit: string;
+	gitTreeState: string;
+	buildDate: string;
+	goVersion: string;
+	compiler: string;
+	platform: string;
+}
+
+/**
+ * The result of running `kubectl version -o json`
+ */
+export interface KubectlVersionResult {
+	clientVersion: KubectlVersion;
+	serverVersion: KubectlVersion;
+}
+
 export interface ResultMetadata {
 
-	// Version of this resource as stored in the underlying database.
+	/**
+	 * Version of this resource as stored in the underlying database.
+	 */
 	readonly resourceVersion: '';
 
-	// Deprecated in Kubernetes 1.16. Removed in Kubernetes 1.21.
+	/**
+	 * Deprecated in Kubernetes 1.16. Removed in Kubernetes 1.21.
+	 */
 	readonly selfLink?: '';
 }
 
@@ -52,22 +76,34 @@ export interface ResultMetadata {
  */
 export interface DeploymentCondition {
 
-	// Last time the condition transitioned from one status to another
+	/**
+	 * Last time the condition transitioned from one status to another
+	 */
 	lastTransitionTime?: string;
 
-	// The last time this condition was updated
+	/**
+	 * The last time this condition was updated
+	 */
 	lastUpdateTime?: string;
 
-	// A human readable message indicating details about the transition
+	/**
+	 * A human readable message indicating details about the transition
+	 */
 	message?: string;
 
-	// The reason for the condition's last transition
+	/**
+	 * The reason for the condition's last transition
+	 */
 	reason?: string;
 
-	// Status of the condition, one of True, False, Unknown
+	/**
+	 * Status of the condition, one of True, False, Unknown
+	 */
 	status: string;
 
-	// Type of deployment condition
+	/**
+	 * Type of deployment condition
+	 */
 	type: string;
 }
 
@@ -97,10 +133,14 @@ export interface KubernetesJSON {
  */
 export interface Artifact {
 
-	// Path is the relative file path of this artifact
+	/**
+	 * Path is the relative file path of this artifact
+	 */
 	readonly path: string;
 
-	// URL is the HTTP address of this artifact
+	/**
+	 * URL is the HTTP address of this artifact
+	 */
 	readonly url: string;
 
 	/**
@@ -110,10 +150,14 @@ export interface Artifact {
 	 */
 	readonly revision?: string;
 
-	// Checksum is the SHA1 checksum of the artifact
+	/**
+	 * Checksum is the SHA1 checksum of the artifact
+	 */
 	readonly checksum?: string;
 
-	// LastUpdateTime is the timestamp corresponding to the last update of this artifact
+	/**
+	 * LastUpdateTime is the timestamp corresponding to the last update of this artifact
+	 */
 	readonly lastUpdateTime: string;
 }
 
@@ -129,7 +173,7 @@ export interface ObjectMeta {
 	 * They are not queryable and should be preserved when modifying objects.
 	 * @see http://kubernetes.io/docs/user-guide/annotations
 	 */
-	annotations?: { [key: string]: string };
+	annotations?: { [key: string]: string; };
 
 	/**
 	 * The name of the cluster which the object belongs to.
@@ -244,7 +288,7 @@ export interface ObjectMeta {
 	 * May match selectors of replication controllers and services.
 	 * @see http://kubernetes.io/docs/user-guide/labels
 	 */
-	labels?: { [key: string]: string };
+	labels?: { [key: string]: string; };
 
 	/**
 	 * ManagedFields maps workflow-id and version to the set of fields
@@ -330,7 +374,9 @@ export interface ObjectMeta {
  */
 interface OwnerReference {
 
-	// API version of the referent
+	/**
+	 * API version of the referent
+	 */
 	apiVersion: string;
 
 	/**
@@ -341,7 +387,9 @@ interface OwnerReference {
 	 */
 	blockOwnerDeletion?: boolean;
 
-	// If true, this reference points to the managing controller
+	/**
+	 * If true, this reference points to the managing controller
+	 */
 	controller?: boolean;
 
 	/**
@@ -382,10 +430,14 @@ interface ManagedFieldsEntry {
 	 */
 	fieldsType?: string;
 
-	// FieldsV1 holds the first JSON version format as described in the "FieldsV1" type
+	/**
+	 * FieldsV1 holds the first JSON version format as described in the "FieldsV1" type
+	 */
 	fieldsV1?: FieldsV1;
 
-	// Manager is an identifier of the workflow managing these fields
+	/**
+	 * Manager is an identifier of the workflow managing these fields
+	 */
 	manager?: string;
 
 	/**

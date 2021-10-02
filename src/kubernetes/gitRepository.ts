@@ -1,12 +1,4 @@
-import {
-	Artifact,
-	DeploymentCondition,
-	LocalObjectReference,
-	KubernetesObject,
-	KubernetesObjectKinds,
-	ObjectMeta,
-	ResultMetadata
-} from './kubernetesTypes';
+import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from './kubernetesTypes';
 
 /**
  * Git repositories result from running
@@ -36,7 +28,9 @@ export interface GitRepository extends KubernetesObject {
 	 */
 	readonly spec: {
 
-		// The repository URL, can be a HTTP/S or SSH address
+		/**
+		 * The repository URL, can be a HTTP/S or SSH address
+		 */
 		readonly url: string;
 
 		/**
@@ -46,16 +40,24 @@ export interface GitRepository extends KubernetesObject {
 		 */
 		readonly secretRef?: LocalObjectReference;
 
-		// The interval at which to check for repository updates
+		/**
+		 * The interval at which to check for repository updates
+		 */
 		readonly interval: string;
 
-		// The timeout for remote Git operations like cloning, defaults to 20s
+		/**
+		 * The timeout for remote Git operations like cloning, defaults to 20s
+		 */
 		readonly timeout?: string;
 
-		// The Git reference to checkout and monitor for changes, defaults to master branch
+		/**
+		 * The Git reference to checkout and monitor for changes, defaults to master branch
+		 */
 		readonly ref?: GitRepositoryRef;
 
-		// Verify OpenPGP signature for the Git commit HEAD points to
+		/**
+		 * Verify OpenPGP signature for the Git commit HEAD points to
+		 */
 		readonly verify?: GitRepositoryVerification;
 
 		/**
@@ -65,7 +67,9 @@ export interface GitRepository extends KubernetesObject {
 		 */
 		readonly ignore?: string;
 
-		// This flag tells the controller to suspend the reconciliation of this source
+		/**
+		 * This flag tells the controller to suspend the reconciliation of this source
+		 */
 		readonly suspend?: boolean;
 
 		/**
@@ -80,9 +84,11 @@ export interface GitRepository extends KubernetesObject {
 		 */
 		readonly recurseSubmodules?: boolean;
 
-		// Extra git repositories to map into the repository
+		/**
+		 * Extra git repositories to map into the repository
+		 */
 		readonly include?: GitRepositoryInclude[];
-	}
+	};
 
 	/**
 	 * Git repository source status info.
@@ -91,18 +97,26 @@ export interface GitRepository extends KubernetesObject {
 	 */
 	readonly status: {
 
-		// ObservedGeneration is the last observed generation
+		/**
+		 * ObservedGeneration is the last observed generation
+		 */
 		readonly observedGeneration?: number;
 
-		// Conditions holds the conditions for the GitRepository
+		/**
+		 * Conditions holds the conditions for the GitRepository
+		 */
 		readonly conditions?: DeploymentCondition[];
 
-		// URL is the download link for the artifact output of the last repository sync
+		/**
+		 * URL is the download link for the artifact output of the last repository sync
+		 */
 		readonly url?: string;
 
-		// Artifact represents the output of the last successful repository sync
+		/**
+		 * Artifact represents the output of the last successful repository sync
+		 */
 		readonly artifact?: Artifact;
-	}
+	};
 }
 
 /**
@@ -112,16 +126,24 @@ export interface GitRepository extends KubernetesObject {
  */
 interface GitRepositoryRef {
 
-	// The Git branch to checkout, defaults to master
+	/**
+	 * The Git branch to checkout, defaults to master
+	 */
 	readonly branch?: string;
 
-	// The Git tag to checkout, takes precedence over Branch
+	/**
+	 * The Git tag to checkout, takes precedence over Branch
+	 */
 	readonly tag?: string;
 
-	// The Git tag semver expression, takes precedence over Tag
+	/**
+	 * The Git tag semver expression, takes precedence over Tag
+	 */
 	readonly semver?: string;
 
-	// The Git commit SHA to checkout, if specified Tag filters will be ignored
+	/**
+	 * The Git commit SHA to checkout, if specified Tag filters will be ignored
+	 */
 	readonly commit?: string;
 }
 
@@ -132,10 +154,14 @@ interface GitRepositoryRef {
  */
 interface GitRepositoryVerification {
 
-	// Mode describes what git object should be verified, currently (‘head’)
+	/**
+	 * Mode describes what git object should be verified, currently (‘head’)
+	 */
 	readonly mode: string;
 
-	// The secret name containing the public keys of all trusted Git authors
+	/**
+	 * The secret name containing the public keys of all trusted Git authors
+	 */
 	readonly secretRef: LocalObjectReference;
 }
 
@@ -146,12 +172,18 @@ interface GitRepositoryVerification {
  */
 interface GitRepositoryInclude {
 
-	// Reference to a GitRepository to include
+	/**
+	 * Reference to a GitRepository to include
+	 */
 	readonly repository: LocalObjectReference;
 
-	// The path to copy contents from, defaults to the root directory
+	/**
+	 * The path to copy contents from, defaults to the root directory
+	 */
 	readonly fromPath?: string;
 
-	// The path to copy contents to, defaults to the name of the source ref
+	/**
+	 * The path to copy contents to, defaults to the name of the source ref
+	 */
 	readonly toPath?: string;
 }

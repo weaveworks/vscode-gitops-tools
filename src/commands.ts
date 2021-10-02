@@ -1,9 +1,4 @@
-import {
-	commands, Disposable,
-	ExtensionContext,
-	Uri, window,
-	workspace
-} from 'vscode';
+import { commands, Disposable, ExtensionContext, Uri, window, workspace } from 'vscode';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { showOutputChannel } from './output';
@@ -15,18 +10,13 @@ import { GitRepositoryNode } from './views/nodes/gitRepositoryNode';
 import { HelmReleaseNode } from './views/nodes/helmReleaseNode';
 import { HelmRepositoryNode } from './views/nodes/helmRepositoryNode';
 import { KustomizationNode } from './views/nodes/kustomizationNode';
-import {
-	refreshApplicationTreeView,
-	refreshClusterTreeView,
-	refreshSourceTreeView,
-	refreshTreeViews
-} from './views/treeViews';
+import { refreshApplicationTreeView, refreshClusterTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
 
 /**
  * GitOps/vscode editor commands.
  */
-export enum EditorCommands {
-	OpenResource = 'gitops.editor.openResource'
+export const enum EditorCommands {
+	OpenResource = 'gitops.editor.openResource',
 }
 
 export const enum OutputCommands {
@@ -36,7 +26,7 @@ export const enum OutputCommands {
 /**
  * GitOps View commands.
  */
-export enum ViewCommands {
+export const enum ViewCommands {
 	Open = 'vscode.open',
 	SetContext = 'setContext',
 	RefreshTreeViews = 'gitops.views.refreshTreeViews',
@@ -47,7 +37,7 @@ export enum ViewCommands {
 /**
  * Kubectl commands.
  */
-export enum KubectlCommands {
+export const enum KubectlCommands {
 	Version = 'gitops.kubectl.version',
 	SetCurrentContext = 'gitops.kubectl.setCurrentContext',
 }
@@ -55,8 +45,8 @@ export enum KubectlCommands {
 /**
  * Flux commands.
  */
-export enum FluxCommands {
-  Check = 'gitops.flux.check',
+export const enum FluxCommands {
+	Check = 'gitops.flux.check',
 	CheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	EnableGitOps = 'gitops.flux.install',
 	DisableGitOps = 'gitops.flux.uninstall',
@@ -99,16 +89,14 @@ export function registerCommands(context: ExtensionContext) {
 	});
 
 	// add open gitops resource in vscode editor command
-	context.subscriptions.push(
-		commands.registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
-			workspace.openTextDocument(uri).then((document) => {
-				if (document) {
-					window.showTextDocument(document);
-				}
-			},
-			(error) => window.showErrorMessage(`Error loading document: ${error}`));
-		})
-	);
+	registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
+		workspace.openTextDocument(uri).then(document => {
+			if (document) {
+				window.showTextDocument(document);
+			}
+		},
+		error => window.showErrorMessage(`Error loading document: ${error}`));
+	});
 }
 
 /**
@@ -118,8 +106,8 @@ export function registerCommands(context: ExtensionContext) {
  * @param thisArg The `this` context used when invoking the handler function.
  * @returns Disposable which unregisters this command on disposal.
  */
-function registerCommand(commandName: string, callback: (...args: any[]) => any, thisArg?: any): Disposable {
-	const command: Disposable = commands.registerCommand(commandName, callback);
+function registerCommand(commandName: string, callback: (...args: any[])=> any, thisArg?: any): Disposable {
+	const command: Disposable = commands.registerCommand(commandName, callback, thisArg);
 	_context.subscriptions.push(command);
 	return command;
 }
@@ -180,7 +168,7 @@ export async function enableDisableGitOps(clusterTreeItem: ClusterNode | undefin
 
 	// Prompt for confirmation
 	const confirmButton = enable ? 'Install' : 'Uninstall';
-	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterTreeItem?.name || 'current'} cluster?`;
+	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterTreeItem?.name || 'current'} cluster?`;// TODO: pass --context just in case or instead of context switching? also `--verbose` might be good
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);
@@ -207,8 +195,7 @@ export async function reconcileSource(source: GitRepositoryNode | HelmRepository
 	 */
 	const sourceType = source.resource.kind === KubernetesObjectKinds.GitRepository ? 'git' :
 		source.resource.kind === KubernetesObjectKinds.HelmRepository ? 'helm' :
-		source.resource.kind === KubernetesObjectKinds.Bucket ? 'bucket' :
-		'unknown';
+			source.resource.kind === KubernetesObjectKinds.Bucket ? 'bucket' : 'unknown';
 	if (sourceType === 'unknown') {
 		window.showErrorMessage(`Unknown resource kind ${source.resource.kind}`);
 		return;
@@ -229,8 +216,7 @@ export async function reconcileApplication(application: KustomizationNode | Helm
 	 * Can be checked with: `flux reconcile --help`
 	 */
 	const applicationType = application.resource.kind === KubernetesObjectKinds.Kustomization ? 'kustomization' :
-		application.resource.kind === KubernetesObjectKinds.HelmRelease ? 'helmrelease' :
-		'unknown';
+		application.resource.kind === KubernetesObjectKinds.HelmRelease ? 'helmrelease' : 'unknown';
 	if (applicationType === 'unknown') {
 		window.showErrorMessage(`Unknown application kind ${application.resource.kind}`);
 		return;

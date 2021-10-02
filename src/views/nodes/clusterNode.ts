@@ -1,15 +1,10 @@
-import * as path from 'path';
 import { MarkdownString } from 'vscode';
 import { KubectlCommands } from '../../commands';
-import {
-	ContextTypes,
-	setContext
-} from '../../context';
-import { FileTypes } from '../../fileTypes';
+import { ContextTypes, setContext } from '../../context';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../../utils/stringUtils';
+import { refreshClusterTreeView } from '../treeViews';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
@@ -17,7 +12,7 @@ import { TreeNode } from './treeNode';
  * Defines Cluster tree view item for displaying
  * configured kubernetes clusters in GitOps Clusters tree view.
  */
- export class ClusterNode extends TreeNode {
+export class ClusterNode extends TreeNode {
 
 	/**
 	 * Cluster name
@@ -39,20 +34,15 @@ import { TreeNode } from './treeNode';
 	 * @param cluster Cluster object info.
 	 */
 	constructor(cluster: Cluster) {
-		super({
-			label: cluster.name,
-			description: cluster.cluster.server,
-		});
+		super(cluster.name);
 
 		this.name = cluster.name;
+		this.description = cluster.cluster.server;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(cluster);
 
-		this.setIcon({
-			light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', 'cloud.svg'),// TODO: put path logic into base class
-			dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'cloud.svg'),// TODO: use context.asAbsolutePath()
-		});
+		this.setIcon('cloud');
 
 		// set current context command to change selected cluster
 		this.command = {
@@ -60,12 +50,14 @@ import { TreeNode } from './treeNode';
 			arguments: [this.name],
 			title: 'Set current context',
 		};
+
+		this.updateNodeContext();
 	}
 
 	/**
-	 * Set context for active cluster (whether or not flux enabled)
+	 * Set context (flux enabled or not) and icon for the active cluster
 	 */
-	async setContext() {
+	async updateNodeContext() {
 		this.isFlux = (await kubernetesTools.isFluxInstalled(this.name)) || false;
 
 		// Update vscode context for welcome view of other tree views
@@ -75,30 +67,21 @@ import { TreeNode } from './treeNode';
 
 		if (this.isFlux) {
 			this.contextValue = NodeContext.ClusterFlux;
-			this.setIcon({
-				light: path.join(__filename, '..', '..', 'resources', 'icons', 'light', 'cloud-gitops.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'cloud-gitops.svg'),
-			});
+			this.setIcon('cloud-gitops');
 		} else {
 			this.contextValue = NodeContext.Cluster;
 		}
+
+		refreshClusterTreeView(this);
 	}
 
 	/**
 	 * Creates markdwon string for the Cluster tree view item tooltip.
 	 * @param cluster Cluster info object.
-	 * @param showJsonConfig Optional show Json config flag for dev debug.
 	 * @returns Markdown string to use for Cluster tree view item tooltip.
 	 */
-	getMarkdown(cluster: Cluster,	showJsonConfig: boolean = false): MarkdownString {
-
-		const markdown: MarkdownString = createMarkdownTable(cluster);
-
-		if (showJsonConfig) {
-			markdown.appendCodeblock(JSON.stringify(cluster, null, '  '), 'json');
-		}
-
-		return markdown;
+	getMarkdown(cluster: Cluster): MarkdownString {
+		return createMarkdownTable(cluster);
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * Defines GitOps tree view node context values.
  */
- export const enum NodeContext {
+export const enum NodeContext {
 
 	// Cluster context values
 	Cluster = 'cluster',
