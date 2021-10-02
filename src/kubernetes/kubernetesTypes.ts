@@ -38,6 +38,26 @@ export const enum ResourceTypes {
 	Deployment = 'deployment',
 }
 
+interface KubectlVersion {
+	major: string;
+	minor: string;
+	gitVersion: string;
+	gitCommit: string;
+	gitTreeState: string;
+	buildDate: string;
+	goVersion: string;
+	compiler: string;
+	platform: string;
+}
+
+/**
+ * The result of running `kubectl version -o json`
+ */
+export interface KubectlVersionResult {
+	clientVersion: KubectlVersion;
+	serverVersion: KubectlVersion;
+}
+
 export interface ResultMetadata {
 
 	/**

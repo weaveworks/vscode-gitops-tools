@@ -1,38 +1,6 @@
 import { commands, Uri, window } from 'vscode';
 import { OutputCommands } from './commands';
 import { shell } from './shell';
-import { parseJson } from './utils/jsonUtils';
-
-interface KubectlVersion {
-	major: string;
-	minor: string;
-	gitVersion: string;
-	gitCommit: string;
-	gitTreeState: string;
-	buildDate: string;
-	goVersion: string;
-	compiler: string;
-	platform: string;
-}
-
-interface KubectlVersionResult {
-	clientVersion: KubectlVersion;
-	serverVersion: KubectlVersion;
-}
-
-/**
- * Return kubectl version (cluent + server) in
- * json format.
- */
-export async function getKubectlVersion(): Promise<KubectlVersionResult | undefined> {
-	const shellResult = await shell.exec('kubectl version -o json');
-	if (!shellResult) {
-		return;
-	}
-	if (shellResult.code === 0) {
-		return parseJson(shellResult.stdout);
-	}
-}
 
 /**
  * Return flux version string.

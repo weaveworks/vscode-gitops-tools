@@ -10,6 +10,7 @@ import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
+import { KubectlVersionResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
 import { NamespaceResult } from './namespace';
 
@@ -233,6 +234,20 @@ class KubernetesTools {
 		}
 
 		return parseJson(resourcesShellResult.stdout);
+	}
+
+	/**
+	 * Return kubectl version (cluent + server) in
+	 * json format.
+	 */
+	async getKubectlVersion(): Promise<KubectlVersionResult | undefined> {
+		const shellResult = await this.invokeKubectlCommand('version -o json');
+		if (!shellResult) {
+			return;
+		}
+		if (shellResult.code === 0) {
+			return parseJson(shellResult.stdout);
+		}
 	}
 
 	/**
