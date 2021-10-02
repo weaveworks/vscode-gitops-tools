@@ -5,6 +5,9 @@ import { Link } from '../link';
 import { TreeNode } from '../nodes/treeNode';
 import { DataProvider } from './dataProvider';
 
+/**
+ * Defines data provider for Documentation tree view.
+ */
 export class DocumentationDataProvider extends DataProvider {
 
 	/**
@@ -13,17 +16,19 @@ export class DocumentationDataProvider extends DataProvider {
 	 */
 	buildTree(): Promise<TreeNode[]> {
 		const treeNodes: TreeNode[] = [];
-		DocumentationLinks.forEach(link => {
-			let treeNode = this.createLinkNode(link, false); // no icon
+
+		for (const link of DocumentationLinks) {
+			let treeNode = this.createLinkNode(link, false);
 			treeNode.collapsibleState = TreeItemCollapsibleState.Expanded;
 			treeNodes.push(treeNode);
+
 			// add doc section links
-			link.links?.forEach(childLink => {
+			for (const childLink of link.links || []) {
 				let childNode: TreeNode = this.createLinkNode(childLink);
-				childNode.parent = treeNode;
 				treeNode.addChild(childNode);
-			});
-		});
+			}
+		}
+
 		return Promise.resolve(treeNodes);
 	}
 
@@ -34,18 +39,19 @@ export class DocumentationDataProvider extends DataProvider {
    * @returns Link tree view item.
    */
 	private createLinkNode(link: Link, showLinkIcon = true): TreeNode {
-		let args: Uri[] = [];
-		args.push(Uri.parse(link.url));
 		let linkNode = new TreeNode(link.title);
 		linkNode.tooltip = link.url;
+
 		linkNode.command = {
 			command: ViewCommands.Open,
-			arguments: args,
+			arguments: [Uri.parse(link.url)],
 			title: 'Open link',
 		};
+
 		if (showLinkIcon) {
 			linkNode.setIcon(new ThemeIcon('link-external'));
 		}
+
 		return linkNode;
 	}
 }

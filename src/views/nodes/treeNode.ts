@@ -63,6 +63,7 @@ export class TreeNode extends TreeItem {
 	 */
 	addChild(child: TreeNode) {
 		this.children.push(child);
+		child.parent = this;
 		if (this.children.length) {
 			// update collapse/expand state
 			if (this.collapsibleState !== TreeItemCollapsibleState.Expanded) {
