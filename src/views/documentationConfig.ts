@@ -1,7 +1,17 @@
-import { Link } from './link';
 
-// links config for GitOps Documentation tree view
-export const DocumentationLinks: Link[] = [
+/**
+ * Link interface for documentation tree view.
+ */
+export interface DocumentationLink {
+	title: string;
+	url: string;
+	links?: DocumentationLink[];
+}
+
+/**
+ * links config for GitOps Documentation tree view.
+ */
+export const documentationLinks: DocumentationLink[] = [
 	{
 		title: 'Flux Documentation',
 		url: 'https://fluxcd.io/docs',

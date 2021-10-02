@@ -1,7 +1,6 @@
 import { ThemeIcon, TreeItemCollapsibleState, Uri } from 'vscode';
 import { ViewCommands } from '../../commands';
-import { DocumentationLinks } from '../documentationConfig';
-import { Link } from '../link';
+import { DocumentationLink, documentationLinks } from '../documentationConfig';
 import { TreeNode } from '../nodes/treeNode';
 import { DataProvider } from './dataProvider';
 
@@ -17,7 +16,7 @@ export class DocumentationDataProvider extends DataProvider {
 	buildTree(): Promise<TreeNode[]> {
 		const treeNodes: TreeNode[] = [];
 
-		for (const link of DocumentationLinks) {
+		for (const link of documentationLinks) {
 			let treeNode = this.createLinkNode(link, false);
 			treeNode.collapsibleState = TreeItemCollapsibleState.Expanded;
 			treeNodes.push(treeNode);
@@ -34,11 +33,11 @@ export class DocumentationDataProvider extends DataProvider {
 
 	/**
    * Creates link tree view item.
-   * @param link Link config with title and link url.
+   * @param link Documentation Link with title and link url.
    * @param showLinkIcon Optionally set link node icon.
-   * @returns Link tree view item.
+   * @returns Documentation Link tree view item.
    */
-	private createLinkNode(link: Link, showLinkIcon = true): TreeNode {
+	private createLinkNode(link: DocumentationLink, showLinkIcon = true): TreeNode {
 		let linkNode = new TreeNode(link.title);
 		linkNode.tooltip = link.url;
 
