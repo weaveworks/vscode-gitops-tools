@@ -3,7 +3,6 @@ import { FileTypes } from '../../fileTypes';
 import { GitRepository } from '../../kubernetes/gitRepository';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { shortenRevision } from '../../utils/stringUtils';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 import { SourceNode } from './sourceNode';
@@ -12,6 +11,8 @@ import { SourceNode } from './sourceNode';
  * Defines GitRepository tree view item for display in GitOps Sources tree view.
  */
 export class GitRepositoryNode extends SourceNode {
+
+	contextValue = NodeContext.GitRepository;
 
 	/**
 	 * Git repository kubernetes resource object
@@ -23,18 +24,10 @@ export class GitRepositoryNode extends SourceNode {
 	 * @param gitRepository Git repository kubernetes object info.
 	 */
 	constructor(gitRepository: GitRepository) {
-		super(`${NodeLabels.GitRepository}: ${gitRepository.metadata?.name}`);
-
-		this.description = shortenRevision(gitRepository.status.artifact?.revision);
+		super(`${NodeLabels.GitRepository}: ${gitRepository.metadata?.name}`, gitRepository);
 
 		// save git repository resource reference
 		this.resource = gitRepository;
-
-		// set context type value for git repository commands
-		this.contextValue = NodeContext.GitRepository;
-
-		// show markdown tooltip
-		this.tooltip = this.getMarkdown(gitRepository);
 
 		// set resource Uri to open git repository config document in editor
 		const resourceUri = kubernetesTools.getResourceUri(

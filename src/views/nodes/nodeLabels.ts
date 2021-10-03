@@ -4,7 +4,7 @@
  */
 export const enum NodeLabels {
 	Bucket = 'Bucket',
-	GitRepository = 'Git',
+	GitRepository = 'Git Repository',
 	Kustomization = 'Kustomization',
 	HelmRelease = 'Helm Release',
 	HelmRepositry = 'Helm Repository',

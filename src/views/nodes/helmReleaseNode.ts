@@ -12,6 +12,8 @@ import { NodeLabels } from './nodeLabels';
  */
 export class HelmReleaseNode extends ApplicationNode {
 
+	contextValue = NodeContext.HelmRelease;
+
 	/**
 	 * Helm release kubernetes resource object
 	 */
@@ -26,9 +28,6 @@ export class HelmReleaseNode extends ApplicationNode {
 
 		// save helm release resource reference
 		this.resource = helmRelease;
-
-		// set context type value for helm release commands
-		this.contextValue = NodeContext.HelmRelease;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(helmRelease);

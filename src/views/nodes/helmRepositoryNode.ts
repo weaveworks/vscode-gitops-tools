@@ -3,7 +3,6 @@ import { FileTypes } from '../../fileTypes';
 import { HelmRepository } from '../../kubernetes/helmRepository';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { shortenRevision } from '../../utils/stringUtils';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 import { SourceNode } from './sourceNode';
@@ -12,6 +11,8 @@ import { SourceNode } from './sourceNode';
  * Defines HelmRepository tree view item for display in GitOps Sources tree view.
  */
 export class HelmRepositoryNode extends SourceNode {
+
+	contextValue = NodeContext.HelmRepository;
 
 	/**
 	 * Helm repository kubernetes resource object
@@ -23,18 +24,10 @@ export class HelmRepositoryNode extends SourceNode {
 	 * @param helmRepository Helm repository kubernetes object info.
 	 */
 	constructor(helmRepository: HelmRepository) {
-		super(`${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`);
-
-		this.description = shortenRevision(helmRepository.status.artifact?.revision);
+		super(`${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`, helmRepository);
 
 		// save helm repository resource reference
 		this.resource = helmRepository;
-
-		// set context type value for helm repository commands
-		this.contextValue = NodeContext.HelmRepository;
-
-		// show markdown tooltip
-		this.tooltip = this.getMarkdown(helmRepository);
 
 		// set resource Uri to open helm repository config document in editor
 		const resourceUri = kubernetesTools.getResourceUri(

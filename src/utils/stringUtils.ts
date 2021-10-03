@@ -18,8 +18,7 @@ export function shortenRevision(revision: string = ''): string {
 		// git revision includes branch name
 		const [gitBranch, gitRevision] = revision.split('/');
 		return [gitBranch, '/', gitRevision.slice(0, 7)].join('');
-	}
-	else {
+	} else {
 		return revision.slice(0, 7);
 	}
 }
@@ -31,7 +30,8 @@ export function shortenRevision(revision: string = ''): string {
  * @returns vscode MarkdownString object
  */
 export function createMarkdownTable(kubernetesObject: Cluster | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment): MarkdownString {
-	const markdown = new MarkdownString();
+	const markdown = new MarkdownString(undefined, true);
+	markdown.isTrusted = true;
 	// Create table header
 	markdown.appendMarkdown('Property | Value\n');
 	markdown.appendMarkdown(':--- | :---\n');

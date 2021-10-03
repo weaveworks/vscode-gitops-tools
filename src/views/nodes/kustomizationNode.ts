@@ -12,6 +12,8 @@ import { NodeLabels } from './nodeLabels';
  */
 export class KustomizationNode extends ApplicationNode {
 
+	contextValue = NodeContext.Kustomization;
+
 	/**
 	 * Kustomize kubernetes resource object
 	 */
@@ -26,9 +28,6 @@ export class KustomizationNode extends ApplicationNode {
 
 		// save kustomization resource reference
 		this.resource = kustomization;
-
-		// set context type value for kustomization commands
-		this.contextValue = NodeContext.Kustomization;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(kustomization);

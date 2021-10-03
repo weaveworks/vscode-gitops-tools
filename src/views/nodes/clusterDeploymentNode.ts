@@ -13,6 +13,8 @@ import { TreeNode } from './treeNode';
  */
 export class ClusterDeploymentNode extends TreeNode {
 
+	contextValue = NodeContext.Deployment;
+
 	/**
 	 * Cluster deployment kubernetes resource object
 	 */
@@ -26,9 +28,6 @@ export class ClusterDeploymentNode extends TreeNode {
 		this.label = this.getImageName(deployment);
 
 		this.setIcon(new ThemeIcon('circle-large-outline'));
-
-		// set context type value for controller commands
-		this.contextValue = NodeContext.Deployment;
 
 		// show markdown tooltip
 		this.tooltip = this.getMarkdown(deployment);
