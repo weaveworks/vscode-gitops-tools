@@ -48,6 +48,9 @@ export class ApplicationDataProvider extends DataProvider {
 		if (treeItem instanceof KustomizationNode) {
 			const resources = await kubernetesTools.getChildrenOfKustomization(treeItem.resource.metadata.name || '', treeItem.resource.metadata.namespace || '');
 			return resources?.items.map(resource => new AnyResourceNode(resource)) || [];
+		} else if (treeItem instanceof HelmReleaseNode) {
+			const resources = await kubernetesTools.getChildrenOfHelmRelease(treeItem.resource.metadata.name || '', treeItem.resource.metadata.namespace || '');
+			return resources?.items.map(resource => new AnyResourceNode(resource)) || [];
 		}
 
 		return await this.buildTree();

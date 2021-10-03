@@ -237,6 +237,26 @@ class KubernetesTools {
 	}
 
 	/**
+	 * Return all kubernetes resources that were created by a helm release.
+	 * @param kustomizeName name of the helm release
+	 * @param kustomizeNamespace namespace of the helm release
+	 */
+	async getChildrenOfHelmRelease(helmReleaseName: string, helmReleaseNamespace: string): Promise<KubernetesListObject<KubernetesObject> | undefined> {
+		const resourceKinds = await this.getAvailableResourceKinds();
+		if (!resourceKinds) {
+			return;
+		}
+		const query = `get ${resourceKinds.join(',')} -l helm.toolkit.fluxcd.io/name=${helmReleaseName} -n ${helmReleaseNamespace} -o json`;
+		const resourcesShellResult = await this.invokeKubectlCommand(query);
+		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
+			window.showErrorMessage(`Failed to get helm release created resources: ${resourcesShellResult?.stderr}`);
+			return undefined;
+		}
+
+		return parseJson(resourcesShellResult.stdout);
+	}
+
+	/**
 	 * Return kubectl version (cluent + server) in
 	 * json format.
 	 */

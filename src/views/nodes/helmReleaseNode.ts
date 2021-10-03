@@ -45,5 +45,7 @@ export class HelmReleaseNode extends ApplicationNode {
 			title: 'View Resource',
 		};
 
+		this.makeCollapsible();
+
 	}
 }
