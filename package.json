@@ -43,6 +43,8 @@
 		"onCommand:gitops.views.refreshSourceTreeView",
 		"onCommand:gitops.views.refreshApplicationTreeView",
 		"onCommand:gitops.editor.openResource",
+		"onCommand:gitops.editor.showLogs",
+		"onCommand:gitops.output.show",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
 		"onView:gitops.views.applications",
@@ -113,6 +115,11 @@
 			{
 				"command": "gitops.output.show",
 				"title": "Show Output",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.editor.showLogs",
+				"title": "Show Logs",
 				"category": "GitOps"
 			}
 		],
@@ -219,6 +226,10 @@
 					"when": "view == gitops.views.clusters && viewItem =~ /^(cluster|clusterFlux)$/"
 				},
 				{
+					"command": "gitops.editor.showLogs",
+					"when": "view =~ /^(gitops.views.clusters|gitops.views.sources|gitops.views.applications)$/ viewItem =~ /^deployment$/"
+				},
+				{
 					"command": "gitops.flux.install",
 					"when": "view == gitops.views.clusters && viewItem == cluster"
 				},
@@ -258,6 +269,10 @@
 				},
 				{
 					"command": "gitops.flux.reconcileApplication",
+					"when": "never"
+				},
+				{
+					"command": "gitops.editor.showLogs",
 					"when": "never"
 				}
 			]

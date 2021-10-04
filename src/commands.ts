@@ -5,11 +5,13 @@ import { showOutputChannel } from './output';
 import { shell } from './shell';
 import { runTerminalCommand } from './terminal';
 import { BucketNode } from './views/nodes/bucketNode';
+import { ClusterDeploymentNode } from './views/nodes/clusterDeploymentNode';
 import { ClusterNode } from './views/nodes/clusterNode';
 import { GitRepositoryNode } from './views/nodes/gitRepositoryNode';
 import { HelmReleaseNode } from './views/nodes/helmReleaseNode';
 import { HelmRepositoryNode } from './views/nodes/helmRepositoryNode';
 import { KustomizationNode } from './views/nodes/kustomizationNode';
+import { SourceNode } from './views/nodes/sourceNode';
 import { refreshApplicationTreeView, refreshClusterTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
 
 /**
@@ -17,6 +19,7 @@ import { refreshApplicationTreeView, refreshClusterTreeView, refreshSourceTreeVi
  */
 export const enum EditorCommands {
 	OpenResource = 'gitops.editor.openResource',
+	ShowLogs = 'gitops.editor.showLogs',
 }
 
 export const enum OutputCommands {
@@ -86,6 +89,37 @@ export function registerCommands(context: ExtensionContext) {
 	});
 	registerCommand(FluxCommands.DisableGitOps, (clusterTreeItem: ClusterNode) => {
 		enableDisableGitOps(clusterTreeItem, false);
+	});
+
+	// show logs in the editor webview (running Kubernetes extension command)
+	registerCommand(EditorCommands.ShowLogs, (node: ClusterDeploymentNode | SourceNode) => {
+		window.showInformationMessage('Not implemented yet!', {modal: true});// TODO: implement "Show Logs"
+		return;
+		// console.log(node);
+
+		// interface ClusterExplorerResourceNode {
+		// 	readonly nodeType: 'resource';
+		// 	readonly name: string;
+		// 	readonly namespace: string;
+		// 	readonly kindName: string;
+		// 	readonly metadata: ObjectMeta;
+		// 	readonly kind: ResourceKind;
+		// 	uri(outputFormat: string): Uri;
+		// }
+
+		// const resource: ClusterExplorerResourceNode = {
+		// 	nodeType: 'resource',
+		// 	name: node.resource.metadata.name!,
+		// 	namespace: node.resource.metadata.namespace!,
+		// 	kindName: `deployment/${node.resource.metadata.name}`,
+		// 	metadata: node.resource.metadata,
+		// 	kind: new ResourceKind('Deployment', 'Deployments', 'Deployment', 'deployment', 'deployments'),
+		// 	uri(format: string) {
+		// 		return kubernetesTools.getResourceUri(node.resource.metadata.namespace, `deployment/${node.resource.metadata.name}`, format);
+		// 	},
+		// };
+
+		// commands.executeCommand('extension.vsKubernetesLogs', resource);
 	});
 
 	// add open gitops resource in vscode editor command
