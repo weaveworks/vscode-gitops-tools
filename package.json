@@ -226,10 +226,6 @@
 					"when": "view == gitops.views.clusters && viewItem =~ /^cluster;/"
 				},
 				{
-					"command": "gitops.editor.showLogs",
-					"when": "view =~ /^(gitops.views.clusters|gitops.views.sources|gitops.views.applications)$/ && viewItem =~ /^deployment$/"
-				},
-				{
 					"command": "gitops.flux.install",
 					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsNotInstalled;/"
 				},
