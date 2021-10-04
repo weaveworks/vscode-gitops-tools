@@ -180,15 +180,15 @@ export async function setKubernetesClusterContext(contextName: string) {
 
 /**
  * Install or uninstall flux from the passed or current cluster (if first argument is undefined)
- * @param clusterTreeItem target cluster tree view item
+ * @param clusterNode target cluster tree view item
  * @param enable Specifies if function should install or uninstall
  */
-export async function enableDisableGitOps(clusterTreeItem: ClusterNode | undefined, enable: boolean) {
-	if (clusterTreeItem) {
-		// Command was called from context menu (clusterTreeItem is defined)
+export async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable: boolean) {
+	if (clusterNode) {
+		// Command was called from context menu (clusterNode is defined)
 
 		// Switch current context if needed
-		const setContextResult = await kubernetesTools.setCurrentContext(clusterTreeItem.name);
+		const setContextResult = await kubernetesTools.setCurrentContext(clusterNode.name);
 		if (!setContextResult) {
 			window.showErrorMessage('Coundn\'t set current context');
 			return;
@@ -202,7 +202,7 @@ export async function enableDisableGitOps(clusterTreeItem: ClusterNode | undefin
 
 	// Prompt for confirmation
 	const confirmButton = enable ? 'Install' : 'Uninstall';
-	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterTreeItem?.name || 'current'} cluster?`;// TODO: pass --context just in case or instead of context switching? also `--verbose` might be good
+	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster? (${clusterNode?.clusterType === 'aks' ? 'AKS cluster' : 'Not AKS cluster'})`;// TODO: pass --context just in case or instead of context switching?
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);

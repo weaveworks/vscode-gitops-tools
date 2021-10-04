@@ -223,19 +223,19 @@
 			"view/item/context": [
 				{
 					"command": "gitops.flux.check",
-					"when": "view == gitops.views.clusters && viewItem =~ /^(cluster|clusterFlux)$/"
+					"when": "view == gitops.views.clusters && viewItem =~ /^cluster;/"
 				},
 				{
 					"command": "gitops.editor.showLogs",
-					"when": "view =~ /^(gitops.views.clusters|gitops.views.sources|gitops.views.applications)$/ viewItem =~ /^deployment$/"
+					"when": "view =~ /^(gitops.views.clusters|gitops.views.sources|gitops.views.applications)$/ && viewItem =~ /^deployment$/"
 				},
 				{
 					"command": "gitops.flux.install",
-					"when": "view == gitops.views.clusters && viewItem == cluster"
+					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsNotInstalled;/"
 				},
 				{
 					"command": "gitops.flux.uninstall",
-					"when": "view == gitops.views.clusters && viewItem == clusterFlux"
+					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsInstalled;/"
 				},
 				{
 					"command": "gitops.flux.reconcileSource",

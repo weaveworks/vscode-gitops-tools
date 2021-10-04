@@ -13,7 +13,9 @@ import { KubernetesFileSchemes } from './kubernetesFileSchemes';
 import { KubectlVersionResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
 import { NamespaceResult } from './namespace';
+import { NodeResult } from './node';
 
+export type ClusterType = 'aks' | 'notAks';
 
 /**
  * Defines Kubernetes Tools class for integration
@@ -238,8 +240,8 @@ class KubernetesTools {
 
 	/**
 	 * Return all kubernetes resources that were created by a helm release.
-	 * @param kustomizeName name of the helm release
-	 * @param kustomizeNamespace namespace of the helm release
+	 * @param helmReleaseName name of the helm release
+	 * @param helmReleaseNamespace namespace of the helm release
 	 */
 	async getChildrenOfHelmRelease(helmReleaseName: string, helmReleaseNamespace: string): Promise<KubernetesListObject<KubernetesObject> | undefined> {
 		const resourceKinds = await this.getAvailableResourceKinds();
@@ -254,6 +256,36 @@ class KubernetesTools {
 		}
 
 		return parseJson(resourcesShellResult.stdout);
+	}
+
+	/**
+	 * Try to detect a cluster type by using `spec.providerID` on a random node.
+	 * @param context target context to get nodes from
+	 */
+	async detectClusterType(context: string): Promise<undefined | ClusterType> {
+		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
+		if (!nodesShellResult) {
+			return;
+		}
+		if (nodesShellResult.code !== 0) {
+			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type.`);
+			return;
+		}
+
+		const nodes: NodeResult = parseJson(nodesShellResult.stdout);
+		const firstNode = nodes.items[0];
+		if (!firstNode) {
+			console.warn(`No nodes in the "${context}" context to determine the cluster type.`);
+			return;
+		}
+
+		const providerID = firstNode.spec.providerID;
+
+		if (providerID?.startsWith('azure:///')) {
+			return 'aks';
+		} else {
+			return 'notAks';
+		}
 	}
 
 	/**
