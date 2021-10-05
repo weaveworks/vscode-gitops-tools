@@ -1,7 +1,7 @@
 import { V1Node } from '@kubernetes/client-node';
 import { KubernetesObjectKinds, ResultMetadata } from './kubernetesTypes';
 
-//TODO: merge with `namespace.ts` file or make a generic type?
+//TODO: merge with `namespace.ts` & `pod.ts` file or make a generic type?
 
 /**
  * Node info object.

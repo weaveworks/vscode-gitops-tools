@@ -14,6 +14,7 @@ import { KubectlVersionResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
 import { NamespaceResult } from './namespace';
 import { NodeResult } from './node';
+import { PodResult } from './pod';
 
 export type ClusterType = 'aks' | 'notAks';
 
@@ -114,6 +115,31 @@ class KubernetesTools {
 			return;
 		}
 		return kubectlConfigValue.clusters;
+	}
+
+	/**
+	 * Get pods (filter by name and namespace).
+	 * @param name pod target name
+	 * @param namespace pod target namespace
+	 */
+	async getPods(name: string = '', namespace: string = ''): Promise<undefined | PodResult> {
+		const nameArg = name ? `-l app=${name}` : '';
+
+		let namespaceArg = '';
+		if (namespace === 'all') {
+			namespaceArg = '--all-namespaces';
+		} else if (namespace.length > 0) {
+			namespaceArg = `--namespace=${namespace}`;
+		}
+
+		const podResult = await this.invokeKubectlCommand(`get pod ${nameArg} ${namespaceArg} -o json`);
+
+		if (!podResult || podResult.code !== 0) {
+			console.warn(`Failed to get pods: ${podResult?.stderr}`);
+			return;
+		}
+
+		return parseJson(podResult?.stdout);
 	}
 
 	/**

@@ -1,4 +1,6 @@
+import { V1ObjectMeta } from '@kubernetes/client-node';
 import { commands, Disposable, ExtensionContext, Uri, window, workspace } from 'vscode';
+import { allKinds, ResourceKind } from './kuberesources';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { showOutputChannel } from './output';
@@ -11,7 +13,6 @@ import { GitRepositoryNode } from './views/nodes/gitRepositoryNode';
 import { HelmReleaseNode } from './views/nodes/helmReleaseNode';
 import { HelmRepositoryNode } from './views/nodes/helmRepositoryNode';
 import { KustomizationNode } from './views/nodes/kustomizationNode';
-import { SourceNode } from './views/nodes/sourceNode';
 import { refreshApplicationTreeView, refreshClusterTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
 
 /**
@@ -92,34 +93,39 @@ export function registerCommands(context: ExtensionContext) {
 	});
 
 	// show logs in the editor webview (running Kubernetes extension command)
-	registerCommand(EditorCommands.ShowLogs, (node: ClusterDeploymentNode | SourceNode) => {
-		window.showInformationMessage('Not implemented yet!', {modal: true});// TODO: implement "Show Logs"
-		return;
-		// console.log(node);
+	registerCommand(EditorCommands.ShowLogs, async (deploymentNode: ClusterDeploymentNode) => {
 
-		// interface ClusterExplorerResourceNode {
-		// 	readonly nodeType: 'resource';
-		// 	readonly name: string;
-		// 	readonly namespace: string;
-		// 	readonly kindName: string;
-		// 	readonly metadata: ObjectMeta;
-		// 	readonly kind: ResourceKind;
-		// 	uri(outputFormat: string): Uri;
-		// }
+		interface ResourceNode {
+			readonly nodeType: 'resource';
+			readonly name?: string;
+			readonly namespace?: string;
+			readonly kindName: string;
+			readonly metadata: V1ObjectMeta;
+			readonly kind: ResourceKind;
+			uri(outputFormat: string): Uri;
+		}
 
-		// const resource: ClusterExplorerResourceNode = {
-		// 	nodeType: 'resource',
-		// 	name: node.resource.metadata.name!,
-		// 	namespace: node.resource.metadata.namespace!,
-		// 	kindName: `deployment/${node.resource.metadata.name}`,
-		// 	metadata: node.resource.metadata,
-		// 	kind: new ResourceKind('Deployment', 'Deployments', 'Deployment', 'deployment', 'deployments'),
-		// 	uri(format: string) {
-		// 		return kubernetesTools.getResourceUri(node.resource.metadata.namespace, `deployment/${node.resource.metadata.name}`, format);
-		// 	},
-		// };
+		const pods = await kubernetesTools.getPods(deploymentNode.resource.metadata.name, deploymentNode.resource.metadata.namespace);
+		const pod = pods?.items[0];
 
-		// commands.executeCommand('extension.vsKubernetesLogs', resource);
+		if (!pod) {
+			window.showErrorMessage(`No pods were found from ${deploymentNode.resource.metadata.name} deployment.`);
+			return;
+		}
+
+		const podResourceNode: ResourceNode = {
+			nodeType: 'resource',
+			name: pod.metadata.name,
+			namespace: pod.metadata.namespace,
+			metadata: pod.metadata,
+			kindName: `pod/${pod.metadata.name}`,
+			kind: allKinds.pod,
+			uri(outputFormat: string) {
+				return kubernetesTools.getResourceUri(this.namespace, this.kindName, outputFormat);
+			},
+		};
+
+		commands.executeCommand('extension.vsKubernetesLogs', podResourceNode);
 	});
 
 	// add open gitops resource in vscode editor command

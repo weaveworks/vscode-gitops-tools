@@ -23,6 +23,7 @@ export const enum KubernetesObjectKinds {
 	Deployment = 'Deployment',
 	Namespace = 'Namespace',
 	Node = 'Node',
+	Pod = 'Pod',
 }
 
 /**

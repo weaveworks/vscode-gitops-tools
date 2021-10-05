@@ -240,6 +240,10 @@
 				{
 					"command": "gitops.flux.reconcileApplication",
 					"when": "view == gitops.views.applications && viewItem =~ /^(kustomization|helmRelease)$/"
+				},
+				{
+					"command": "gitops.editor.showLogs",
+					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /^(deployment)$/"
 				}
 			],
 			"commandPalette": [
