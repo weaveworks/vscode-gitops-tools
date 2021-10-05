@@ -27,16 +27,25 @@ export type ClusterType = 'aks' | 'notAks';
 class KubernetesTools {
 
 	/**
+	 * Keep a reference to the Kubernetes extension api.
+	 */
+	private kubectlApi?: kubernetes.KubectlV1;
+
+	/**
 	 * Gets kubernetes tools extension kubectl api reference.
 	 * @see https://github.com/Azure/vscode-kubernetes-tools-api
 	 */
 	async getKubectlApi() {
+		if (this.kubectlApi) {
+			return this.kubectlApi;
+		}
 		const kubectl = await kubernetes.extension.kubectl.v1;
 		if (!kubectl.available) {
 			window.showErrorMessage(`Kubernetes Tools Kubectl API is unavailable: ${kubectl.reason}`);
 			return;
 		}
-		return kubectl.api;
+		this.kubectlApi = kubectl.api;
+		return this.kubectlApi;
 	}
 
 	/**
