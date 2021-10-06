@@ -5,7 +5,6 @@ import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { showOutputChannel } from './output';
 import { shell } from './shell';
-import { runTerminalCommand } from './terminal';
 import { BucketNode } from './views/nodes/bucketNode';
 import { ClusterDeploymentNode } from './views/nodes/clusterDeploymentNode';
 import { ClusterNode } from './views/nodes/clusterNode';
@@ -56,14 +55,6 @@ export const enum FluxCommands {
 	DisableGitOps = 'gitops.flux.uninstall',
 	ReconcileSource = 'gitops.flux.reconcileSource',
 	ReconcileApplication = 'gitops.flux.reconcileApplication',
-}
-
-/**
- * Cli executable names.
- */
-export const enum TerminalCLICommands {
-	Flux = 'flux',
-	Kubectl = 'kubectl',
 }
 
 let _context: ExtensionContext;
@@ -156,21 +147,21 @@ function registerCommand(commandName: string, callback: (...args: any[])=> any, 
  * Outputs kubectl version in gitops terminal.
  */
 async function showKubectlVersion() {
-	runTerminalCommand(_context, TerminalCLICommands.Kubectl, 'version');
+	shell.execWithOutput('kubectl version');
 }
 
 /**
  * Runs `flux check` command for selected cluster in gitops terminal.
  */
 async function checkFlux(clusterNode: ClusterNode) {
-	runTerminalCommand(_context, TerminalCLICommands.Flux, `check --context ${clusterNode.name}`);
+	shell.execWithOutput(`flux check --context ${clusterNode.name}`);
 }
 
 /**
  * Runs `flux check --pre` command in gitops terminal.
  */
 async function checkFluxPrerequisites() {
-	runTerminalCommand(_context, TerminalCLICommands.Flux, 'check --pre');
+	shell.execWithOutput('flux check --pre');
 }
 
 /**
@@ -221,7 +212,7 @@ export async function enableDisableGitOps(clusterNode: ClusterNode | undefined, 
 	if (clusterNode) {
 		contextArg = `--context=${clusterNode.name}`;
 	}
-	await shell.execWithOutput(`${TerminalCLICommands.Flux} ${enable ? 'install' : 'uninstall --silent'} ${contextArg}`);
+	await shell.execWithOutput(`flux ${enable ? 'install' : 'uninstall --silent'} ${contextArg}`);
 
 	// Refresh now that flux is installed or uninstalled
 	setTimeout(() => {
@@ -246,7 +237,7 @@ export async function reconcileSource(source: GitRepositoryNode | HelmRepository
 		return;
 	}
 
-	await shell.execWithOutput(`${TerminalCLICommands.Flux} reconcile source ${sourceType} ${source.resource.metadata.name} -n ${source.resource.metadata.namespace}`);
+	await shell.execWithOutput(`flux reconcile source ${sourceType} ${source.resource.metadata.name} -n ${source.resource.metadata.namespace}`);
 
 	refreshSourceTreeView();
 }
@@ -267,7 +258,7 @@ export async function reconcileApplication(application: KustomizationNode | Helm
 		return;
 	}
 
-	await shell.execWithOutput(`${TerminalCLICommands.Flux} reconcile ${applicationType} ${application.resource.metadata.name} -n ${application.resource.metadata.namespace}`);
+	await shell.execWithOutput(`flux reconcile ${applicationType} ${application.resource.metadata.name} -n ${application.resource.metadata.namespace}`);
 
 	refreshApplicationTreeView();
 }
