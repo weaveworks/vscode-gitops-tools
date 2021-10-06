@@ -2,7 +2,7 @@ import { V1ObjectMeta } from '@kubernetes/client-node';
 import { commands, Disposable, ExtensionContext, Uri, window, workspace } from 'vscode';
 import { allKinds, ResourceKind } from './kuberesources';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
-import { KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
+import { ClusterProvider, KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
 import { showOutputChannel } from './output';
 import { shell } from './shell';
 import { BucketNode } from './views/nodes/bucketNode';
@@ -199,8 +199,7 @@ export async function enableDisableGitOps(clusterNode: ClusterNode | undefined, 
 
 	// Prompt for confirmation
 	const confirmButton = enable ? 'Install' : 'Uninstall';
-	const confirmationMessage = `Do you want to	${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster?
-		(${clusterNode?.clusterType === 'aks' ? 'AKS cluster' : 'Not AKS cluster'})`;
+	const confirmationMessage = `Do you want to	${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster? (${clusterNode?.clusterProvider === ClusterProvider.AKS ? 'AKS cluster' : 'Generic cluster'})`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);

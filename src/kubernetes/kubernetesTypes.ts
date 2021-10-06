@@ -518,3 +518,20 @@ interface ManagedFieldsEntry {
 interface FieldsV1 {
 	[key: string]: unknown;
 }
+
+/**
+ * Cluster providers will have some differences.
+ * For example, AKS cluster has special handling
+ * for enabling GitOps.
+ */
+export const enum ClusterProvider {
+	/**
+	 * Azure Kubernetes Service.
+	 */
+	AKS = 'AKS',
+	/**
+	 * Any cluster that is not Azure Kubernetes Service is
+	 * considered generic at this point.
+	 */
+	Generic = 'Generic',
+}

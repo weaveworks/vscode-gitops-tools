@@ -2,7 +2,8 @@ import { MarkdownString } from 'vscode';
 import { KubectlCommands } from '../../commands';
 import { ContextTypes, setContext } from '../../context';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
-import { ClusterType, kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { ClusterProvider } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../../utils/stringUtils';
 import { refreshClusterTreeView } from '../treeViews';
 import { NodeContext } from './nodeContext';
@@ -27,7 +28,7 @@ export class ClusterNode extends TreeNode {
 	/**
 	 * Whether cluster is Azure (AKS) or other type.
 	 */
-	clusterType?: ClusterType;
+	clusterProvider?: ClusterProvider;
 
 	/**
 	 * Current/active cluster.
@@ -70,7 +71,7 @@ export class ClusterNode extends TreeNode {
 	 */
 	async updateNodeContext() {
 		this.isGitOpsInstalled = (await kubernetesTools.isFluxInstalled(this.name)) || false;
-		this.clusterType = await kubernetesTools.detectClusterType(this.name);
+		this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent) {
@@ -100,14 +101,14 @@ export class ClusterNode extends TreeNode {
 		}
 
 		markdown.appendMarkdown('\n\n---\n\n');
-		markdown.appendMarkdown(`Cluster Type: ${this.clusterType === 'aks' ? 'AKS' : 'Not AKS'}`);
+		markdown.appendMarkdown(`Cluster Type: ${this.clusterProvider === ClusterProvider.AKS ? 'AKS' : 'Generic'}`);
 
 		return markdown;
 	}
 
 	// @ts-ignore
 	get contextValue(): string {
-		return `cluster;${this.isGitOpsInstalled ? NodeContext.ClusterGitOpsInstalled : NodeContext.ClusterGitOpsNotInstalled};${this.clusterType === 'aks' ? NodeContext.ClusterTypeAKS : NodeContext.ClusterTypeNotAKS};`;
+		return `cluster;${this.isGitOpsInstalled ? NodeContext.ClusterGitOpsInstalled : NodeContext.ClusterGitOpsNotInstalled};${this.clusterProvider === ClusterProvider.AKS ? NodeContext.ClusterProviderAKS : NodeContext.ClusterProviderGeneric};`;
 	}
 
 	// @ts-ignore

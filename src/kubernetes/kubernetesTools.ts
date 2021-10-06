@@ -9,10 +9,8 @@ import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
-import { DeploymentResult, KubectlVersionResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
+import { ClusterProvider, DeploymentResult, KubectlVersionResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
-
-export type ClusterType = 'aks' | 'notAks';
 
 /**
  * Defines Kubernetes Tools class for integration
@@ -293,7 +291,7 @@ class KubernetesTools {
 	 * Try to detect a cluster type by using `spec.providerID` on a random node.
 	 * @param context target context to get nodes from
 	 */
-	async detectClusterType(context: string): Promise<undefined | ClusterType> {
+	async detectClusterProvider(context: string): Promise<undefined | ClusterProvider> {
 		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
 		if (!nodesShellResult) {
 			return;
@@ -313,9 +311,9 @@ class KubernetesTools {
 		const providerID = firstNode.spec.providerID;
 
 		if (providerID?.startsWith('azure:///')) {
-			return 'aks';
+			return ClusterProvider.AKS;
 		} else {
-			return 'notAks';
+			return ClusterProvider.Generic;
 		}
 	}
 
