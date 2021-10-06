@@ -4,17 +4,13 @@ import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { ContextTypes, setContext } from '../context';
 import { parseJson } from '../utils/jsonUtils';
 import { BucketResult } from './bucket';
-import { DeploymentResult } from './deployment';
 import { GitRepositoryResult } from './gitRepository';
 import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
-import { KubectlVersionResult } from './kubernetesTypes';
+import { DeploymentResult, KubectlVersionResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
-import { NamespaceResult } from './namespace';
-import { NodeResult } from './node';
-import { PodResult } from './pod';
 
 export type ClusterType = 'aks' | 'notAks';
 

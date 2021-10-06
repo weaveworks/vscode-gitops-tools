@@ -1,3 +1,5 @@
+import { V1Deployment, V1Namespace, V1Node, V1Pod } from '@kubernetes/client-node';
+
 /**
  * Defines base Kubernetes object with common fields.
  *
@@ -9,6 +11,37 @@ export interface KubernetesObject {
 	readonly metadata: unknown;
 	readonly spec: unknown;
 }
+
+/**
+ * Make a kubernetes list out of kubernetes resource type.
+ */
+interface KubernetesList<T> {
+	readonly apiVersion: string;
+	readonly kind: KubernetesObjectKinds.List;
+	readonly items: T[];
+	readonly metadata: ResultMetadata;
+}
+
+// Fix types from `@kubernetes/client-node`
+export type Namespace = Required<V1Namespace> & {
+	readonly kind: KubernetesObjectKinds.Namespace;
+};
+export type NamespaceResult = KubernetesList<Namespace>;
+
+export type Deployment = Required<V1Deployment> & {
+	readonly kind: KubernetesObjectKinds.Deployment;
+};
+export type DeploymentResult = KubernetesList<Deployment>;
+
+export type Node = Required<V1Node> & {
+	readonly kind: KubernetesObjectKinds.Node;
+};
+export type NodeResult = KubernetesList<Node>;
+
+export type Pod = Required<V1Pod> & {
+	readonly kind: KubernetesObjectKinds.Pod;
+};
+export type PodResult = KubernetesList<Pod>;
 
 /**
  * Defines supported Kubernetes object kinds.

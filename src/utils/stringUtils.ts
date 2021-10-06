@@ -1,11 +1,10 @@
 import { MarkdownString } from 'vscode';
 import { Bucket } from '../kubernetes/bucket';
-import { Deployment } from '../kubernetes/deployment';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { HelmRepository } from '../kubernetes/helmRepository';
 import { Cluster } from '../kubernetes/kubernetesConfig';
-import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { Deployment, KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { Kustomize } from '../kubernetes/kustomize';
 
 /**
