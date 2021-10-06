@@ -200,15 +200,16 @@ export async function enableDisableGitOps(clusterNode: ClusterNode | undefined, 
 			return;
 		}
 
-		// Refresh if context was changed
+		// Refresh all tree views if context was changed
 		if (setContextResult.isChanged) {
-			refreshClusterTreeView();
+			refreshTreeViews();
 		}
 	}
 
 	// Prompt for confirmation
 	const confirmButton = enable ? 'Install' : 'Uninstall';
-	const confirmationMessage = `Do you want to ${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster? (${clusterNode?.clusterType === 'aks' ? 'AKS cluster' : 'Not AKS cluster'})`;// TODO: pass --context just in case or instead of context switching?
+	const confirmationMessage = `Do you want to	${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster?
+		(${clusterNode?.clusterType === 'aks' ? 'AKS cluster' : 'Not AKS cluster'})`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);
@@ -216,7 +217,11 @@ export async function enableDisableGitOps(clusterNode: ClusterNode | undefined, 
 		return;
 	}
 
-	await shell.execWithOutput(`${TerminalCLICommands.Flux} ${enable ? 'install' : 'uninstall --silent'}`);
+	let contextArg = '';
+	if (clusterNode) {
+		contextArg = `--context=${clusterNode.name}`;
+	}
+	await shell.execWithOutput(`${TerminalCLICommands.Flux} ${enable ? 'install' : 'uninstall --silent'} ${contextArg}`);
 
 	// Refresh now that flux is installed or uninstalled
 	setTimeout(() => {
