@@ -2,6 +2,25 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.6.0 - [2021-10-07]
+
+- [#41](https://github.com/weaveworks/vscode-gitops-tools/issues/41)
+Indicate fetch errors on sources
+- [#82](https://github.com/weaveworks/vscode-gitops-tools/issues/82)
+Identify whether Cluster is managed by Azure or not
+- [#83](https://github.com/weaveworks/vscode-gitops-tools/issues/83)
+Show first level of objects created as children of an Application of type HelmRelease
+- [#87](https://github.com/weaveworks/vscode-gitops-tools/issues/87)
+Add option to View controller logs on right click
+- [#90](https://github.com/weaveworks/vscode-gitops-tools/issues/90)
+Show output progress in notification
+- [#92](https://github.com/weaveworks/vscode-gitops-tools/issues/92)
+Refactor the codebase
+- [#95](https://github.com/weaveworks/vscode-gitops-tools/issues/95)
+Prerequsite check should use output view instead of the terminal
+- [#96](https://github.com/weaveworks/vscode-gitops-tools/issues/96)
+Package Sprint 6 release
+
 # v0.5.0 - [2021-09-30]
 
 - [#27](https://github.com/weaveworks/vscode-gitops-tools/issues/27)
