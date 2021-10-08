@@ -1,5 +1,5 @@
 interface ExtensionStateMap {
-	fluxVersion?: string;
+	fluxVersion: string;
 }
 
 type ExtensionStateKey = keyof ExtensionStateMap;
@@ -8,7 +8,9 @@ class ExtensionState {
 	/**
 	 * All the items of the global state.
 	 */
-	private state: ExtensionStateMap = {};
+	private state: ExtensionStateMap = {
+		fluxVersion: 'Not installed',
+	};
 
 
 	get<T extends ExtensionStateKey>(stateKey: T): ExtensionStateMap[T] {
