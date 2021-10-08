@@ -1,6 +1,7 @@
 import { MarkdownString } from 'vscode';
 import { KubectlCommands } from '../../commands';
 import { ContextTypes, setContext } from '../../context';
+import { extensionState } from '../../extensionState';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../../kubernetes/kubernetesTypes';
@@ -95,10 +96,8 @@ export class ClusterNode extends TreeNode {
 	getMarkdown(cluster: Cluster): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(cluster);
 
-		if (this.isGitOpsInstalled !== undefined) {
-			markdown.appendMarkdown('\n\n---\n\n');
-			markdown.appendMarkdown(`GitOps enabled: ${this.isGitOpsInstalled}`);
-		}
+		markdown.appendMarkdown('\n\n---\n\n');
+		markdown.appendMarkdown(`Flux Version: ${extensionState.get('fluxVersion')}`);
 
 		if (this.clusterProvider !== ClusterProvider.Generic) {
 			markdown.appendMarkdown('\n\n---\n\n');

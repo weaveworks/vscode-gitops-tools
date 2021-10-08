@@ -1,5 +1,6 @@
 import { commands, Uri, window } from 'vscode';
 import { OutputCommands } from './commands';
+import { extensionState } from './extensionState';
 import { shell } from './shell';
 
 /**
@@ -11,7 +12,9 @@ export async function getFluxVersion() {
 		return;
 	}
 	if (shellResult.code === 0) {
-		return shellResult.stdout;
+		const fluxVersion = shellResult.stdout.slice(13).trim();
+		extensionState.set('fluxVersion', fluxVersion);
+		return fluxVersion;
 	}
 }
 
