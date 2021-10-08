@@ -100,8 +100,10 @@ export class ClusterNode extends TreeNode {
 			markdown.appendMarkdown(`GitOps enabled: ${this.isGitOpsInstalled}`);
 		}
 
-		markdown.appendMarkdown('\n\n---\n\n');
-		markdown.appendMarkdown(`Cluster Type: ${this.clusterProvider === ClusterProvider.AKS ? 'AKS' : 'Generic'}`);
+		if (this.clusterProvider !== ClusterProvider.Generic) {
+			markdown.appendMarkdown('\n\n---\n\n');
+			markdown.appendMarkdown(`Cluster Provider: ${this.clusterProvider === ClusterProvider.AKS ? 'AKS' : 'Unknown'}`);
+		}
 
 		return markdown;
 	}
