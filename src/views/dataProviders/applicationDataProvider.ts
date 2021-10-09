@@ -73,7 +73,7 @@ export class ApplicationDataProvider extends DataProvider {
 			return;
 		}
 
-		applicationNode.children = [new TreeNode('No created resources')];
+		applicationNode.children = [];
 		for (const item of applicationChildren.items) {
 			const anyResourceNode = new AnyResourceNode(item);
 			applicationNode.addChild(anyResourceNode);
