@@ -26,6 +26,11 @@ class KubernetesTools {
 	private kubectlApi?: kubernetes.KubectlV1;
 
 	/**
+	 * Current cluster supported kubernetes resource kinds.
+	 */
+	private clusterSupportedResourceKinds?: string[];
+
+	/**
 	 * Gets kubernetes tools extension kubectl api reference.
 	 * @see https://github.com/Azure/vscode-kubernetes-tools-api
 	 */
@@ -236,51 +241,45 @@ class KubernetesTools {
 	 * Return all available kubernetes resource kinds.
 	 */
 	async getAvailableResourceKinds(): Promise<string[] | undefined> {
+		if (this.clusterSupportedResourceKinds) {
+			return this.clusterSupportedResourceKinds;
+		}
+
 		const kindsShellResult = await this.invokeKubectlCommand('api-resources --verbs=list -o name');
 		if (!kindsShellResult || kindsShellResult.stderr) {
+			this.clusterSupportedResourceKinds = undefined;
 			console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
 			return;
 		}
+
 		const kinds = kindsShellResult.stdout
 			.split('\n')
 			.filter(kind => kind.length);
+
+		this.clusterSupportedResourceKinds = kinds;
 		return kinds;
 	}
 
 	/**
-	 * Return all kubernetes resources that were created by a kustomize.
-	 * @param kustomizeName name of the kustomize object
-	 * @param kustomizeNamespace namespace of the kustomize object
+	 * Return all kubernetes resources that were created by a kustomize/helmRelease.
+	 * @param name name of the kustomize/helmRelease object
+	 * @param namespace namespace of the kustomize/helmRelease object
 	 */
-	async getChildrenOfKustomization(kustomizeName: string, kustomizeNamespace: string): Promise<KubernetesListObject<KubernetesObject> | undefined> {
+	async getChildrenOfApplication(
+		application: 'kustomize' | 'helm',
+		name: string,
+		namespace: string,
+	): Promise<KubernetesListObject<KubernetesObject> | undefined> {
 		const resourceKinds = await this.getAvailableResourceKinds();
 		if (!resourceKinds) {
 			return;
 		}
-		const query = `get ${resourceKinds.join(',')} -l kustomize.toolkit.fluxcd.io/name=${kustomizeName} -n ${kustomizeNamespace} -o json`;
-		const resourcesShellResult = await this.invokeKubectlCommand(query);
-		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
-			window.showErrorMessage(`Failed to get kustomization created resources: ${resourcesShellResult?.stderr}`);
-			return undefined;
-		}
 
-		return parseJson(resourcesShellResult.stdout);
-	}
-
-	/**
-	 * Return all kubernetes resources that were created by a helm release.
-	 * @param helmReleaseName name of the helm release
-	 * @param helmReleaseNamespace namespace of the helm release
-	 */
-	async getChildrenOfHelmRelease(helmReleaseName: string, helmReleaseNamespace: string): Promise<KubernetesListObject<KubernetesObject> | undefined> {
-		const resourceKinds = await this.getAvailableResourceKinds();
-		if (!resourceKinds) {
-			return;
-		}
-		const query = `get ${resourceKinds.join(',')} -l helm.toolkit.fluxcd.io/name=${helmReleaseName} -n ${helmReleaseNamespace} -o json`;
+		const query = `get ${resourceKinds.join(',')} -l ${application}.toolkit.fluxcd.io/name=${name} -n ${namespace} -o json`;
 		const resourcesShellResult = await this.invokeKubectlCommand(query);
+
 		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
-			window.showErrorMessage(`Failed to get helm release created resources: ${resourcesShellResult?.stderr}`);
+			window.showErrorMessage(`Failed to get ${application} created resources: ${resourcesShellResult?.stderr}`);
 			return undefined;
 		}
 

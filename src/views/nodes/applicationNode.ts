@@ -9,6 +9,8 @@ import { TreeNode } from './treeNode';
  */
 export class ApplicationNode extends TreeNode {
 
+	resource!: Kustomize | HelmRelease;
+
 	/**
 	 * Creates markdwon string for Application tree view item tooltip.
 	 * @param application Kustomize or HelmRelease application object.
