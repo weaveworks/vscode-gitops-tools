@@ -42,6 +42,7 @@
 		"onCommand:gitops.views.refreshTreeViews",
 		"onCommand:gitops.views.refreshSourceTreeView",
 		"onCommand:gitops.views.refreshApplicationTreeView",
+		"onCommand:gitops.views.pullGitRepository",
 		"onCommand:gitops.editor.openResource",
 		"onCommand:gitops.editor.showLogs",
 		"onCommand:gitops.output.show",
@@ -105,6 +106,11 @@
 				"title": "Refresh Applications View",
 				"category": "GitOps",
 				"icon": "$(refresh)"
+			},
+			{
+				"command": "gitops.views.pullGitRepository",
+				"title": "Pull Git Repository",
+				"category": "GitOps"
 			},
 			{
 				"command": "gitops.editor.openResource",
@@ -244,6 +250,10 @@
 				{
 					"command": "gitops.editor.showLogs",
 					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /^(deployment)$/"
+				},
+				{
+					"command": "gitops.views.pullGitRepository",
+					"when": "view == gitops.views.sources && viewItem == gitRepository"
 				}
 			],
 			"commandPalette": [
@@ -274,6 +284,10 @@
 				{
 					"command": "gitops.editor.showLogs",
 					"when": "never"
+				},
+				{
+					"command": "gitops.views.pullGitRepository",
+					"when": "never"
 				}
 			]
 		}
@@ -296,6 +310,7 @@
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^8.2.3",
 		"@types/node": "14.x",
+		"@types/semver": "^7.3.8",
 		"@types/shelljs": "^0.8.9",
 		"@types/vscode": "^1.59.0",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
@@ -311,6 +326,7 @@
 	},
 	"dependencies": {
 		"@kubernetes/client-node": "^0.15.1",
+		"semver": "^7.3.5",
 		"shelljs": "^0.8.4",
 		"vscode-kubernetes-tools-api": "^1.3.0"
 	}

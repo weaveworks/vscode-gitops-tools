@@ -43,7 +43,7 @@ class FluxTools {
 	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
 	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
-		const result = await shell.execWithOutput('flux check', false);
+		const result = await shell.execWithOutput('flux check', { revealOutputView: false });
 
 		if (result?.code !== 0) {
 			const stderr = result?.stderr;

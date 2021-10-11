@@ -28,33 +28,6 @@ export const enum Platform {
 
 export type ExecCallback = shelljs.ExecCallback;
 
-export interface Shell {
-	isWindows(): boolean;
-	isUnix(): boolean;
-	platform(): Platform;
-	exec(cmd: string, stdin?: string): Promise<ShellResult | undefined>;
-	execCore(cmd: string, opts: any, callback?: (proc: ChildProcess)=> void, stdin?: string): Promise<ShellResult>;
-	execWithOutput(cmd: string, revealOutputView?: boolean): Promise<ShellResult | undefined>;
-	// fileUri(filePath: string): Uri;
-	// home(): string;
-	// combinePath(basePath: string, relativePath: string): string;
-	// execOpts(): any;
-	// execStreaming(cmd: string, callback: ((proc: ChildProcess) => void) | undefined): Promise<ShellResult | undefined>;
-	// unquotedPath(path: string): string;
-	// which(bin: string): string | null;
-	// cat(path: string): string;
-	// ls(path: string): string[];
-}
-
-export const shell: Shell = {
-	isWindows : isWindows,
-	isUnix : isUnix,
-	platform : platform,
-	exec : exec,
-	execCore : execCore,
-	execWithOutput: execWithOutput,
-};
-
 const WINDOWS: string = 'win32';
 
 export interface ShellResult {
@@ -95,25 +68,26 @@ function platform(): Platform {
 	}
 }
 
-function execOpts(): any {
+function execOpts({ cwd }: { cwd?: string; } = {}): any {
 	// let env = process.env;
 	// if (isWindows()) {
 	//     env = Object.assign({ }, env, { HOME: home() });
 	// }
 	// env = shellEnvironment(env);
 	const opts: shelljs.ExecOptions = {
-		// cwd: workspace.rootPath,
+		cwd: cwd,
 		// env: env,
 		async: true,
 	};
 	return opts;
 }
 
-async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefined> {
+async function exec(cmd: string, { cwd }: { cwd?: string; } = {}): Promise<ShellResult | undefined> {
 	try {
-		return await execCore(cmd, execOpts(), null, stdin);
-	} catch (ex) {
-		window.showErrorMessage(String(ex));
+		return await execCore(cmd, execOpts({ cwd }), null);
+	} catch (e) {
+		console.error(e);
+		window.showErrorMessage(String(e));
 		return undefined;
 	}
 }
@@ -121,9 +95,16 @@ async function exec(cmd: string, stdin?: string): Promise<ShellResult | undefine
 /**
  * Execute command in cli and send the text to vscode output view.
  * @param cmd CLI command string
- * @param revealOutputView Whether or not to show output view.
  */
-async function execWithOutput(cmd: string, revealOutputView: boolean = true): Promise<ShellResult> {
+async function execWithOutput(
+	cmd: string,
+	{
+		revealOutputView = true,
+		cwd,
+	}: {
+		revealOutputView?: boolean;
+		cwd?: string;
+	} = {}): Promise<ShellResult> {
 
 	// Show vscode notification loading message
 	return window.withProgress({
@@ -132,7 +113,11 @@ async function execWithOutput(cmd: string, revealOutputView: boolean = true): Pr
 	}, async progress => new Promise<ShellResult>(resolve => {
 		sendToOutputChannel(`> ${cmd}`, true, revealOutputView);
 
-		const childProcess = shelljs.exec(cmd, { async: true });
+		const childProcess = shelljs.exec(cmd, {
+			async: true,
+			cwd: cwd,
+		});
+
 		let stdout = '';
 		let stderr = '';
 
@@ -175,3 +160,12 @@ function execCore(cmd: string, opts: any, callback?: ((proc: ChildProcess)=> voi
 		}
 	});
 }
+
+export const shell = {
+	isWindows : isWindows,
+	isUnix : isUnix,
+	platform : platform,
+	exec : exec,
+	execCore : execCore,
+	execWithOutput: execWithOutput,
+};

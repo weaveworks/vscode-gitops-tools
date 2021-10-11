@@ -1,5 +1,6 @@
 import { V1ObjectMeta } from '@kubernetes/client-node';
 import { commands, Disposable, ExtensionContext, Uri, window, workspace } from 'vscode';
+import { pullGitRepository } from './commands/pullGitRepository';
 import { allKinds, ResourceKind } from './kuberesources';
 import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { ClusterProvider, KubernetesObjectKinds } from './kubernetes/kubernetesTypes';
@@ -16,6 +17,7 @@ import { refreshApplicationTreeView, refreshClusterTreeView, refreshSourceTreeVi
 
 /**
  * GitOps/vscode editor commands.
+ * TODO: list all commands under a single const enum
  */
 export const enum EditorCommands {
 	OpenResource = 'gitops.editor.openResource',
@@ -35,6 +37,7 @@ export const enum ViewCommands {
 	RefreshTreeViews = 'gitops.views.refreshTreeViews',
 	RefreshSourceTreeView = 'gitops.views.refreshSourceTreeView',
 	RefreshApplicationTreeView = 'gitops.views.refreshApplicationTreeView',
+	PullGitRepository = 'gitops.views.pullGitRepository',
 }
 
 /**
@@ -70,6 +73,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(ViewCommands.RefreshTreeViews, refreshTreeViews);
 	registerCommand(ViewCommands.RefreshSourceTreeView, refreshSourceTreeView);
 	registerCommand(ViewCommands.RefreshApplicationTreeView, refreshApplicationTreeView);
+	registerCommand(ViewCommands.PullGitRepository, pullGitRepository);
 	registerCommand(FluxCommands.Check, checkFlux);
 	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(FluxCommands.ReconcileSource, reconcileSource);
@@ -132,13 +136,23 @@ export function registerCommands(context: ExtensionContext) {
 
 /**
  * Registers vscode extension command.
- * @param commandName Command name.
+ * @param commandId Command identifier.
  * @param callback Command handler.
  * @param thisArg The `this` context used when invoking the handler function.
  * @returns Disposable which unregisters this command on disposal.
  */
-function registerCommand(commandName: string, callback: (...args: any[])=> any, thisArg?: any): Disposable {
-	const command: Disposable = commands.registerCommand(commandName, callback, thisArg);
+function registerCommand(commandId: string, callback: (...args: any[])=> any, thisArg?: any): Disposable {
+	const command: Disposable = commands.registerCommand(commandId, (...args) => {
+		// Show error in console when it happens in any of the commands registered by this extension.
+		// By default VSCode only shows that "Error running command <command>" but not its text.
+		let commandResult;
+		try {
+			commandResult = callback(...args);
+		} catch(e) {
+			console.error(e);
+		}
+		return commandResult;
+	}, thisArg);
 	_context.subscriptions.push(command);
 	return command;
 }
@@ -261,3 +275,5 @@ export async function reconcileApplication(application: KustomizationNode | Helm
 
 	refreshApplicationTreeView();
 }
+
+// TODO: move commands to separate files
