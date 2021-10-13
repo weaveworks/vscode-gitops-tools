@@ -1,5 +1,5 @@
 import { KubernetesObject } from '@kubernetes/client-node';
-import { EditorCommands } from '../../commands';
+import { CommandId } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { TreeNode } from './treeNode';
@@ -29,7 +29,7 @@ export class AnyResourceNode extends TreeNode {
 
 		// set open resource in editor command
 		this.command = {
-			command: EditorCommands.OpenResource,
+			command: CommandId.EditorOpenResource,
 			arguments: [resourceUri],
 			title: 'View Resource',
 		};

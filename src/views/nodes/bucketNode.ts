@@ -1,4 +1,4 @@
-import { EditorCommands } from '../../commands';
+import { CommandId } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { Bucket } from '../../kubernetes/bucket';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
@@ -37,7 +37,7 @@ export class BucketNode extends SourceNode {
 
 		// set open resource in editor command
 		this.command = {
-			command: EditorCommands.OpenResource,
+			command: CommandId.EditorOpenResource,
 			arguments: [resourceUri],
 			title: 'View Resource',
 		};

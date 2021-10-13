@@ -1,5 +1,5 @@
 import { MarkdownString } from 'vscode';
-import { KubectlCommands } from '../../commands';
+import { CommandId } from '../../commands';
 import { ContextTypes, setContext } from '../../context';
 import { extensionState } from '../../extensionState';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
@@ -56,7 +56,7 @@ export class ClusterNode extends TreeNode {
 
 		// set current context command to change selected cluster
 		this.command = {
-			command: KubectlCommands.SetCurrentContext,
+			command: CommandId.SetCurrentKubernetesContext,
 			arguments: [this.name],
 			title: 'Set current context',
 		};

@@ -1,5 +1,5 @@
 import { ThemeIcon, TreeItemCollapsibleState, Uri } from 'vscode';
-import { ViewCommands } from '../../commands';
+import { CommandId } from '../../commands';
 import { DocumentationLink, documentationLinks } from '../documentationConfig';
 import { TreeNode } from '../nodes/treeNode';
 import { DataProvider } from './dataProvider';
@@ -42,7 +42,7 @@ export class DocumentationDataProvider extends DataProvider {
 		linkNode.tooltip = link.url;
 
 		linkNode.command = {
-			command: ViewCommands.Open,
+			command: CommandId.VSCodeOpen,
 			arguments: [Uri.parse(link.url)],
 			title: 'Open link',
 		};

@@ -16,48 +16,45 @@ import { KustomizationNode } from './views/nodes/kustomizationNode';
 import { refreshApplicationTreeView, refreshClusterTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
 
 /**
- * GitOps/vscode editor commands.
- * TODO: list all commands under a single const enum
+ * Command ids registered by this extension
+ * or default vscode commands.
  */
-export const enum EditorCommands {
-	OpenResource = 'gitops.editor.openResource',
-	ShowLogs = 'gitops.editor.showLogs',
-}
+export const enum CommandId {
+	// vscode commands
+	/**
+	 * Opens the provided resource in the editor. Can be a text or binary file, or an http(s) URL.
+	 */
+	VSCodeOpen = 'vscode.open',
+	/**
+	 * Set vscode context to use in keybindings/menus/welcome views
+	 * @see https://code.visualstudio.com/api/references/when-clause-contexts
+	 */
+	VSCodeSetContext = 'setContext',
 
-export const enum OutputCommands {
-	ShowOutputChannel = 'gitops.output.show',
-}
-
-/**
- * GitOps View commands.
- */
-export const enum ViewCommands {
-	Open = 'vscode.open',
-	SetContext = 'setContext',
+	// view commands
 	RefreshTreeViews = 'gitops.views.refreshTreeViews',
-	RefreshSourceTreeView = 'gitops.views.refreshSourceTreeView',
-	RefreshApplicationTreeView = 'gitops.views.refreshApplicationTreeView',
+	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
+	RefreshApplicationsTreeView = 'gitops.views.refreshApplicationTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
-}
 
-/**
- * Kubectl commands.
- */
-export const enum KubectlCommands {
-	Version = 'gitops.kubectl.version',
-	SetCurrentContext = 'gitops.kubectl.setCurrentContext',
-}
+	// editor commands
+	EditorOpenResource = 'gitops.editor.openResource',
+	EditorShowLogs = 'gitops.editor.showLogs',
 
-/**
- * Flux commands.
- */
-export const enum FluxCommands {
-	Check = 'gitops.flux.check',
-	CheckPrerequisites = 'gitops.flux.checkPrerequisites',
-	EnableGitOps = 'gitops.flux.install',
-	DisableGitOps = 'gitops.flux.uninstall',
-	ReconcileSource = 'gitops.flux.reconcileSource',
-	ReconcileApplication = 'gitops.flux.reconcileApplication',
+	// output commands
+	ShowOutputChannel = 'gitops.output.show',
+
+	// kubectl commands
+	KubectlVersion = 'gitops.kubectl.version',
+	SetCurrentKubernetesContext = 'gitops.kubectl.setCurrentContext',
+
+	// flux commands
+	FluxCheck = 'gitops.flux.check',
+	FluxCheckPrerequisites = 'gitops.flux.checkPrerequisites',
+	FluxEnableGitOps = 'gitops.flux.install',
+	FluxDisableGitOps = 'gitops.flux.uninstall',
+	FluxReconcileSource = 'gitops.flux.reconcileSource',
+	FluxReconcileApplication = 'gitops.flux.reconcileApplication',
 }
 
 let _context: ExtensionContext;
@@ -68,27 +65,27 @@ let _context: ExtensionContext;
  */
 export function registerCommands(context: ExtensionContext) {
 	_context = context;
-	registerCommand(KubectlCommands.Version, showKubectlVersion);
-	registerCommand(KubectlCommands.SetCurrentContext, setKubernetesClusterContext);
-	registerCommand(ViewCommands.RefreshTreeViews, refreshTreeViews);
-	registerCommand(ViewCommands.RefreshSourceTreeView, refreshSourceTreeView);
-	registerCommand(ViewCommands.RefreshApplicationTreeView, refreshApplicationTreeView);
-	registerCommand(ViewCommands.PullGitRepository, pullGitRepository);
-	registerCommand(FluxCommands.Check, checkFlux);
-	registerCommand(FluxCommands.CheckPrerequisites, checkFluxPrerequisites);
-	registerCommand(FluxCommands.ReconcileSource, reconcileSource);
-	registerCommand(FluxCommands.ReconcileApplication, reconcileApplication);
-	registerCommand(OutputCommands.ShowOutputChannel, showOutputChannel);
+	registerCommand(CommandId.KubectlVersion, showKubectlVersion);
+	registerCommand(CommandId.SetCurrentKubernetesContext, setKubernetesClusterContext);
+	registerCommand(CommandId.RefreshTreeViews, refreshTreeViews);
+	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourceTreeView);
+	registerCommand(CommandId.RefreshApplicationsTreeView, refreshApplicationTreeView);
+	registerCommand(CommandId.PullGitRepository, pullGitRepository);
+	registerCommand(CommandId.FluxCheck, checkFlux);
+	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
+	registerCommand(CommandId.FluxReconcileSource, reconcileSource);
+	registerCommand(CommandId.FluxReconcileApplication, reconcileApplication);
+	registerCommand(CommandId.ShowOutputChannel, showOutputChannel);
 
-	registerCommand(FluxCommands.EnableGitOps, (clusterTreeItem: ClusterNode) => {
+	registerCommand(CommandId.FluxEnableGitOps, (clusterTreeItem: ClusterNode) => {
 		enableDisableGitOps(clusterTreeItem, true);
 	});
-	registerCommand(FluxCommands.DisableGitOps, (clusterTreeItem: ClusterNode) => {
+	registerCommand(CommandId.FluxDisableGitOps, (clusterTreeItem: ClusterNode) => {
 		enableDisableGitOps(clusterTreeItem, false);
 	});
 
 	// show logs in the editor webview (running Kubernetes extension command)
-	registerCommand(EditorCommands.ShowLogs, async (deploymentNode: ClusterDeploymentNode) => {
+	registerCommand(CommandId.EditorShowLogs, async (deploymentNode: ClusterDeploymentNode) => {
 
 		interface ResourceNode {
 			readonly nodeType: 'resource';
@@ -124,7 +121,7 @@ export function registerCommands(context: ExtensionContext) {
 	});
 
 	// add open gitops resource in vscode editor command
-	registerCommand(EditorCommands.OpenResource, (uri: Uri) => {
+	registerCommand(CommandId.EditorOpenResource, (uri: Uri) => {
 		workspace.openTextDocument(uri).then(document => {
 			if (document) {
 				window.showTextDocument(document);

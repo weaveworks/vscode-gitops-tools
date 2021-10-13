@@ -1,5 +1,5 @@
 import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
-import { EditorCommands } from '../../commands';
+import { CommandId } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { Deployment, ResourceTypes } from '../../kubernetes/kubernetesTypes';
@@ -40,7 +40,7 @@ export class ClusterDeploymentNode extends TreeNode {
 
 		// set open resource in editor command
 		this.command = {
-			command: EditorCommands.OpenResource,
+			command: CommandId.EditorOpenResource,
 			arguments: [resourceUri],
 			title: 'View Resource',
 		};

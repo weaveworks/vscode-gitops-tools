@@ -1,5 +1,5 @@
 import { commands, Uri, window } from 'vscode';
-import { OutputCommands } from './commands';
+import { CommandId } from './commands';
 import { extensionState } from './extensionState';
 import { shell } from './shell';
 
@@ -48,7 +48,7 @@ export async function checkPrerequisites() {
 		const showOutput = 'Show Output';
 		const showOutputConfirm = await window.showWarningMessage('Flux prerequisites check failed.', showOutput);
 		if (showOutput === showOutputConfirm) {
-			commands.executeCommand(OutputCommands.ShowOutputChannel);
+			commands.executeCommand(CommandId.ShowOutputChannel);
 		}
 	}
 }
