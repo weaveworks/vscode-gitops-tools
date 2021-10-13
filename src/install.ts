@@ -2,19 +2,25 @@ import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands';
 import { extensionState } from './extensionState';
 import { shell } from './shell';
+import { parseJson } from './utils/jsonUtils';
+
+interface FluxVersion {
+	flux: string;
+}
 
 /**
  * Return flux version string.
  * @see https://fluxcd.io/docs/cmd/flux_version/
  */
 export async function getFluxVersion(): Promise<string | undefined> {
-	// TODO: --client , -o json
-	const shellResult = await shell.execWithOutput('flux --version', { revealOutputView: false });
+	const shellResult = await shell.execWithOutput('flux version --client -o json', { revealOutputView: false });
 	if (!shellResult) {
 		return;
 	}
+
 	if (shellResult.code === 0) {
-		const fluxVersion = shellResult.stdout.slice(13).trim();
+		const fluxVersionObject: FluxVersion = parseJson(shellResult.stderr);
+		const fluxVersion = fluxVersionObject.flux;
 		extensionState.set('fluxVersion', fluxVersion);
 		return fluxVersion;
 	}
