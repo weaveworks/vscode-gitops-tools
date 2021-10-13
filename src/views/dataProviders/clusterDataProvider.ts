@@ -22,7 +22,7 @@ export class ClusterDataProvider extends DataProvider {
 		if (!clusters) {
 			return [];
 		}
-		const treeItems: ClusterNode[] = [];
+		const clusterNodes: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
 		for (const cluster of clusters) {
@@ -40,14 +40,16 @@ export class ClusterDataProvider extends DataProvider {
 					}
 				}
 			}
-			treeItems.push(clusterNode);
+			clusterNodes.push(clusterNode);
 		}
 
 		// Update async status of the deployments (flux commands take a while to run)
 		this.updateDeploymentStatus(currentContextTreeItem);
+		// Update async cluster context/icons
+		this.updateClusterContexts(clusterNodes);
 
 		statusBar.hide();
-		return treeItems;
+		return clusterNodes;
 	}
 
 	/**
@@ -80,6 +82,17 @@ export class ClusterDataProvider extends DataProvider {
 				}
 			}
 			refreshClusterTreeView(clusterController);
+		}
+	}
+
+	/**
+	 * Update cluster context for all cluster nodes one by one.
+	 * @param clusterNodes all cluster nodes in this tree view.
+	 */
+	async updateClusterContexts(clusterNodes: ClusterNode[]) {
+		for (const clusterNode of clusterNodes) {
+			await clusterNode.updateNodeContext();
+			refreshClusterTreeView(clusterNode);
 		}
 	}
 }

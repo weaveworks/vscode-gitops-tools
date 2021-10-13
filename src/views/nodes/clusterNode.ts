@@ -60,9 +60,6 @@ export class ClusterNode extends TreeNode {
 			arguments: [this.name],
 			title: 'Set current context',
 		};
-
-		// don't wait, update async
-		this.updateNodeContext();
 	}
 
 	/**

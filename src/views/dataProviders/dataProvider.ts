@@ -14,7 +14,10 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	 * @param treeItem Tree item to refresh.
 	 */
 	public refresh(treeItem?: TreeItem) {
-		this.treeItems = null;
+		if (!treeItem) {
+			// Only clear all root nodes when no node was passed
+			this.treeItems = null;
+		}
 		this._onDidChangeTreeData.fire(treeItem);
 	}
 
