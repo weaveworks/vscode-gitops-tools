@@ -1,9 +1,11 @@
 import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { ApplicationNode } from '../nodes/applicationNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
 import { KustomizationNode } from '../nodes/kustomizationNode';
+import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 import { refreshApplicationTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
@@ -73,11 +75,37 @@ export class ApplicationDataProvider extends DataProvider {
 			return;
 		}
 
-		applicationNode.children = [];
-		for (const item of applicationChildren.items) {
-			const anyResourceNode = new AnyResourceNode(item);
-			applicationNode.addChild(anyResourceNode);
+		// Get all namespaces
+		const namespaces = await kubernetesTools.getNamespaces();
+		if (!namespaces) {
+			return;
 		}
+
+		const namespaceNodes = namespaces.items.map(namespace => new NamespaceNode(namespace));
+
+		/*
+		 * Do not delete empty namespace if it was in the fetched resources.
+		 * Applications can create namespace kubernetes resources.
+		 */
+		const exceptNamespaces: string[] = [];
+
+		// group children of application by namespace
+		for (const namespaceNode of namespaceNodes) {
+			for (const applicationChild of applicationChildren.items) {
+				if (applicationChild.kind !== KubernetesObjectKinds.Namespace &&
+					applicationChild.metadata?.namespace === namespaceNode.resource.metadata.name) {
+					namespaceNode.addChild(new AnyResourceNode(applicationChild));
+				} else {
+					const namespaceName = namespaceNode.resource.metadata.name;
+					if (namespaceName) {
+						exceptNamespaces.push();
+					}
+				}
+			}
+		}
+
+		// only show namespaces that are not empty
+		applicationNode.children = namespaceNodes.filter(namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata.name) && namespaceNode.children.length);
 
 		refreshApplicationTreeView(applicationNode);
 	}

@@ -287,6 +287,20 @@ class KubernetesTools {
 	}
 
 	/**
+	 * Get namespaces from current context.
+	 */
+	async getNamespaces(): Promise<undefined | NamespaceResult> {
+		const namespacesShellResult = await this.invokeKubectlCommand('get ns -o json');
+
+		if (namespacesShellResult?.code !== 0) {
+			window.showErrorMessage(`Failed to get namespaces ${namespacesShellResult?.stderr}`);
+			return;
+		}
+
+		return parseJson(namespacesShellResult.stdout);
+	}
+
+	/**
 	 * Try to detect a cluster type by using `spec.providerID` on a random node.
 	 * @param context target context to get nodes from
 	 */

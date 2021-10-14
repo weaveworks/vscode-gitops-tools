@@ -1,29 +1,29 @@
-import { KubernetesObject } from '@kubernetes/client-node';
 import { CommandId } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { Namespace } from '../../kubernetes/kubernetesTypes';
 import { TreeNode } from './treeNode';
 
 /**
  * Defines any kubernetes resourse.
  */
-export class AnyResourceNode extends TreeNode {
+export class NamespaceNode extends TreeNode {
 
 	/**
 	 * kubernetes resource metadata
 	 */
-	resource: KubernetesObject;
+	resource: Namespace;
 
-	constructor(anyResource: KubernetesObject) {
-		super(`${anyResource.kind}: ${anyResource.metadata?.name}`);
+	constructor(namespace: Namespace) {
+		super(namespace.metadata?.name || '');
 
 		// save metadata reference
-		this.resource = anyResource;
+		this.resource = namespace;
 
 		// set resource Uri to open resource config document in editor
 		const resourceUri = kubernetesTools.getResourceUri(
-			anyResource.metadata?.namespace,
-			`${anyResource.kind}/${anyResource.metadata?.name}`,
+			namespace.metadata?.namespace,
+			`${namespace.kind}/${namespace.metadata?.name}`,
 			FileTypes.Yaml,
 		);
 
