@@ -1,3 +1,4 @@
+import path from 'path';
 import semverGt from 'semver/functions/gt';
 import semverSatisfies from 'semver/functions/satisfies';
 import { commands, Uri, window } from 'vscode';
@@ -22,14 +23,14 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 		canSelectFiles: false,
 		canSelectFolders: true,
 		canSelectMany: false,
-		title: 'Pick an empty folder to pull the git repository into.',
+		title: 'Pick a folder to pull the git repository into.',
 	});
 
 	if (!pickedFolder) {
 		return;
 	}
 
-	const pickedFolderFsPath = pickedFolder[0].fsPath;
+	const pickedFolderFsPath = path.join(pickedFolder[0].fsPath, sourceNode.resource.metadata.name || 'gitRepository');
 
 	// precedence - commit > semver > tag > branch
 	const url = sourceNode.resource.spec.url;

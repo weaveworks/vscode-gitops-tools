@@ -81,6 +81,7 @@ export class ApplicationDataProvider extends DataProvider {
 			return;
 		}
 
+		// TODO: fetch namespace once (inside buildTree())
 		const namespaceNodes = namespaces.items.map(namespace => new NamespaceNode(namespace));
 
 		/*
