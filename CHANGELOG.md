@@ -19,7 +19,7 @@ Nest applications under namespaces.
 - [#111](https://github.com/weaveworks/vscode-gitops-tools/issues/111)
 After running Disable GitOps cluster context/icon is not updated
 - [#113](https://github.com/weaveworks/vscode-gitops-tools/issues/113)
-https://github.com/weaveworks/vscode-gitops-tools/issues/113
+Package Sprint 7 release
 
 # v0.6.0 - [2021-10-07]
 
