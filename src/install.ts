@@ -13,7 +13,7 @@ interface FluxVersion {
  * @see https://fluxcd.io/docs/cmd/flux_version/
  */
 export async function getFluxVersion(): Promise<string | undefined> {
-	const shellResult = await shell.execWithOutput('flux version --client -o json', { revealOutputView: false });
+	const shellResult = await shell.exec('flux version --client -o json');
 	if (!shellResult) {
 		return;
 	}
