@@ -13,7 +13,10 @@ class StatusBar {
 	 */
 	constructor() {
 		this.status = window.createStatusBarItem(
-			this.statusBarItemName, StatusBarAlignment.Left, 4); // priority
+			this.statusBarItemName,
+			StatusBarAlignment.Left,
+			4,// priority
+		);
 	}
 
 	/**
@@ -21,12 +24,15 @@ class StatusBar {
 	 * @param message The text message to show.
 	 */
 	show(message: string): void {
-		if (message) {
-			this.status.text = `$(sync~spin) ${message}`;
-			this.status.show();
-		} else {
+		this.status.text = `$(sync~spin) ${message}`;
+		this.status.show();
+
+		// If clusters tree view is collapsed - the status bar loading
+		// is stuck on intinite loading
+		// Workaround it by hiding the loading message after 15s
+		setTimeout(() => {
 			this.hide();
-		}
+		}, 15000);
 	}
 
 	/**
