@@ -24,6 +24,7 @@ GitOps extension provides integration with [Kubernetes Tools](https://marketplac
 - View Application Kustomizations and Helm Releases for the selected cluster
 - View Flux controller logs in the webview editor
 - Reconcile Sources and Application deployments on demand
+- Pull Git Repository Source to user machine and open it in VSCode
 - Preview short Kubernetes Object info in rich markdown table tooltips on hover for the loaded Clusters, Sources, and Applications
 - Load Kubernetes Object manifest `.yaml` configs in vscode editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
 - Open [GitOps](https://www.weave.works/technologies/gitops/) Documentation links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics in your default web browser
