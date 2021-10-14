@@ -2,6 +2,25 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.7.0 - [2021-10-14]
+
+- [#97](https://github.com/weaveworks/vscode-gitops-tools/issues/97)
+Modify cluster type microcopy and only show types for identified providers
+- [#98](https://github.com/weaveworks/vscode-gitops-tools/issues/98)
+Spike: Investigate why load time is slow when clicking into an application
+- [#99](https://github.com/weaveworks/vscode-gitops-tools/issues/99)
+Clusters: Show version of flux on hover
+- [#108](https://github.com/weaveworks/vscode-gitops-tools/issues/108)
+Refactor commands file
+- [#109](https://github.com/weaveworks/vscode-gitops-tools/issues/109)
+Use --client and -o json when running flux version
+- [#110](https://github.com/weaveworks/vscode-gitops-tools/issues/110)
+Nest applications under namespaces.
+- [#111](https://github.com/weaveworks/vscode-gitops-tools/issues/111)
+After running Disable GitOps cluster context/icon is not updated
+- [#113](https://github.com/weaveworks/vscode-gitops-tools/issues/113)
+https://github.com/weaveworks/vscode-gitops-tools/issues/113
+
 # v0.6.0 - [2021-10-07]
 
 - [#41](https://github.com/weaveworks/vscode-gitops-tools/issues/41)
