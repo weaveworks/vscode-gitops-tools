@@ -1,6 +1,6 @@
 import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds, Namespace, NamespaceResult } from '../../kubernetes/kubernetesTypes';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { ApplicationNode } from '../nodes/applicationNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
@@ -16,6 +16,8 @@ import { DataProvider } from './dataProvider';
  */
 export class ApplicationDataProvider extends DataProvider {
 
+	namespaceResult?: NamespaceResult;
+
 	/**
    * Creates Application tree nodes for the currently selected kubernetes cluster.
    * @returns Application tree nodes to display.
@@ -25,13 +27,17 @@ export class ApplicationDataProvider extends DataProvider {
 
 		setContext(ContextTypes.LoadingApplications, true);
 
-		const [kustomizations, helmReleases] = await Promise.all([
+		const [kustomizations, helmReleases, namespaces] = await Promise.all([
 			// Fetch all applications
 			kubernetesTools.getKustomizations(),
 			kubernetesTools.getHelmReleases(),
+			// Fetch namespaces to group the nodes
+			kubernetesTools.getNamespaces(),
 			// cache resource kinds
 			kubernetesTools.getAvailableResourceKinds(),
 		]);
+
+		this.namespaceResult = namespaces;
 
 		if (kustomizations) {
 			for (const kustomizeApplication of kustomizations.items) {
@@ -76,12 +82,11 @@ export class ApplicationDataProvider extends DataProvider {
 		}
 
 		// Get all namespaces
-		const namespaces = await kubernetesTools.getNamespaces();
+		const namespaces = this.namespaceResult || await kubernetesTools.getNamespaces();
 		if (!namespaces) {
 			return;
 		}
 
-		// TODO: fetch namespace once (inside buildTree())
 		const namespaceNodes = namespaces.items.map(namespace => new NamespaceNode(namespace));
 
 		/*
