@@ -1,5 +1,4 @@
 import { window } from 'vscode';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { refreshClusterTreeView } from '../views/treeViews';
@@ -13,7 +12,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 
 	// Prompt for confirmation
 	const confirmButton = enable ? 'Install' : 'Uninstall';
-	const confirmationMessage = `Do you want to	${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster? (${clusterNode?.clusterProvider === ClusterProvider.AKS ? 'AKS cluster' : 'Generic cluster'})`;
+	const confirmationMessage = `Do you want to	${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster? (Cluster provider: ${clusterNode?.clusterProvider})`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);

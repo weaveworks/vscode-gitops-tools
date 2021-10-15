@@ -301,24 +301,49 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Try to detect a cluster type by using `spec.providerID` on a random node.
-	 * @param context target context to get nodes from
+	 * Try to detect known cluster providers.
+	 * @param context target context to get resources from.
 	 */
-	async detectClusterProvider(context: string): Promise<undefined | ClusterProvider> {
-		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
-		if (!nodesShellResult) {
-			return;
-		}
-		if (nodesShellResult.code !== 0) {
-			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type.`);
-			return;
+	async detectClusterProvider(context: string): Promise<ClusterProvider> {
+		const tryProviderAKS = await this.isClusterAKS(context);
+		if (tryProviderAKS === ClusterProvider.AKS) {
+			return ClusterProvider.AKS;
 		}
 
-		const nodes: NodeResult = parseJson(nodesShellResult.stdout);
+		const tryProviderAzureARC = await this.isClusterAzureARC(context);
+		if (tryProviderAzureARC === ClusterProvider.AzureARC) {
+			return ClusterProvider.AzureARC;
+		}
+
+		if (tryProviderAKS === ClusterProvider.Unknown ||
+			tryProviderAzureARC === ClusterProvider.Unknown) {
+			return ClusterProvider.Unknown;
+		} else {
+			return ClusterProvider.Generic;
+		}
+	}
+
+	/**
+	 * Try to determine if the cluster is AKS or not.
+	 * @param context target context to get resources from.
+	 */
+	async isClusterAKS(context: string): Promise<ClusterProvider> {
+		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
+
+		if (nodesShellResult?.code !== 0) {
+			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type.`);
+			return ClusterProvider.Unknown;
+		}
+
+		const nodes: NodeResult | undefined = parseJson(nodesShellResult.stdout);
+		if (!nodes) {
+			return ClusterProvider.Unknown;
+		}
 		const firstNode = nodes.items[0];
+
 		if (!firstNode) {
 			console.warn(`No nodes in the "${context}" context to determine the cluster type.`);
-			return;
+			return ClusterProvider.Unknown;
 		}
 
 		const providerID = firstNode.spec.providerID;
@@ -331,8 +356,32 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Return kubectl version (cluent + server) in
-	 * json format.
+	 * Try to determine if the cluster is managed by Azure ARC or not.
+	 * @param context target context to get resources from.
+	 */
+	async isClusterAzureARC(context: string): Promise<ClusterProvider> {
+		const deploymentsShellResult = await this.invokeKubectlCommand(`get deployments -n azure-arc --context=${context} -o json`);
+
+		if (deploymentsShellResult?.code !== 0) {
+			console.warn(`Failed to get deployments from "${context}" context to determine the cluster type.`);
+			return ClusterProvider.Unknown;
+		}
+
+		const deployments: DeploymentResult | undefined = parseJson(deploymentsShellResult.stdout);
+		if (!deployments) {
+			return ClusterProvider.Unknown;
+		}
+
+		if (deployments.items.length === 10 &&
+			deployments.items.every(deployment => deployment.status.conditions?.[0].type === 'Available')) {
+			return ClusterProvider.AzureARC;
+		}
+
+		return ClusterProvider.Generic;
+	}
+
+	/**
+	 * Return kubectl version (client + server) in json format.
 	 */
 	async getKubectlVersion(): Promise<KubectlVersionResult | undefined> {
 		const shellResult = await this.invokeKubectlCommand('version -o json');

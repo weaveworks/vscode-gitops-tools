@@ -6,7 +6,6 @@ import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../../utils/stringUtils';
-import { refreshClusterTreeView } from '../treeViews';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
@@ -22,12 +21,13 @@ export class ClusterNode extends TreeNode {
 	cluster: Cluster;
 
 	/**
-	 * Cluster name
+	 * Cluster name.
 	 */
 	name: string;
 
 	/**
-	 * Whether cluster is Azure (AKS) or other type.
+	 * Whether cluster is managed by AKS or Azure ARC
+	 * or some other provider.
 	 */
 	clusterProvider?: ClusterProvider;
 
@@ -65,7 +65,7 @@ export class ClusterNode extends TreeNode {
 	/**
 	 * Set context/icon and refresh the node:
 	 * - Whether or not GitOps is enabled
-	 * - Cluster type (AKS or not AKS)
+	 * - Cluster provider.
 	 */
 	async updateNodeContext() {
 		this.isGitOpsInstalled = (await kubernetesTools.isFluxInstalled(this.name)) || false;
@@ -81,8 +81,6 @@ export class ClusterNode extends TreeNode {
 		} else {
 			this.setIcon('cloud');
 		}
-
-		refreshClusterTreeView(this);
 	}
 
 	/**
@@ -98,7 +96,7 @@ export class ClusterNode extends TreeNode {
 
 		if (this.clusterProvider !== ClusterProvider.Generic) {
 			markdown.appendMarkdown('\n\n---\n\n');
-			markdown.appendMarkdown(`Cluster Provider: ${this.clusterProvider === ClusterProvider.AKS ? 'AKS' : 'Unknown'}`);
+			markdown.appendMarkdown(`Cluster Provider: ${this.clusterProvider || ClusterProvider.Unknown}`);
 		}
 
 		return markdown;

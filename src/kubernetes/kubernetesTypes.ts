@@ -530,8 +530,16 @@ export const enum ClusterProvider {
 	 */
 	AKS = 'AKS',
 	/**
-	 * Any cluster that is not Azure Kubernetes Service is
+	 * Cluster managed by Azure ARC.
+	 */
+	AzureARC = 'Azure ARC',
+	/**
+	 * Any cluster that is not AKS and not AzureARC is
 	 * considered generic at this point.
 	 */
 	Generic = 'Generic',
+	/**
+	 * Error occurred when trying to determine the cluster provider.
+	 */
+	Unknown = 'Unknown',
 }
