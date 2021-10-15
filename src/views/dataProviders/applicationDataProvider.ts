@@ -88,6 +88,7 @@ export class ApplicationDataProvider extends DataProvider {
 		}
 
 		const namespaceNodes = namespaces.items.map(namespace => new NamespaceNode(namespace));
+		namespaceNodes.forEach(namespaceNode => namespaceNode.expand());
 
 		/*
 		 * Do not delete empty namespace if it was in the fetched resources.
