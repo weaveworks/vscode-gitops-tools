@@ -1,46 +1,50 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 
-/**
- * Status bar to use for all GitOps status updates.
- */
 class StatusBar {
 
-	public status: StatusBarItem;
+	public statusBarItem: StatusBarItem;
 	private statusBarItemName: string = 'gitops';
 
-	/**
-	 * Creates GitOps status bar item to use for all status updates.
-	 */
+	private numberOfLoadingTreeViews: number = 0;
+	private loadingWasHidden: boolean = false;
+
 	constructor() {
-		this.status = window.createStatusBarItem(
+		this.statusBarItem = window.createStatusBarItem(
 			this.statusBarItemName,
 			StatusBarAlignment.Left,
-			4,// priority
+			-1e10,// align to the right
 		);
+		this.statusBarItem.text = '$(sync~spin) GitOps: Initializing Tree Views';
 	}
 
 	/**
-	 * Shows message in GitOps status bar.
-	 * @param message The text message to show.
+	 * Show initialization message in status bar
+	 * (only at the extension initialization (once))
 	 */
-	show(message: string): void {
-		this.status.text = `$(sync~spin) ${message}`;
-		this.status.show();
+	startLoadingTree(): void {
+		if (this.loadingWasHidden) {
+			return;
+		}
 
-		// If clusters tree view is collapsed - the status bar loading
-		// is stuck on intinite loading
-		// Workaround it by hiding the loading message after 15s
-		setTimeout(() => {
-			this.hide();
-		}, 15000);
+		this.numberOfLoadingTreeViews++;
+		this.statusBarItem.show();
 	}
 
 	/**
-	 * Hides GitOps status display.
+	 * Stop initialization of one tree view.
+	 * (if some tree views are still loading - don't hide yet).
 	 */
-	hide(): void {
-		this.status.hide();
+	stopLoadingTree(): void {
+		this.numberOfLoadingTreeViews--;
+
+		if (this.numberOfLoadingTreeViews === 0) {
+			this.statusBarItem.hide();
+			this.loadingWasHidden = true;
+		}
 	}
 }
 
+/**
+ * Status bar for showing extension initialization message.
+ */
 export const statusBar = new StatusBar();

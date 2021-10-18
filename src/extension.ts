@@ -15,8 +15,7 @@ export function activate(context: ExtensionContext) {
 	setExtensionContext(context);
 
 	// initialize gitops status bar
-	context.subscriptions.push(statusBar.status);
-	statusBar.show('Initializing GitOps');
+	context.subscriptions.push(statusBar.statusBarItem);
 
 	// create gitops tree views
 	createTreeViews();

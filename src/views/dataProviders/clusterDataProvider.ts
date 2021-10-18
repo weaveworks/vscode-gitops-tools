@@ -17,6 +17,7 @@ export class ClusterDataProvider extends DataProvider {
    * @returns Cluster tree view items to display.
    */
 	async buildTree(): Promise<ClusterNode[]> {
+		statusBar.startLoadingTree();
 		// load configured kubernetes clusters
 		const clusters = await kubernetesTools.getClusters();
 		if (!clusters) {
@@ -48,7 +49,7 @@ export class ClusterDataProvider extends DataProvider {
 		// Update async cluster context/icons
 		this.updateClusterContexts(clusterNodes);
 
-		statusBar.hide();
+		statusBar.stopLoadingTree();
 		return clusterNodes;
 	}
 

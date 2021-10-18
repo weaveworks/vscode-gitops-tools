@@ -1,6 +1,7 @@
 import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { KubernetesObjectKinds, Namespace, NamespaceResult } from '../../kubernetes/kubernetesTypes';
+import { statusBar } from '../../statusBar';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { ApplicationNode } from '../nodes/applicationNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
@@ -23,6 +24,8 @@ export class ApplicationDataProvider extends DataProvider {
    * @returns Application tree nodes to display.
    */
 	async buildTree(): Promise<ApplicationNode[]> {
+		statusBar.startLoadingTree();
+
 		const applicationNodes: ApplicationNode[] = [];
 
 		setContext(ContextTypes.LoadingApplications, true);
@@ -57,6 +60,7 @@ export class ApplicationDataProvider extends DataProvider {
 
 		setContext(ContextTypes.LoadingApplications, false);
 		setContext(ContextTypes.NoApplications, applicationNodes.length === 0);
+		statusBar.stopLoadingTree();
 
 		return applicationNodes;
 	}

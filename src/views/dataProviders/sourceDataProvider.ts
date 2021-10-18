@@ -1,5 +1,6 @@
 import { ContextTypes, setContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { statusBar } from '../../statusBar';
 import { BucketNode } from '../nodes/bucketNode';
 import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
@@ -17,6 +18,8 @@ export class SourceDataProvider extends DataProvider {
    * @returns Source tree view items to display.
    */
 	async buildTree(): Promise<SourceNode[]> {
+		statusBar.startLoadingTree();
+
 		const treeItems: SourceNode[] = [];
 
 		setContext(ContextTypes.LoadingSources, true);
@@ -47,6 +50,7 @@ export class SourceDataProvider extends DataProvider {
 
 		setContext(ContextTypes.LoadingSources, false);
 		setContext(ContextTypes.NoSources, treeItems.length === 0);
+		statusBar.stopLoadingTree();
 
 		return treeItems;
 	}
