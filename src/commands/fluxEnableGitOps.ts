@@ -27,7 +27,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 		return;
 	}
 
-	if (clusterNode?.clusterProvider === ClusterProvider.AKS) {
+	if (clusterNode?.clusterProvider === ClusterProvider.AKS && enable) {
 		enableGitOpsOnAKSCluster(clusterNode);
 		return;
 	}
