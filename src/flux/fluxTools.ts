@@ -15,7 +15,6 @@ const enum Symbols {
  */
 export interface FluxController {
 	name: string;
-	image: string;
 	success: boolean;
 	status: string;
 }
@@ -68,7 +67,7 @@ class FluxTools {
 			} else {
 				if (stage === 'prerequisites') {
 					prerequisites.push(line);
-				} else if (stage === 'controllers') {
+				} else if (stage === 'controllers' && !line.startsWith(Symbols.ListItem)) {
 					controllers.push(line);
 				}
 			}
@@ -85,18 +84,14 @@ class FluxTools {
 
 		// Parse controllers
 		const parsedControllers: FluxController[] = [];
-		for (let i = 0; i < controllers.length; i += 2) {
-			const controllerStatus = controllers[i];
-			const controllerImageName = controllers[i + 1];
-
-			let [name, status] = controllerStatus.split(':');
+		for (const controller of controllers) {
+			let [name, status] = controller.split(':');
 			name = name.slice(1).trim();
 			status = status.split('deployment').pop() || '';
 
 			parsedControllers.push({
 				name,
-				image: controllerImageName.slice(1).trim(),
-				success: controllerStatus.startsWith(Symbols.Success),
+				success: controller.startsWith(Symbols.Success),
 				status,
 			});
 		}

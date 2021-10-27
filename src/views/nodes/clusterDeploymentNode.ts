@@ -61,7 +61,7 @@ export class ClusterDeploymentNode extends TreeNode {
 	 * @returns Version of the flux controller or an empty string
 	 */
 	getImageName(deployment: Deployment): string {
-		const fluxControllerContainer = deployment.spec.template.spec?.containers?.find(container => /fluxcd.+controller.+/.test(container.image || ''));
+		const fluxControllerContainer = deployment.spec.template.spec?.containers?.find(container => container || '');
 		return fluxControllerContainer?.image || '';
 	}
 
