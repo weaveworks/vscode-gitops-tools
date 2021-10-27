@@ -1,7 +1,9 @@
 import { window } from 'vscode';
+import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { ClusterNode } from '../views/nodes/clusterNode';
-import { refreshClusterTreeView } from '../views/treeViews';
+import { clusterTreeViewProvider, refreshClusterTreeView } from '../views/treeViews';
+import { enableGitOpsOnAKSCluster } from './enableGitOpsOnAKSCluster';
 
 /**
  * Install or uninstall flux from the passed or current cluster (if first argument is undefined)
@@ -10,13 +12,23 @@ import { refreshClusterTreeView } from '../views/treeViews';
  */
 async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable: boolean) {
 
+	if (!clusterNode) {
+		// was executed from the welcome view - get current cluster node
+		clusterNode = clusterTreeViewProvider.getCurrentClusterNode();
+	}
+
 	// Prompt for confirmation
 	const confirmButton = enable ? 'Install' : 'Uninstall';
-	const confirmationMessage = `Do you want to	${enable ? 'install' : 'uninstall'} flux ${enable ? 'to' : 'from'} ${clusterNode?.name || 'current'} cluster? (Cluster provider: ${clusterNode?.clusterProvider})`;
+	const confirmationMessage = `Do you want to	${enable ? 'enable' : 'disable'} gitops on the ${clusterNode?.name || 'current'} cluster?`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);
 	if (confirm !== confirmButton) {
+		return;
+	}
+
+	if (clusterNode?.clusterProvider === ClusterProvider.AKS) {
+		enableGitOpsOnAKSCluster(clusterNode);
 		return;
 	}
 

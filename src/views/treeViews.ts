@@ -6,10 +6,10 @@ import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
 
-let clusterTreeViewProvider: ClusterDataProvider;
-let sourceTreeViewProvider: SourceDataProvider;
-let applicationTreeViewProvider: ApplicationDataProvider;
-let documentationTreeViewProvider: DocumentationDataProvider;
+export let clusterTreeViewProvider: ClusterDataProvider;
+export let sourceTreeViewProvider: SourceDataProvider;
+export let applicationTreeViewProvider: ApplicationDataProvider;
+export let documentationTreeViewProvider: DocumentationDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;

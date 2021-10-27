@@ -23,7 +23,7 @@ class ExtensionState {
 }
 
 /**
- * Global state of the GitOps extension.
+ * Global state (temporary, while extension is running).
  */
 export const extensionState = new ExtensionState();
 

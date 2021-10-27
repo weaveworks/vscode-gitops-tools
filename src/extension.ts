@@ -1,5 +1,5 @@
 import { ExtensionContext } from 'vscode';
-import { setExtensionContext } from './asAbsolutePath';
+import { setExtensionContext } from './extensionContext';
 import { registerCommands } from './commands';
 import { checkPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';

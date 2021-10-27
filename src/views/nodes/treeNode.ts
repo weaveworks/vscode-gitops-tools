@@ -1,5 +1,5 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
-import { asAbsolutePath } from '../../asAbsolutePath';
+import { asAbsolutePath } from '../../extensionContext';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.

@@ -13,6 +13,11 @@ import { DataProvider } from './dataProvider';
 export class ClusterDataProvider extends DataProvider {
 
 	/**
+	 * cache clusterNodes to acess them later.
+	 */
+	clusterNodes: ClusterNode[] = [];
+
+	/**
    * Creates Clusters tree view items from local kubernetes config.
    * @returns Cluster tree view items to display.
    */
@@ -50,6 +55,8 @@ export class ClusterDataProvider extends DataProvider {
 		this.updateClusterContexts(clusterNodes);
 
 		statusBar.stopLoadingTree();
+
+		this.clusterNodes = clusterNodes;
 		return clusterNodes;
 	}
 
@@ -94,6 +101,17 @@ export class ClusterDataProvider extends DataProvider {
 		for (const clusterNode of clusterNodes) {
 			await clusterNode.updateNodeContext();
 			refreshClusterTreeView(clusterNode);
+		}
+	}
+
+	/**
+	 * Return cluster node from the current kubernetes context.
+	 */
+	getCurrentClusterNode(): ClusterNode | undefined {
+		for (const clusterNode of this.clusterNodes) {
+			if (clusterNode.isCurrent) {
+				return clusterNode;
+			}
 		}
 	}
 }
