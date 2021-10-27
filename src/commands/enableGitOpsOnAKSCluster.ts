@@ -8,7 +8,7 @@ import { refreshTreeViews } from '../views/treeViews';
  * enable gitops on an AKS cluster
  * @param clusterNode target cluster node
  */
-export async function enableGitOpsOnAKSCluster(clusterNode: ClusterNode) {
+export async function enableGitOpsOnAKSCluster(clusterNode: ClusterNode, { isAzureARC }: { isAzureARC: boolean; }) {
 
 	const azureMetadata = globalState.getClusterMetadata(clusterNode.name);
 
@@ -46,7 +46,13 @@ export async function enableGitOpsOnAKSCluster(clusterNode: ClusterNode) {
 		azureSubscription: subscription,
 	});
 
-	const enableGitOpsQuery = `az k8s-extension-private create -g ${resourceGroup} -c ${clusterName} -t managedClusters --name gitops --extension-type microsoft.flux --scope cluster --release-train stable --subscription ${subscription}`;
+	let enableGitOpsQuery = '';
+
+	if (isAzureARC) {
+		enableGitOpsQuery = `az k8s-extension-private create -g ${resourceGroup} -c ${clusterName} -t connectedClusters --name gitops --extension-type microsoft.flux --scope cluster --release-train stable --subscription ${subscription}`;
+	} else {
+		enableGitOpsQuery = `az k8s-extension-private create -g ${resourceGroup} -c ${clusterName} -t managedClusters --name gitops --extension-type microsoft.flux --scope cluster --release-train stable --subscription ${subscription}`;
+	}
 
 	await shell.execWithOutput(enableGitOpsQuery);
 

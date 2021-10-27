@@ -28,7 +28,10 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 	}
 
 	if (clusterNode?.clusterProvider === ClusterProvider.AKS && enable) {
-		enableGitOpsOnAKSCluster(clusterNode);
+		enableGitOpsOnAKSCluster(clusterNode, { isAzureARC: false });
+		return;
+	} else if (clusterNode?.clusterProvider === ClusterProvider.AzureARC && enable) {
+		enableGitOpsOnAKSCluster(clusterNode, { isAzureARC: true });
 		return;
 	}
 
