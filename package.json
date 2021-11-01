@@ -43,6 +43,7 @@
 		"onCommand:gitops.views.refreshSourceTreeView",
 		"onCommand:gitops.views.refreshApplicationTreeView",
 		"onCommand:gitops.views.pullGitRepository",
+		"onCommand:gitops.views.addGitRepository",
 		"onCommand:gitops.editor.openResource",
 		"onCommand:gitops.editor.showLogs",
 		"onCommand:gitops.output.show",
@@ -110,6 +111,12 @@
 			{
 				"command": "gitops.views.pullGitRepository",
 				"title": "Pull Git Repository",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.addGitRepository",
+				"title": "Add Git Repository Source",
+				"icon": "$(add)",
 				"category": "GitOps"
 			},
 			{
@@ -216,8 +223,13 @@
 					"when": "view == gitops.views.clusters"
 				},
 				{
+					"command": "gitops.views.addGitRepository",
+					"group": "navigation@0",
+					"when": "view == gitops.views.sources"
+				},
+				{
 					"command": "gitops.views.refreshSourceTreeView",
-					"group": "navigation",
+					"group": "navigation@1",
 					"when": "view == gitops.views.sources"
 				},
 				{
@@ -254,6 +266,12 @@
 				{
 					"command": "gitops.views.pullGitRepository",
 					"when": "view == gitops.views.sources && viewItem == gitRepository"
+				}
+			],
+			"explorer/context": [
+				{
+					"command": "gitops.views.addGitRepository",
+					"when": "workspaceFolderCount > 0"
 				}
 			],
 			"commandPalette": [

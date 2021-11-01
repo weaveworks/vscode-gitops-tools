@@ -11,6 +11,7 @@ import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
 import { showOutputChannel } from './output';
 import { refreshApplicationTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
+import { addGitRepository } from './commands/addGitRepository';
 
 /**
  * Command ids registered by this extension
@@ -46,6 +47,7 @@ export const enum CommandId {
 	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
 	RefreshApplicationsTreeView = 'gitops.views.refreshApplicationTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
+	AddGitRepository = 'gitops.views.addGitRepository',
 
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
@@ -83,6 +85,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourceTreeView);
 	registerCommand(CommandId.RefreshApplicationsTreeView, refreshApplicationTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
+	registerCommand(CommandId.AddGitRepository, addGitRepository);
 
 	// editor
 	registerCommand(CommandId.EditorOpenResource, openResource);
