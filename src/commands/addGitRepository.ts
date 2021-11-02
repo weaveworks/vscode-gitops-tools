@@ -147,7 +147,7 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 			return;
 		}
 
-		globalState.setClusterMetadata(clusterName, {
+		globalState.setClusterMetadata(currentClusterNode.name, {
 			azureResourceGroup: resourceGroup,
 			azureSubscription: subscription,
 			azureClusterName: clusterName,

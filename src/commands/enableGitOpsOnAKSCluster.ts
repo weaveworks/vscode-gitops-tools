@@ -42,7 +42,7 @@ export async function enableGitOpsOnAKSCluster(clusterNode: ClusterNode, { isAzu
 		return;
 	}
 
-	globalState.setClusterMetadata(clusterName, {
+	globalState.setClusterMetadata(clusterNode.name, {
 		azureResourceGroup: resourceGroup,
 		azureSubscription: subscription,
 		azureClusterName: clusterName,
