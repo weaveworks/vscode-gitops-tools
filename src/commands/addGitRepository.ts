@@ -1,7 +1,10 @@
 import { Uri, window, workspace } from 'vscode';
+import { globalState } from '../globalState';
 import { checkGitVersion } from '../install';
+import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
-import { refreshSourceTreeView } from '../views/treeViews';
+import { runTerminalCommand } from '../terminal';
+import { clusterTreeViewProvider, refreshSourceTreeView } from '../views/treeViews';
 
 /**
  * Add git repository source whether from an opened folder
@@ -15,6 +18,8 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 	if (!gitInstalled) {
 		return;
 	}
+
+	const currentClusterNode = clusterTreeViewProvider.getCurrentClusterNode();
 
 	const newGitRepositorySourceName = await window.showInputBox({
 		title: 'Enter a git repository name',
@@ -108,7 +113,58 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		}
 	}
 
-	await shell.execWithOutput(`flux create source git ${newGitRepositorySourceName} --url ${gitUrl} --branch ${pickedGitBranch}`);
+	let createGitSourceQuery = '';
 
-	refreshSourceTreeView();
+	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS) {
+		const azureMetadata = globalState.getClusterMetadata(currentClusterNode.name);
+
+		// TODO: move `resourceGroup` & `clusteName` & `subscription` into a separate function
+		const resourceGroup = await window.showInputBox({
+			title: 'Enter the Azure Resource group (where the cluster is)',
+			ignoreFocusOut: true,
+			value: azureMetadata?.azureResourceGroup ?? '',
+		});
+		if (!resourceGroup) {
+			return;
+		}
+
+		const clusterName = await window.showInputBox({
+			title: 'Enter the cluster name (as defined in Azure)',
+			ignoreFocusOut: true,
+			value: azureMetadata?.azureClusterName ?? '',
+		});
+		if (!clusterName) {
+			return;
+		}
+
+		const subscription = await window.showInputBox({
+			title: 'Enter the name or ID of the Azure subscription that owns the resource group',
+			ignoreFocusOut: true,
+			value: azureMetadata?.azureSubscription ?? '',
+		});
+		if (!subscription) {
+			return;
+		}
+
+		globalState.setClusterMetadata(clusterName, {
+			azureResourceGroup: resourceGroup,
+			azureSubscription: subscription,
+			azureClusterName: clusterName,
+		});
+
+		createGitSourceQuery = `az k8s-configuration flux create -g ${resourceGroup} -c ${clusterName} -t managedClusters --subscription ${subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+	} else {
+		// generic cluster
+		createGitSourceQuery = `flux create source git ${newGitRepositorySourceName} --url ${gitUrl} --branch ${pickedGitBranch}`;
+	}
+
+	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
+		currentClusterNode?.clusterProvider === ClusterProvider.AzureARC) {
+		// TODO: use shell for the query
+		runTerminalCommand(createGitSourceQuery, { focusTerminal: true });
+	} else {
+		await shell.execWithOutput(createGitSourceQuery);
+		refreshSourceTreeView();
+	}
+
 }

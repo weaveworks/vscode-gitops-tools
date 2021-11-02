@@ -1,9 +1,9 @@
-import { ExtensionContext } from 'vscode';
 import { getExtensionContext } from './extensionContext';
 
 export interface ClusterAzureMetadata {
 	azureResourceGroup: string;
 	azureSubscription: string;
+	azureClusterName: string;
 }
 
 const enum GlobalStatePrefixes {
@@ -12,14 +12,14 @@ const enum GlobalStatePrefixes {
 
 class GlobalState {
 
-	constructor(private extensionContext: ExtensionContext) {}
+	constructor() {}
 
 	get(stateKey: string) {
-		return this.extensionContext.globalState.get(stateKey);
+		return getExtensionContext().globalState.get(stateKey);
 	}
 
 	set(stateKey: string, newValue: any): void {
-		this.extensionContext.globalState.update(stateKey, newValue);
+		getExtensionContext().globalState.update(stateKey, newValue);
 	}
 
 	getClusterMetadata(clusterName: string): ClusterAzureMetadata | undefined {
@@ -34,4 +34,4 @@ class GlobalState {
 /**
  * Global state (saved in vscode global storage).
  */
-export const globalState = new GlobalState(getExtensionContext());
+export const globalState = new GlobalState();

@@ -1,4 +1,5 @@
 import { Disposable, ExtensionContext, Terminal, window } from 'vscode';
+import { getExtensionContext } from './extensionContext';
 
 const terminalName: string = 'gitops';
 
@@ -38,17 +39,21 @@ function getTerminal(context: ExtensionContext, workingDirectory?: string): Term
 
 /**
  * Runs terminal command.
- * @param context VSCode extension context.
  * @param command Command name.
- * @param args Command arguments.
- * @param workingDirectory Optional working directory path to cd to.
+ * @param cwd Optional working directory path to cd to.
+ * @param focusTerminal Optional whether or not to shift the focus to the terminal.
  */
 export function runTerminalCommand(
-	context: ExtensionContext,
 	command: string,
-	args: string,
-	workingDirectory?: string): void {
-	const terminal = getTerminal(context, workingDirectory);
-	terminal.show(true);
-	terminal.sendText(`${command} ${args}`, true); // add new line
+	{
+		cwd,
+		focusTerminal,
+	}: {
+		cwd?: string;
+		focusTerminal?: boolean;
+	} = {}): void {
+
+	const terminal = getTerminal(getExtensionContext(), cwd);
+	terminal.show(!focusTerminal);
+	terminal.sendText(command, true);
 }

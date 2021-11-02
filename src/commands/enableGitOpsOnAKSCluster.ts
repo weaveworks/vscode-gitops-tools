@@ -25,6 +25,7 @@ export async function enableGitOpsOnAKSCluster(clusterNode: ClusterNode, { isAzu
 	const clusterName = await window.showInputBox({
 		title: 'Enter the cluster name (as defined in Azure)',
 		ignoreFocusOut: true,
+		value: azureMetadata?.azureClusterName ?? '',
 	});
 
 	if (!clusterName) {
@@ -44,6 +45,7 @@ export async function enableGitOpsOnAKSCluster(clusterNode: ClusterNode, { isAzu
 	globalState.setClusterMetadata(clusterName, {
 		azureResourceGroup: resourceGroup,
 		azureSubscription: subscription,
+		azureClusterName: clusterName,
 	});
 
 	let enableGitOpsQuery = '';
