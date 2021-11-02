@@ -115,7 +115,8 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 
 	let createGitSourceQuery = '';
 
-	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS) {
+	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
+		currentClusterNode?.clusterProvider === ClusterProvider.AzureARC) {
 		const azureMetadata = globalState.getClusterMetadata(currentClusterNode.name);
 
 		// TODO: move `resourceGroup` & `clusteName` & `subscription` into a separate function
@@ -152,7 +153,12 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 			azureClusterName: clusterName,
 		});
 
-		createGitSourceQuery = `az k8s-configuration flux create -g ${resourceGroup} -c ${clusterName} -t managedClusters --subscription ${subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+		if (currentClusterNode.clusterProvider === ClusterProvider.AKS) {
+			createGitSourceQuery = `az k8s-configuration flux create -g ${resourceGroup} -c ${clusterName} -t managedClusters --subscription ${subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+		} else if (currentClusterNode.clusterProvider === ClusterProvider.AzureARC) {
+			createGitSourceQuery = `az k8s-configuration flux create -g ${resourceGroup} -c ${clusterName} -t connectedClusters --subscription ${subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+		}
+
 	} else {
 		// generic cluster
 		createGitSourceQuery = `flux create source git ${newGitRepositorySourceName} --url ${gitUrl} --branch ${pickedGitBranch}`;
