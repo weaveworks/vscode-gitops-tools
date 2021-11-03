@@ -15,7 +15,9 @@ export class AnyResourceNode extends TreeNode {
 	resource: KubernetesObject;
 
 	constructor(anyResource: KubernetesObject) {
-		super(`${anyResource.kind}: ${anyResource.metadata?.name}`);
+		super(anyResource.metadata?.name || '');
+
+		this.description = anyResource.kind;
 
 		// save metadata reference
 		this.resource = anyResource;
