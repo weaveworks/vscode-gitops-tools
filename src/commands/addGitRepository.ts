@@ -1,5 +1,5 @@
 import { Uri, window, workspace } from 'vscode';
-import { globalState } from '../globalState';
+import { getAzureMetadata } from '../getAzureMetadata';
 import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
@@ -117,46 +117,16 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 
 	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
 		currentClusterNode?.clusterProvider === ClusterProvider.AzureARC) {
-		const azureMetadata = globalState.getClusterMetadata(currentClusterNode.name);
 
-		// TODO: move `resourceGroup` & `clusteName` & `subscription` into a separate function
-		const resourceGroup = await window.showInputBox({
-			title: 'Enter the Azure Resource group (where the cluster is)',
-			ignoreFocusOut: true,
-			value: azureMetadata?.azureResourceGroup ?? '',
-		});
-		if (!resourceGroup) {
+		const azureMetadata = await getAzureMetadata(currentClusterNode.name);
+		if (!azureMetadata) {
 			return;
 		}
-
-		const clusterName = await window.showInputBox({
-			title: 'Enter the cluster name (as defined in Azure)',
-			ignoreFocusOut: true,
-			value: azureMetadata?.azureClusterName ?? '',
-		});
-		if (!clusterName) {
-			return;
-		}
-
-		const subscription = await window.showInputBox({
-			title: 'Enter the name or ID of the Azure subscription that owns the resource group',
-			ignoreFocusOut: true,
-			value: azureMetadata?.azureSubscription ?? '',
-		});
-		if (!subscription) {
-			return;
-		}
-
-		globalState.setClusterMetadata(currentClusterNode.name, {
-			azureResourceGroup: resourceGroup,
-			azureSubscription: subscription,
-			azureClusterName: clusterName,
-		});
 
 		if (currentClusterNode.clusterProvider === ClusterProvider.AKS) {
-			createGitSourceQuery = `az k8s-configuration flux create -g ${resourceGroup} -c ${clusterName} -t managedClusters --subscription ${subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.azureResourceGroup} -c ${azureMetadata.azureClusterName} -t managedClusters --subscription ${azureMetadata.azureSubscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
 		} else if (currentClusterNode.clusterProvider === ClusterProvider.AzureARC) {
-			createGitSourceQuery = `az k8s-configuration flux create -g ${resourceGroup} -c ${clusterName} -t connectedClusters --subscription ${subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.azureResourceGroup} -c ${azureMetadata.azureClusterName} -t connectedClusters --subscription ${azureMetadata.azureSubscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
 		}
 
 	} else {
