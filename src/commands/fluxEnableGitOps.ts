@@ -35,6 +35,15 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 		return;
 	}
 
+	if (clusterNode?.clusterProvider === ClusterProvider.AKS ||
+		clusterNode?.clusterProvider === ClusterProvider.AzureARC) {
+		if (!enable) {
+			// TODO: disable GitOps on AKS & ARC
+			window.showInformationMessage('Disable GitOps is not yet implemented on AKS or Azure ARC', { modal: true });
+			return;
+		}
+	}
+
 	let contextArg = '';
 	if (clusterNode) {
 		contextArg = `--context=${clusterNode.name}`;
