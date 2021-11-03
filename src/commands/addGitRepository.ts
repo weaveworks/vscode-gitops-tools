@@ -124,9 +124,9 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		}
 
 		if (currentClusterNode.clusterProvider === ClusterProvider.AKS) {
-			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.azureResourceGroup} -c ${azureMetadata.azureClusterName} -t managedClusters --subscription ${azureMetadata.azureSubscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t managedClusters --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
 		} else if (currentClusterNode.clusterProvider === ClusterProvider.AzureARC) {
-			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.azureResourceGroup} -c ${azureMetadata.azureClusterName} -t connectedClusters --subscription ${azureMetadata.azureSubscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
+			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t connectedClusters --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
 		}
 
 	} else {

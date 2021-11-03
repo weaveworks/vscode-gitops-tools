@@ -48,8 +48,8 @@ export async function getAzureMetadata(clusterContextName: string) {
 	});
 
 	return {
-		azureResourceGroup: resourceGroup,
-		azureSubscription: subscription,
-		azureClusterName: clusterName,
+		resourceGroup,
+		subscription,
+		clusterName,
 	};
 }
