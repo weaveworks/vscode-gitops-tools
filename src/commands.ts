@@ -12,6 +12,7 @@ import { showLogs } from './commands/showLogs';
 import { showOutputChannel } from './output';
 import { refreshApplicationTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
 import { addGitRepository } from './commands/addGitRepository';
+import { deleteSource } from './commands/deleteSource';
 
 /**
  * Command ids registered by this extension
@@ -48,6 +49,7 @@ export const enum CommandId {
 	RefreshApplicationsTreeView = 'gitops.views.refreshApplicationTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
 	AddGitRepository = 'gitops.views.addGitRepository',
+	DeleteSource = 'gitops.views.deleteSource',
 
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
@@ -86,6 +88,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.RefreshApplicationsTreeView, refreshApplicationTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.AddGitRepository, addGitRepository);
+	registerCommand(CommandId.DeleteSource, deleteSource);
 
 	// editor
 	registerCommand(CommandId.EditorOpenResource, openResource);

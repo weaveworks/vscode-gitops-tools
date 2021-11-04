@@ -44,6 +44,7 @@
 		"onCommand:gitops.views.refreshApplicationTreeView",
 		"onCommand:gitops.views.pullGitRepository",
 		"onCommand:gitops.views.addGitRepository",
+		"onCommand:gitops.views.deleteSource",
 		"onCommand:gitops.editor.openResource",
 		"onCommand:gitops.editor.showLogs",
 		"onCommand:gitops.output.show",
@@ -117,6 +118,11 @@
 				"command": "gitops.views.addGitRepository",
 				"title": "Add Git Repository Source",
 				"icon": "$(add)",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.deleteSource",
+				"title": "Delete Source",
 				"category": "GitOps"
 			},
 			{
@@ -253,7 +259,18 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
-					"when": "view == gitops.views.sources && viewItem =~ /^(gitRepository|helmRepository|bucket)$/"
+					"when": "view == gitops.views.sources && viewItem =~ /^(gitRepository|helmRepository|bucket)$/",
+					"group": "navigation@0"
+				},
+				{
+					"command": "gitops.views.pullGitRepository",
+					"when": "view == gitops.views.sources && viewItem == gitRepository",
+					"group": "navigation@1"
+				},
+				{
+					"command": "gitops.views.deleteSource",
+					"when": "view == gitops.views.sources && viewItem =~ /^(gitRepository)$/",
+					"group": "navigation@2"
 				},
 				{
 					"command": "gitops.flux.reconcileApplication",
@@ -262,10 +279,6 @@
 				{
 					"command": "gitops.editor.showLogs",
 					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /^(deployment)$/"
-				},
-				{
-					"command": "gitops.views.pullGitRepository",
-					"when": "view == gitops.views.sources && viewItem == gitRepository"
 				}
 			],
 			"explorer/context": [
@@ -305,6 +318,10 @@
 				},
 				{
 					"command": "gitops.views.pullGitRepository",
+					"when": "never"
+				},
+				{
+					"command": "gitops.views.deleteSource",
 					"when": "never"
 				}
 			]
