@@ -2,6 +2,34 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.9.0 - [2021-11-04]
+
+- [#100](https://github.com/weaveworks/vscode-gitops-tools/issues/100)
+Identify whether Cluster is managed by Azure ARC
+- [#101](https://github.com/weaveworks/vscode-gitops-tools/issues/101)
+Enable GitOps on an AKS ARC Cluster
+- [#102](https://github.com/weaveworks/vscode-gitops-tools/issues/102)
+Add a GitRepository source, from the current open Git Repo in VS Code to a AKS ARC Cluster
+- [#103](https://github.com/weaveworks/vscode-gitops-tools/issues/103)
+Add a GitRepository source, from the current open Git Repo in VS Code to a AKS Cluster
+- [#104](https://github.com/weaveworks/vscode-gitops-tools/issues/104)
+Add a GitRepository source, from the current open Git Repo in VS Code to a Generic Cluster
+- [#105](https://github.com/weaveworks/vscode-gitops-tools/issues/105)
+Allow a user to Pull a GitRepository source locally and open in VS Code
+- [#114](https://github.com/weaveworks/vscode-gitops-tools/issues/114)
+Use description for application created resource kind
+- [#115](https://github.com/weaveworks/vscode-gitops-tools/issues/115)
+Delete git repository source
+- [#134](https://github.com/weaveworks/vscode-gitops-tools/issues/134)
+Package Sprint 9 release
+
+# v0.8.0 - [2021/10/21]
+
+- [#84](https://github.com/weaveworks/vscode-gitops-tools/issues/84)
+Enable GitOps on an AKS Cluster
+- [#112](https://github.com/weaveworks/vscode-gitops-tools/issues/112)
+Status bar loading message is stuck
+
 # v0.7.0 - [2021-10-14]
 
 - [#97](https://github.com/weaveworks/vscode-gitops-tools/issues/97)
