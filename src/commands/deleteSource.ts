@@ -2,7 +2,6 @@ import { window } from 'vscode';
 import { getAzureMetadata } from '../getAzureMetadata';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
-import { runTerminalCommand } from '../terminal';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { clusterTreeViewProvider, refreshSourceTreeView } from '../views/treeViews';
 
@@ -27,12 +26,12 @@ export async function deleteSource(sourceNode: GitRepositoryNode /* | HelmReposi
 		if (!azureMetadata) {
 			return;
 		}
-		// TODO: use shell for AKS & ARC
-		deleteSourceQuery = `az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${currentClusterNode.clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${sourceName}`;
-		runTerminalCommand(deleteSourceQuery, { focusTerminal: true });
+
+		deleteSourceQuery = `az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${currentClusterNode.clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`;
 	} else {
-		deleteSourceQuery = `flux delete source git ${sourceName}`;
-		await shell.execWithOutput(deleteSourceQuery);
-		refreshSourceTreeView();
+		deleteSourceQuery = `flux delete source git ${sourceName} --silent`;
 	}
+
+	await shell.execWithOutput(deleteSourceQuery);
+	refreshSourceTreeView();
 }
