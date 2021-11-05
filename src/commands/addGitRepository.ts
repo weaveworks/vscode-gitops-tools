@@ -89,29 +89,16 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 
 	const gitUrl = gitRemoteUrlShellResult.stdout.trim();
 
-	const gitBranchesShellResult = await shell.execWithOutput('git branch --format=%(refname:short)', {
+	const gitCurrentBranchShellResult = await shell.execWithOutput('git rev-parse --abbrev-ref HEAD', {
 		cwd: gitFolderFsPath,
 		revealOutputView: false,
 	});
 
-	if (gitBranchesShellResult.code !== 0) {
-		window.showErrorMessage(`Failed to get git branches ${gitBranchesShellResult.stderr}`);
+	if (gitCurrentBranchShellResult.code !== 0) {
+		window.showErrorMessage(`Failed to get current git branch ${gitCurrentBranchShellResult.stderr}`);
 		return;
 	}
-	const gitBranches = gitBranchesShellResult.stdout.split('\n')
-		.filter(branch => branch.length);
-
-	let pickedGitBranch;
-	if (gitBranches.length === 1) {
-		pickedGitBranch = gitBranches[0];
-	} else {
-		pickedGitBranch = await window.showQuickPick(gitBranches, {
-			title: 'Pick a git branch',
-		});
-		if (!pickedGitBranch) {
-			return;
-		}
-	}
+	const gitBranch = gitCurrentBranchShellResult.stdout.trim();
 
 	let createGitSourceQuery = '';
 
@@ -123,15 +110,10 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 			return;
 		}
 
-		if (currentClusterNode.clusterProvider === ClusterProvider.AKS) {
-			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t managedClusters --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
-		} else if (currentClusterNode.clusterProvider === ClusterProvider.AzureARC) {
-			createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t connectedClusters --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${pickedGitBranch}`;
-		}
-
+		createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${currentClusterNode.clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`;
 	} else {
 		// generic cluster
-		createGitSourceQuery = `flux create source git ${newGitRepositorySourceName} --url ${gitUrl} --branch ${pickedGitBranch}`;
+		createGitSourceQuery = `flux create source git ${newGitRepositorySourceName} --url ${gitUrl} --branch ${gitBranch}`;
 	}
 
 	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
