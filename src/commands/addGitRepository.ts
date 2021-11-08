@@ -1,9 +1,11 @@
+import gitUrlParse from 'git-url-parse';
 import { Uri, window, workspace } from 'vscode';
 import { getAzureMetadata } from '../getAzureMetadata';
 import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { runTerminalCommand } from '../terminal';
+import { sanitizeRFC1123 } from '../utils/stringUtils';
 import { clusterTreeViewProvider, refreshSourceTreeView } from '../views/treeViews';
 
 /**
@@ -20,15 +22,6 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 	}
 
 	const currentClusterNode = clusterTreeViewProvider.getCurrentClusterNode();
-
-	const newGitRepositorySourceName = await window.showInputBox({
-		title: 'Enter a git repository name',
-		validateInput: value => /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/.test(value) ? '' : `Invalid value: "${value}". A lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.`,
-	});
-
-	if (!newGitRepositorySourceName) {
-		return;
-	}
 
 	let gitFolderFsPath = '';
 
@@ -100,6 +93,8 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 	}
 	const gitBranch = gitCurrentBranchShellResult.stdout.trim();
 
+	const newGitRepositorySourceName = nameGitRepositorySource(gitUrl, gitBranch);
+
 	let createGitSourceQuery = '';
 
 	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
@@ -125,4 +120,25 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		refreshSourceTreeView();
 	}
 
+}
+
+/**
+ * Use naming convention for the newly created git repository source:
+ *
+ * ```ts
+ * `${organization}-${repository}-${branch}`
+ * ```
+ *
+ * The source name should comply with RFC 1123.
+ *
+ * @param url git url string, for example `https://github.com/murillodigital/team-ssp` or
+ * `git@github.com:fluxcd/source-controller.git`
+ * @param branch active git branch name
+ */
+function nameGitRepositorySource(url: string, branch: string) {
+	const parsedGitUrl = gitUrlParse(url);
+	const organization = parsedGitUrl.organization;
+	const repository = parsedGitUrl.name;
+
+	return sanitizeRFC1123(`${organization}-${repository}-${branch}`);
 }
