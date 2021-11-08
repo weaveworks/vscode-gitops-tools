@@ -37,9 +37,10 @@ export class ClusterNode extends TreeNode {
 	isCurrent: boolean = false;
 
 	/**
-	 * Whether or not gitops is installed on this cluster
+	 * Whether or not gitops is installed on this cluster.
+	 * `undefined` when it's not yet initialized or when detection failed.
 	 */
-	isGitOpsInstalled: boolean = false;
+	isGitOpsEnabled?: boolean;
 
 	/**
 	 * Creates new Cluster tree view item for display.
@@ -68,15 +69,15 @@ export class ClusterNode extends TreeNode {
 	 * - Cluster provider.
 	 */
 	async updateNodeContext() {
-		this.isGitOpsInstalled = (await kubernetesTools.isFluxInstalled(this.name)) || false;
+		this.isGitOpsEnabled = await kubernetesTools.isFluxInstalled(this.name);
 		this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
 
 		// Update vscode context for welcome view of other tree views
-		if (this.isCurrent) {
-			setContext(ContextTypes.CurrentClusterFluxNotInstalled, !this.isGitOpsInstalled);
+		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {
+			setContext(ContextTypes.CurrentClusterFluxNotInstalled, !this.isGitOpsEnabled);
 		}
 
-		if (this.isGitOpsInstalled) {
+		if (this.isGitOpsEnabled) {
 			this.setIcon('cloud-gitops');
 		} else {
 			this.setIcon('cloud');
@@ -104,7 +105,12 @@ export class ClusterNode extends TreeNode {
 
 	// @ts-ignore
 	get contextValue(): string {
-		return `cluster;${this.isGitOpsInstalled ? NodeContext.ClusterGitOpsInstalled : NodeContext.ClusterGitOpsNotInstalled};${this.clusterProvider === ClusterProvider.AKS ? NodeContext.ClusterProviderAKS : NodeContext.ClusterProviderGeneric};`;
+		let gitOpsEnabledContext = '';
+		if (typeof this.isGitOpsEnabled === 'boolean') {
+			gitOpsEnabledContext = `${this.isGitOpsEnabled ? NodeContext.ClusterGitOpsEnabled : NodeContext.ClusterGitOpsNotEnabled};`;
+		}
+
+		return `cluster;${gitOpsEnabledContext};`;
 	}
 
 	// @ts-ignore

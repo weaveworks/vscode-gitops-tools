@@ -251,11 +251,11 @@
 				},
 				{
 					"command": "gitops.flux.install",
-					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsNotInstalled;/"
+					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsNotEnabled;/"
 				},
 				{
 					"command": "gitops.flux.uninstall",
-					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsInstalled;/"
+					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsEnabled;/"
 				},
 				{
 					"command": "gitops.flux.reconcileSource",

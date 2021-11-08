@@ -5,8 +5,8 @@ export const enum NodeContext {
 
 	// Cluster context values
 	Cluster = 'cluster',
-	ClusterGitOpsInstalled = 'clusterGitOpsInstalled',
-	ClusterGitOpsNotInstalled = 'clusterGitOpsNotInstalled',
+	ClusterGitOpsEnabled = 'clusterGitOpsEnabled',
+	ClusterGitOpsNotEnabled = 'clusterGitOpsNotEnabled',
 	ClusterProviderAKS = 'clusterProviderAKS',
 	ClusterProviderGeneric = 'clusterProviderGeneric',
 	Deployment = 'deployment',
