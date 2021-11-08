@@ -1,6 +1,6 @@
 import { ExtensionContext } from 'vscode';
-import { setExtensionContext } from './extensionContext';
 import { registerCommands } from './commands';
+import { setExtensionContext } from './extensionContext';
 import { checkPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { createTreeViews } from './views/treeViews';
@@ -9,7 +9,7 @@ import { createTreeViews } from './views/treeViews';
  * Activates GitOps extension.
  * @param context VSCode extension context.
  */
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
 
 	// Keep a reference to the extension context
 	setExtensionContext(context);
@@ -24,10 +24,10 @@ export function activate(context: ExtensionContext) {
 	registerCommands(context);
 
 	// show error notification if flux is not installed
-	promptToInstallFlux();
+	await promptToInstallFlux();
 
 	// run Flux prerequisites check
-	checkPrerequisites();
+	await checkPrerequisites();
 }
 
 export function deactivate() {}

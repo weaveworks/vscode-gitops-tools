@@ -9,6 +9,7 @@ export async function sendToOutputChannel(
 	addNewline: boolean = true,
 	revealOutputView: boolean = true,
 	channel?: OutputChannel): Promise<void> {
+
 	// create output channel
 	if (!outputChannel) {
 		outputChannel = window.createOutputChannel(outputChannelName);
@@ -17,18 +18,24 @@ export async function sendToOutputChannel(
 		channel = outputChannel;
 	}
 
-	// add output message
-	if (channel) {
-		if (revealOutputView) {
-			channel.show(true);
-		}
-		if (addNewline && !message.endsWith('\n')) {
-			message = `${message} \n`;
-		}
-		channel.append(message);
-	} else {
+	if (!channel) {
 		console.log(message);
+		return;
 	}
+
+	if (revealOutputView) {
+		channel.show(true);
+	}
+
+	if (addNewline) {
+		if (message.endsWith('\n')) {
+			message += '\n';
+		} else {
+			message += '\n\n';
+		}
+	}
+
+	channel.append(message);
 }
 
 export function showOutputChannel() {

@@ -111,7 +111,7 @@ async function execWithOutput(
 		location: ProgressLocation.Notification,
 		title: 'GitOps Running: ',
 	}, async progress => new Promise<ShellResult>(resolve => {
-		sendToOutputChannel(`> ${cmd}`, true, revealOutputView);
+		sendToOutputChannel(`> ${cmd}\n`, false, revealOutputView);
 
 		const childProcess = shelljs.exec(cmd, {
 			async: true,
@@ -137,6 +137,8 @@ async function execWithOutput(
 		});
 
 		childProcess.on('exit', function(code: number) {
+			sendToOutputChannel('\n', false, false);
+
 			resolve({
 				code,
 				stdout,
