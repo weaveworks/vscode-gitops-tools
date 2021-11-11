@@ -6,7 +6,11 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 /**
  * Return the name of the Git Repository Source when the folder's git origin repository already exist
  * in the current cluster as a GitRepository Source, otherwise - return undefined.
- * @param folderFsPath File path to the local git repository folder
+ *
+ * This function should be run:
+ * - At extension startup
+ * - After git repository is added
+ * - After git repository is deleted
  */
 export async function checkIfOpenedFolderGitRepositorySourceExists() {
 
