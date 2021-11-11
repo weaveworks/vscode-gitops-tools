@@ -38,6 +38,7 @@
 		"onCommand:gitops.flux.install",
 		"onCommand:gitops.flux.uninstall",
 		"onCommand:gitops.flux.reconcileSource",
+		"onCommand:gitops.flux.reconcileRepository",
 		"onCommand:gitops.flux.reconcileApplication",
 		"onCommand:gitops.views.refreshTreeViews",
 		"onCommand:gitops.views.refreshSourceTreeView",
@@ -84,6 +85,12 @@
 			{
 				"command": "gitops.flux.reconcileSource",
 				"title": "Reconcile Source",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.flux.reconcileRepository",
+				"title": "Reconcile Repository",
+				"icon": "$(sync)",
 				"category": "GitOps"
 			},
 			{
@@ -231,7 +238,12 @@
 				{
 					"command": "gitops.views.addGitRepository",
 					"group": "navigation@0",
-					"when": "view == gitops.views.sources"
+					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
+				},
+				{
+					"command": "gitops.flux.reconcileRepository",
+					"group": "navigation@0",
+					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
 				},
 				{
 					"command": "gitops.views.refreshSourceTreeView",
@@ -284,7 +296,11 @@
 			"explorer/context": [
 				{
 					"command": "gitops.views.addGitRepository",
-					"when": "workspaceFolderCount > 0"
+					"when": "workspaceFolderCount > 0 && gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
+				},
+				{
+					"command": "gitops.flux.reconcileRepository",
+					"when": "workspaceFolderCount > 0 && gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
 				}
 			],
 			"commandPalette": [
@@ -322,6 +338,10 @@
 				},
 				{
 					"command": "gitops.views.deleteSource",
+					"when": "never"
+				},
+				{
+					"command": "gitops.flux.reconcileRepository",
 					"when": "never"
 				}
 			]

@@ -1,6 +1,7 @@
 import { ExtensionContext } from 'vscode';
 import { registerCommands } from './commands';
 import { setExtensionContext } from './extensionContext';
+import { checkIfOpenedFolderGitRepositorySourceExists } from './git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { createTreeViews } from './views/treeViews';
@@ -22,6 +23,11 @@ export async function activate(context: ExtensionContext) {
 
 	// register gitops commands
 	registerCommands(context);
+
+	// Change menu item in File Explorer (Add Git Repository / Reconcile Repository)
+	// depending if the current opened folder is a git repository and already added
+	// to the cluster
+	checkIfOpenedFolderGitRepositorySourceExists();
 
 	// show error notification if flux is not installed
 	await promptToInstallFlux();

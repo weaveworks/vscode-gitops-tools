@@ -1,6 +1,7 @@
 import gitUrlParse from 'git-url-parse';
 import { Uri, window, workspace } from 'vscode';
 import { getAzureMetadata } from '../getAzureMetadata';
+import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
@@ -59,39 +60,13 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		return;
 	}
 
-	const isInsideGitRepositoryShellResult = await shell.execWithOutput('git rev-parse --is-inside-work-tree', {
-		cwd: gitFolderFsPath,
-		revealOutputView: false,
-	});
-	const isInsideGitRepository = isInsideGitRepositoryShellResult.code === 0;
-
-	if (!isInsideGitRepository) {
-		window.showErrorMessage(`Not a git repository ${gitFolderFsPath}`);
+	const gitRepositoryState = await getGitRepositoryState(gitFolderFsPath);
+	if (!gitRepositoryState) {
 		return;
 	}
 
-	const gitRemoteUrlShellResult = await shell.execWithOutput('git ls-remote --get-url origin', {
-		cwd: gitFolderFsPath,
-		revealOutputView: false,
-	});
-
-	if (gitRemoteUrlShellResult.code !== 0) {
-		window.showErrorMessage(`Failed to get origin url ${gitRemoteUrlShellResult.stderr}`);
-		return;
-	}
-
-	const gitUrl = gitRemoteUrlShellResult.stdout.trim();
-
-	const gitCurrentBranchShellResult = await shell.execWithOutput('git rev-parse --abbrev-ref HEAD', {
-		cwd: gitFolderFsPath,
-		revealOutputView: false,
-	});
-
-	if (gitCurrentBranchShellResult.code !== 0) {
-		window.showErrorMessage(`Failed to get current git branch ${gitCurrentBranchShellResult.stderr}`);
-		return;
-	}
-	const gitBranch = gitCurrentBranchShellResult.stdout.trim();
+	const gitUrl = gitRepositoryState.url;
+	const gitBranch = gitRepositoryState.branch;
 
 	const newGitRepositorySourceName = nameGitRepositorySource(gitUrl, gitBranch);
 
@@ -118,6 +93,7 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 	} else {
 		await shell.execWithOutput(createGitSourceQuery);
 		refreshSourceTreeView();
+		checkIfOpenedFolderGitRepositorySourceExists();
 	}
 
 }
@@ -135,10 +111,97 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
  * `git@github.com:fluxcd/source-controller.git`
  * @param branch active git branch name
  */
-function nameGitRepositorySource(url: string, branch: string) {
+export function nameGitRepositorySource(url: string, branch: string) {
 	const parsedGitUrl = gitUrlParse(url);
 	const organization = parsedGitUrl.organization;
 	const repository = parsedGitUrl.name;
 
 	return sanitizeRFC1123(`${organization}-${repository}-${branch}`);
+}
+
+/**
+ * Check if provided local path is indeed a git repository.
+ * @param cwd local file system path
+ */
+async function checkIfInsideGitRepository(cwd: string): Promise<boolean> {
+
+	const isInsideGitRepositoryShellResult = await shell.execWithOutput('git rev-parse --is-inside-work-tree', {
+		cwd,
+		revealOutputView: false,
+	});
+
+	const isInsideGitRepository = isInsideGitRepositoryShellResult.code === 0;
+	if (!isInsideGitRepository) {
+		window.showErrorMessage(`Not a git repository ${cwd}`);
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Return git origin url
+ * @param cwd local file system path
+ */
+export async function getGitOriginUrl(cwd: string): Promise<undefined | string> {
+
+	const gitRemoteUrlShellResult = await shell.execWithOutput('git ls-remote --get-url origin', {
+		cwd,
+		revealOutputView: false,
+	});
+
+	if (gitRemoteUrlShellResult.code !== 0) {
+		window.showErrorMessage(`Failed to get origin url ${gitRemoteUrlShellResult.stderr}`);
+		return;
+	}
+
+	const gitOriginUrl = gitRemoteUrlShellResult.stdout.trim();
+	return gitOriginUrl;
+}
+
+/**
+ * Get active git branch
+ * @param cwd local file system path
+ */
+export async function getGitBranch(cwd: string): Promise<undefined | string> {
+
+	const gitCurrentBranchShellResult = await shell.execWithOutput('git rev-parse --abbrev-ref HEAD', {
+		cwd,
+		revealOutputView: false,
+	});
+
+	if (gitCurrentBranchShellResult.code !== 0) {
+		window.showErrorMessage(`Failed to get current git branch ${gitCurrentBranchShellResult.stderr}`);
+		return;
+	}
+
+	const gitBranch = gitCurrentBranchShellResult.stdout.trim();
+	return gitBranch;
+}
+
+/**
+ * Given a local file path - try to get spec properties for the Git Repository (url & branch).
+ * @param cwd local file system path
+ */
+export async function getGitRepositoryState(cwd: string) {
+
+	const isInsideGitRepository = await checkIfInsideGitRepository(cwd);
+	if (!isInsideGitRepository) {
+		return;
+	}
+
+	const gitUrl = await getGitOriginUrl(cwd);
+	if (!gitUrl) {
+		return;
+	}
+
+	const gitBranch = await getGitBranch(cwd);
+	if (!gitBranch) {
+		return;
+	}
+
+	return {
+		url: gitUrl,
+		branch: gitBranch,
+	};
 }

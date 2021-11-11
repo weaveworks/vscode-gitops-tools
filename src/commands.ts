@@ -3,7 +3,7 @@ import { fluxDisableGitOps, fluxEnableGitOps } from './commands/fluxEnableGitOps
 import { fluxCheck } from './commands/fluxCheck';
 import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
 import { fluxReconcileApplication } from './commands/fluxReconcileApplication';
-import { fluxReconcileSource } from './commands/fluxReconcileSource';
+import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
@@ -13,6 +13,7 @@ import { showOutputChannel } from './output';
 import { refreshApplicationTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
 import { addGitRepository } from './commands/addGitRepository';
 import { deleteSource } from './commands/deleteSource';
+import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 
 /**
  * Command ids registered by this extension
@@ -41,6 +42,7 @@ export const enum CommandId {
 	FluxEnableGitOps = 'gitops.flux.install',
 	FluxDisableGitOps = 'gitops.flux.uninstall',
 	FluxReconcileSource = 'gitops.flux.reconcileSource',
+	FluxReconcileRepository = 'gitops.flux.reconcileRepository',
 	FluxReconcileApplication = 'gitops.flux.reconcileApplication',
 
 	// tree view
@@ -77,7 +79,8 @@ export function registerCommands(context: ExtensionContext) {
 	// flux
 	registerCommand(CommandId.FluxCheck, fluxCheck);
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
-	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSource);
+	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);
+	registerCommand(CommandId.FluxReconcileRepository, fluxReconcileRepository);
 	registerCommand(CommandId.FluxReconcileApplication, fluxReconcileApplication);
 	registerCommand(CommandId.FluxEnableGitOps, fluxEnableGitOps);
 	registerCommand(CommandId.FluxDisableGitOps, fluxDisableGitOps);

@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import { getAzureMetadata } from '../getAzureMetadata';
+import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
@@ -34,4 +35,5 @@ export async function deleteSource(sourceNode: GitRepositoryNode /* | HelmReposi
 
 	await shell.execWithOutput(deleteSourceQuery);
 	refreshSourceTreeView();
+	checkIfOpenedFolderGitRepositorySourceExists();
 }

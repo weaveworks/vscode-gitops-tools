@@ -11,6 +11,9 @@ export const enum ContextTypes {
 	LoadingApplications = 'gitops:loadingApplications',
 	NoSources = 'gitops:noSources',
 	NoApplications = 'gitops:noApplications',
+
+	OpenFolderGitRepositoryExistDetermined = 'gitops:openFolderGitRepositoryExistDetermined',
+	OpenFolderGitRepositoryExist = 'gitops:openFolderGitRepositoryExist',
 }
 
 /**
@@ -23,6 +26,9 @@ interface ContextValues {
 	[ContextTypes.LoadingApplications]: boolean;
 	[ContextTypes.NoSources]: boolean;
 	[ContextTypes.NoApplications]: boolean;
+
+	[ContextTypes.OpenFolderGitRepositoryExist]: boolean;
+	[ContextTypes.OpenFolderGitRepositoryExistDetermined]: boolean;
 }
 
 /**
