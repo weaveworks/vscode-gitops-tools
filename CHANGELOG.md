@@ -2,6 +2,25 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.10.0 - [2021-11-11]
+
+- [#130](https://github.com/weaveworks/vscode-gitops-tools/issues/130)
+Don't ask for `GitRepository` object name, use naming convention standard
+- [#131](https://github.com/weaveworks/vscode-gitops-tools/issues/131)
+Flux delete command requires interactive user response - request `--yes` or similar flag to be added for non-interactive execution.
+- [#132](https://github.com/weaveworks/vscode-gitops-tools/issues/132)
+If the current repo/branch is already added as a GitRepository, change the option from `Add git repo` to `Reconcile repository`
+- [#133](https://github.com/weaveworks/vscode-gitops-tools/issues/133)
+When adding a GitRepository, do not ask the user for branch, always use the branch currently checked out.
+- [#135](https://github.com/weaveworks/vscode-gitops-tools/issues/135)
+Git command for branch selection fails on zsh, sh
+- [#136](https://github.com/weaveworks/vscode-gitops-tools/issues/136)
+Ouput: add newline between commands
+- [#137](https://github.com/weaveworks/vscode-gitops-tools/issues/137)
+Menu to enable/disable gitops is visible too early
+- [#138](https://github.com/weaveworks/vscode-gitops-tools/issues/138)
+Package Sprint 10 release
+
 # v0.9.0 - [2021-11-04]
 
 - [#100](https://github.com/weaveworks/vscode-gitops-tools/issues/100)
@@ -23,7 +42,7 @@ Delete git repository source
 - [#134](https://github.com/weaveworks/vscode-gitops-tools/issues/134)
 Package Sprint 9 release
 
-# v0.8.0 - [2021/10/21]
+# v0.8.0 - [2021-10-21]
 
 - [#84](https://github.com/weaveworks/vscode-gitops-tools/issues/84)
 Enable GitOps on an AKS Cluster
