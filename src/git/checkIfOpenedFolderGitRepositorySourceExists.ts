@@ -31,6 +31,7 @@ export async function checkIfOpenedFolderGitRepositorySourceExists() {
 				gitRepositoryExists = true;
 				gitRepositoryExistsName = foundGitRepository.metadata.name || '';
 				gitRepositoryExistsNamespace = foundGitRepository.metadata.namespace || '';
+				break;
 			}
 		}
 	}
