@@ -63,6 +63,7 @@ export function createMarkdownTable(kubernetesObject: Cluster | Bucket | GitRepo
 		createMarkdownTableRow('url', kubernetesObject.spec?.url, markdown);
 		createMarkdownTableRow('branch', kubernetesObject.spec.ref?.branch, markdown);
 		createMarkdownTableRow('commit', kubernetesObject.spec.ref?.commit, markdown);
+		createMarkdownTableRow('suspend', kubernetesObject.spec.suspend, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRepository) {
 		createMarkdownTableRow('url', kubernetesObject.spec?.url, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Bucket) {

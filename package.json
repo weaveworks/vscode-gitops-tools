@@ -33,6 +33,7 @@
 	},
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
+		"onCommand:gitops.suspendSource",
 		"onCommand:gitops.flux.check",
 		"onCommand:gitops.flux.checkPrerequisites",
 		"onCommand:gitops.flux.install",
@@ -65,6 +66,11 @@
 			{
 				"command": "gitops.flux.check",
 				"title": "Show Cluster Info",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.suspendSource",
+				"title": "Suspend Source",
 				"category": "GitOps"
 			},
 			{
@@ -275,14 +281,19 @@
 					"group": "navigation@0"
 				},
 				{
-					"command": "gitops.views.pullGitRepository",
-					"when": "view == gitops.views.sources && viewItem == gitRepository",
+					"command": "gitops.suspendSource",
+					"when": "view == gitops.views.sources && viewItem =~ /^(gitRepository)$/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.views.deleteSource",
 					"when": "view == gitops.views.sources && viewItem =~ /^(gitRepository)$/",
 					"group": "navigation@2"
+				},
+				{
+					"command": "gitops.views.pullGitRepository",
+					"when": "view == gitops.views.sources && viewItem == gitRepository",
+					"group": "navigation@3"
 				},
 				{
 					"command": "gitops.flux.reconcileApplication",
@@ -306,6 +317,10 @@
 			"commandPalette": [
 				{
 					"command": "gitops.editor.openResource",
+					"when": "never"
+				},
+				{
+					"command": "gitops.suspendSource",
 					"when": "never"
 				},
 				{

@@ -39,7 +39,7 @@ class FluxTools {
 	/**
 	 * Parse prerequisites and controllers from `flux check` CLI command.
 	 *
-	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
+	 * @see https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
 	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
 		const result = await shell.execWithOutput('flux check', { revealOutputView: false });
@@ -100,6 +100,17 @@ class FluxTools {
 			prerequisites: parsedPrerequises,
 			controllers: parsedControllers,
 		};
+	}
+
+	/**
+	 * Run `flux suspend`.
+	 * @see https://fluxcd.io/docs/cmd/flux_suspend/
+	 *
+	 * @param type resource type
+	 * @param name resource name
+	 */
+	async suspend(type: 'helmrelease' | 'kustomization' | 'source bucket' | 'source git' | 'source helm', name: string) {
+		await shell.execWithOutput(`flux suspend ${type} ${name}`);
 	}
 }
 

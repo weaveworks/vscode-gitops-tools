@@ -1,19 +1,20 @@
 import { commands, Disposable, ExtensionContext } from 'vscode';
-import { fluxDisableGitOps, fluxEnableGitOps } from './commands/fluxEnableGitOps';
+import { addGitRepository } from './commands/addGitRepository';
+import { deleteSource } from './commands/deleteSource';
 import { fluxCheck } from './commands/fluxCheck';
 import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
+import { fluxDisableGitOps, fluxEnableGitOps } from './commands/fluxEnableGitOps';
 import { fluxReconcileApplication } from './commands/fluxReconcileApplication';
+import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
 import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
+import { suspendSource } from './commands/suspend';
 import { showOutputChannel } from './output';
 import { refreshApplicationTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
-import { addGitRepository } from './commands/addGitRepository';
-import { deleteSource } from './commands/deleteSource';
-import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 
 /**
  * Command ids registered by this extension
@@ -37,6 +38,7 @@ export const enum CommandId {
 	SetCurrentKubernetesContext = 'gitops.kubectl.setCurrentContext',
 
 	// flux
+	SuspendSource = 'gitops.suspendSource',
 	FluxCheck = 'gitops.flux.check',
 	FluxCheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	FluxEnableGitOps = 'gitops.flux.install',
@@ -77,6 +79,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.SetCurrentKubernetesContext, setCurrentKubernetesContext);
 
 	// flux
+	registerCommand(CommandId.SuspendSource, suspendSource);
 	registerCommand(CommandId.FluxCheck, fluxCheck);
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);
