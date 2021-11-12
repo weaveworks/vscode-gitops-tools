@@ -6,10 +6,10 @@ import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
 
-export let clusterTreeViewProvider: ClusterDataProvider;
-export let sourceTreeViewProvider: SourceDataProvider;
-export let applicationTreeViewProvider: ApplicationDataProvider;
-export let documentationTreeViewProvider: DocumentationDataProvider;
+let clusterTreeViewProvider: ClusterDataProvider;
+let sourceTreeViewProvider: SourceDataProvider;
+let applicationTreeViewProvider: ApplicationDataProvider;
+let documentationTreeViewProvider: DocumentationDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
@@ -79,4 +79,11 @@ export function refreshSourceTreeView(node?: TreeNode) {
  */
 export function refreshApplicationTreeView(node?: TreeNode) {
 	applicationTreeViewProvider.refresh(node);
+}
+
+/**
+ * @see {@link clusterTreeViewProvider.getCurrentClusterNode}
+ */
+export function getCurrentClusterNode() {
+	return clusterTreeViewProvider.getCurrentClusterNode();
 }

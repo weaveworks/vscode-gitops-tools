@@ -1,5 +1,6 @@
-import { MarkdownString } from 'vscode';
+import { MarkdownString, window } from 'vscode';
 import { CommandId } from '../../commands';
+import { NotificationMessages } from '../../constants';
 import { ContextTypes, setContext } from '../../context';
 import { extensionState } from '../../extensionState';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
@@ -16,6 +17,12 @@ import { TreeNode } from './treeNode';
 export class ClusterNode extends TreeNode {
 
 	/**
+	 * Whether cluster is managed by AKS or Azure ARC
+	 * or some other provider.
+	 */
+	private clusterProvider: ClusterProvider = ClusterProvider.Unknown;
+
+	/**
 	 * Saved cluster object.
 	 */
 	cluster: Cluster;
@@ -26,13 +33,7 @@ export class ClusterNode extends TreeNode {
 	name: string;
 
 	/**
-	 * Whether cluster is managed by AKS or Azure ARC
-	 * or some other provider.
-	 */
-	clusterProvider?: ClusterProvider;
-
-	/**
-	 * Current/active cluster.
+	 * Current/active cluster/context.
 	 */
 	isCurrent: boolean = false;
 
@@ -70,7 +71,7 @@ export class ClusterNode extends TreeNode {
 	 */
 	async updateNodeContext() {
 		this.isGitOpsEnabled = await kubernetesTools.isFluxInstalled(this.name);
-		this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
+		await this.detectClusterProvider();
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {
@@ -82,6 +83,13 @@ export class ClusterNode extends TreeNode {
 		} else {
 			this.setIcon('cloud');
 		}
+	}
+
+	/**
+	 * Try to detect cluster provider.
+	 */
+	private async detectClusterProvider() {
+		this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
 	}
 
 	/**
@@ -107,15 +115,31 @@ export class ClusterNode extends TreeNode {
 	get contextValue(): string {
 		let gitOpsEnabledContext = '';
 		if (typeof this.isGitOpsEnabled === 'boolean') {
-			gitOpsEnabledContext = `${this.isGitOpsEnabled ? NodeContext.ClusterGitOpsEnabled : NodeContext.ClusterGitOpsNotEnabled};`;
+			gitOpsEnabledContext = this.isGitOpsEnabled ? NodeContext.ClusterGitOpsEnabled : NodeContext.ClusterGitOpsNotEnabled;
 		}
 
-		return `cluster;${gitOpsEnabledContext};`;
+		return `${NodeContext.Cluster};${gitOpsEnabledContext};`;
 	}
 
 	// @ts-ignore
 	get tooltip(): MarkdownString {
 		return this.getMarkdown(this.cluster);
+	}
+
+	/**
+	 * Return this cluster provider.
+	 */
+	async getClusterProvider() {
+
+		if (this.clusterProvider === ClusterProvider.Unknown) {
+			await this.detectClusterProvider();
+		}
+
+		if (this.clusterProvider === ClusterProvider.Unknown) {
+			window.showErrorMessage(NotificationMessages.ClusterProviderDetectionFailed);
+		}
+
+		return this.clusterProvider;
 	}
 
 }

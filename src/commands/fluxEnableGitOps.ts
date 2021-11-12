@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { ClusterNode } from '../views/nodes/clusterNode';
-import { clusterTreeViewProvider, refreshClusterTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshClusterTreeView } from '../views/treeViews';
 import { enableGitOpsOnAKSCluster } from './enableGitOpsOnAKSCluster';
 
 /**
@@ -14,7 +14,15 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 
 	if (!clusterNode) {
 		// was executed from the welcome view - get current cluster node
-		clusterNode = clusterTreeViewProvider.getCurrentClusterNode();
+		clusterNode = getCurrentClusterNode();
+		if (!clusterNode) {
+			return;
+		}
+	}
+
+	const clusterProvider = await clusterNode.getClusterProvider();
+	if (clusterProvider === ClusterProvider.Unknown) {
+		return;
 	}
 
 	// Prompt for confirmation
@@ -27,16 +35,16 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 		return;
 	}
 
-	if (clusterNode?.clusterProvider === ClusterProvider.AKS && enable) {
+	if (clusterProvider === ClusterProvider.AKS && enable) {
 		enableGitOpsOnAKSCluster(clusterNode, { isAzureARC: false });
 		return;
-	} else if (clusterNode?.clusterProvider === ClusterProvider.AzureARC && enable) {
+	} else if (clusterProvider === ClusterProvider.AzureARC && enable) {
 		enableGitOpsOnAKSCluster(clusterNode, { isAzureARC: true });
 		return;
 	}
 
-	if (clusterNode?.clusterProvider === ClusterProvider.AKS ||
-		clusterNode?.clusterProvider === ClusterProvider.AzureARC) {
+	if (clusterProvider === ClusterProvider.AKS ||
+		clusterProvider === ClusterProvider.AzureARC) {
 		if (!enable) {
 			// TODO: disable GitOps on AKS & ARC
 			window.showInformationMessage('Disable GitOps is not yet implemented on AKS or Azure ARC', { modal: true });

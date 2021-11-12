@@ -539,7 +539,7 @@ export const enum ClusterProvider {
 	 */
 	Generic = 'Generic',
 	/**
-	 * Error occurred when trying to determine the cluster provider.
+	 * Error occurred when trying to determine the cluster provider or it's just not loaded yet.
 	 */
 	Unknown = 'Unknown',
 }

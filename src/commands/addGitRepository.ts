@@ -7,7 +7,7 @@ import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { runTerminalCommand } from '../terminal';
 import { sanitizeRFC1123 } from '../utils/stringUtils';
-import { clusterTreeViewProvider, refreshSourceTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshSourceTreeView } from '../views/treeViews';
 
 /**
  * Add git repository source whether from an opened folder
@@ -22,7 +22,15 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		return;
 	}
 
-	const currentClusterNode = clusterTreeViewProvider.getCurrentClusterNode();
+	const currentClusterNode = getCurrentClusterNode();
+	if (!currentClusterNode) {
+		return;
+	}
+
+	const clusterProvider = await currentClusterNode.getClusterProvider();
+	if (clusterProvider === ClusterProvider.Unknown) {
+		return;
+	}
 
 	let gitFolderFsPath = '';
 
@@ -72,22 +80,22 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 
 	let createGitSourceQuery = '';
 
-	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
-		currentClusterNode?.clusterProvider === ClusterProvider.AzureARC) {
+	if (clusterProvider === ClusterProvider.AKS ||
+		clusterProvider === ClusterProvider.AzureARC) {
 
 		const azureMetadata = await getAzureMetadata(currentClusterNode.name);
 		if (!azureMetadata) {
 			return;
 		}
 
-		createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${currentClusterNode.clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`;
+		createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`;
 	} else {
 		// generic cluster
 		createGitSourceQuery = `flux create source git ${newGitRepositorySourceName} --url ${gitUrl} --branch ${gitBranch}`;
 	}
 
-	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
-		currentClusterNode?.clusterProvider === ClusterProvider.AzureARC) {
+	if (clusterProvider === ClusterProvider.AKS ||
+		clusterProvider === ClusterProvider.AzureARC) {
 		// TODO: use shell for the query
 		runTerminalCommand(createGitSourceQuery, { focusTerminal: true });
 	} else {

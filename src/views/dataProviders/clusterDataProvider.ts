@@ -1,3 +1,5 @@
+import { window } from 'vscode';
+import { NotificationMessages } from '../../constants';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
@@ -13,15 +15,22 @@ import { DataProvider } from './dataProvider';
 export class ClusterDataProvider extends DataProvider {
 
 	/**
-	 * cache clusterNodes to acess them later.
+	 * Cache clusterNodes to acess them later.
 	 */
 	clusterNodes: ClusterNode[] = [];
+
+	/**
+	 * Whether or not the tree view finished building (not entirely, there's still async calls)
+	 * and {@link clusterNodes} array was populated.
+	 */
+	isFinishedBuildingTree = false;
 
 	/**
    * Creates Clusters tree view items from local kubernetes config.
    * @returns Cluster tree view items to display.
    */
 	async buildTree(): Promise<ClusterNode[]> {
+		this.isFinishedBuildingTree = false;
 		statusBar.startLoadingTree();
 		// load configured kubernetes clusters
 		const clusters = await kubernetesTools.getClusters();
@@ -55,6 +64,7 @@ export class ClusterDataProvider extends DataProvider {
 		this.updateClusterContexts(clusterNodes);
 
 		statusBar.stopLoadingTree();
+		this.isFinishedBuildingTree = true;
 
 		this.clusterNodes = clusterNodes;
 		return clusterNodes;
@@ -108,10 +118,18 @@ export class ClusterDataProvider extends DataProvider {
 	 * Return cluster node from the current kubernetes context.
 	 */
 	getCurrentClusterNode(): ClusterNode | undefined {
+		if (!this.isFinishedBuildingTree) {
+			window.showErrorMessage(NotificationMessages.ClustersNotLoaded);
+			return;
+		}
+
 		for (const clusterNode of this.clusterNodes) {
 			if (clusterNode.isCurrent) {
 				return clusterNode;
 			}
 		}
+
+		window.showErrorMessage(NotificationMessages.NoCurrentCluster);
+		return undefined;
 	}
 }

@@ -4,8 +4,13 @@ import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpen
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
-import { clusterTreeViewProvider, refreshSourceTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshSourceTreeView } from '../views/treeViews';
 
+/**
+ * Delete a source (currently only for git repository)
+ *
+ * @param sourceNode Sources tree view node
+ */
 export async function deleteSource(sourceNode: GitRepositoryNode /* | HelmRepositoryNode | BucketNode */) {
 
 	const sourceName = sourceNode.resource.metadata.name;
@@ -17,18 +22,26 @@ export async function deleteSource(sourceNode: GitRepositoryNode /* | HelmReposi
 		return;
 	}
 
-	const currentClusterNode = clusterTreeViewProvider.getCurrentClusterNode();
+	const currentClusterNode = getCurrentClusterNode();
+	if (!currentClusterNode) {
+		return;
+	}
+
+	const clusterProvider = await currentClusterNode.getClusterProvider();
+	if (clusterProvider === ClusterProvider.Unknown) {
+		return;
+	}
 
 	let deleteSourceQuery = '';
 
-	if (currentClusterNode?.clusterProvider === ClusterProvider.AKS ||
-		currentClusterNode?.clusterProvider === ClusterProvider.AzureARC) {
+	if (clusterProvider === ClusterProvider.AKS ||
+		clusterProvider === ClusterProvider.AzureARC) {
 		const azureMetadata = await getAzureMetadata(currentClusterNode.name);
 		if (!azureMetadata) {
 			return;
 		}
 
-		deleteSourceQuery = `az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${currentClusterNode.clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`;
+		deleteSourceQuery = `az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`;
 	} else {
 		deleteSourceQuery = `flux delete source git ${sourceName} --silent`;
 	}
