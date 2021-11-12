@@ -11,6 +11,10 @@ export const enum NodeContext {
 	ClusterProviderGeneric = 'clusterProviderGeneric',
 	Deployment = 'deployment',
 
+	// Generic context values
+	Suspend = 'suspend',
+	NotSuspend = 'notSuspend',
+
 	// Source context values
 	GitRepository = 'gitRepository',
 	HelmRepository = 'helmRepository',

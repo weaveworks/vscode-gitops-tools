@@ -9,6 +9,7 @@ import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
+import { resumeSource } from './commands/resume';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
 import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
@@ -39,6 +40,7 @@ export const enum CommandId {
 
 	// flux
 	SuspendSource = 'gitops.suspendSource',
+	ResumeSource = 'gitops.resumeSource',
 	FluxCheck = 'gitops.flux.check',
 	FluxCheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	FluxEnableGitOps = 'gitops.flux.install',
@@ -80,6 +82,7 @@ export function registerCommands(context: ExtensionContext) {
 
 	// flux
 	registerCommand(CommandId.SuspendSource, suspendSource);
+	registerCommand(CommandId.ResumeSource, resumeSource);
 	registerCommand(CommandId.FluxCheck, fluxCheck);
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);

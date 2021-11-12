@@ -12,8 +12,6 @@ import { SourceNode } from './sourceNode';
  */
 export class GitRepositoryNode extends SourceNode {
 
-	contextValue = NodeContext.GitRepository;
-
 	/**
 	 * Git repository kubernetes resource object
 	 */
@@ -41,5 +39,12 @@ export class GitRepositoryNode extends SourceNode {
 			arguments: [resourceUri],
 			title: 'View Resource',
 		};
+	}
+
+	// @ts-ignore
+	get contextValue(): string {
+		let suspend = this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend;
+
+		return `${NodeContext.GitRepository};${suspend};`;
 	}
 }

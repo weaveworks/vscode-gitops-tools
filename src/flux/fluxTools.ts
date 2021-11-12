@@ -112,6 +112,17 @@ class FluxTools {
 	async suspend(type: 'helmrelease' | 'kustomization' | 'source bucket' | 'source git' | 'source helm', name: string) {
 		await shell.execWithOutput(`flux suspend ${type} ${name}`);
 	}
+
+	/**
+	 * Run `flux resume`.
+	 * @see https://fluxcd.io/docs/cmd/flux_resume/
+	 *
+	 * @param type resource type
+	 * @param name resource name
+	 */
+	async resume(type: 'helmrelease' | 'kustomization' | 'source bucket' | 'source git' | 'source helm', name: string) {
+		await shell.execWithOutput(`flux resume ${type} ${name}`);
+	}
 }
 
 /**
