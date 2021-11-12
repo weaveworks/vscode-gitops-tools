@@ -27,7 +27,7 @@ export async function suspendSource(node: GitRepositoryNode) {
 		window.showInformationMessage('Suspend source is not yet implemented on AKS or Azure ARC', { modal: true });
 	} else {
 		if (node instanceof GitRepositoryNode) {
-			await fluxTools.suspend('source git', node.resource.metadata.name || '');
+			await fluxTools.suspend('source git', node.resource.metadata.name || '', node.resource.metadata.namespace || '');
 		}
 	}
 

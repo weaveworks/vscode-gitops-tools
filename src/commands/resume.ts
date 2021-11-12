@@ -27,7 +27,7 @@ export async function resumeSource(node: GitRepositoryNode) {
 		window.showInformationMessage('Resume source is not yet implemented on AKS or Azure ARC', { modal: true });
 	} else {
 		if (node instanceof GitRepositoryNode) {
-			await fluxTools.resume('source git', node.resource.metadata.name || '');
+			await fluxTools.resume('source git', node.resource.metadata.name || '', node.resource.metadata.namespace || '');
 		}
 	}
 

@@ -109,8 +109,8 @@ class FluxTools {
 	 * @param type resource type
 	 * @param name resource name
 	 */
-	async suspend(type: 'helmrelease' | 'kustomization' | 'source bucket' | 'source git' | 'source helm', name: string) {
-		await shell.execWithOutput(`flux suspend ${type} ${name}`);
+	async suspend(type: 'helmrelease' | 'kustomization' | 'source bucket' | 'source git' | 'source helm', name: string, namespace: string) {
+		await shell.execWithOutput(`flux suspend ${type} ${name} -n ${namespace}`);
 	}
 
 	/**
@@ -120,8 +120,8 @@ class FluxTools {
 	 * @param type resource type
 	 * @param name resource name
 	 */
-	async resume(type: 'helmrelease' | 'kustomization' | 'source bucket' | 'source git' | 'source helm', name: string) {
-		await shell.execWithOutput(`flux resume ${type} ${name}`);
+	async resume(type: 'helmrelease' | 'kustomization' | 'source bucket' | 'source git' | 'source helm', name: string, namespace: string) {
+		await shell.execWithOutput(`flux resume ${type} ${name} -n ${namespace}`);
 	}
 }
 
