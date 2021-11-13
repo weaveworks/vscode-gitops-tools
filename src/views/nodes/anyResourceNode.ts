@@ -1,7 +1,10 @@
 import { KubernetesObject } from '@kubernetes/client-node';
+import { MarkdownString } from 'vscode';
 import { CommandId } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { Deployment } from '../../kubernetes/kubernetesTypes';
+import { createMarkdownTable } from '../../utils/stringUtils';
 import { TreeNode } from './treeNode';
 
 /**
@@ -22,6 +25,8 @@ export class AnyResourceNode extends TreeNode {
 		// save metadata reference
 		this.resource = anyResource;
 
+		this.tooltip = this.getMarkdown(anyResource);
+
 		// set resource Uri to open resource config document in editor
 		const resourceUri = kubernetesTools.getResourceUri(
 			anyResource.metadata?.namespace,
@@ -35,5 +40,9 @@ export class AnyResourceNode extends TreeNode {
 			arguments: [resourceUri],
 			title: 'View Resource',
 		};
+	}
+
+	getMarkdown(kubernetesObject: unknown): MarkdownString {
+		return createMarkdownTable(kubernetesObject as Deployment);
 	}
 }

@@ -51,11 +51,13 @@ export function createMarkdownTable(kubernetesObject: Cluster | Bucket | GitRepo
 	createMarkdownTableRow('namespace', kubernetesObject.metadata?.namespace, markdown);
 
 	// Should exist on multiple objects
-	if ('interval' in kubernetesObject.spec) {
-		createMarkdownTableRow('interval', kubernetesObject.spec.interval, markdown);
-	}
-	if ('timeout' in kubernetesObject.spec) {
-		createMarkdownTableRow('timeout', kubernetesObject.spec.timeout, markdown);
+	if (kubernetesObject.spec) {
+		if ('interval' in kubernetesObject.spec) {
+			createMarkdownTableRow('interval', kubernetesObject.spec.interval, markdown);
+		}
+		if ('timeout' in kubernetesObject.spec) {
+			createMarkdownTableRow('timeout', kubernetesObject.spec.timeout, markdown);
+		}
 	}
 
 	// Object-specific properties
