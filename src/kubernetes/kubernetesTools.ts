@@ -131,6 +131,7 @@ class KubernetesTools {
 		}
 
 		setContext(ContextTypes.NoClusterSelected, false);
+		this.clusterSupportedResourceKinds = undefined;
 
 		return {
 			isChanged: true,
