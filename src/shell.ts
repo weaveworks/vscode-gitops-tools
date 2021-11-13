@@ -1,7 +1,7 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
 import { ProgressLocation, window, workspace } from 'vscode';
-import { sendToOutputChannel } from './output';
+import { output } from './output';
 
 // 🚧 WORK IN PROGRESS.
 
@@ -111,7 +111,7 @@ async function execWithOutput(
 		location: ProgressLocation.Notification,
 		title: 'GitOps Running: ',
 	}, async progress => new Promise<ShellResult>(resolve => {
-		sendToOutputChannel(`> ${cmd}\n`, false, revealOutputView);
+		output.send(`> ${cmd}\n`, { addNewline: false, revealOutputView });
 
 		const childProcess = shelljs.exec(cmd, {
 			async: true,
@@ -123,21 +123,21 @@ async function execWithOutput(
 
 		childProcess.stdout?.on('data', function(data) {
 			stdout += data;
-			sendToOutputChannel(data, false, false);
+			output.send(data, { addNewline: false, revealOutputView: false });
 			progress.report({
 				message: data,
 			});
 		});
 		childProcess.stderr?.on('data', function(data) {
 			stderr += data;
-			sendToOutputChannel(data, false, false);
+			output.send(data, { addNewline: false, revealOutputView: false });
 			progress.report({
 				message: data,
 			});
 		});
 
 		childProcess.on('exit', function(code: number) {
-			sendToOutputChannel('\n', false, false);
+			output.send('\n', { addNewline: false, revealOutputView: false });
 
 			resolve({
 				code,

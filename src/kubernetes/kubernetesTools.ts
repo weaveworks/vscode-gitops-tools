@@ -2,6 +2,7 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { ContextTypes, setContext } from '../context';
+import { output } from '../output';
 import { parseJson } from '../utils/jsonUtils';
 import { BucketResult } from './bucket';
 import { GitRepositoryResult } from './gitRepository';
@@ -57,7 +58,29 @@ class KubernetesTools {
 		if (!kubectl) {
 			return;
 		}
-		return await kubectl.invokeCommand(command);
+
+		const kubectlShellResult = await kubectl.invokeCommand(command);
+
+		output.send(`> ${command}\n`, {
+			channelName: 'GitOps: kubectl',
+			addNewline: false,
+			revealOutputView: false,
+		});
+
+		if (kubectlShellResult?.code === 0) {
+			output.send(kubectlShellResult.stdout, {
+				channelName: 'GitOps: kubectl',
+				revealOutputView: false,
+			});
+		} else {
+			output.send(kubectlShellResult?.stderr || '', {
+				channelName: 'GitOps: kubectl',
+				revealOutputView: false,
+				logLevel: 'error',
+			});
+		}
+
+		return kubectlShellResult;
 	}
 
 	/**

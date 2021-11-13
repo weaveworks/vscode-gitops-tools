@@ -1,43 +1,99 @@
 import { OutputChannel, window } from 'vscode';
 
-export let outputChannel: OutputChannel;
+type OutputChannelName = 'GitOps' | 'GitOps: kubectl';
 
-const outputChannelName: string = 'GitOps';
+class Output {
+	/** Main GitOps output channel.	 */
+	private channel: OutputChannel;
+	/** Channel for kubectl commands output (json) */
+	private kubectlChannel: OutputChannel;
 
-export async function sendToOutputChannel(
-	message: string = '',
-	addNewline: boolean = true,
-	revealOutputView: boolean = true,
-	channel?: OutputChannel): Promise<void> {
-
-	// create output channel
-	if (!outputChannel) {
-		outputChannel = window.createOutputChannel(outputChannelName);
-	}
-	if (!channel && outputChannel) {
-		channel = outputChannel;
+	constructor() {
+		this.channel = window.createOutputChannel('GitOps' as OutputChannelName);
+		this.kubectlChannel = window.createOutputChannel('GitOps: kubectl' as OutputChannelName);
 	}
 
-	if (!channel) {
-		console.log(message);
-		return;
+	/**
+	 * Send a message to one of the Output Channels of this extension.
+	 *
+	 * @param message String to show in the output channel
+	 */
+	send(
+		message: string,
+		{
+			addNewline = true,
+			revealOutputView = true,
+			logLevel = 'info',
+			channelName = 'GitOps',
+		}: {
+			addNewline?: boolean;
+			revealOutputView?: boolean;
+			logLevel?: 'info' | 'warn' | 'error';
+			channelName?: OutputChannelName;
+		} = {},
+	): void {
+
+		let channel = this.getChannelByName(channelName);
+
+		if (!channel) {
+			channel = window.createOutputChannel(channelName);
+			if (channelName === 'GitOps') {
+				this.channel = channel;
+			} else if (channelName === 'GitOps: kubectl') {
+				this.kubectlChannel = channel;
+			}
+		}
+
+		if (revealOutputView) {
+			channel.show(true);
+		}
+
+		if (logLevel === 'warn') {
+			message = `WARN ${message}`;
+		} else if (logLevel === 'error') {
+			message = `ERROR ${message}`;
+		}
+
+		if (addNewline) {
+			if (message.endsWith('\n')) {
+				message += '\n';
+			} else {
+				message += '\n\n';
+			}
+		}
+
+		channel.append(message);
 	}
 
-	if (revealOutputView) {
-		channel.show(true);
+	/**
+	 * Show and focus main output channel.
+	 */
+	show(): void {
+		this.channel.show();
 	}
 
-	if (addNewline) {
-		if (message.endsWith('\n')) {
-			message += '\n';
-		} else {
-			message += '\n\n';
+	/**
+	 * Return Output channel from its name.
+	 *
+	 * @param channelName Target Output Channel name
+	 */
+	private getChannelByName(channelName: OutputChannelName): OutputChannel | undefined {
+		if (channelName === 'GitOps') {
+			return this.channel;
+		} else if (channelName === 'GitOps: kubectl') {
+			return this.kubectlChannel;
 		}
 	}
-
-	channel.append(message);
 }
 
+/**
+ * Output view of this extension.
+ */
+export const output = new Output();
+
+/**
+ * @see {@link output.show}
+ */
 export function showOutputChannel() {
-	outputChannel.show();
+	output.show();
 }
