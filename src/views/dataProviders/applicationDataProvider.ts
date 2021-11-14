@@ -91,7 +91,7 @@ export class ApplicationDataProvider extends DataProvider {
 			return;
 		}
 
-		const namespaceNodes = namespaces.items.map(namespace => new NamespaceNode(namespace));
+		const namespaceNodes = namespaces.items.map(ns => new NamespaceNode(ns));
 		namespaceNodes.forEach(namespaceNode => namespaceNode.expand());
 
 		/*

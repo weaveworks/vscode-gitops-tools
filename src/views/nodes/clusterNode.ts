@@ -35,7 +35,7 @@ export class ClusterNode extends TreeNode {
 	/**
 	 * Current/active cluster/context.
 	 */
-	isCurrent: boolean = false;
+	isCurrent = false;
 
 	/**
 	 * Whether or not gitops is installed on this cluster.

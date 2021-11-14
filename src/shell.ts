@@ -28,7 +28,7 @@ export const enum Platform {
 
 export type ExecCallback = shelljs.ExecCallback;
 
-const WINDOWS: string = 'win32';
+const WINDOWS = 'win32';
 
 export interface ShellResult {
 	readonly code: number;

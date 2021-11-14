@@ -1,7 +1,7 @@
 import { Disposable, ExtensionContext, Terminal, window } from 'vscode';
 import { getExtensionContext } from './extensionContext';
 
-const terminalName: string = 'gitops';
+const terminalName = 'gitops';
 
 let _terminal: Terminal | undefined;
 let _currentDirectory: string | undefined;

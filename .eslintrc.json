@@ -69,10 +69,10 @@
 		"@typescript-eslint/no-shadow": "warn",
 		"@typescript-eslint/func-call-spacing": "warn",
 		"@typescript-eslint/prefer-for-of": "warn",
+		"@typescript-eslint/no-inferrable-types": "warn",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/no-empty-function": "off",
 		"@typescript-eslint/no-unused-vars": "off",
-		"@typescript-eslint/no-inferrable-types": "off",
 		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/ban-ts-comment": "off",
 		"eol-last": [

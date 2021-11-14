@@ -13,7 +13,7 @@ export class SourceNode extends TreeNode {
 	/**
 	 * Whether or not the source failed to fetch.
 	 */
-	isFetchFailed: boolean = false;
+	isFetchFailed = false;
 
 	constructor(label: string, source: GitRepository | HelmRepository | Bucket) {
 		super(label);

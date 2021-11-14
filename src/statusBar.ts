@@ -3,10 +3,10 @@ import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 class StatusBar {
 
 	public statusBarItem: StatusBarItem;
-	private statusBarItemName: string = 'gitops';
+	private statusBarItemName = 'gitops';
 
-	private numberOfLoadingTreeViews: number = 0;
-	private loadingWasHidden: boolean = false;
+	private numberOfLoadingTreeViews = 0;
+	private loadingWasHidden = false;
 
 	constructor() {
 		this.statusBarItem = window.createStatusBarItem(

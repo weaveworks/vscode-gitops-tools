@@ -154,7 +154,7 @@ class KubernetesTools {
 	 * @param name pod target name
 	 * @param namespace pod target namespace
 	 */
-	async getPods(name: string = '', namespace: string = ''): Promise<undefined | PodResult> {
+	async getPods(name = '', namespace = ''): Promise<undefined | PodResult> {
 		const nameArg = name ? `-l app=${name}` : '';
 
 		let namespaceArg = '';
@@ -434,13 +434,13 @@ class KubernetesTools {
 		action?: string): Uri {
 
 		// determine resource file extension
-		let fileExtension: string = '';
+		let fileExtension = '';
 		if (documentFormat !== '') {
 			fileExtension = `.${documentFormat}`;
 		}
 
 		// create virtual document file name with extension
-		const documentName: string = `${resourceName?.replace('/', '-')}${fileExtension}`;
+		const documentName = `${resourceName?.replace('/', '-')}${fileExtension}`;
 
 		// determine virtual resource file scheme
 		let scheme = KubernetesFileSchemes.Resource;
@@ -455,14 +455,14 @@ class KubernetesTools {
 		}
 
 		// set namespace query param
-		let namespaceQuery: string = '';
+		let namespaceQuery = '';
 		if (namespace) {
 			namespaceQuery = `ns=${namespace}&`;
 		}
 
 		// create resource url
 		const nonce: number = new Date().getTime();
-		const url: string = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
+		const url = `${scheme}://${authority}/${documentName}?${namespaceQuery}value=${resourceName}&_=${nonce}`;
 
 		// create resource uri
 		return Uri.parse(url);
