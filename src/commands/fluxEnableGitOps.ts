@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { ClusterNode } from '../views/nodes/clusterNode';
-import { getCurrentClusterNode, refreshClusterTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshAllTreeViews } from '../views/treeViews';
 import { enableGitOpsOnAKSCluster } from './enableGitOpsOnAKSCluster';
 
 /**
@@ -60,7 +60,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 	await shell.execWithOutput(`flux ${enable ? 'install' : 'uninstall --silent'} ${contextArg}`);
 
 	// Refresh now that flux is installed or uninstalled
-	refreshClusterTreeView();
+	refreshAllTreeViews();
 }
 
 /**

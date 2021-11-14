@@ -1,5 +1,5 @@
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { refreshTreeViews } from '../views/treeViews';
+import { refreshAllTreeViews } from '../views/treeViews';
 
 /**
  * Sets Kubernetes context and refreshes tree views if needed.
@@ -8,6 +8,6 @@ import { refreshTreeViews } from '../views/treeViews';
 export async function setCurrentKubernetesContext(contextName: string): Promise<void> {
 	const setContextResult = await kubernetesTools.setCurrentContext(contextName);
 	if (setContextResult?.isChanged) {
-		refreshTreeViews();
+		refreshAllTreeViews();
 	}
 }

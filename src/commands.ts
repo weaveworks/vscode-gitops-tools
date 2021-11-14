@@ -15,7 +15,7 @@ import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
 import { suspendSource } from './commands/suspend';
 import { showOutputChannel } from './output';
-import { refreshApplicationTreeView, refreshSourceTreeView, refreshTreeViews } from './views/treeViews';
+import { refreshApplicationTreeView, refreshSourceTreeView, refreshAllTreeViews } from './views/treeViews';
 
 /**
  * Command ids registered by this extension
@@ -50,7 +50,7 @@ export const enum CommandId {
 	FluxReconcileApplication = 'gitops.flux.reconcileApplication',
 
 	// tree view
-	RefreshTreeViews = 'gitops.views.refreshTreeViews',
+	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
 	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
 	RefreshApplicationsTreeView = 'gitops.views.refreshApplicationTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
@@ -92,7 +92,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.FluxDisableGitOps, fluxDisableGitOps);
 
 	// tree views
-	registerCommand(CommandId.RefreshTreeViews, refreshTreeViews);
+	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViews);
 	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourceTreeView);
 	registerCommand(CommandId.RefreshApplicationsTreeView, refreshApplicationTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);

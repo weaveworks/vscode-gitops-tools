@@ -42,7 +42,7 @@
 		"onCommand:gitops.flux.reconcileSource",
 		"onCommand:gitops.flux.reconcileRepository",
 		"onCommand:gitops.flux.reconcileApplication",
-		"onCommand:gitops.views.refreshTreeViews",
+		"onCommand:gitops.views.refreshAllTreeViews",
 		"onCommand:gitops.views.refreshSourceTreeView",
 		"onCommand:gitops.views.refreshApplicationTreeView",
 		"onCommand:gitops.views.pullGitRepository",
@@ -111,7 +111,7 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.views.refreshTreeViews",
+				"command": "gitops.views.refreshAllTreeViews",
 				"title": "Refresh",
 				"category": "GitOps",
 				"icon": "$(refresh)"
@@ -243,7 +243,7 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "gitops.views.refreshTreeViews",
+					"command": "gitops.views.refreshAllTreeViews",
 					"group": "navigation",
 					"when": "view == gitops.views.clusters"
 				},

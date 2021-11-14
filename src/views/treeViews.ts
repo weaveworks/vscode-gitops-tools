@@ -52,7 +52,7 @@ export function createTreeViews() {
 /**
  * Refreshes all GitOps tree views.
  */
-export function refreshTreeViews() {
+export function refreshAllTreeViews() {
 	refreshClusterTreeView();
 	refreshSourceTreeView();
 	refreshApplicationTreeView();

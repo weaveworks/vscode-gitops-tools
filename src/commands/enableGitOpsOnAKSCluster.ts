@@ -1,7 +1,7 @@
 import { getAzureMetadata } from '../getAzureMetadata';
 import { shell } from '../shell';
 import { ClusterNode } from '../views/nodes/clusterNode';
-import { refreshTreeViews } from '../views/treeViews';
+import { refreshAllTreeViews } from '../views/treeViews';
 
 /**
  * enable gitops on an AKS cluster
@@ -24,5 +24,5 @@ export async function enableGitOpsOnAKSCluster(clusterNode: ClusterNode, { isAzu
 
 	await shell.execWithOutput(enableGitOpsQuery);
 
-	refreshTreeViews();
+	refreshAllTreeViews();
 }
