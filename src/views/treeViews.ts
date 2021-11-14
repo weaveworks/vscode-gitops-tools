@@ -3,6 +3,7 @@ import { ApplicationDataProvider } from './dataProviders/applicationDataProvider
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
+import { ClusterNode } from './nodes/clusterNode';
 import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
 
@@ -86,4 +87,24 @@ export function refreshApplicationTreeView(node?: TreeNode) {
  */
 export function getCurrentClusterNode() {
 	return clusterTreeViewProvider.getCurrentClusterNode();
+}
+
+/**
+ * Expand, focus or select a tree node inside the Clusters tree view.
+ * @param clusterNode Target cluster node
+ */
+export async function revealClusterNode(clusterNode: ClusterNode, {
+	expand = false,
+	focus = false,
+	select = false,
+}: {
+	expand?: boolean;
+	focus?: boolean;
+	select?: boolean;
+} | undefined = {}) {
+	return await clusterTreeView.reveal(clusterNode, {
+		expand,
+		focus,
+		select,
+	});
 }

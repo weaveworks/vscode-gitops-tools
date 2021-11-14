@@ -5,7 +5,7 @@ import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { ClusterNode } from '../nodes/clusterNode';
-import { refreshClusterTreeView } from '../treeViews';
+import { refreshClusterTreeView, revealClusterNode } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
 /**
@@ -50,6 +50,9 @@ export class ClusterDataProvider extends DataProvider {
 				const fluxDeployments = await kubernetesTools.getFluxDeployments();
 				if (fluxDeployments) {
 					clusterNode.expand();
+					revealClusterNode(clusterNode, {
+						expand: true,
+					});
 					for (const deployment of fluxDeployments.items) {
 						clusterNode.addChild(new ClusterDeploymentNode(deployment));
 					}
