@@ -4,7 +4,7 @@ import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { HelmRepository } from '../kubernetes/helmRepository';
 import { Cluster } from '../kubernetes/kubernetesConfig';
-import { Deployment, KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/kubernetesTypes';
 import { Kustomize } from '../kubernetes/kustomize';
 
 /**
@@ -28,7 +28,7 @@ export function shortenRevision(revision: string = ''): string {
  * @param kubernetesObject Standard kubernetes object
  * @returns vscode MarkdownString object
  */
-export function createMarkdownTable(kubernetesObject: Cluster | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment): MarkdownString {
+export function createMarkdownTable(kubernetesObject: Cluster | Namespace | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment): MarkdownString {
 	const markdown = new MarkdownString(undefined, true);
 	markdown.isTrusted = true;
 	// Create table header

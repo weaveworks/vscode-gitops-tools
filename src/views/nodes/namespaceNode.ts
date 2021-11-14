@@ -1,7 +1,9 @@
+import { MarkdownString } from 'vscode';
 import { CommandId } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { Namespace } from '../../kubernetes/kubernetesTypes';
+import { createMarkdownTable } from '../../utils/stringUtils';
 import { TreeNode } from './treeNode';
 
 /**
@@ -16,9 +18,12 @@ export class NamespaceNode extends TreeNode {
 
 	constructor(namespace: Namespace) {
 		super(namespace.metadata?.name || '');
+		// this.description = KubernetesObjectKinds.Namespace;
 
 		// save metadata reference
 		this.resource = namespace;
+
+		this.tooltip = this.getMarkdown(this.resource);
 
 		// set resource Uri to open resource config document in editor
 		const resourceUri = kubernetesTools.getResourceUri(
@@ -33,5 +38,9 @@ export class NamespaceNode extends TreeNode {
 			arguments: [resourceUri],
 			title: 'View Resource',
 		};
+	}
+
+	getMarkdown(resource: Namespace): MarkdownString {
+		return createMarkdownTable(resource);
 	}
 }
