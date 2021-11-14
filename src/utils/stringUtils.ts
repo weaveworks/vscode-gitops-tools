@@ -38,9 +38,9 @@ export function createMarkdownTable(kubernetesObject: Cluster | Namespace | Buck
 	// Cluster type is incompatible with the rest. Handle it first.
 	if ('cluster' in kubernetesObject) {
 		createMarkdownTableRow('name', kubernetesObject.name, markdown);
-		createMarkdownTableRow('server', kubernetesObject.cluster.server, markdown);
-		createMarkdownTableRow('certificate-authority', kubernetesObject.cluster['certificate-authority'], markdown);
-		createMarkdownTableRow('certificate-authority-data', kubernetesObject.cluster['certificate-authority-data'], markdown);
+		createMarkdownTableRow('cluster.server', kubernetesObject.cluster.server, markdown);
+		createMarkdownTableRow('cluster.certificate-authority', kubernetesObject.cluster['certificate-authority'], markdown);
+		createMarkdownTableRow('cluster.certificate-authority-data', kubernetesObject.cluster['certificate-authority-data'], markdown);
 		return markdown;
 	}
 
@@ -53,37 +53,37 @@ export function createMarkdownTable(kubernetesObject: Cluster | Namespace | Buck
 	// Should exist on multiple objects
 	if (kubernetesObject.spec) {
 		if ('interval' in kubernetesObject.spec) {
-			createMarkdownTableRow('interval', kubernetesObject.spec.interval, markdown);
+			createMarkdownTableRow('spec.interval', kubernetesObject.spec.interval, markdown);
 		}
 		if ('timeout' in kubernetesObject.spec) {
-			createMarkdownTableRow('timeout', kubernetesObject.spec.timeout, markdown);
+			createMarkdownTableRow('spec.timeout', kubernetesObject.spec.timeout, markdown);
 		}
 	}
 
 	// Object-specific properties
 	if (kubernetesObject.kind === KubernetesObjectKinds.GitRepository) {
-		createMarkdownTableRow('url', kubernetesObject.spec?.url, markdown);
-		createMarkdownTableRow('branch', kubernetesObject.spec.ref?.branch, markdown);
-		createMarkdownTableRow('commit', kubernetesObject.spec.ref?.commit, markdown);
-		createMarkdownTableRow('suspend', kubernetesObject.spec.suspend === undefined ? false : kubernetesObject.spec.suspend, markdown);
+		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
+		createMarkdownTableRow('spec.ref.branch', kubernetesObject.spec.ref?.branch, markdown);
+		createMarkdownTableRow('spec.ref.commit', kubernetesObject.spec.ref?.commit, markdown);
+		createMarkdownTableRow('spec.suspend', kubernetesObject.spec.suspend === undefined ? false : kubernetesObject.spec.suspend, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRepository) {
-		createMarkdownTableRow('url', kubernetesObject.spec?.url, markdown);
+		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Bucket) {
-		createMarkdownTableRow('name', kubernetesObject.spec.bucketName, markdown);
-		createMarkdownTableRow('endpoint', kubernetesObject.spec.endpoint, markdown);
-		createMarkdownTableRow('provider', kubernetesObject.spec.provider, markdown);
-		createMarkdownTableRow('insecure', kubernetesObject.spec.insecure, markdown);
+		createMarkdownTableRow('spec.bucketName', kubernetesObject.spec.bucketName, markdown);
+		createMarkdownTableRow('spec.endpoint', kubernetesObject.spec.endpoint, markdown);
+		createMarkdownTableRow('spec.provider', kubernetesObject.spec.provider, markdown);
+		createMarkdownTableRow('spec.insecure', kubernetesObject.spec.insecure, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Kustomization) {
-		createMarkdownTableRow('prune', kubernetesObject.spec.prune, markdown);
-		createMarkdownTableRow('sourceRef.kind', kubernetesObject.spec.sourceRef.kind, markdown);
-		createMarkdownTableRow('sourceRef.name', kubernetesObject.spec.sourceRef.name, markdown);
-		createMarkdownTableRow('force', kubernetesObject.spec.force, markdown);
-		createMarkdownTableRow('path', kubernetesObject.spec.path, markdown);
+		createMarkdownTableRow('spec.prune', kubernetesObject.spec.prune, markdown);
+		createMarkdownTableRow('spec.sourceRef.kind', kubernetesObject.spec.sourceRef.kind, markdown);
+		createMarkdownTableRow('spec.sourceRef.name', kubernetesObject.spec.sourceRef.name, markdown);
+		createMarkdownTableRow('spec.force', kubernetesObject.spec.force, markdown);
+		createMarkdownTableRow('spec.path', kubernetesObject.spec.path, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRelease) {
-		createMarkdownTableRow('chart', kubernetesObject.spec.chart.spec.chart, markdown);
-		createMarkdownTableRow('chart.sourceRef.kind', kubernetesObject.spec.chart.spec.sourceRef.kind, markdown);
-		createMarkdownTableRow('chart.sourceRef.name', kubernetesObject.spec.chart.spec.sourceRef.name, markdown);
-		createMarkdownTableRow('chart.version', kubernetesObject.spec.chart.spec.version, markdown);
+		createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec.chart.spec.chart, markdown);
+		createMarkdownTableRow('spec.chart.spec.sourceRef.kind', kubernetesObject.spec.chart.spec.sourceRef.kind, markdown);
+		createMarkdownTableRow('spec.chart.spec.sourceRef.name', kubernetesObject.spec.chart.spec.sourceRef.name, markdown);
+		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec.chart.spec.version, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Deployment) {
 		createMarkdownTableRow('spec.paused', kubernetesObject.spec.paused, markdown);
 		createMarkdownTableRow('spec.minReadySeconds', kubernetesObject.spec.minReadySeconds, markdown);
