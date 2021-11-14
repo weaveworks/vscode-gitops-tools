@@ -104,11 +104,40 @@ class FluxTools {
 	}
 
 	/**
+	 * Run `flux install`
+	 * @see https://fluxcd.io/docs/cmd/flux_install/
+	 *
+	 * @param context target kubernetes context
+	 */
+	async install(context: string) {
+		let contextArg = '';
+		if (context) {
+			contextArg = `--context=${context}`;
+		}
+		await shell.execWithOutput(`flux install ${contextArg}`);
+	}
+
+	/**
+	 * Run `flux uninstall`
+	 * @see https://fluxcd.io/docs/cmd/flux_uninstall/
+	 *
+	 * @param context target kubernetes context
+	 */
+	async uninstall(context = '') {
+		let contextArg = '';
+		if (context) {
+			contextArg = `--context=${context}`;
+		}
+		await shell.execWithOutput(`flux uninstall --silent ${contextArg}`);
+	}
+
+	/**
 	 * Run `flux suspend`.
 	 * @see https://fluxcd.io/docs/cmd/flux_suspend/
 	 *
 	 * @param type resource type
 	 * @param name resource name
+	 * @param namespace resource namespace
 	 */
 	async suspend(type: FluxSource | FluxApplication, name: string, namespace: string) {
 		await shell.execWithOutput(`flux suspend ${type} ${name} -n ${namespace}`);
@@ -120,11 +149,20 @@ class FluxTools {
 	 *
 	 * @param type resource type
 	 * @param name resource name
+	 * @param namespace resource namespace
 	 */
 	async resume(type: FluxSource | FluxApplication, name: string, namespace: string) {
 		await shell.execWithOutput(`flux resume ${type} ${name} -n ${namespace}`);
 	}
 
+	/**
+	 * Run `flux delete`
+	 * @see https://fluxcd.io/docs/cmd/flux_delete/
+	 *
+	 * @param type resource type
+	 * @param name resource name
+	 * @param namespace resource namespace
+	 */
 	async deleteSource(type: FluxSource, name: string, namespace: string) {
 		await shell.execWithOutput(`flux delete ${type} ${name} -n ${namespace} --silent`);
 	}
