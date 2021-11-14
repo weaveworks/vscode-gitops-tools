@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+import { fluxTools } from '../flux/fluxTools';
 import { getAzureMetadata } from '../getAzureMetadata';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
@@ -13,7 +14,8 @@ import { getCurrentClusterNode, refreshSourceTreeView } from '../views/treeViews
  */
 export async function deleteSource(sourceNode: GitRepositoryNode /* | HelmRepositoryNode | BucketNode */) {
 
-	const sourceName = sourceNode.resource.metadata.name;
+	const sourceName = sourceNode.resource.metadata.name || '';
+	const sourceNamespace = sourceNode.resource.metadata.namespace || '';
 	const confirmButton = 'Delete';
 	const confirm = await window.showWarningMessage(`Do you want to delete Git Repository Source "${sourceName}"?`, {
 		modal: true,
@@ -42,11 +44,11 @@ export async function deleteSource(sourceNode: GitRepositoryNode /* | HelmReposi
 		}
 
 		deleteSourceQuery = `az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`;
+		await shell.execWithOutput(deleteSourceQuery);
 	} else {
-		deleteSourceQuery = `flux delete source git ${sourceName} --silent`;
+		await fluxTools.deleteSource('source git', sourceName, sourceNamespace);
 	}
 
-	await shell.execWithOutput(deleteSourceQuery);
 	refreshSourceTreeView();
 	checkIfOpenedFolderGitRepositorySourceExists();
 }
