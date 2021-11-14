@@ -118,7 +118,7 @@ export class ClusterNode extends TreeNode {
 			gitOpsEnabledContext = this.isGitOpsEnabled ? NodeContext.ClusterGitOpsEnabled : NodeContext.ClusterGitOpsNotEnabled;
 		}
 
-		return `${NodeContext.Cluster};${gitOpsEnabledContext};`;
+		return this.joinContexts(NodeContext.Cluster, gitOpsEnabledContext);
 	}
 
 	// @ts-ignore

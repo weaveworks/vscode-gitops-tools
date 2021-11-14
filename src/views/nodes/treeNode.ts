@@ -72,4 +72,22 @@ export class TreeNode extends TreeItem {
 		}
 		return this;
 	}
+
+	/**
+	 *
+	 * VSCode doesn't support multiple contexts on the Tree Nodes, only string.
+	 *
+	 * Transform array to string:
+	 *
+	 * ```ts
+	 * joinContexts('', 'one', 'two') // 'one;two;'
+	 * ```
+	 *
+	 * @param contexts contexts for the tree node
+	 */
+	joinContexts(...contexts: string[]): string {
+		return contexts.filter(context => context.length)
+			.map(context => `${context};`)
+			.join('');
+	}
 }

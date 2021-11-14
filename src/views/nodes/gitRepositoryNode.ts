@@ -43,8 +43,8 @@ export class GitRepositoryNode extends SourceNode {
 
 	// @ts-ignore
 	get contextValue(): string {
-		let suspend = this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend;
+		let suspendContext = this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend;
 
-		return `${NodeContext.GitRepository};${suspend};`;
+		return this.joinContexts(NodeContext.GitRepository, suspendContext);
 	}
 }
