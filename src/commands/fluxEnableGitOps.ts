@@ -26,7 +26,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 	}
 
 	// Prompt for confirmation
-	const confirmButton = enable ? 'Install' : 'Uninstall';
+	const confirmButton = enable ? 'Enable' : 'Disable';
 	const confirmationMessage = `Do you want to	${enable ? 'enable' : 'disable'} gitops on the ${clusterNode?.name || 'current'} cluster?`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
