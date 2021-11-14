@@ -38,8 +38,9 @@ class StatusBar {
 		this.numberOfLoadingTreeViews--;
 
 		if (this.numberOfLoadingTreeViews === 0) {
-			this.statusBarItem.hide();
 			this.loadingWasHidden = true;
+			this.statusBarItem.hide();
+			this.statusBarItem.dispose();
 		}
 	}
 }
