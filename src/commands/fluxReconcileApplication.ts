@@ -1,6 +1,7 @@
 import { window } from 'vscode';
+import { fluxTools } from '../flux/fluxTools';
+import { FluxApplication } from '../flux/fluxTypes';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
-import { shell } from '../shell';
 import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';
 import { KustomizationNode } from '../views/nodes/kustomizationNode';
 import { refreshApplicationTreeView } from '../views/treeViews';
@@ -14,14 +15,14 @@ export async function fluxReconcileApplication(application: KustomizationNode | 
 	 * Accepted application names in flux: `kustomization`, `helmrelease`.
 	 * Can be checked with: `flux reconcile --help`
 	 */
-	const applicationType = application.resource.kind === KubernetesObjectKinds.Kustomization ? 'kustomization' :
+	const applicationType: FluxApplication | 'unknown' = application.resource.kind === KubernetesObjectKinds.Kustomization ? 'kustomization' :
 		application.resource.kind === KubernetesObjectKinds.HelmRelease ? 'helmrelease' : 'unknown';
 	if (applicationType === 'unknown') {
-		window.showErrorMessage(`Unknown application kind ${application.resource.kind}`);
+		window.showErrorMessage(`Unknown Application resource kind ${application.resource.kind}`);
 		return;
 	}
 
-	await shell.execWithOutput(`flux reconcile ${applicationType} ${application.resource.metadata.name} -n ${application.resource.metadata.namespace}`);
+	await fluxTools.reconcile(applicationType, application.resource.metadata.name || '', application.resource.metadata.namespace || '');
 
 	refreshApplicationTreeView();
 }

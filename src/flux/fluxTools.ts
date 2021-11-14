@@ -156,14 +156,14 @@ class FluxTools {
 	}
 
 	/**
-	 * Run `flux reconcile source`
-	 * @see https://fluxcd.io/docs/cmd/flux_reconcile_source/
+	 * Run `flux reconcile`
+	 * @see https://fluxcd.io/docs/cmd/flux_reconcile
 	 *
 	 * @param type resource type
 	 * @param name resource name
 	 * @param namespace resource namespace
 	 */
-	async reconcileSource(type: FluxSource, name: string, namespace: string) {
+	async reconcile(type: FluxSource | FluxApplication, name: string, namespace: string) {
 		await shell.execWithOutput(`flux reconcile ${type} ${name} -n ${namespace}`);
 	}
 

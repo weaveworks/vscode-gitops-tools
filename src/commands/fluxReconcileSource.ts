@@ -22,7 +22,7 @@ export async function fluxReconcileSourceCommand(source: GitRepositoryNode | Hel
 		return;
 	}
 
-	await fluxTools.reconcileSource(sourceType, source.resource.metadata.name || '', source.resource.metadata.namespace || '');
+	await fluxTools.reconcile(sourceType, source.resource.metadata.name || '', source.resource.metadata.namespace || '');
 
 	refreshSourceTreeView();
 }
