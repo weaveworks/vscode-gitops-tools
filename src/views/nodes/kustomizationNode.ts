@@ -1,7 +1,3 @@
-import { CommandId } from '../../commands';
-import { FileTypes } from '../../fileTypes';
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
 import { Kustomize } from '../../kubernetes/kustomize';
 import { ApplicationNode } from './applicationNode';
 import { NodeContext } from './nodeContext';
@@ -28,21 +24,7 @@ export class KustomizationNode extends ApplicationNode {
 
 		this.description = NodeLabels.Kustomization;
 
-		// save kustomization resource reference
 		this.resource = kustomization;
-
-		// set resource Uri to open kustomization document in editor
-		const resourceUri = kubernetesTools.getResourceUri(
-			kustomization.metadata?.namespace,
-			`${ResourceTypes.Kustomization}/${kustomization.metadata?.name}`,
-			FileTypes.Yaml);
-
-		// set open resource in editor command
-		this.command = {
-			command: CommandId.EditorOpenResource,
-			arguments: [resourceUri],
-			title: 'View Resource',
-		};
 
 		this.makeCollapsible();
 	}

@@ -1,8 +1,5 @@
 import { ThemeColor, ThemeIcon } from 'vscode';
-import { CommandId } from '../../commands';
-import { FileTypes } from '../../fileTypes';
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { Deployment, ResourceTypes } from '../../kubernetes/kubernetesTypes';
+import { Deployment } from '../../kubernetes/kubernetesTypes';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
@@ -26,20 +23,6 @@ export class ClusterDeploymentNode extends TreeNode {
 		this.label = this.getImageName(deployment);
 
 		this.setIcon(new ThemeIcon('circle-large-outline'));
-
-		// set resource Uri to open controller document in editor
-		const resourceUri = kubernetesTools.getResourceUri(
-			deployment.metadata?.namespace,
-			`${ResourceTypes.Deployment}/${deployment.metadata?.name}`,
-			FileTypes.Yaml,
-		);
-
-		// set open resource in editor command
-		this.command = {
-			command: CommandId.EditorOpenResource,
-			arguments: [resourceUri],
-			title: 'View Resource',
-		};
 	}
 
 	/**

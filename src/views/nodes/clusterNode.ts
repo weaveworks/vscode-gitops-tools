@@ -55,9 +55,12 @@ export class ClusterNode extends TreeNode {
 		this.description = cluster.cluster.server;
 
 		this.setIcon('cloud');
+	}
 
+	// @ts-ignore
+	get command() {
 		// set current context command to change selected cluster
-		this.command = {
+		return  {
 			command: CommandId.SetCurrentKubernetesContext,
 			arguments: [this.name],
 			title: 'Set current context',

@@ -59,20 +59,6 @@ export const enum KubernetesObjectKinds {
 	Pod = 'Pod',
 }
 
-/**
- * Defines supported resource types
- * to construct resource Uri.
- */
-export const enum ResourceTypes {
-	Bucket = 'buckets.source.toolkit.fluxcd.io',
-	GitRepository = 'gitrepo',
-	HelmRepository = 'helmrepo',
-	HelmRelease = 'hr',
-	Kustomization = 'ks',
-	Namespace = 'namespace',
-	Deployment = 'deployment',
-}
-
 interface KubectlVersion {
 	major: string;
 	minor: string;

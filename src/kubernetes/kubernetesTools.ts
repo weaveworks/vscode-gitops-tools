@@ -428,10 +428,12 @@ class KubernetesTools {
 	 * @param action Resource Uri action.
 	 * @returns
 	 */
-	getResourceUri(namespace: string | null | undefined,
+	getResourceUri(
+		namespace: string | null | undefined,
 		resourceName: string | undefined,
 		documentFormat: string,
-		action?: string): Uri {
+		action?: string,
+	): Uri {
 
 		// determine resource file extension
 		let fileExtension = '';

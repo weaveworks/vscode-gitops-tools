@@ -1,14 +1,21 @@
 import { KubernetesObject } from '@kubernetes/client-node';
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { CommandId } from '../../commands';
 import { asAbsolutePath } from '../../extensionContext';
-import { createMarkdownTable, KnownTreeNodes } from '../../utils/stringUtils';
+import { FileTypes } from '../../fileTypes';
+import { Cluster } from '../../kubernetes/kubernetesConfig';
+import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/stringUtils';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
 export class TreeNode extends TreeItem {
 
-	resource?: KnownTreeNodes | KubernetesObject;
+	/**
+	 * Kubernetes resource.
+	 */
+	resource?: Exclude<KnownTreeNodeResources, Cluster> | KubernetesObject;
 
 	/**
 	 * Reference to the parent node (if exists).
@@ -98,7 +105,25 @@ export class TreeNode extends TreeItem {
 	// @ts-ignore
 	get tooltip() {
 		if (this.resource) {
-			return createMarkdownTable(this.resource as KnownTreeNodes);
+			return createMarkdownTable(this.resource as KnownTreeNodeResources);
+		}
+	}
+
+	// @ts-ignore
+	get command() {
+		// Set click event handler to load kubernetes resource as yaml file in editor.
+		if (this.resource) {
+			const resourceUri = kubernetesTools.getResourceUri(
+				this.resource.metadata?.namespace,
+				`${this.resource.kind}/${this.resource.metadata?.name}`,
+				FileTypes.Yaml,
+			);
+
+			return {
+				command: CommandId.EditorOpenResource,
+				arguments: [resourceUri],
+				title: 'View Resource',
+			};
 		}
 	}
 }

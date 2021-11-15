@@ -1,8 +1,4 @@
-import { CommandId } from '../../commands';
-import { FileTypes } from '../../fileTypes';
 import { HelmRepository } from '../../kubernetes/helmRepository';
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { ResourceTypes } from '../../kubernetes/kubernetesTypes';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 import { SourceNode } from './sourceNode';
@@ -26,20 +22,6 @@ export class HelmRepositoryNode extends SourceNode {
 	constructor(helmRepository: HelmRepository) {
 		super(`${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`, helmRepository);
 
-		// save helm repository resource reference
 		this.resource = helmRepository;
-
-		// set resource Uri to open helm repository config document in editor
-		const resourceUri = kubernetesTools.getResourceUri(
-			helmRepository.metadata?.namespace,
-			`${ResourceTypes.HelmRepository}/${helmRepository.metadata?.name}`,
-			FileTypes.Yaml);
-
-		// set open resource in editor command
-		this.command = {
-			command: CommandId.EditorOpenResource,
-			arguments: [resourceUri],
-			title: 'View Resource',
-		};
 	}
 }
