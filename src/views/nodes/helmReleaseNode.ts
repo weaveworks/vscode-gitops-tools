@@ -31,9 +31,6 @@ export class HelmReleaseNode extends ApplicationNode {
 		// save helm release resource reference
 		this.resource = helmRelease;
 
-		// show markdown tooltip
-		this.tooltip = this.getMarkdown(helmRelease);
-
 		// set resource Uri to open helm release config document in editor
 		const resourceUri = kubernetesTools.getResourceUri(
 			helmRelease.metadata?.namespace,

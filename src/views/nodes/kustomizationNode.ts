@@ -31,9 +31,6 @@ export class KustomizationNode extends ApplicationNode {
 		// save kustomization resource reference
 		this.resource = kustomization;
 
-		// show markdown tooltip
-		this.tooltip = this.getMarkdown(kustomization);
-
 		// set resource Uri to open kustomization document in editor
 		const resourceUri = kubernetesTools.getResourceUri(
 			kustomization.metadata?.namespace,

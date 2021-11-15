@@ -22,13 +22,15 @@ export function shortenRevision(revision = ''): string {
 	}
 }
 
+export type KnownTreeNodes = Cluster | Namespace | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
+
 /**
  * Create markdown table for tree view item hovers.
  * 2 clumns, left aligned.
  * @param kubernetesObject Standard kubernetes object
  * @returns vscode MarkdownString object
  */
-export function createMarkdownTable(kubernetesObject: Cluster | Namespace | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment): MarkdownString {
+export function createMarkdownTable(kubernetesObject: KnownTreeNodes): MarkdownString {
 	const markdown = new MarkdownString(undefined, true);
 	markdown.isTrusted = true;
 	// Create table header

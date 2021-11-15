@@ -92,12 +92,16 @@ export class ClusterNode extends TreeNode {
 		this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
 	}
 
+	// @ts-ignore
+	get tooltip(): MarkdownString {
+		return this.getMarkdownHover(this.cluster);
+	}
+
 	/**
 	 * Creates markdwon string for the Cluster tree view item tooltip.
 	 * @param cluster Cluster info object.
-	 * @returns Markdown string to use for Cluster tree view item tooltip.
 	 */
-	getMarkdown(cluster: Cluster): MarkdownString {
+	getMarkdownHover(cluster: Cluster): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(cluster);
 
 		markdown.appendMarkdown('\n\n---\n\n');
@@ -119,11 +123,6 @@ export class ClusterNode extends TreeNode {
 		}
 
 		return this.joinContexts(NodeContext.Cluster, gitOpsEnabledContext);
-	}
-
-	// @ts-ignore
-	get tooltip(): MarkdownString {
-		return this.getMarkdown(this.cluster);
 	}
 
 	/**

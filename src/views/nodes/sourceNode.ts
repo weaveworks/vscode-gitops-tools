@@ -10,6 +10,8 @@ import { TreeNode } from './treeNode';
  */
 export class SourceNode extends TreeNode {
 
+	resource: GitRepository | HelmRepository | Bucket;
+
 	/**
 	 * Whether or not the source failed to fetch.
 	 */
@@ -18,14 +20,18 @@ export class SourceNode extends TreeNode {
 	constructor(label: string, source: GitRepository | HelmRepository | Bucket) {
 		super(label);
 
+		this.resource = source;
+
 		// update fetch failed status (should go before hover)
 		this.updateStatus(source);
 
 		// show shortened revision in node description
 		this.updateRevision(source);
+	}
 
-		// update hover tooltip
-		this.tooltip = this.getMarkdown(source);
+	// @ts-ignore
+	get tooltip() {
+		return this.getMarkdownHover(this.resource);
 	}
 
 	/**
@@ -33,7 +39,7 @@ export class SourceNode extends TreeNode {
 	 * @param source GitRepository, HelmRepository or Bucket kubernetes object.
 	 * @returns Markdown string to use for Source tree view item tooltip.
 	 */
-	getMarkdown(source: GitRepository | HelmRepository | Bucket): MarkdownString {
+	getMarkdownHover(source: GitRepository | HelmRepository | Bucket): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(source);
 
 		// show status in hover when source fetching failed

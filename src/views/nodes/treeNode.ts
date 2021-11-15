@@ -1,10 +1,14 @@
+import { KubernetesObject } from '@kubernetes/client-node';
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { asAbsolutePath } from '../../extensionContext';
+import { createMarkdownTable, KnownTreeNodes } from '../../utils/stringUtils';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
 export class TreeNode extends TreeItem {
+
+	resource?: KnownTreeNodes | KubernetesObject;
 
 	/**
 	 * Reference to the parent node (if exists).
@@ -89,5 +93,12 @@ export class TreeNode extends TreeItem {
 		return contexts.filter(context => context.length)
 			.map(context => `${context};`)
 			.join('');
+	}
+
+	// @ts-ignore
+	get tooltip() {
+		if (this.resource) {
+			return createMarkdownTable(this.resource as KnownTreeNodes);
+		}
 	}
 }

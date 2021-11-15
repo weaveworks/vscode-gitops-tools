@@ -1,9 +1,8 @@
-import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
+import { ThemeColor, ThemeIcon } from 'vscode';
 import { CommandId } from '../../commands';
 import { FileTypes } from '../../fileTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { Deployment, ResourceTypes } from '../../kubernetes/kubernetesTypes';
-import { createMarkdownTable } from '../../utils/stringUtils';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
@@ -28,9 +27,6 @@ export class ClusterDeploymentNode extends TreeNode {
 
 		this.setIcon(new ThemeIcon('circle-large-outline'));
 
-		// show markdown tooltip
-		this.tooltip = this.getMarkdown(deployment);
-
 		// set resource Uri to open controller document in editor
 		const resourceUri = kubernetesTools.getResourceUri(
 			deployment.metadata?.namespace,
@@ -44,15 +40,6 @@ export class ClusterDeploymentNode extends TreeNode {
 			arguments: [resourceUri],
 			title: 'View Resource',
 		};
-	}
-
-	/**
-	 * Creates markdown string for Deployment tree view item tooltip.
-	 * @param deployment controller object.
-	 * @returns Markdown string to use for Deployment tree view item tooltip.
-	 */
-	getMarkdown(deployment: Deployment): MarkdownString {
-		return createMarkdownTable(deployment);
 	}
 
 	/**
