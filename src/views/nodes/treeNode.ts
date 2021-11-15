@@ -1,5 +1,5 @@
 import { KubernetesObject } from '@kubernetes/client-node';
-import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { Command, MarkdownString, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { CommandId } from '../../commands';
 import { asAbsolutePath } from '../../extensionContext';
 import { FileTypes } from '../../fileTypes';
@@ -103,14 +103,14 @@ export class TreeNode extends TreeItem {
 	}
 
 	// @ts-ignore
-	get tooltip() {
+	get tooltip(): string | MarkdownString {
 		if (this.resource) {
 			return createMarkdownTable(this.resource as KnownTreeNodeResources);
 		}
 	}
 
 	// @ts-ignore
-	get command() {
+	get command(): Command {
 		// Set click event handler to load kubernetes resource as yaml file in editor.
 		if (this.resource) {
 			const resourceUri = kubernetesTools.getResourceUri(

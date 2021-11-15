@@ -60,7 +60,7 @@ export class ClusterNode extends TreeNode {
 	// @ts-ignore
 	get command() {
 		// set current context command to change selected cluster
-		return  {
+		return {
 			command: CommandId.SetCurrentKubernetesContext,
 			arguments: [this.name],
 			title: 'Set current context',

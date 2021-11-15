@@ -27,7 +27,6 @@ export class ClusterDataProvider extends DataProvider {
 
 	/**
    * Creates Clusters tree view items from local kubernetes config.
-   * @returns Cluster tree view items to display.
    */
 	async buildTree(): Promise<ClusterNode[]> {
 		this.isFinishedBuildingTree = false;
