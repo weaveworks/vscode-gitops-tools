@@ -298,7 +298,7 @@
 				},
 				{
 					"command": "gitops.views.deleteSource",
-					"when": "view == gitops.views.sources && viewItem =~ /gitRepository;/",
+					"when": "view == gitops.views.sources && viewItem =~ /(gitRepository;|helmRepository)/",
 					"group": "navigation@2"
 				},
 				{
