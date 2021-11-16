@@ -178,6 +178,17 @@ class FluxTools {
 	async deleteSource(type: FluxSource, name: string, namespace: string) {
 		await shell.execWithOutput(`flux delete ${type} ${name} -n ${namespace} --silent`);
 	}
+
+	/** Run `flux create source git`
+	 * @see https://fluxcd.io/docs/cmd/flux_create_source_git/
+	 *
+	 * @param name resource name
+	 * @param url git url
+	 * @param branch git branch
+	 */
+	async createSourceGit(name: string, url: string, branch: string) {
+		await shell.execWithOutput(`flux create source git ${name} --url ${url} --branch ${branch}`);
+	}
 }
 
 /**

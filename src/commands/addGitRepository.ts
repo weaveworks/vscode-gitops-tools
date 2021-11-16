@@ -1,5 +1,6 @@
 import gitUrlParse from 'git-url-parse';
 import { Uri, window, workspace } from 'vscode';
+import { fluxTools } from '../flux/fluxTools';
 import { getAzureMetadata } from '../getAzureMetadata';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
@@ -89,21 +90,15 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		}
 
 		createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`;
-	} else {
-		// generic cluster
-		createGitSourceQuery = `flux create source git ${newGitRepositorySourceName} --url ${gitUrl} --branch ${gitBranch}`;
-	}
 
-	if (clusterProvider === ClusterProvider.AKS ||
-		clusterProvider === ClusterProvider.AzureARC) {
 		// TODO: use shell for the query
 		runTerminalCommand(createGitSourceQuery, { focusTerminal: true });
 	} else {
-		await shell.execWithOutput(createGitSourceQuery);
+		// generic cluster
+		await fluxTools.createSourceGit(newGitRepositorySourceName, gitUrl, gitBranch);
 		refreshSourceTreeView();
 		checkIfOpenedFolderGitRepositorySourceExists();
 	}
-
 }
 
 /**
