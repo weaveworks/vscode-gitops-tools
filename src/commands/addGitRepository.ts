@@ -74,10 +74,15 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		return;
 	}
 
-	const gitUrl = gitRepositoryState.url;
+	let gitUrl = gitRepositoryState.url;
 	const gitBranch = gitRepositoryState.branch;
 
 	const newGitRepositorySourceName = nameGitRepositorySource(gitUrl, gitBranch);
+
+	const parsedGitUrl = gitUrlParse(gitUrl);
+	if (parsedGitUrl.protocol === 'ssh') {
+		gitUrl = makeSSHUrlFromGitUrl(gitUrl);
+	}
 
 	let createGitSourceQuery = '';
 
@@ -207,4 +212,21 @@ export async function getGitRepositoryState(cwd: string) {
 		url: gitUrl,
 		branch: gitBranch,
 	};
+}
+
+/**
+ * Transform an url from `git@github.com:usernamehw/sample-k8s.git` to
+ * `ssh://git@github.com/usernamehw/sample-k8s`
+ * @param gitUrl target git url
+ */
+export function makeSSHUrlFromGitUrl(gitUrl: string): string {
+	if (gitUrl.startsWith('ssh')) {
+		return gitUrl;
+	}
+
+	const parsedGitUrl = gitUrlParse(gitUrl);
+
+	const port = parsedGitUrl.port ? `:${parsedGitUrl.port}` : '';
+
+	return `ssh://${parsedGitUrl.user}@${parsedGitUrl.source}${port}/${parsedGitUrl.full_name}`;
 }

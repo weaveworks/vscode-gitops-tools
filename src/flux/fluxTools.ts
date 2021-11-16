@@ -187,7 +187,7 @@ class FluxTools {
 	 * @param branch git branch
 	 */
 	async createSourceGit(name: string, url: string, branch: string) {
-		await shell.execWithOutput(`flux create source git ${name} --url ${url} --branch ${branch}`);
+		await shell.execWithOutput(`flux create source git ${name} --url ${url} --branch ${branch} --silent`);
 	}
 }
 
