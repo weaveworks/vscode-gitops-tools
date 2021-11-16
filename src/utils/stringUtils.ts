@@ -148,5 +148,5 @@ export function sanitizeRFC1123(str: string): string {
  */
 export function truncateString(str: string, maxChars: number): string {
 	const chars = [...str];
-	return chars.length > maxChars ? `${chars.slice(0, maxChars).join('')}…` : str;
+	return chars.length > maxChars ? chars.slice(0, maxChars).join('') : str;
 }
