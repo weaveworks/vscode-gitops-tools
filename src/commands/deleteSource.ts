@@ -5,22 +5,30 @@ import { getAzureMetadata } from '../getAzureMetadata';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider, KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
+import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
 import { getCurrentClusterNode, refreshSourceTreeView } from '../views/treeViews';
 
 /**
- * Delete a source (currently only for git repository)
+ * Delete a source
  *
  * @param sourceNode Sources tree view node
  */
-export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositoryNode /*| BucketNode */) {
+export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositoryNode | BucketNode) {
 
 	const sourceName = sourceNode.resource.metadata.name || '';
 	const sourceNamespace = sourceNode.resource.metadata.namespace || '';
 	const confirmButton = 'Delete';
 
-	const sourceType: FluxSource = sourceNode.resource.kind === KubernetesObjectKinds.GitRepository ? 'source git' : 'source helm';
+	const sourceType: FluxSource | 'unknown' = sourceNode.resource.kind === KubernetesObjectKinds.GitRepository ? 'source git' :
+		sourceNode.resource.kind === KubernetesObjectKinds.HelmRepository ? 'source helm' :
+			sourceNode.resource.kind === KubernetesObjectKinds.Bucket ? 'source bucket' : 'unknown';
+
+	if (sourceType === 'unknown') {
+		window.showErrorMessage(`Unknown Source resource kind ${sourceNode.resource.kind}`);
+		return;
+	}
 
 	const confirm = await window.showWarningMessage(`Do you want to delete ${sourceType} "${sourceName}"?`, {
 		modal: true,
