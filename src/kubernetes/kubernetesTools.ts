@@ -2,6 +2,7 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { ContextTypes, setContext } from '../context';
+import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
 import { parseJson } from '../utils/jsonUtils';
 import { BucketResult } from './bucket';
@@ -132,6 +133,9 @@ class KubernetesTools {
 
 		setContext(ContextTypes.NoClusterSelected, false);
 		this.clusterSupportedResourceKinds = undefined;
+
+		// TODO: maybe emit an event?
+		checkIfOpenedFolderGitRepositorySourceExists();
 
 		return {
 			isChanged: true,

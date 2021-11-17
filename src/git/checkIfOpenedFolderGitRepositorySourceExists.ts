@@ -9,6 +9,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
  *
  * This function should be run:
  * - At extension startup
+ * - Kubernetes context changed
  * - After git repository is added
  * - After git repository is deleted
  */
