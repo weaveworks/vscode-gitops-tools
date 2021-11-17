@@ -5,8 +5,9 @@ import { FluxApplication, FluxSource } from './fluxTypes';
 /**
  * Special symbols used in flux output.
  */
-const enum Symbols {
+const enum FluxOutputSymbols {
 	ListItem = '►',
+	Plus = '✚',
 	Success = '✔',
 	Failure = '✗',
 }
@@ -33,8 +34,9 @@ class FluxTools {
 	/**
 	 * Transform string to an array.
 	 */
-	private splitLines(str: string) {
-		return str.split('\n');
+	private splitLines(output: string) {
+		return output.split('\n')
+			.filter(str => str.length);
 	}
 
 	/**
@@ -68,7 +70,7 @@ class FluxTools {
 			} else {
 				if (stage === 'prerequisites') {
 					prerequisites.push(line);
-				} else if (stage === 'controllers' && !line.startsWith(Symbols.ListItem)) {
+				} else if (stage === 'controllers' && !line.startsWith(FluxOutputSymbols.ListItem)) {
 					controllers.push(line);
 				}
 			}
@@ -79,7 +81,7 @@ class FluxTools {
 		for (const prerequisite of prerequisites) {
 			parsedPrerequises.push({
 				name: prerequisite.slice(1).trim(),
-				success: prerequisite.startsWith(Symbols.Success),
+				success: prerequisite.startsWith(FluxOutputSymbols.Success),
 			});
 		}
 
@@ -92,7 +94,7 @@ class FluxTools {
 
 			parsedControllers.push({
 				name,
-				success: controller.startsWith(Symbols.Success),
+				success: controller.startsWith(FluxOutputSymbols.Success),
 				status,
 			});
 		}
@@ -186,8 +188,30 @@ class FluxTools {
 	 * @param url git url
 	 * @param branch git branch
 	 */
-	async createSourceGit(name: string, url: string, branch: string) {
-		await shell.execWithOutput(`flux create source git ${name} --url ${url} --branch ${branch} --silent`);
+	async createSourceGit(name: string, url: string, branch: string, isSSH: boolean): Promise<{ deployKey: string; } | undefined> {
+		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${name} --url ${url} --branch ${branch} --silent`);
+
+		if (!isSSH) {
+			return;
+		}
+
+		const output = createSourceShellResult.stdout || createSourceShellResult.stderr;
+
+		// parse deploy key if the repository url is using SSH protocol
+		let deployKey: string | undefined;
+		const lines = this.splitLines(output);
+		const deployKeyPrefix = `${FluxOutputSymbols.Plus} deploy key:`;
+		for (const line of lines) {
+			if (line.startsWith(deployKeyPrefix)) {
+				deployKey = line.slice(deployKeyPrefix.length).trim();
+			}
+		}
+
+		if (deployKey) {
+			return {
+				deployKey,
+			};
+		}
 	}
 }
 
