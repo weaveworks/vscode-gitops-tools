@@ -63,5 +63,8 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 	}
 
 	refreshSourceTreeView();
-	checkIfOpenedFolderGitRepositorySourceExists();
+
+	if (sourceType === 'source git') {
+		checkIfOpenedFolderGitRepositorySourceExists();
+	}
 }
