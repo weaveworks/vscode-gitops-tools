@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { globalState } from './globalState';
+import { globalState } from '../globalState';
 
 /**
  * Prompt for the azure cluster:

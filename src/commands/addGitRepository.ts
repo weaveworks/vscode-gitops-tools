@@ -2,7 +2,7 @@ import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window, workspace } from 'vscode';
 import { CommandId } from '../commands';
 import { fluxTools } from '../flux/fluxTools';
-import { getAzureMetadata } from '../getAzureMetadata';
+import { getAzureMetadata } from '../azure/getAzureMetadata';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';

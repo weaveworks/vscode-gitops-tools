@@ -1,9 +1,9 @@
 import { window } from 'vscode';
+import { azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { getCurrentClusterNode, refreshAllTreeViews } from '../views/treeViews';
-import { enableGitOpsOnAKSCluster } from './enableGitOpsOnAKSCluster';
 
 /**
  * Install or uninstall flux from the passed or current cluster (if first argument is undefined)
@@ -25,9 +25,8 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 		return;
 	}
 
-	// Prompt for confirmation
 	const confirmButton = enable ? 'Enable' : 'Disable';
-	const confirmationMessage = `Do you want to	${enable ? 'enable' : 'disable'} gitops on the ${clusterNode?.name || 'current'} cluster?`;
+	const confirmationMessage = `Do you want to	${enable ? 'enable' : 'disable'} GitOps on the "${clusterNode.name}" cluster?`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, confirmButton);
@@ -35,28 +34,24 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 		return;
 	}
 
-	if (clusterProvider === ClusterProvider.AKS && enable) {
-		enableGitOpsOnAKSCluster(clusterNode, { isAzureARC: false });
-		return;
-	} else if (clusterProvider === ClusterProvider.AzureARC && enable) {
-		enableGitOpsOnAKSCluster(clusterNode, { isAzureARC: true });
-		return;
-	}
-
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
-		if (!enable) {
+		// AKS/AKS ARC cluster
+		if (enable) {
+			await azureTools.enableGitOps(clusterNode, clusterProvider);
+		} else {
 			// TODO: disable GitOps on AKS & ARC
 			window.showInformationMessage('Disable GitOps is not yet implemented on AKS or Azure ARC', { modal: true });
 			return;
 		}
-	}
-
-	const context = clusterNode.name;
-	if (enable) {
-		await fluxTools.install(context);
 	} else {
-		await fluxTools.uninstall(context);
+		// generic cluster
+		const context = clusterNode.name;
+		if (enable) {
+			await fluxTools.install(context);
+		} else {
+			await fluxTools.uninstall(context);
+		}
 	}
 
 	// Refresh now that flux is installed or uninstalled

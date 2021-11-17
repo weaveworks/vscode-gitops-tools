@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
-import { getAzureMetadata } from '../getAzureMetadata';
+import { getAzureMetadata } from '../azure/getAzureMetadata';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider, KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
