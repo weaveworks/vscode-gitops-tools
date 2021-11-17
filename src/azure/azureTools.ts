@@ -51,6 +51,27 @@ class AzureTools {
 
 		return `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`;
 	}
+
+	/**
+	 * Delete source.
+	 * @param clusterNode target cluster node
+	 * @param clusterProvider target cluster provider
+	 * @param sourceName target source name
+	 * TODO: require namespace?
+	 */
+	async deleteSource(
+		clusterNode: ClusterNode,
+		clusterProvider: ClusterProvider,
+		sourceName: string,
+	) {
+
+		const azureMetadata = await getAzureMetadata(clusterNode.name);
+		if (!azureMetadata) {
+			return;
+		}
+
+		await shell.execWithOutput(`az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`);
+	}
 }
 
 /**

@@ -1,10 +1,9 @@
 import { window } from 'vscode';
+import { azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
-import { getAzureMetadata } from '../azure/getAzureMetadata';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider, KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
-import { shell } from '../shell';
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
@@ -47,17 +46,9 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 		return;
 	}
 
-	let deleteSourceQuery = '';
-
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
-		const azureMetadata = await getAzureMetadata(currentClusterNode.name);
-		if (!azureMetadata) {
-			return;
-		}
-
-		deleteSourceQuery = `az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`;
-		await shell.execWithOutput(deleteSourceQuery);
+		await azureTools.deleteSource(currentClusterNode, clusterProvider, sourceName);
 	} else {
 		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);
 	}
