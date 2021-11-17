@@ -1,8 +1,8 @@
 import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window, workspace } from 'vscode';
+import { azureTools } from '../azure/azureTools';
 import { CommandId } from '../commands';
 import { fluxTools } from '../flux/fluxTools';
-import { getAzureMetadata } from '../azure/getAzureMetadata';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
@@ -88,17 +88,15 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		gitUrl = makeSSHUrlFromGitUrl(gitUrl);
 	}
 
-	let createGitSourceQuery = '';
+	let createGitSourceQuery: string | undefined = '';
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
 
-		const azureMetadata = await getAzureMetadata(currentClusterNode.name);
-		if (!azureMetadata) {
+		createGitSourceQuery = await azureTools.createGitRepository(currentClusterNode, clusterProvider, newGitRepositorySourceName, gitUrl, gitBranch);
+		if (!createGitSourceQuery) {
 			return;
 		}
-
-		createGitSourceQuery = `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters'} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`;
 
 		// TODO: use shell for the query
 		runTerminalCommand(createGitSourceQuery, { focusTerminal: true });
