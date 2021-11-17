@@ -70,7 +70,7 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		return;
 	}
 
-	const gitRepositoryState = await getGitRepositoryState(gitFolderFsPath);
+	const gitRepositoryState = await getGitRepositoryState(gitFolderFsPath, true);
 	if (!gitRepositoryState) {
 		return;
 	}
@@ -147,8 +147,9 @@ export function nameGitRepositorySource(url: string, branch: string) {
 /**
  * Check if provided local path is indeed a git repository.
  * @param cwd local file system path
+ * @param showErrorNotifications whether or not to show error notifications
  */
-async function checkIfInsideGitRepository(cwd: string): Promise<boolean> {
+async function checkIfInsideGitRepository(cwd: string, showErrorNotifications: boolean): Promise<boolean> {
 
 	const isInsideGitRepositoryShellResult = await shell.execWithOutput('git rev-parse --is-inside-work-tree', {
 		cwd,
@@ -157,7 +158,9 @@ async function checkIfInsideGitRepository(cwd: string): Promise<boolean> {
 
 	const isInsideGitRepository = isInsideGitRepositoryShellResult.code === 0;
 	if (!isInsideGitRepository) {
-		window.showErrorMessage(`Not a git repository ${cwd}`);
+		if (showErrorNotifications) {
+			window.showErrorMessage(`Not a git repository ${cwd}`);
+		}
 		return false;
 	}
 
@@ -208,9 +211,9 @@ export async function getGitBranch(cwd: string): Promise<undefined | string> {
  * Given a local file path - try to get spec properties for the Git Repository (url & branch).
  * @param cwd local file system path
  */
-export async function getGitRepositoryState(cwd: string) {
+export async function getGitRepositoryState(cwd: string, showErrorNotifications: boolean) {
 
-	const isInsideGitRepository = await checkIfInsideGitRepository(cwd);
+	const isInsideGitRepository = await checkIfInsideGitRepository(cwd, showErrorNotifications);
 	if (!isInsideGitRepository) {
 		return;
 	}

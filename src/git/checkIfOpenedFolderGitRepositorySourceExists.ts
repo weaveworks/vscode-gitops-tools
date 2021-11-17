@@ -26,7 +26,7 @@ export async function checkIfOpenedFolderGitRepositorySourceExists() {
 	let gitRepositoryExistsNamespace = '';
 
 	for (const folder of workspaceFolders) {
-		const gitRepositoryState = await getGitRepositoryState(folder.uri.fsPath);
+		const gitRepositoryState = await getGitRepositoryState(folder.uri.fsPath, false);
 		if (gitRepositoryState) {
 			const gitRepositoryName = nameGitRepositorySource(gitRepositoryState.url, gitRepositoryState.branch);
 
