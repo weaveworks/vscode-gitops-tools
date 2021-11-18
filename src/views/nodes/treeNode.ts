@@ -5,7 +5,7 @@ import { asAbsolutePath } from '../../extensionContext';
 import { FileTypes } from '../../fileTypes';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/stringUtils';
+import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.

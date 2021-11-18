@@ -6,7 +6,7 @@ import { extensionState } from '../../extensionState';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../../kubernetes/kubernetesTypes';
-import { createMarkdownTable } from '../../utils/stringUtils';
+import { createMarkdownTable } from '../../utils/markdownUtils';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
