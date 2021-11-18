@@ -2,6 +2,29 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.11.0 - [2021-11-18]
+
+- [#117](https://github.com/weaveworks/vscode-gitops-tools/issues/117)
+Suspend Git Source Reconciliation (Generic Cluster)
+- [#122](https://github.com/weaveworks/vscode-gitops-tools/issues/122)
+Resume Git Source Reconciliation (Generic)
+- [#124](https://github.com/weaveworks/vscode-gitops-tools/issues/124)
+Add support for adding ssh cloned git repositories (public repos -Generic Cluster)
+- [#127](https://github.com/weaveworks/vscode-gitops-tools/issues/127)
+Add support for adding ssh cloned git repositories (private repos -Generic Cluster)
+- [#139](https://github.com/weaveworks/vscode-gitops-tools/issues/139)
+Commands need to wait before the cluster provider is known
+- [#141](https://github.com/weaveworks/vscode-gitops-tools/issues/141)
+Create output to view `kubectl` command calls
+- [#142](https://github.com/weaveworks/vscode-gitops-tools/issues/142)
+Update dev dependencies
+- [#143](https://github.com/weaveworks/vscode-gitops-tools/issues/143)
+AnyResourceNode should have basic markdown hover
+- [#144](https://github.com/weaveworks/vscode-gitops-tools/issues/144)
+Refactor
+- [#148](https://github.com/weaveworks/vscode-gitops-tools/issues/148)
+Package Sprint 11 release
+
 # v0.10.0 - [2021-11-11]
 
 - [#130](https://github.com/weaveworks/vscode-gitops-tools/issues/130)
