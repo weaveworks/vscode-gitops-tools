@@ -1,5 +1,5 @@
 import { TreeItem, TreeView, window } from 'vscode';
-import { ApplicationDataProvider } from './dataProviders/applicationDataProvider';
+import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
@@ -9,12 +9,12 @@ import { Views } from './views';
 
 let clusterTreeViewProvider: ClusterDataProvider;
 let sourceTreeViewProvider: SourceDataProvider;
-let applicationTreeViewProvider: ApplicationDataProvider;
+let workloadTreeViewProvider: WorkloadDataProvider;
 let documentationTreeViewProvider: DocumentationDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
-let applicationTreeView: TreeView<TreeItem>;
+let workloadTreeView: TreeView<TreeItem>;
 let documentationTreeView: TreeView<TreeItem>;
 
 /**
@@ -24,7 +24,7 @@ export function createTreeViews() {
 	// create gitops tree view data providers
 	clusterTreeViewProvider = new ClusterDataProvider();
 	sourceTreeViewProvider =  new SourceDataProvider();
-	applicationTreeViewProvider = new ApplicationDataProvider();
+	workloadTreeViewProvider = new WorkloadDataProvider();
 	documentationTreeViewProvider = new DocumentationDataProvider();
 
 	// create gitops sidebar tree views
@@ -38,8 +38,8 @@ export function createTreeViews() {
 		showCollapseAll: true,
 	});
 
-	applicationTreeView = window.createTreeView(Views.ApplicationView, {
-		treeDataProvider: applicationTreeViewProvider,
+	workloadTreeView = window.createTreeView(Views.WorkloadView, {
+		treeDataProvider: workloadTreeViewProvider,
 		showCollapseAll: true,
 	});
 
@@ -56,7 +56,7 @@ export function createTreeViews() {
 export function refreshAllTreeViews() {
 	refreshClusterTreeView();
 	refreshSourceTreeView();
-	refreshApplicationTreeView();
+	refreshWorkloadTreeView();
 }
 
 /**
@@ -76,10 +76,10 @@ export function refreshSourceTreeView(node?: TreeNode) {
 }
 
 /**
- * Reloads applications tree view for the selected cluster.
+ * Reloads workloads tree view for the selected cluster.
  */
-export function refreshApplicationTreeView(node?: TreeNode) {
-	applicationTreeViewProvider.refresh(node);
+export function refreshWorkloadTreeView(node?: TreeNode) {
+	workloadTreeViewProvider.refresh(node);
 }
 
 /**

@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import { shell } from '../shell';
-import { FluxApplication, FluxSource } from './fluxTypes';
+import { FluxWorkload, FluxSource } from './fluxTypes';
 
 /**
  * Special symbols used in flux output.
@@ -141,7 +141,7 @@ class FluxTools {
 	 * @param name resource name
 	 * @param namespace resource namespace
 	 */
-	async suspend(type: FluxSource | FluxApplication, name: string, namespace: string) {
+	async suspend(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		await shell.execWithOutput(`flux suspend ${type} ${name} -n ${namespace}`);
 	}
 
@@ -153,7 +153,7 @@ class FluxTools {
 	 * @param name resource name
 	 * @param namespace resource namespace
 	 */
-	async resume(type: FluxSource | FluxApplication, name: string, namespace: string) {
+	async resume(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		await shell.execWithOutput(`flux resume ${type} ${name} -n ${namespace}`);
 	}
 
@@ -165,7 +165,7 @@ class FluxTools {
 	 * @param name resource name
 	 * @param namespace resource namespace
 	 */
-	async reconcile(type: FluxSource | FluxApplication, name: string, namespace: string) {
+	async reconcile(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		await shell.execWithOutput(`flux reconcile ${type} ${name} -n ${namespace}`);
 	}
 

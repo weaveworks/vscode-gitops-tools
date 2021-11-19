@@ -4,7 +4,7 @@ import { deleteSource } from './commands/deleteSource';
 import { fluxCheck } from './commands/fluxCheck';
 import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/fluxEnableGitOps';
-import { fluxReconcileApplication } from './commands/fluxReconcileApplication';
+import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { openResource } from './commands/openResource';
@@ -15,7 +15,7 @@ import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
 import { suspendSource } from './commands/suspend';
 import { showOutputChannel } from './output';
-import { refreshApplicationTreeView, refreshSourceTreeView, refreshAllTreeViews } from './views/treeViews';
+import { refreshWorkloadTreeView, refreshSourceTreeView, refreshAllTreeViews } from './views/treeViews';
 
 /**
  * Command ids registered by this extension
@@ -47,12 +47,12 @@ export const enum CommandId {
 	FluxDisableGitOps = 'gitops.flux.uninstall',
 	FluxReconcileSource = 'gitops.flux.reconcileSource',
 	FluxReconcileRepository = 'gitops.flux.reconcileRepository',
-	FluxReconcileApplication = 'gitops.flux.reconcileApplication',
+	FluxReconcileWorkload = 'gitops.flux.reconcileWorkload',
 
 	// tree view
 	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
 	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
-	RefreshApplicationsTreeView = 'gitops.views.refreshApplicationTreeView',
+	RefreshWorkloadsTreeView = 'gitops.views.refreshWorkloadTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
 	AddGitRepository = 'gitops.views.addGitRepository',
 	DeleteSource = 'gitops.views.deleteSource',
@@ -87,14 +87,14 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);
 	registerCommand(CommandId.FluxReconcileRepository, fluxReconcileRepository);
-	registerCommand(CommandId.FluxReconcileApplication, fluxReconcileApplication);
+	registerCommand(CommandId.FluxReconcileWorkload, fluxReconcileWorkload);
 	registerCommand(CommandId.FluxEnableGitOps, fluxEnableGitOps);
 	registerCommand(CommandId.FluxDisableGitOps, fluxDisableGitOps);
 
 	// tree views
 	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViews);
 	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourceTreeView);
-	registerCommand(CommandId.RefreshApplicationsTreeView, refreshApplicationTreeView);
+	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.AddGitRepository, addGitRepository);
 	registerCommand(CommandId.DeleteSource, deleteSource);

@@ -8,9 +8,9 @@ export const enum ContextTypes {
 	NoClusterSelected = 'gitops:noClusterSelected',
 	CurrentClusterFluxNotInstalled = 'gitops:currentClusterFluxNotInstalled',
 	LoadingSources = 'gitops:loadingSources',
-	LoadingApplications = 'gitops:loadingApplications',
+	LoadingWorkloads = 'gitops:loadingWorkloads',
 	NoSources = 'gitops:noSources',
-	NoApplications = 'gitops:noApplications',
+	NoWorkloads = 'gitops:noWorkloads',
 
 	OpenFolderGitRepositoryExistDetermined = 'gitops:openFolderGitRepositoryExistDetermined',
 	OpenFolderGitRepositoryExist = 'gitops:openFolderGitRepositoryExist',
@@ -23,9 +23,9 @@ interface ContextValues {
 	[ContextTypes.NoClusterSelected]: boolean;
 	[ContextTypes.CurrentClusterFluxNotInstalled]: boolean;
 	[ContextTypes.LoadingSources]: boolean;
-	[ContextTypes.LoadingApplications]: boolean;
+	[ContextTypes.LoadingWorkloads]: boolean;
 	[ContextTypes.NoSources]: boolean;
-	[ContextTypes.NoApplications]: boolean;
+	[ContextTypes.NoWorkloads]: boolean;
 
 	[ContextTypes.OpenFolderGitRepositoryExist]: boolean;
 	[ContextTypes.OpenFolderGitRepositoryExistDetermined]: boolean;

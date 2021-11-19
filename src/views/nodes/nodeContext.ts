@@ -20,7 +20,7 @@ export const enum NodeContext {
 	HelmRepository = 'helmRepository',
 	Bucket = 'bucket',
 
-	// Application context values
+	// Workload context values
 	Kustomization = 'kustomization',
 	HelmRelease = 'helmRelease',
 

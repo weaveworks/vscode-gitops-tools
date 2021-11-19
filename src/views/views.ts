@@ -4,6 +4,6 @@
 export const enum Views {
 	ClusterView = 'gitops.views.clusters',
 	SourceView = 'gitops.views.sources',
-	ApplicationView = 'gitops.views.applications',
+	WorkloadView = 'gitops.views.workloads',
 	DocumentationView = 'gitops.views.documentation',
 }

@@ -9,7 +9,7 @@
   <br />
 </h1>
 
-GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Application deployments in Visual Studio Code IDE.
+GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Workloads in Visual Studio Code IDE.
 
 ![VSCode GitOps Tools](docs/images/vscode-gitops-tools.png)
 
@@ -21,11 +21,11 @@ GitOps extension provides integration with [Kubernetes Tools](https://marketplac
 - Enable/Disable GitOps Cluster operations support
 - View [GitOps Toolkit components](https://fluxcd.io/docs/components/), version info, and deployment status for the GitOps enabled clusters and Flux controllers
 - View Git/Helm Repositories and Bucket Sources info for the selected cluster
-- View Application Kustomizations and Helm Releases for the selected cluster
+- View Kustomizations and Helm Releases for the selected cluster
 - View Flux controller logs in the webview editor
-- Reconcile Sources and Application deployments on demand
+- Reconcile Sources and Workloads demand
 - Pull Git Repository Source to user machine and open it in VSCode
-- Preview short Kubernetes Object info in rich markdown table tooltips on hover for the loaded Clusters, Sources, and Applications
+- Preview short Kubernetes Object info in rich markdown table tooltips on hover for the loaded Clusters, Sources, and Workloads
 - Load Kubernetes Object manifest `.yaml` configs in vscode editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
 - Open [GitOps](https://www.weave.works/technologies/gitops/) Documentation links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics in your default web browser
 
@@ -53,7 +53,7 @@ We recommend you install these CLI tools on your system PATH before using GitOps
 
 # GitOps Commands
 
-You can access GitOps tools check, CLI dependendency versions, Clusters, Sources and Applications views Focus and Refresh commands by typing `GitOps` in `View -> Command Palette...` menu prompt:
+You can access GitOps tools check, CLI dependendency versions, Clusters, Sources and Workloads views Focus and Refresh commands by typing `GitOps` in `View -> Command Palette...` menu prompt:
 
 ![VSCode GitOps Commands](docs/images/vscode-gitops-commands.png)
 

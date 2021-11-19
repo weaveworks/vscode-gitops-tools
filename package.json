@@ -41,10 +41,10 @@
 		"onCommand:gitops.flux.uninstall",
 		"onCommand:gitops.flux.reconcileSource",
 		"onCommand:gitops.flux.reconcileRepository",
-		"onCommand:gitops.flux.reconcileApplication",
+		"onCommand:gitops.flux.reconcileWorkload",
 		"onCommand:gitops.views.refreshAllTreeViews",
 		"onCommand:gitops.views.refreshSourceTreeView",
-		"onCommand:gitops.views.refreshApplicationTreeView",
+		"onCommand:gitops.views.refreshWorkloadTreeView",
 		"onCommand:gitops.views.pullGitRepository",
 		"onCommand:gitops.views.addGitRepository",
 		"onCommand:gitops.views.deleteSource",
@@ -53,7 +53,7 @@
 		"onCommand:gitops.output.show",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
-		"onView:gitops.views.applications",
+		"onView:gitops.views.workloads",
 		"onView:gitops.views.documentation"
 	],
 	"main": "./dist/extension.js",
@@ -106,8 +106,8 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.flux.reconcileApplication",
-				"title": "Reconcile Application",
+				"command": "gitops.flux.reconcileWorkload",
+				"title": "Reconcile Workload",
 				"category": "GitOps"
 			},
 			{
@@ -123,8 +123,8 @@
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "gitops.views.refreshApplicationTreeView",
-				"title": "Refresh Applications View",
+				"command": "gitops.views.refreshWorkloadTreeView",
+				"title": "Refresh Workloads View",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
@@ -181,8 +181,8 @@
 					"name": "Sources"
 				},
 				{
-					"id": "gitops.views.applications",
-					"name": "Applications"
+					"id": "gitops.views.workloads",
+					"name": "Workloads"
 				},
 				{
 					"id": "gitops.views.documentation",
@@ -216,23 +216,23 @@
 				"when": "gitops:noClusterSelected"
 			},
 			{
-				"view": "gitops.views.applications",
-				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Applications",
+				"view": "gitops.views.workloads",
+				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads",
 				"when": "gitops:currentClusterFluxNotInstalled"
 			},
 			{
-				"view": "gitops.views.applications",
-				"contents": "Loading Applications ...",
-				"when": "gitops:loadingApplications && !gitops:noClusterSelected"
+				"view": "gitops.views.workloads",
+				"contents": "Loading Workloads ...",
+				"when": "gitops:loadingWorkloads && !gitops:noClusterSelected"
 			},
 			{
-				"view": "gitops.views.applications",
-				"contents": "No applications.",
-				"when": "!gitops:loadingApplications && !gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected && gitops:noApplications"
+				"view": "gitops.views.workloads",
+				"contents": "No workloads.",
+				"when": "!gitops:loadingWorkloads && !gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected && gitops:noWorkloads"
 			},
 			{
-				"view": "gitops.views.applications",
-				"contents": "Select GitOps Cluster to view Applications",
+				"view": "gitops.views.workloads",
+				"contents": "Select GitOps Cluster to view Workloads",
 				"when": "gitops:noClusterSelected"
 			},
 			{
@@ -263,9 +263,9 @@
 					"when": "view == gitops.views.sources"
 				},
 				{
-					"command": "gitops.views.refreshApplicationTreeView",
+					"command": "gitops.views.refreshWorkloadTreeView",
 					"group": "navigation",
-					"when": "view == gitops.views.applications"
+					"when": "view == gitops.views.workloads"
 				}
 			],
 			"view/item/context": [
@@ -307,8 +307,8 @@
 					"group": "navigation@3"
 				},
 				{
-					"command": "gitops.flux.reconcileApplication",
-					"when": "view == gitops.views.applications && viewItem =~ /^(kustomization|helmRelease)$/"
+					"command": "gitops.flux.reconcileWorkload",
+					"when": "view == gitops.views.workloads && viewItem =~ /^(kustomization|helmRelease)$/"
 				},
 				{
 					"command": "gitops.editor.showLogs",
@@ -355,7 +355,7 @@
 					"when": "never"
 				},
 				{
-					"command": "gitops.flux.reconcileApplication",
+					"command": "gitops.flux.reconcileWorkload",
 					"when": "never"
 				},
 				{

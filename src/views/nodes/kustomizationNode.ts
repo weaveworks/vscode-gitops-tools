@@ -1,12 +1,12 @@
 import { Kustomize } from '../../kubernetes/kustomize';
-import { ApplicationNode } from './applicationNode';
+import { WorkloadNode } from './workloadNode';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 
 /**
- * Defines Kustomization tree view item for display in GitOps Application tree view.
+ * Defines Kustomization tree view item for display in GitOps Workload tree view.
  */
-export class KustomizationNode extends ApplicationNode {
+export class KustomizationNode extends WorkloadNode {
 
 	contextValue = NodeContext.Kustomization;
 

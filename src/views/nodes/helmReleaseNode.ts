@@ -1,12 +1,12 @@
 import { HelmRelease } from '../../kubernetes/helmRelease';
-import { ApplicationNode } from './applicationNode';
+import { WorkloadNode } from './workloadNode';
 import { NodeContext } from './nodeContext';
 import { NodeLabels } from './nodeLabels';
 
 /**
- * Defines Helm release tree view item for display in GitOps Applications tree view.
+ * Defines Helm release tree view item for display in GitOps Workloads tree view.
  */
-export class HelmReleaseNode extends ApplicationNode {
+export class HelmReleaseNode extends WorkloadNode {
 
 	contextValue = NodeContext.HelmRelease;
 

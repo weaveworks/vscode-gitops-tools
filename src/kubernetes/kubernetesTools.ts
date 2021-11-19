@@ -293,8 +293,8 @@ class KubernetesTools {
 	 * @param name name of the kustomize/helmRelease object
 	 * @param namespace namespace of the kustomize/helmRelease object
 	 */
-	async getChildrenOfApplication(
-		application: 'kustomize' | 'helm',
+	async getChildrenOfWorkload(
+		workload: 'kustomize' | 'helm',
 		name: string,
 		namespace: string,
 	): Promise<KubernetesListObject<KubernetesObject> | undefined> {
@@ -303,11 +303,11 @@ class KubernetesTools {
 			return;
 		}
 
-		const query = `get ${resourceKinds.join(',')} -l ${application}.toolkit.fluxcd.io/name=${name} -n ${namespace} -o json`;
+		const query = `get ${resourceKinds.join(',')} -l ${workload}.toolkit.fluxcd.io/name=${name} -n ${namespace} -o json`;
 		const resourcesShellResult = await this.invokeKubectlCommand(query);
 
 		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
-			window.showErrorMessage(`Failed to get ${application} created resources: ${resourcesShellResult?.stderr}`);
+			window.showErrorMessage(`Failed to get ${workload} created resources: ${resourcesShellResult?.stderr}`);
 			return undefined;
 		}
 

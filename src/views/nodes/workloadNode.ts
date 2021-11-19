@@ -5,9 +5,9 @@ import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../.
 import { TreeNode, TreeNodeIcon } from './treeNode';
 
 /**
- * Base class for all Application tree view items.
+ * Base class for all Workload tree view items.
  */
-export class ApplicationNode extends TreeNode {
+export class WorkloadNode extends TreeNode {
 
 	/**
 	 * Whether or not the appliication failed to reconcile.
@@ -25,7 +25,7 @@ export class ApplicationNode extends TreeNode {
 	}
 
 	/**
-	 * Update application status with showing error icon when reconcile has failed.
+	 * Update workload status with showing error icon when reconcile has failed.
 	 * @param resource target resource
 	 */
 	updateStatus(resource: Kustomize | HelmRelease) {
