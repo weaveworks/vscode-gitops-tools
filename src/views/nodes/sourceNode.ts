@@ -1,10 +1,10 @@
-import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
+import { MarkdownString } from 'vscode';
 import { Bucket } from '../../kubernetes/bucket';
 import { GitRepository } from '../../kubernetes/gitRepository';
 import { HelmRepository } from '../../kubernetes/helmRepository';
-import { createMarkdownTable } from '../../utils/markdownUtils';
+import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { shortenRevision } from '../../utils/stringUtils';
-import { TreeNode } from './treeNode';
+import { TreeNode, TreeNodeIcon } from './treeNode';
 
 /**
  * Base class for all the Source tree view items.
@@ -14,9 +14,9 @@ export class SourceNode extends TreeNode {
 	resource: GitRepository | HelmRepository | Bucket;
 
 	/**
-	 * Whether or not the source failed to fetch.
+	 * Whether or not the source failed to reconcile.
 	 */
-	isFetchFailed = false;
+	isReconcileFailed = false;
 
 	constructor(label: string, source: GitRepository | HelmRepository | Bucket) {
 		super(label);
@@ -44,10 +44,10 @@ export class SourceNode extends TreeNode {
 		const markdown: MarkdownString = createMarkdownTable(source);
 
 		// show status in hover when source fetching failed
-		if (this.isFetchFailed) {
-			markdown.appendMarkdown('\n\n---\n\n');
-			markdown.appendMarkdown(`<span style="color:#f14c4c;">$(error)</span> Status message: ${source.status.conditions?.[0].message}\n\n`);
-			markdown.appendMarkdown(`<span style="color:#f14c4c;">$(error)</span> Status reason: \`${source.status.conditions?.[0].reason}\`\n\n`);
+		if (this.isReconcileFailed) {
+			createMarkdownHr(markdown);
+			createMarkdownError('Status message', source.status.conditions?.[0].message, markdown);
+			createMarkdownError('Status reason', source.status.conditions?.[0].reason, markdown);
 		}
 
 		return markdown;
@@ -59,11 +59,11 @@ export class SourceNode extends TreeNode {
 	 */
 	updateStatus(source: GitRepository | HelmRepository | Bucket) {
 		if (source.status.conditions?.[0].status === 'False') {
-			this.isFetchFailed = true;
-			this.setIcon(new ThemeIcon('error', new ThemeColor('editorError.foreground')));
+			this.setIcon(TreeNodeIcon.Error);
+			this.isReconcileFailed = true;
 		} else {
-			this.isFetchFailed = false;
-			this.setIcon(new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen')));
+			this.setIcon(TreeNodeIcon.Success);
+			this.isReconcileFailed = false;
 		}
 	}
 
@@ -73,7 +73,7 @@ export class SourceNode extends TreeNode {
 	updateRevision(source: GitRepository | HelmRepository | Bucket) {
 		this.description = shortenRevision(source.status.artifact?.revision);
 
-		if (this.isFetchFailed) {
+		if (this.isReconcileFailed) {
 			this.description = `${source.status.conditions?.[0].reason}`;
 		}
 	}

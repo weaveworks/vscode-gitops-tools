@@ -1,7 +1,6 @@
-import { ThemeColor, ThemeIcon } from 'vscode';
 import { Deployment } from '../../kubernetes/kubernetesTypes';
 import { NodeContext } from './nodeContext';
-import { TreeNode } from './treeNode';
+import { TreeNode, TreeNodeIcon } from './treeNode';
 
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.
@@ -22,7 +21,7 @@ export class ClusterDeploymentNode extends TreeNode {
 
 		this.label = this.getImageName(deployment);
 
-		this.setIcon(new ThemeIcon('circle-large-outline'));
+		this.setIcon(TreeNodeIcon.Unknown);
 	}
 
 	/**
@@ -41,9 +40,9 @@ export class ClusterDeploymentNode extends TreeNode {
 	 */
 	setStatus(status: 'success' | 'failure') {
 		if (status === 'success') {
-			this.setIcon(new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen')));
+			this.setIcon(TreeNodeIcon.Success);
 		} else if (status === 'failure') {
-			this.setIcon(new ThemeIcon('warning', new ThemeColor('editorWarning.foreground')));
+			this.setIcon(TreeNodeIcon.Warning);
 		}
 	}
 }

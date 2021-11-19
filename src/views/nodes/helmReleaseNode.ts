@@ -20,7 +20,7 @@ export class HelmReleaseNode extends ApplicationNode {
 	 * @param helmRelease Helm release kubernetes object info.
 	 */
 	constructor(helmRelease: HelmRelease) {
-		super(helmRelease.metadata?.name || '');
+		super(helmRelease.metadata?.name || '', helmRelease);
 
 		this.description = NodeLabels.HelmRelease;
 

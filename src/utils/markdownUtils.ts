@@ -100,3 +100,19 @@ function createMarkdownTableRow(propertyName: string, propertyValue: string | bo
 	}
 	markdown.appendMarkdown(`${propertyName} | ${propertyValue}\n`);
 }
+
+/**
+ * Append horizontal rule `<hr>`
+ * @param markdown object of vscode type MarkdownString
+ */
+export function createMarkdownHr(markdown: MarkdownString) {
+	markdown.appendMarkdown('\n\n---\n\n');
+}
+
+/**
+ * Append an error message
+ * @param markdown object of vscode type MarkdownString
+ */
+export function createMarkdownError(prefix: string, error = '', markdown: MarkdownString) {
+	markdown.appendMarkdown(`<span style="color:#f14c4c;">$(error)</span> ${prefix}: ${error}\n\n`);
+}

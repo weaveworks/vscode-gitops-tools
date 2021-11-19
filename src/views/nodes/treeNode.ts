@@ -1,11 +1,18 @@
 import { KubernetesObject } from '@kubernetes/client-node';
-import { Command, MarkdownString, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { CommandId } from '../../commands';
 import { asAbsolutePath } from '../../extensionContext';
 import { FileTypes } from '../../fileTypes';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';
+
+export const enum TreeNodeIcon {
+	Error = 'error',
+	Warning = 'warning',
+	Success = 'success',
+	Unknown = 'unknown',
+}
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
@@ -56,8 +63,16 @@ export class TreeNode extends TreeItem {
 	 * relative file path `resouces/icons/(dark|light)/${icon}.svg`
 	 * @param icon Theme icon, uri or light/dark svg icon path.
 	 */
-	setIcon(icon: string | ThemeIcon | Uri) {
-		if (typeof icon === 'string') {
+	setIcon(icon: string | ThemeIcon | Uri | TreeNodeIcon) {
+		if (icon === TreeNodeIcon.Error) {
+			this.iconPath = new ThemeIcon('error', new ThemeColor('editorError.foreground'));
+		} else if (icon === TreeNodeIcon.Warning) {
+			this.iconPath = new ThemeIcon('warning', new ThemeColor('editorWarning.foreground'));
+		} else if (icon === TreeNodeIcon.Success) {
+			this.iconPath = new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen'));
+		} else if (icon === TreeNodeIcon.Unknown) {
+			this.iconPath = new ThemeIcon('circle-large-outline');
+		} else if (typeof icon === 'string') {
 			this.iconPath = {
 				light: asAbsolutePath(`resources/icons/light/${icon}.svg`),
 				dark: asAbsolutePath(`resources/icons/dark/${icon}.svg`),

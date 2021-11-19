@@ -20,7 +20,7 @@ export class KustomizationNode extends ApplicationNode {
 	 * @param kustomization Kustomize kubernetes object info.
 	 */
 	constructor(kustomization: Kustomize) {
-		super(kustomization.metadata?.name || '');
+		super(kustomization.metadata?.name || '', kustomization);
 
 		this.description = NodeLabels.Kustomization;
 
