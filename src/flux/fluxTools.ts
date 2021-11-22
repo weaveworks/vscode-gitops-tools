@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { shell } from '../shell';
-import { FluxWorkload, FluxSource } from './fluxTypes';
+import { parseJson } from '../utils/jsonUtils';
+import { FluxSource, FluxWorkload, FluxTreeResources } from './fluxTypes';
 
 /**
  * Special symbols used in flux output.
@@ -42,7 +43,9 @@ class FluxTools {
 	/**
 	 * Parse prerequisites and controllers from `flux check` CLI command.
 	 *
-	 * @see https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
+	 * @see https://fluxcd.io/docs/cmd/flux_check/
+	 *
+	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
 	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
 		const result = await shell.execWithOutput('flux check', { revealOutputView: false });
@@ -103,6 +106,21 @@ class FluxTools {
 			prerequisites: parsedPrerequises,
 			controllers: parsedControllers,
 		};
+	}
+
+	/**
+	 * @see https://fluxcd.io/docs/cmd/flux_tree_kustomization/
+	 */
+	async tree(name: string, namespace: string): Promise<undefined | FluxTreeResources> {
+
+		const treeShellResult = await shell.exec(`flux tree kustomization ${name} -n ${namespace} -o json`);
+
+		if (treeShellResult?.code !== 0) {
+			window.showErrorMessage(`Failed to get resources created by the workload ${name}. ERROR: ${treeShellResult?.stderr}`);
+			return;
+		}
+
+		return parseJson(treeShellResult.stdout);
 	}
 
 	/**
@@ -181,7 +199,9 @@ class FluxTools {
 		await shell.execWithOutput(`flux delete ${type} ${name} -n ${namespace} --silent`);
 	}
 
-	/** Run `flux create source git`
+	/**
+	 * Run `flux create source git`. If the protocol of the url is SSH -
+	 * try to parse the deploy key from the flux output.
 	 * @see https://fluxcd.io/docs/cmd/flux_create_source_git/
 	 *
 	 * @param name resource name

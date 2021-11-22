@@ -19,4 +19,11 @@ export class AnyResourceNode extends TreeNode {
 		// save metadata reference
 		this.resource = anyResource;
 	}
+
+	/**
+	 * TODO: use optional chaining in the markdown hover function, so that NPE would be impossible
+	 */
+	get tooltip() {
+		return '';
+	}
 }

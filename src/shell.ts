@@ -168,6 +168,6 @@ export const shell = {
 	isUnix : isUnix,
 	platform : platform,
 	exec : exec,
-	execCore : execCore,
+	// execCore : execCore,
 	execWithOutput: execWithOutput,
 };

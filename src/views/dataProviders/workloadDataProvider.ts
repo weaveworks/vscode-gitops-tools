@@ -1,4 +1,6 @@
 import { ContextTypes, setContext } from '../../context';
+import { fluxTools } from '../../flux/fluxTools';
+import { FluxTreeResources } from '../../flux/fluxTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { KubernetesObjectKinds, NamespaceResult } from '../../kubernetes/kubernetesTypes';
 import { statusBar } from '../../statusBar';
@@ -12,8 +14,8 @@ import { refreshWorkloadTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
 /**
- * Defines Workloads data provider for loading Kustomizations
- * and Helm Releases in GitOps Applictions tree view.
+ * Defines data provider for loading Kustomizations
+ * and Helm Releases in Workloads Tree View.
  */
 export class WorkloadDataProvider extends DataProvider {
 
@@ -65,6 +67,25 @@ export class WorkloadDataProvider extends DataProvider {
 		return workloadNodes;
 	}
 
+	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[]) {
+		for (const resource of resourceTree) {
+			if (resource.resource.GroupKind.Kind === KubernetesObjectKinds.Namespace) {
+				continue;
+			}
+
+			const childNode = new AnyResourceNode({
+				kind: resource.resource.GroupKind.Kind,
+				metadata: {
+					name: resource.resource.Name,
+					namespace: resource.resource.Namespace,
+				},
+			});
+			node.addChild(childNode);
+			if (resource.resources && resource.resources.length) {
+				this.buildWorkloadsTree(childNode, resource.resources);
+			}
+		}
+	}
 	/**
 	 * Fetch all kubernetes resources that were created by a kustomize/helmRelease
 	 * and add them as child nodes of the workload.
@@ -76,8 +97,18 @@ export class WorkloadDataProvider extends DataProvider {
 
 		let workloadChildren;
 		if (workloadNode instanceof KustomizationNode) {
-			workloadChildren = await kubernetesTools.getChildrenOfWorkload('kustomize', name, namespace);
+			const resourceTree = await fluxTools.tree(name, namespace);
+
+			if (!resourceTree || !resourceTree.resources) {
+				return;
+			}
+
+			this.buildWorkloadsTree(workloadNode, resourceTree.resources);
+			refreshWorkloadTreeView(workloadNode);
+
+			return;
 		} else if (workloadNode instanceof HelmReleaseNode) {
+			// TODO: use `flux tree` to fetch the resources
 			workloadChildren = await kubernetesTools.getChildrenOfWorkload('helm', name, namespace);
 		}
 
