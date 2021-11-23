@@ -3,13 +3,15 @@ import { shell } from '../shell';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { getAzureMetadata } from './getAzureMetadata';
 
+type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
+
 class AzureTools {
 
 	/**
 	 * Use appropriate cluster type for the `--cluster-type` flag (`-t` short?)
 	 * @param clusterProvider target cluster provider
 	 */
-	private determineClusterType(clusterProvider: ClusterProvider): string {
+	private determineClusterType(clusterProvider: AzureClusterProvider): string {
 		return clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters';
 	}
 
@@ -18,7 +20,7 @@ class AzureTools {
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 */
-	async enableGitOps(clusterNode: ClusterNode, clusterProvider: ClusterProvider) {
+	async enableGitOps(clusterNode: ClusterNode, clusterProvider: AzureClusterProvider) {
 
 		const azureMetadata = await getAzureMetadata(clusterNode.name);
 		if (!azureMetadata) {
@@ -38,7 +40,7 @@ class AzureTools {
 	 */
 	async createGitRepository(
 		clusterNode: ClusterNode,
-		clusterProvider: ClusterProvider,
+		clusterProvider: AzureClusterProvider,
 		newGitRepositorySourceName: string,
 		gitUrl: string,
 		gitBranch: string,
@@ -60,7 +62,7 @@ class AzureTools {
 	 */
 	async deleteSource(
 		clusterNode: ClusterNode,
-		clusterProvider: ClusterProvider,
+		clusterProvider: AzureClusterProvider,
 		sourceName: string,
 	) {
 
@@ -80,7 +82,7 @@ class AzureTools {
 	 */
 	async suspend(
 		clusterNode: ClusterNode,
-		clusterProvider: ClusterProvider,
+		clusterProvider: AzureClusterProvider,
 		sourceName: string,
 	) {
 		await this.resumeSuspend(clusterNode, clusterProvider, sourceName, true);
@@ -94,7 +96,7 @@ class AzureTools {
 	 */
 	async resume(
 		clusterNode: ClusterNode,
-		clusterProvider: ClusterProvider,
+		clusterProvider: AzureClusterProvider,
 		sourceName: string,
 	) {
 		await this.resumeSuspend(clusterNode, clusterProvider, sourceName, false);
@@ -108,7 +110,7 @@ class AzureTools {
 	 */
 	private async resumeSuspend(
 		clusterNode: ClusterNode,
-		clusterProvider: ClusterProvider,
+		clusterProvider: AzureClusterProvider,
 		sourceName: string,
 		suspend: boolean,
 	) {
