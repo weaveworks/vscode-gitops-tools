@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
@@ -23,8 +23,7 @@ export async function suspendSource(node: GitRepositoryNode) {
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
-		// TODO: suspend on AKS/ARC
-		window.showInformationMessage('Suspend source is not yet implemented on AKS or Azure ARC', { modal: true });
+		await azureTools.suspend(currentClusterNode, clusterProvider, node.resource.metadata.name || '');
 	} else {
 		if (node instanceof GitRepositoryNode) {
 			await fluxTools.suspend('source git', node.resource.metadata.name || '', node.resource.metadata.namespace || '');

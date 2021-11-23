@@ -57,7 +57,6 @@ class AzureTools {
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 * @param sourceName target source name
-	 * TODO: require namespace?
 	 */
 	async deleteSource(
 		clusterNode: ClusterNode,
@@ -71,6 +70,55 @@ class AzureTools {
 		}
 
 		await shell.execWithOutput(`az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`);
+	}
+
+	/**
+	 * Suspend source reconciliation.
+	 * @param clusterNode target cluster node
+	 * @param clusterProvider target cluster provider
+	 * @param sourceName target source name
+	 */
+	async suspend(
+		clusterNode: ClusterNode,
+		clusterProvider: ClusterProvider,
+		sourceName: string,
+	) {
+		await this.resumeSuspend(clusterNode, clusterProvider, sourceName, true);
+	}
+
+	/**
+	 * Resume source reconciliation.
+	 * @param clusterNode target cluster node
+	 * @param clusterProvider target cluster provider
+	 * @param sourceName target source name
+	 */
+	async resume(
+		clusterNode: ClusterNode,
+		clusterProvider: ClusterProvider,
+		sourceName: string,
+	) {
+		await this.resumeSuspend(clusterNode, clusterProvider, sourceName, false);
+	}
+
+	/**
+	 * Resume/suspend source reconciliation.
+	 * @param clusterNode target cluster node
+	 * @param clusterProvider target cluster provider
+	 * @param sourceName target source name
+	 */
+	private async resumeSuspend(
+		clusterNode: ClusterNode,
+		clusterProvider: ClusterProvider,
+		sourceName: string,
+		suspend: boolean,
+	) {
+
+		const azureMetadata = await getAzureMetadata(clusterNode.name);
+		if (!azureMetadata) {
+			return;
+		}
+
+		await shell.execWithOutput(`az k8s-configuration flux update -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${sourceName} --suspend ${suspend}`);
 	}
 }
 

@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
@@ -23,8 +23,7 @@ export async function resumeSource(node: GitRepositoryNode) {
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
-		// TODO: resume on AKS/ARC
-		window.showInformationMessage('Resume source is not yet implemented on AKS or Azure ARC', { modal: true });
+		await azureTools.resume(currentClusterNode, clusterProvider, node.resource.metadata.name || '');
 	} else {
 		if (node instanceof GitRepositoryNode) {
 			await fluxTools.resume('source git', node.resource.metadata.name || '', node.resource.metadata.namespace || '');
