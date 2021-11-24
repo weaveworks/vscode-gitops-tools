@@ -5,7 +5,7 @@ import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { ClusterNode } from '../nodes/clusterNode';
-import { refreshClusterTreeView, revealClusterNode } from '../treeViews';
+import { refreshClustersTreeView, revealClusterNode } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
 /**
@@ -101,7 +101,7 @@ export class ClusterDataProvider extends DataProvider {
 					}
 				}
 			}
-			refreshClusterTreeView(clusterController);
+			refreshClustersTreeView(clusterController);
 		}
 	}
 
@@ -112,7 +112,7 @@ export class ClusterDataProvider extends DataProvider {
 	async updateClusterContexts(clusterNodes: ClusterNode[]) {
 		for (const clusterNode of clusterNodes) {
 			await clusterNode.updateNodeContext();
-			refreshClusterTreeView(clusterNode);
+			refreshClustersTreeView(clusterNode);
 		}
 	}
 

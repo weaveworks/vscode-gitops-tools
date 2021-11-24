@@ -7,9 +7,8 @@ import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpen
 import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
-import { runTerminalCommand } from '../terminal';
 import { sanitizeRFC1123 } from '../utils/stringUtils';
-import { getCurrentClusterNode, refreshSourceTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
  * Add git repository source whether from an opened folder
@@ -88,37 +87,30 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		gitUrl = makeSSHUrlFromGitUrl(gitUrl);
 	}
 
-	let createGitSourceQuery: string | undefined = '';
+	let deployKey: string | undefined;
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
 
-		createGitSourceQuery = await azureTools.createGitRepository(currentClusterNode, clusterProvider, newGitRepositorySourceName, gitUrl, gitBranch);
-		if (!createGitSourceQuery) {
-			return;
-		}
-
-		// TODO: use shell for the query
-		runTerminalCommand(createGitSourceQuery, { focusTerminal: true });
+		const createGitRepoResult = await azureTools.createGitRepository(currentClusterNode, clusterProvider, newGitRepositorySourceName, gitUrl, gitBranch, isSSH);
+		deployKey = createGitRepoResult?.deployKey;
+		// az automatically creates a Kustomization
+		refreshWorkloadsTreeView();
 	} else {
 		// generic cluster
-		const createGitResult = await fluxTools.createSourceGit(newGitRepositorySourceName, gitUrl, gitBranch, isSSH);
+		const createGitRepoResult = await fluxTools.createSourceGit(newGitRepositorySourceName, gitUrl, gitBranch, isSSH);
+		deployKey = createGitRepoResult?.deployKey;
+	}
 
-		refreshSourceTreeView();
-		checkIfOpenedFolderGitRepositorySourceExists();
-
-		if (!isSSH) {
-			return;
-		}
-
-		if (createGitResult?.deployKey && isGitHub) {
+	if (isSSH && deployKey) {
+		if (isGitHub) {
 			showGitHubDeployKeysNotification(gitUrl);
 		}
-
-		if (createGitResult?.deployKey) {
-			showDeployKeyNotification(createGitResult.deployKey);
-		}
+		showDeployKeyNotification(deployKey);
 	}
+
+	refreshSourcesTreeView();
+	checkIfOpenedFolderGitRepositorySourceExists();
 }
 
 /**

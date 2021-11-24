@@ -1,5 +1,6 @@
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
+import { parseJson } from '../utils/jsonUtils';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { getAzureMetadata } from './getAzureMetadata';
 
@@ -37,6 +38,7 @@ class AzureTools {
 	 * @param newGitRepositorySourceName kubernetes resource name
 	 * @param gitUrl git repository url
 	 * @param gitBranch git repository active branch
+	 * @param isSSH true when the git url protocol is SSH
 	 */
 	async createGitRepository(
 		clusterNode: ClusterNode,
@@ -44,14 +46,28 @@ class AzureTools {
 		newGitRepositorySourceName: string,
 		gitUrl: string,
 		gitBranch: string,
-	) {
+		isSSH: boolean,
+	): Promise<{ deployKey: string; } | undefined> {
 
 		const azureMetadata = await getAzureMetadata(clusterNode.name);
 		if (!azureMetadata) {
 			return;
 		}
 
-		return `az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`;
+		const gitCreateShellResult = await shell.execWithOutput(`az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`);
+
+		if (!isSSH || gitCreateShellResult.code !== 0) {
+			return;
+		}
+
+		const output = parseJson(gitCreateShellResult.stdout);
+		if (!output) {
+			return;
+		}
+
+		return {
+			deployKey: output.repositoryPublicKey,
+		};
 	}
 
 	/**

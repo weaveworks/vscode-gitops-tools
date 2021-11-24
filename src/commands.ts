@@ -15,7 +15,7 @@ import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
 import { suspendSource } from './commands/suspend';
 import { showOutputChannel } from './output';
-import { refreshWorkloadTreeView, refreshSourceTreeView, refreshAllTreeViews } from './views/treeViews';
+import { refreshWorkloadsTreeView, refreshSourcesTreeView, refreshAllTreeViews } from './views/treeViews';
 
 /**
  * Command ids registered by this extension
@@ -93,8 +93,8 @@ export function registerCommands(context: ExtensionContext) {
 
 	// tree views
 	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViews);
-	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourceTreeView);
-	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadTreeView);
+	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourcesTreeView);
+	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadsTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.AddGitRepository, addGitRepository);
 	registerCommand(CommandId.DeleteSource, deleteSource);

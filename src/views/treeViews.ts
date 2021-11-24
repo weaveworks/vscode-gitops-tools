@@ -28,17 +28,17 @@ export function createTreeViews() {
 	documentationTreeViewProvider = new DocumentationDataProvider();
 
 	// create gitops sidebar tree views
-	clusterTreeView = window.createTreeView(Views.ClusterView, {
+	clusterTreeView = window.createTreeView(Views.ClustersView, {
 		treeDataProvider: clusterTreeViewProvider,
 		showCollapseAll: true,
 	});
 
-	sourceTreeView = window.createTreeView(Views.SourceView, {
+	sourceTreeView = window.createTreeView(Views.SourcesView, {
 		treeDataProvider: sourceTreeViewProvider,
 		showCollapseAll: true,
 	});
 
-	workloadTreeView = window.createTreeView(Views.WorkloadView, {
+	workloadTreeView = window.createTreeView(Views.WorkloadsView, {
 		treeDataProvider: workloadTreeViewProvider,
 		showCollapseAll: true,
 	});
@@ -54,9 +54,9 @@ export function createTreeViews() {
  * Refreshes all GitOps tree views.
  */
 export function refreshAllTreeViews() {
-	refreshClusterTreeView();
-	refreshSourceTreeView();
-	refreshWorkloadTreeView();
+	refreshClustersTreeView();
+	refreshSourcesTreeView();
+	refreshWorkloadsTreeView();
 }
 
 /**
@@ -64,21 +64,21 @@ export function refreshAllTreeViews() {
  * When an argument is passed - only that tree item
  * and its children are updated.
  */
-export function refreshClusterTreeView(node?: TreeNode) {
+export function refreshClustersTreeView(node?: TreeNode) {
 	clusterTreeViewProvider.refresh(node);
 }
 
 /**
  * Reloads sources tree view for the selected cluster.
  */
-export function refreshSourceTreeView(node?: TreeNode) {
+export function refreshSourcesTreeView(node?: TreeNode) {
 	sourceTreeViewProvider.refresh(node);
 }
 
 /**
  * Reloads workloads tree view for the selected cluster.
  */
-export function refreshWorkloadTreeView(node?: TreeNode) {
+export function refreshWorkloadsTreeView(node?: TreeNode) {
 	workloadTreeViewProvider.refresh(node);
 }
 

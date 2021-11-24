@@ -10,7 +10,7 @@ import { KustomizationNode } from '../nodes/kustomizationNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 import { WorkloadNode } from '../nodes/workloadNode';
-import { refreshWorkloadTreeView } from '../treeViews';
+import { refreshWorkloadsTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
 /**
@@ -104,7 +104,7 @@ export class WorkloadDataProvider extends DataProvider {
 			}
 
 			this.buildWorkloadsTree(workloadNode, resourceTree.resources);
-			refreshWorkloadTreeView(workloadNode);
+			refreshWorkloadsTreeView(workloadNode);
 
 			return;
 		} else if (workloadNode instanceof HelmReleaseNode) {
@@ -149,7 +149,7 @@ export class WorkloadDataProvider extends DataProvider {
 		// only show namespaces that are not empty
 		workloadNode.children = namespaceNodes.filter(namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata.name) && namespaceNode.children.length);
 
-		refreshWorkloadTreeView(workloadNode);
+		refreshWorkloadsTreeView(workloadNode);
 	}
 
 	/**

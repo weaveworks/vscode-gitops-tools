@@ -2,7 +2,7 @@ import { azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
-import { getCurrentClusterNode, refreshSourceTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshSourcesTreeView } from '../views/treeViews';
 
 /**
  * Suspend source and refresh Sources Tree View
@@ -30,5 +30,5 @@ export async function suspendSource(node: GitRepositoryNode) {
 		}
 	}
 
-	refreshSourceTreeView();
+	refreshSourcesTreeView();
 }

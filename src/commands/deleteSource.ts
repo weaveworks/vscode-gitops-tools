@@ -7,7 +7,7 @@ import { ClusterProvider, KubernetesObjectKinds } from '../kubernetes/kubernetes
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
-import { getCurrentClusterNode, refreshSourceTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshSourcesTreeView } from '../views/treeViews';
 
 /**
  * Delete a source
@@ -53,7 +53,7 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);
 	}
 
-	refreshSourceTreeView();
+	refreshSourcesTreeView();
 
 	if (sourceType === 'source git') {
 		checkIfOpenedFolderGitRepositorySourceExists();

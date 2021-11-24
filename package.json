@@ -12,11 +12,15 @@
 		"Other"
 	],
 	"keywords": [
-		"gitOps",
-		"wego",
+		"GitOps",
 		"kubernetes",
+		"flux",
 		"helm",
-		"aks"
+		"wego",
+		"Azure",
+		"Arc",
+		"AKS",
+		"devops"
 	],
 	"icon": "resources/icons/gitops-logo.png",
 	"license": "MPL-2.0",

@@ -5,7 +5,7 @@ import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
-import { refreshSourceTreeView } from '../views/treeViews';
+import { refreshSourcesTreeView } from '../views/treeViews';
 
 /**
  * Invoke flux reconcile of a specific source.
@@ -24,7 +24,7 @@ export async function fluxReconcileSourceCommand(source: GitRepositoryNode | Hel
 
 	await fluxTools.reconcile(sourceType, source.resource.metadata.name || '', source.resource.metadata.namespace || '');
 
-	refreshSourceTreeView();
+	refreshSourcesTreeView();
 }
 
 
