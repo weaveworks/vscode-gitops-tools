@@ -92,7 +92,7 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
 
-		const createGitRepoResult = await azureTools.createGitRepository(currentClusterNode, clusterProvider, newGitRepositorySourceName, gitUrl, gitBranch, isSSH);
+		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterNode, clusterProvider);
 		deployKey = createGitRepoResult?.deployKey;
 		// az automatically creates a Kustomization
 		refreshWorkloadsTreeView();

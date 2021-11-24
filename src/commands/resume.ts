@@ -23,7 +23,7 @@ export async function resumeSource(node: GitRepositoryNode) {
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
-		await azureTools.resume(currentClusterNode, clusterProvider, node.resource.metadata.name || '');
+		await azureTools.resume(node.resource.metadata.name || '', currentClusterNode, clusterProvider);
 	} else {
 		if (node instanceof GitRepositoryNode) {
 			await fluxTools.resume('source git', node.resource.metadata.name || '', node.resource.metadata.namespace || '');

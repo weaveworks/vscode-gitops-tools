@@ -48,7 +48,7 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
-		await azureTools.deleteSource(currentClusterNode, clusterProvider, sourceName);
+		await azureTools.deleteSource(sourceName, currentClusterNode, clusterProvider);
 	} else {
 		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);
 	}

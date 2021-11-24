@@ -1,5 +1,5 @@
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
-import { shell } from '../shell';
+import { shell, ShellResult } from '../shell';
 import { parseJson } from '../utils/jsonUtils';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { getAzureMetadata } from './getAzureMetadata';
@@ -9,11 +9,29 @@ type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 class AzureTools {
 
 	/**
-	 * Use appropriate cluster type for the `--cluster-type` flag (`-t` short?)
+	 * 1. Prompt user for: (cluster name, resource group, subscription)
+	 * 2. Infer cluster type (AKS - managedClusters, Azure Arc - connectedClusters)
+	 * 3. Execute the command and return ShellResult.
+	 *
+	 * @param command azure command to execute
+	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 */
-	private determineClusterType(clusterProvider: AzureClusterProvider): string {
-		return clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters';
+	private async invokeAzCommand(
+		command: string,
+		clusterNode: ClusterNode,
+		clusterProvider: AzureClusterProvider,
+	): Promise<undefined | ShellResult> {
+		const azureMetadata = await getAzureMetadata(clusterNode.name);
+		if (!azureMetadata) {
+			return;
+		}
+
+		const clusterType = clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters';
+
+		const metadata = `--cluster-name ${azureMetadata.clusterName} --cluster-type ${clusterType} --resource-group ${azureMetadata.resourceGroup} --subscription ${azureMetadata.subscription}`;
+
+		return await shell.execWithOutput(`${command} ${metadata}`);
 	}
 
 	/**
@@ -22,41 +40,37 @@ class AzureTools {
 	 * @param clusterProvider target cluster provider
 	 */
 	async enableGitOps(clusterNode: ClusterNode, clusterProvider: AzureClusterProvider) {
-
-		const azureMetadata = await getAzureMetadata(clusterNode.name);
-		if (!azureMetadata) {
-			return;
-		}
-
-		await shell.execWithOutput(`az k8s-extension-private create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --name gitops --extension-type microsoft.flux --scope cluster --release-train stable --subscription ${azureMetadata.subscription}`);
+		await this.invokeAzCommand(
+			'az k8s-extension create --name gitops --extension-type microsoft.flux --scope cluster --release-train stable',
+			clusterNode,
+			clusterProvider,
+		);
 	}
 
 	/**
 	 * Create git repository source.
-	 * @param clusterNode target cluster node
-	 * @param clusterProvider target cluster provider
 	 * @param newGitRepositorySourceName kubernetes resource name
 	 * @param gitUrl git repository url
 	 * @param gitBranch git repository active branch
 	 * @param isSSH true when the git url protocol is SSH
+	 * @param clusterNode target cluster node
+	 * @param clusterProvider target cluster provider
 	 */
 	async createGitRepository(
-		clusterNode: ClusterNode,
-		clusterProvider: AzureClusterProvider,
 		newGitRepositorySourceName: string,
 		gitUrl: string,
 		gitBranch: string,
 		isSSH: boolean,
+		clusterNode: ClusterNode,
+		clusterProvider: AzureClusterProvider,
 	): Promise<{ deployKey: string; } | undefined> {
+		const gitCreateShellResult = await this.invokeAzCommand(
+			`az k8s-configuration flux create -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`,
+			clusterNode,
+			clusterProvider,
+		);
 
-		const azureMetadata = await getAzureMetadata(clusterNode.name);
-		if (!azureMetadata) {
-			return;
-		}
-
-		const gitCreateShellResult = await shell.execWithOutput(`az k8s-configuration flux create -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`);
-
-		if (!isSSH || gitCreateShellResult.code !== 0) {
+		if (!isSSH || gitCreateShellResult?.code !== 0) {
 			return;
 		}
 
@@ -72,71 +86,56 @@ class AzureTools {
 
 	/**
 	 * Delete source.
+	 * @param sourceName target source name
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
-	 * @param sourceName target source name
 	 */
 	async deleteSource(
+		sourceName: string,
 		clusterNode: ClusterNode,
 		clusterProvider: AzureClusterProvider,
-		sourceName: string,
 	) {
-
-		const azureMetadata = await getAzureMetadata(clusterNode.name);
-		if (!azureMetadata) {
-			return;
-		}
-
-		await shell.execWithOutput(`az k8s-configuration flux delete -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${sourceName} --yes`);
+		await this.invokeAzCommand(
+			`az k8s-configuration flux delete -n ${sourceName} --yes`,
+			clusterNode,
+			clusterProvider,
+		);
 	}
 
 	/**
 	 * Suspend source reconciliation.
+	 * @param sourceName target source name
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
-	 * @param sourceName target source name
 	 */
 	async suspend(
+		sourceName: string,
 		clusterNode: ClusterNode,
 		clusterProvider: AzureClusterProvider,
-		sourceName: string,
 	) {
-		await this.resumeSuspend(clusterNode, clusterProvider, sourceName, true);
+		await this.invokeAzCommand(
+			`az k8s-configuration flux update -n ${sourceName} --suspend true`,
+			clusterNode,
+			clusterProvider,
+		);
 	}
 
 	/**
 	 * Resume source reconciliation.
+	 * @param sourceName target source name
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
-	 * @param sourceName target source name
 	 */
 	async resume(
+		sourceName: string,
 		clusterNode: ClusterNode,
 		clusterProvider: AzureClusterProvider,
-		sourceName: string,
 	) {
-		await this.resumeSuspend(clusterNode, clusterProvider, sourceName, false);
-	}
-
-	/**
-	 * Resume/suspend source reconciliation.
-	 * @param clusterNode target cluster node
-	 * @param clusterProvider target cluster provider
-	 * @param sourceName target source name
-	 */
-	private async resumeSuspend(
-		clusterNode: ClusterNode,
-		clusterProvider: AzureClusterProvider,
-		sourceName: string,
-		suspend: boolean,
-	) {
-
-		const azureMetadata = await getAzureMetadata(clusterNode.name);
-		if (!azureMetadata) {
-			return;
-		}
-
-		await shell.execWithOutput(`az k8s-configuration flux update -g ${azureMetadata.resourceGroup} -c ${azureMetadata.clusterName} -t ${this.determineClusterType(clusterProvider)} --subscription ${azureMetadata.subscription} -n ${sourceName} --suspend ${suspend}`);
+		await this.invokeAzCommand(
+			`az k8s-configuration flux update -n ${sourceName} --suspend false`,
+			clusterNode,
+			clusterProvider,
+		);
 	}
 }
 

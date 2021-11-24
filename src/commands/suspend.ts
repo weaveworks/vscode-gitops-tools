@@ -23,7 +23,7 @@ export async function suspendSource(node: GitRepositoryNode) {
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
-		await azureTools.suspend(currentClusterNode, clusterProvider, node.resource.metadata.name || '');
+		await azureTools.suspend(node.resource.metadata.name || '', currentClusterNode, clusterProvider);
 	} else {
 		if (node instanceof GitRepositoryNode) {
 			await fluxTools.suspend('source git', node.resource.metadata.name || '', node.resource.metadata.namespace || '');
