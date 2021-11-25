@@ -100,6 +100,8 @@ export class WorkloadDataProvider extends DataProvider {
 			const resourceTree = await fluxTools.tree(name, namespace);
 
 			if (!resourceTree || !resourceTree.resources) {
+				workloadNode.children = [new TreeNode('No Resources')];
+				refreshWorkloadsTreeView(workloadNode);
 				return;
 			}
 
@@ -113,6 +115,8 @@ export class WorkloadDataProvider extends DataProvider {
 		}
 
 		if (!workloadChildren) {
+			workloadNode.children = [new TreeNode('No Resources')];
+			refreshWorkloadsTreeView(workloadNode);
 			return;
 		}
 
