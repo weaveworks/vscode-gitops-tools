@@ -132,6 +132,9 @@ class KubernetesTools {
 		}
 
 		setContext(ContextTypes.NoClusterSelected, false);
+		setContext(ContextTypes.CurrentClusterFluxNotInstalled, false);
+		setContext(ContextTypes.NoSources, false);
+		setContext(ContextTypes.NoWorkloads, false);
 		this.clusterSupportedResourceKinds = undefined;
 
 		// TODO: maybe emit an event?
@@ -241,12 +244,16 @@ class KubernetesTools {
 	/**
 	 * Get all flux system deployments.
 	 */
-	async getFluxDeployments(): Promise<undefined | DeploymentResult> {
-		const fluxDeploymentShellResult = await this.invokeKubectlCommand('get deployment --namespace=flux-system -o json');
-		if (!fluxDeploymentShellResult || fluxDeploymentShellResult.stderr) {
-			console.warn(`Failed to get flux system deployments: ${fluxDeploymentShellResult?.stderr}`);
+	async getFluxControllers(context?: string): Promise<undefined | DeploymentResult> {
+		const contextArg = context ? `--context ${context}` : '';
+
+		const fluxDeploymentShellResult = await this.invokeKubectlCommand(`get deployment --namespace=flux-system ${contextArg} -o json`);
+
+		if (fluxDeploymentShellResult?.code !== 0) {
+			console.warn(`Failed to get flux controllers: ${fluxDeploymentShellResult?.stderr}`);
 			return;
 		}
+
 		return parseJson(fluxDeploymentShellResult.stdout);
 	}
 
@@ -256,13 +263,11 @@ class KubernetesTools {
 	 * @param clusterName target cluster name
 	 */
 	async isFluxInstalled(clusterName: string) {
-		const namespacesShellResult = await this.invokeKubectlCommand(`get ns --context ${clusterName} -o json`);
-		if (!namespacesShellResult || namespacesShellResult.stderr) {
-			console.warn(`Failed to get namespaces: ${namespacesShellResult?.stderr}`);
+		const fluxControllers = await this.getFluxControllers(clusterName);
+		if (!fluxControllers) {
 			return;
 		}
-		const namespaces: NamespaceResult = parseJson(namespacesShellResult.stdout);
-		return namespaces.items.some(namespace => namespace.metadata.name === 'flux-system');
+		return fluxControllers.items.length !== 0;
 	}
 
 	/**

@@ -46,7 +46,7 @@ export class ClusterDataProvider extends DataProvider {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 				// load flux system deployments
-				const fluxDeployments = await kubernetesTools.getFluxDeployments();
+				const fluxDeployments = await kubernetesTools.getFluxControllers();
 				if (fluxDeployments) {
 					clusterNode.expand();
 					revealClusterNode(clusterNode, {
