@@ -5,7 +5,8 @@
 	"version": "0.11.0",
 	"publisher": "weaveworks",
 	"engines": {
-		"vscode": "^1.59.0"
+		"vscode": "^1.59.0",
+		"npm": ">=7.0.0"
 	},
 	"categories": [
 		"Azure",

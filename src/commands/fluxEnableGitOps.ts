@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
+import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { getCurrentClusterNode, refreshAllTreeViews } from '../views/treeViews';
@@ -40,9 +41,8 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 		if (enable) {
 			await azureTools.enableGitOps(clusterNode, clusterProvider);
 		} else {
-			// TODO: disable GitOps on AKS & ARC
-			window.showInformationMessage('Disable GitOps is not yet implemented on AKS or Azure ARC', { modal: true });
-			return;
+			await azureTools.disableGitOps(clusterNode, clusterProvider);
+			checkIfOpenedFolderGitRepositorySourceExists();
 		}
 	} else {
 		// generic cluster

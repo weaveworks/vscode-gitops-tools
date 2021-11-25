@@ -1,6 +1,12 @@
 import { window } from 'vscode';
 import { globalState } from '../globalState';
 
+export interface AzureMetadata {
+	resourceGroup: string;
+	subscription: string;
+	clusterName: string;
+}
+
 /**
  * Prompt for the azure cluster:
  * 1) Resource group
@@ -8,7 +14,7 @@ import { globalState } from '../globalState';
  * 3) ID of the azure subscription
  * @param clusterContextName cluster name as in kubernetes context
  */
-export async function getAzureMetadata(clusterContextName: string) {
+export async function getAzureMetadata(clusterContextName: string): Promise<AzureMetadata | undefined> {
 	const azureMetadata = globalState.getClusterMetadata(clusterContextName);
 
 	const resourceGroup = await window.showInputBox({

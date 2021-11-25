@@ -2,7 +2,7 @@ import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell, ShellResult } from '../shell';
 import { parseJson } from '../utils/jsonUtils';
 import { ClusterNode } from '../views/nodes/clusterNode';
-import { getAzureMetadata } from './getAzureMetadata';
+import { AzureMetadata, getAzureMetadata } from './getAzureMetadata';
 
 type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 
@@ -21,8 +21,11 @@ class AzureTools {
 		command: string,
 		clusterNode: ClusterNode,
 		clusterProvider: AzureClusterProvider,
+		azureMetadata?: AzureMetadata,
 	): Promise<undefined | ShellResult> {
-		const azureMetadata = await getAzureMetadata(clusterNode.name);
+		if (!azureMetadata) {
+			azureMetadata = await getAzureMetadata(clusterNode.name);
+		}
 		if (!azureMetadata) {
 			return;
 		}
@@ -39,12 +42,69 @@ class AzureTools {
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 */
-	async enableGitOps(clusterNode: ClusterNode, clusterProvider: AzureClusterProvider) {
+	async enableGitOps(
+		clusterNode: ClusterNode,
+		clusterProvider: AzureClusterProvider,
+	) {
 		await this.invokeAzCommand(
 			'az k8s-extension create --name gitops --extension-type microsoft.flux --scope cluster --release-train stable',
 			clusterNode,
 			clusterProvider,
 		);
+	}
+
+	/**
+	 * Disable GitOps
+	 * @param clusterNode target cluster node
+	 * @param clusterProvider target cluster provider
+	 */
+	async disableGitOps(
+		clusterNode: ClusterNode,
+		clusterProvider: AzureClusterProvider,
+	) {
+		const azureMetadata = await getAzureMetadata(clusterNode.name);
+		const fluxConfigurations = await this.listFluxConfigurations(clusterNode, clusterProvider, azureMetadata);
+		const namesOfFluxConfigs: string[] = fluxConfigurations.map((configuration: {name: string;}) => configuration.name);
+
+		// delete all flux configurations
+		await Promise.all(namesOfFluxConfigs.map(fluxConfigName => this.invokeAzCommand(
+			`az k8s-configuration flux delete -n ${fluxConfigName} --yes`,
+			clusterNode,
+			clusterProvider,
+			azureMetadata,
+		)));
+
+		// delete flux extension
+		await this.invokeAzCommand(
+			'az k8s-extension delete --name gitops --yes',
+			clusterNode,
+			clusterProvider,
+			azureMetadata,
+		);
+	}
+
+	/**
+	 * Disable GitOps
+	 * @param clusterNode target cluster node
+	 * @param clusterProvider target cluster provider
+	 */
+	private async listFluxConfigurations(
+		clusterNode: ClusterNode,
+		clusterProvider: AzureClusterProvider,
+		azureMetadata?: AzureMetadata,
+	) {
+		const configurationShellResult = await this.invokeAzCommand(
+			'az k8s-configuration flux list',
+			clusterNode,
+			clusterProvider,
+			azureMetadata,
+		);
+
+		if (configurationShellResult?.code !== 0) {
+			return;
+		}
+
+		return parseJson(configurationShellResult.stdout);
 	}
 
 	/**
