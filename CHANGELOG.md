@@ -2,6 +2,21 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.12.0 - [2021-11-25]
+
+- [#116](https://github.com/weaveworks/vscode-gitops-tools/issues/116)
+Top level workload object reconciliation status
+- [#121](https://github.com/weaveworks/vscode-gitops-tools/issues/121), [#120](https://github.com/weaveworks/vscode-gitops-tools/issues/120), [#119](https://github.com/weaveworks/vscode-gitops-tools/issues/119), [#118](https://github.com/weaveworks/vscode-gitops-tools/issues/118)
+Resume/Suspend Git Source Reconciliation on AKS/AKS ARC cluster
+- [#125](https://github.com/weaveworks/vscode-gitops-tools/issues/125), [#126](https://github.com/weaveworks/vscode-gitops-tools/issues/126), [#128](https://github.com/weaveworks/vscode-gitops-tools/issues/128), [#129](https://github.com/weaveworks/vscode-gitops-tools/issues/129)
+Add support for adding ssh cloned git repositories (public/private) (AKS/AKS ARC cluster)
+- [#147](https://github.com/weaveworks/vscode-gitops-tools/issues/147)
+Replace all references to Applications to Workloads
+- [#150](https://github.com/weaveworks/vscode-gitops-tools/issues/150)
+Disable GitOps on the AKS/ARC clusters
+- [#151](https://github.com/weaveworks/vscode-gitops-tools/issues/151)
+Package Sprint 12 release
+
 # v0.11.0 - [2021-11-18]
 
 - [#117](https://github.com/weaveworks/vscode-gitops-tools/issues/117)
