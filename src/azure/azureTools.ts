@@ -64,6 +64,11 @@ class AzureTools {
 	) {
 		const azureMetadata = await getAzureMetadata(clusterNode.name);
 		const fluxConfigurations = await this.listFluxConfigurations(clusterNode, clusterProvider, azureMetadata);
+
+		if (!fluxConfigurations) {
+			return;
+		}
+
 		const namesOfFluxConfigs: string[] = fluxConfigurations.map((configuration: {name: string;}) => configuration.name);
 
 		// delete all flux configurations
@@ -92,7 +97,7 @@ class AzureTools {
 		clusterNode: ClusterNode,
 		clusterProvider: AzureClusterProvider,
 		azureMetadata?: AzureMetadata,
-	) {
+	): Promise<undefined | any[]> {
 		const configurationShellResult = await this.invokeAzCommand(
 			'az k8s-configuration flux list',
 			clusterNode,
