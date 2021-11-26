@@ -73,7 +73,7 @@ export class ClusterNode extends TreeNode {
 	 * - Cluster provider.
 	 */
 	async updateNodeContext() {
-		this.isGitOpsEnabled = await kubernetesTools.isFluxInstalled(this.name);
+		this.isGitOpsEnabled = await kubernetesTools.isGitOpsEnabled(this.name);
 		await this.detectClusterProvider();
 
 		// Update vscode context for welcome view of other tree views

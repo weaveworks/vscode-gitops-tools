@@ -258,15 +258,17 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Return true if flux enabled in the current cluster.
-	 * Function checks if cluster contains `flux-system` namespace.
+	 * Return true if gitops is enabled in the current cluster.
+	 * Function checks if `flux-system` namespace contains flux controllers.
 	 * @param clusterName target cluster name
 	 */
-	async isFluxInstalled(clusterName: string) {
+	async isGitOpsEnabled(clusterName: string) {
 		const fluxControllers = await this.getFluxControllers(clusterName);
+
 		if (!fluxControllers) {
 			return;
 		}
+
 		return fluxControllers.items.length !== 0;
 	}
 
