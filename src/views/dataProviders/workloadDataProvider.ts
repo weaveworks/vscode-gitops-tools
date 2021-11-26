@@ -67,22 +67,27 @@ export class WorkloadDataProvider extends DataProvider {
 		return workloadNodes;
 	}
 
-	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[]) {
+	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {
 		for (const resource of resourceTree) {
 			if (resource.resource.GroupKind.Kind === KubernetesObjectKinds.Namespace) {
 				continue;
 			}
 
+			// Nested items have empty namespace https://github.com/fluxcd/flux2/issues/2149
+			const namespace = resource.resource.Namespace || parentNamespace;
+
 			const childNode = new AnyResourceNode({
 				kind: resource.resource.GroupKind.Kind,
 				metadata: {
 					name: resource.resource.Name,
-					namespace: resource.resource.Namespace,
+					namespace,
 				},
 			});
+
 			node.addChild(childNode);
+
 			if (resource.resources && resource.resources.length) {
-				this.buildWorkloadsTree(childNode, resource.resources);
+				this.buildWorkloadsTree(childNode, resource.resources, namespace);
 			}
 		}
 	}
