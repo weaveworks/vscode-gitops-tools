@@ -1,6 +1,6 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
-import { ProgressLocation, window, workspace } from 'vscode';
+import { Progress, ProgressLocation, window, workspace } from 'vscode';
 import { output } from './output';
 
 // 🚧 WORK IN PROGRESS.
@@ -100,52 +100,66 @@ async function execWithOutput(
 	cmd: string,
 	{
 		revealOutputView = true,
+		showProgress = true,
 		cwd,
 	}: {
 		revealOutputView?: boolean;
+		showProgress?: boolean;
 		cwd?: string;
 	} = {}): Promise<ShellResult> {
 
-	// Show vscode notification loading message
-	return window.withProgress({
-		location: ProgressLocation.Notification,
-		title: 'GitOps Running: ',
-	}, async progress => new Promise<ShellResult>(resolve => {
-		output.send(`> ${cmd}\n`, { addNewline: false, revealOutputView });
+	if (showProgress) {
+		// Show vscode notification loading message
+		return window.withProgress({
+			location: ProgressLocation.Notification,
+			title: 'GitOps Running: ',
+		}, innerExec);
+	} else {
+		// No progress
+		const progressNoop = {
+			report: () => undefined,
+		};
+		return innerExec(progressNoop);
+	}
 
-		const childProcess = shelljs.exec(cmd, {
-			async: true,
-			cwd: cwd,
-		});
+	async function innerExec(progress: Progress<{ message?: string | undefined; increment?: number | undefined; }>) {
+		 return new Promise<ShellResult>(resolve => {
+			output.send(`> ${cmd}\n`, { addNewline: false, revealOutputView });
 
-		let stdout = '';
-		let stderr = '';
+			const childProcess = shelljs.exec(cmd, {
+				async: true,
+				cwd: cwd,
+			});
 
-		childProcess.stdout?.on('data', function(data) {
-			stdout += data;
-			output.send(data, { addNewline: false, revealOutputView: false });
-			progress.report({
-				message: data,
+			let stdout = '';
+			let stderr = '';
+
+			childProcess.stdout?.on('data', data => {
+				stdout += data;
+				output.send(data, { addNewline: false, revealOutputView: false });
+				progress.report({
+					message: data,
+				});
+			});
+			childProcess.stderr?.on('data', data => {
+				stderr += data;
+				output.send(data, { addNewline: false, revealOutputView: false });
+				progress.report({
+					message: data,
+				});
+			});
+
+			childProcess.on('exit', (code: number) => {
+				output.send('\n', { addNewline: false, revealOutputView: false });
+
+				resolve({
+					code,
+					stdout,
+					stderr,
+				});
 			});
 		});
-		childProcess.stderr?.on('data', function(data) {
-			stderr += data;
-			output.send(data, { addNewline: false, revealOutputView: false });
-			progress.report({
-				message: data,
-			});
-		});
-
-		childProcess.on('exit', function(code: number) {
-			output.send('\n', { addNewline: false, revealOutputView: false });
-
-			resolve({
-				code,
-				stdout,
-				stderr,
-			});
-		});
-	}));
+	}
 }
 
 function execCore(cmd: string, opts: any, callback?: ((proc: ChildProcess)=> void) | null, stdin?: string): Promise<ShellResult> {
