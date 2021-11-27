@@ -1,6 +1,5 @@
 import { HelmRepository } from '../../kubernetes/helmRepository';
-import { NodeContext } from './nodeContext';
-import { NodeLabels } from './nodeLabels';
+import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
 import { SourceNode } from './sourceNode';
 
 /**
@@ -8,7 +7,7 @@ import { SourceNode } from './sourceNode';
  */
 export class HelmRepositoryNode extends SourceNode {
 
-	contextValue = NodeContext.HelmRepository;
+	contextValue = KubernetesObjectKinds.HelmRepository;
 
 	/**
 	 * Helm repository kubernetes resource object
@@ -20,7 +19,7 @@ export class HelmRepositoryNode extends SourceNode {
 	 * @param helmRepository Helm repository kubernetes object info.
 	 */
 	constructor(helmRepository: HelmRepository) {
-		super(`${NodeLabels.HelmRepositry}: ${helmRepository.metadata?.name}`, helmRepository);
+		super(`${KubernetesObjectKinds.HelmRepository}: ${helmRepository.metadata?.name}`, helmRepository);
 
 		this.resource = helmRepository;
 	}

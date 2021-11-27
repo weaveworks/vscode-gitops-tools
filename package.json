@@ -203,7 +203,7 @@
 			{
 				"view": "gitops.views.sources",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources",
-				"when": "gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected"
+				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected"
 			},
 			{
 				"view": "gitops.views.sources",
@@ -213,7 +213,7 @@
 			{
 				"view": "gitops.views.sources",
 				"contents": "No sources.",
-				"when": "!gitops:loadingSources && !gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected && gitops:noSources"
+				"when": "!gitops:loadingSources && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noSources"
 			},
 			{
 				"view": "gitops.views.sources",
@@ -223,7 +223,7 @@
 			{
 				"view": "gitops.views.workloads",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads",
-				"when": "gitops:currentClusterFluxNotInstalled"
+				"when": "gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"view": "gitops.views.workloads",
@@ -233,7 +233,7 @@
 			{
 				"view": "gitops.views.workloads",
 				"contents": "No workloads.",
-				"when": "!gitops:loadingWorkloads && !gitops:currentClusterFluxNotInstalled && !gitops:noClusterSelected && gitops:noWorkloads"
+				"when": "!gitops:loadingWorkloads && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noWorkloads"
 			},
 			{
 				"view": "gitops.views.workloads",
@@ -288,36 +288,36 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(gitRepository;|helmRepository|bucket)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository|Bucket)/",
 					"group": "navigation@0"
 				},
 				{
 					"command": "gitops.suspendSource",
-					"when": "view == gitops.views.sources && viewItem =~ /gitRepository;/ && viewItem =~ /notSuspend;/",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.resumeSource",
-					"when": "view == gitops.views.sources && viewItem =~ /gitRepository;/ && viewItem =~ /suspend;/",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/ && viewItem =~ /suspend;/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.views.deleteSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(gitRepository;|helmRepository|bucket)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository|Bucket)/",
 					"group": "navigation@2"
 				},
 				{
 					"command": "gitops.views.pullGitRepository",
-					"when": "view == gitops.views.sources && viewItem =~ /gitRepository;/",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/",
 					"group": "navigation@3"
 				},
 				{
 					"command": "gitops.flux.reconcileWorkload",
-					"when": "view == gitops.views.workloads && viewItem =~ /^(kustomization|helmRelease)$/"
+					"when": "view == gitops.views.workloads && viewItem =~ /^(Kustomization|HelmRelease)$/"
 				},
 				{
 					"command": "gitops.editor.showLogs",
-					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /^(deployment)$/"
+					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /^(Deployment)$/"
 				}
 			],
 			"explorer/context": [

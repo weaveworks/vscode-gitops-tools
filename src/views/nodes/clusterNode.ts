@@ -78,7 +78,7 @@ export class ClusterNode extends TreeNode {
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {
-			setContext(ContextTypes.CurrentClusterFluxNotInstalled, !this.isGitOpsEnabled);
+			setContext(ContextTypes.CurrentClusterGitOpsNotEnabled, !this.isGitOpsEnabled);
 		}
 
 		if (this.isGitOpsEnabled) {

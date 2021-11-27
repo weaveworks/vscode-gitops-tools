@@ -1,14 +1,13 @@
 import { HelmRelease } from '../../kubernetes/helmRelease';
+import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
 import { WorkloadNode } from './workloadNode';
-import { NodeContext } from './nodeContext';
-import { NodeLabels } from './nodeLabels';
 
 /**
  * Defines Helm release tree view item for display in GitOps Workloads tree view.
  */
 export class HelmReleaseNode extends WorkloadNode {
 
-	contextValue = NodeContext.HelmRelease;
+	contextValue = KubernetesObjectKinds.HelmRelease;
 
 	/**
 	 * Helm release kubernetes resource object
@@ -22,7 +21,7 @@ export class HelmReleaseNode extends WorkloadNode {
 	constructor(helmRelease: HelmRelease) {
 		super(helmRelease.metadata?.name || '', helmRelease);
 
-		this.description = NodeLabels.HelmRelease;
+		this.description = KubernetesObjectKinds.HelmRelease;
 
 		this.resource = helmRelease;
 

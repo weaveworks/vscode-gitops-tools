@@ -1,5 +1,4 @@
-import { Deployment } from '../../kubernetes/kubernetesTypes';
-import { NodeContext } from './nodeContext';
+import { Deployment, KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
 import { TreeNode, TreeNodeIcon } from './treeNode';
 
 /**
@@ -7,7 +6,7 @@ import { TreeNode, TreeNodeIcon } from './treeNode';
  */
 export class ClusterDeploymentNode extends TreeNode {
 
-	contextValue = NodeContext.Deployment;
+	contextValue = KubernetesObjectKinds.Deployment;
 
 	/**
 	 * Cluster deployment kubernetes resource object

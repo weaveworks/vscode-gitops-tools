@@ -1,6 +1,5 @@
 import { Bucket } from '../../kubernetes/bucket';
-import { NodeContext } from './nodeContext';
-import { NodeLabels } from './nodeLabels';
+import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
 import { SourceNode } from './sourceNode';
 
 /**
@@ -8,7 +7,7 @@ import { SourceNode } from './sourceNode';
  */
 export class BucketNode extends SourceNode {
 
-	contextValue = NodeContext.Bucket;
+	contextValue = KubernetesObjectKinds.Bucket;
 
 	/**
 	 * Bucket kubernetes resource object
@@ -20,7 +19,7 @@ export class BucketNode extends SourceNode {
 	 * @param bucket Bucket kubernetes object info.
 	 */
 	constructor(bucket: Bucket) {
-		super(`${NodeLabels.Bucket}: ${bucket.metadata?.name}`, bucket);
+		super(`${KubernetesObjectKinds.Bucket}: ${bucket.metadata?.name}`, bucket);
 
 		this.resource = bucket;
 	}

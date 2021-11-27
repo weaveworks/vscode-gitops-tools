@@ -1,6 +1,6 @@
 import { GitRepository } from '../../kubernetes/gitRepository';
+import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
 import { NodeContext } from './nodeContext';
-import { NodeLabels } from './nodeLabels';
 import { SourceNode } from './sourceNode';
 
 /**
@@ -18,15 +18,15 @@ export class GitRepositoryNode extends SourceNode {
 	 * @param gitRepository Git repository kubernetes object info.
 	 */
 	constructor(gitRepository: GitRepository) {
-		super(`${NodeLabels.GitRepository}: ${gitRepository.metadata?.name}`, gitRepository);
+		super(`${KubernetesObjectKinds.GitRepository}: ${gitRepository.metadata?.name}`, gitRepository);
 
 		this.resource = gitRepository;
 	}
 
 	// @ts-ignore
 	get contextValue(): string {
-		let suspendContext = this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend;
+		let suspendContext = this.resource.spec.suspend ? NodeContext.Suspend : '';
 
-		return this.joinContexts(NodeContext.GitRepository, suspendContext);
+		return this.joinContexts(KubernetesObjectKinds.GitRepository, suspendContext);
 	}
 }

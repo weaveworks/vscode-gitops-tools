@@ -6,9 +6,11 @@ import { CommandId } from './commands';
  */
 export const enum ContextTypes {
 	NoClusterSelected = 'gitops:noClusterSelected',
-	CurrentClusterFluxNotInstalled = 'gitops:currentClusterFluxNotInstalled',
+	CurrentClusterGitOpsNotEnabled = 'gitops:currentClusterGitOpsNotEnabled',
+
 	LoadingSources = 'gitops:loadingSources',
 	LoadingWorkloads = 'gitops:loadingWorkloads',
+
 	NoSources = 'gitops:noSources',
 	NoWorkloads = 'gitops:noWorkloads',
 
@@ -21,9 +23,11 @@ export const enum ContextTypes {
  */
 interface ContextValues {
 	[ContextTypes.NoClusterSelected]: boolean;
-	[ContextTypes.CurrentClusterFluxNotInstalled]: boolean;
+	[ContextTypes.CurrentClusterGitOpsNotEnabled]: boolean;
+
 	[ContextTypes.LoadingSources]: boolean;
 	[ContextTypes.LoadingWorkloads]: boolean;
+
 	[ContextTypes.NoSources]: boolean;
 	[ContextTypes.NoWorkloads]: boolean;
 

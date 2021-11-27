@@ -132,7 +132,7 @@ class KubernetesTools {
 		}
 
 		setContext(ContextTypes.NoClusterSelected, false);
-		setContext(ContextTypes.CurrentClusterFluxNotInstalled, false);
+		setContext(ContextTypes.CurrentClusterGitOpsNotEnabled, false);
 		setContext(ContextTypes.NoSources, false);
 		setContext(ContextTypes.NoWorkloads, false);
 		this.clusterSupportedResourceKinds = undefined;
