@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import { NotificationMessages } from '../../constants';
+import { ContextTypes, setContext } from '../../context';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
@@ -29,13 +30,19 @@ export class ClusterDataProvider extends DataProvider {
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async buildTree(): Promise<ClusterNode[]> {
+
 		this.isFinishedBuildingTree = false;
+		setContext(ContextTypes.NoClusters, false);
 		statusBar.startLoadingTree();
+		setContext(ContextTypes.LoadingClusters, true);
+
 		// load configured kubernetes clusters
 		const clusters = await kubernetesTools.getClusters();
 		if (!clusters) {
+			setContext(ContextTypes.NoClusters, true);
 			return [];
 		}
+
 		const clusterNodes: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
@@ -67,6 +74,7 @@ export class ClusterDataProvider extends DataProvider {
 
 		statusBar.stopLoadingTree();
 		this.isFinishedBuildingTree = true;
+		setContext(ContextTypes.LoadingClusters, false);
 
 		this.clusterNodes = clusterNodes;
 		return clusterNodes;

@@ -198,7 +198,13 @@
 		"viewsWelcome": [
 			{
 				"view": "gitops.views.clusters",
-				"contents": "Loading Clusters ..."
+				"contents": "Loading Clusters ...",
+				"when": "gitops:loadingClusters"
+			},
+			{
+				"view": "gitops.views.clusters",
+				"contents": "No clusters.",
+				"when": "!gitops:loadingClusters && gitops:noClusters"
 			},
 			{
 				"view": "gitops.views.sources",

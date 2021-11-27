@@ -8,9 +8,11 @@ export const enum ContextTypes {
 	NoClusterSelected = 'gitops:noClusterSelected',
 	CurrentClusterGitOpsNotEnabled = 'gitops:currentClusterGitOpsNotEnabled',
 
+	LoadingClusters = 'gitops:loadingClusters',
 	LoadingSources = 'gitops:loadingSources',
 	LoadingWorkloads = 'gitops:loadingWorkloads',
 
+	NoClusters = 'gitops:noClusters',
 	NoSources = 'gitops:noSources',
 	NoWorkloads = 'gitops:noWorkloads',
 
@@ -25,9 +27,11 @@ interface ContextValues {
 	[ContextTypes.NoClusterSelected]: boolean;
 	[ContextTypes.CurrentClusterGitOpsNotEnabled]: boolean;
 
+	[ContextTypes.LoadingClusters]: boolean;
 	[ContextTypes.LoadingSources]: boolean;
 	[ContextTypes.LoadingWorkloads]: boolean;
 
+	[ContextTypes.NoClusters]: boolean;
 	[ContextTypes.NoSources]: boolean;
 	[ContextTypes.NoWorkloads]: boolean;
 
