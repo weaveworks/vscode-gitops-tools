@@ -9,9 +9,9 @@ import { getCurrentClusterNode, refreshAllTreeViews } from '../views/treeViews';
 /**
  * Install or uninstall flux from the passed or current cluster (if first argument is undefined)
  * @param clusterNode target cluster tree view item
- * @param enable Specifies if function should install or uninstall
+ * @param enableGitOps Specifies if function should install or uninstall
  */
-async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable: boolean) {
+async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableGitOps: boolean) {
 
 	if (!clusterNode) {
 		// was executed from the welcome view - get current cluster node
@@ -26,32 +26,35 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enable:
 		return;
 	}
 
-	const confirmButton = enable ? 'Enable' : 'Disable';
-	const confirmationMessage = `Do you want to	${enable ? 'enable' : 'disable'} GitOps on the "${clusterNode.name}" cluster?`;
+	const enableGitOpsButton = enableGitOps ? 'Enable' : 'Disable';
+	const confirmationMessage = `Do you want to	${enableGitOps ? 'enable' : 'disable'} GitOps on the "${clusterNode.name}" cluster?`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
-	}, confirmButton);
-	if (confirm !== confirmButton) {
+	}, enableGitOpsButton);
+	if (confirm !== enableGitOpsButton) {
 		return;
 	}
 
 	if (clusterProvider === ClusterProvider.AKS ||
 		clusterProvider === ClusterProvider.AzureARC) {
 		// AKS/AKS ARC cluster
-		if (enable) {
+		if (enableGitOps) {
 			await azureTools.enableGitOps(clusterNode, clusterProvider);
 		} else {
 			await azureTools.disableGitOps(clusterNode, clusterProvider);
-			checkIfOpenedFolderGitRepositorySourceExists();
 		}
 	} else {
 		// generic cluster
 		const context = clusterNode.name;
-		if (enable) {
+		if (enableGitOps) {
 			await fluxTools.install(context);
 		} else {
 			await fluxTools.uninstall(context);
 		}
+	}
+
+	if (!enableGitOps) {
+		checkIfOpenedFolderGitRepositorySourceExists();
 	}
 
 	// Refresh now that flux is installed or uninstalled

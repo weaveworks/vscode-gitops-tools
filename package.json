@@ -204,7 +204,7 @@
 			},
 			{
 				"view": "gitops.views.sources",
-				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources",
+				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources.",
 				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected"
 			},
 			{
@@ -219,12 +219,12 @@
 			},
 			{
 				"view": "gitops.views.sources",
-				"contents": "Select GitOps Cluster to view Sources",
+				"contents": "Select GitOps Cluster to view Sources.",
 				"when": "gitops:noClusterSelected"
 			},
 			{
 				"view": "gitops.views.workloads",
-				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads",
+				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads.",
 				"when": "gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
@@ -239,7 +239,7 @@
 			},
 			{
 				"view": "gitops.views.workloads",
-				"contents": "Select GitOps Cluster to view Workloads",
+				"contents": "Select GitOps Cluster to view Workloads.",
 				"when": "gitops:noClusterSelected"
 			},
 			{

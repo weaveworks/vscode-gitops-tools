@@ -9,9 +9,10 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
  *
  * This function should be run:
  * - At extension startup
- * - Kubernetes context changed
+ * - Kubernetes current context is changed
  * - After git repository is added
  * - After git repository is deleted
+ * - After disabling GitOps (git sources will be deleted)
  */
 export async function checkIfOpenedFolderGitRepositorySourceExists() {
 
