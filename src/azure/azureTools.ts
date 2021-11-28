@@ -39,6 +39,8 @@ class AzureTools {
 
 	/**
 	 * Enable GitOps
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az_k8s_extension_create
+	 *
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 */
@@ -55,6 +57,8 @@ class AzureTools {
 
 	/**
 	 * Disable GitOps
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az_k8s_extension_delete
+	 *
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 */
@@ -89,7 +93,9 @@ class AzureTools {
 	}
 
 	/**
-	 * Disable GitOps
+	 * Return all flux resources managed by Azure.
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_list
+	 *
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 */
@@ -114,6 +120,8 @@ class AzureTools {
 
 	/**
 	 * Create git repository source.
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_create
+	 *
 	 * @param newGitRepositorySourceName kubernetes resource name
 	 * @param gitUrl git repository url
 	 * @param gitBranch git repository active branch
@@ -151,6 +159,8 @@ class AzureTools {
 
 	/**
 	 * Delete source.
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_delete
+	 *
 	 * @param sourceName target source name
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
@@ -169,6 +179,8 @@ class AzureTools {
 
 	/**
 	 * Suspend source reconciliation.
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_update
+	 *
 	 * @param sourceName target source name
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
@@ -187,6 +199,8 @@ class AzureTools {
 
 	/**
 	 * Resume source reconciliation.
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_update
+	 *
 	 * @param sourceName target source name
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider

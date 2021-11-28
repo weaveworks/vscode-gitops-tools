@@ -3,7 +3,7 @@ import { addGitRepository } from './commands/addGitRepository';
 import { deleteSource } from './commands/deleteSource';
 import { fluxCheck } from './commands/fluxCheck';
 import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
-import { fluxDisableGitOps, fluxEnableGitOps } from './commands/fluxEnableGitOps';
+import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
