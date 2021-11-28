@@ -31,11 +31,7 @@
 		"url": "https://github.com/weaveworks/vscode-gitops-tools"
 	},
 	"bugs": "https://github.com/weaveworks/vscode-gitops-tools/issues",
-	"homepage": "https://github.com/weaveworks/vscode-gitops-tools/README.md",
-	"galleryBanner": {
-		"color": "#333",
-		"theme": "dark"
-	},
+	"homepage": "https://github.com/weaveworks/vscode-gitops-tools",
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.suspendSource",
