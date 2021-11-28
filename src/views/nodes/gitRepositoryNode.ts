@@ -25,7 +25,7 @@ export class GitRepositoryNode extends SourceNode {
 
 	// @ts-ignore
 	get contextValue(): string {
-		let suspendContext = this.resource.spec.suspend ? NodeContext.Suspend : '';
+		let suspendContext = this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend;
 
 		return this.joinContexts(KubernetesObjectKinds.GitRepository, suspendContext);
 	}
