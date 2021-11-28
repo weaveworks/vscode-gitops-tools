@@ -118,10 +118,10 @@ export class ClusterDataProvider extends DataProvider {
 	 * @param clusterNodes all cluster nodes in this tree view.
 	 */
 	async updateClusterContexts(clusterNodes: ClusterNode[]) {
-		for (const clusterNode of clusterNodes) {
+		await Promise.all(clusterNodes.map(async clusterNode => {
 			await clusterNode.updateNodeContext();
 			refreshClustersTreeView(clusterNode);
-		}
+		}));
 	}
 
 	/**
