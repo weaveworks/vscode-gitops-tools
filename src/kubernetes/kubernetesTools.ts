@@ -157,12 +157,18 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Get pods (filter by name and namespace).
+	 * Get pods by a deployment name.
 	 * @param name pod target name
 	 * @param namespace pod target namespace
 	 */
-	async getPods(name = '', namespace = ''): Promise<undefined | PodResult> {
-		const nameArg = name ? `-l app=${name}` : '';
+	async getPodsOfADeployment(name = '', namespace = ''): Promise<undefined | PodResult> {
+		let nameArg: string;
+
+		if (name === 'fluxconfig-agent' || name === 'fluxconfig-controller') {
+			nameArg = name ? `-l app.kubernetes.io/component=${name}` : '';
+		} else {
+			nameArg = name ? `-l app=${name}` : '';
+		}
 
 		let namespaceArg = '';
 		if (namespace === 'all') {
@@ -173,7 +179,7 @@ class KubernetesTools {
 
 		const podResult = await this.invokeKubectlCommand(`get pod ${nameArg} ${namespaceArg} -o json`);
 
-		if (!podResult || podResult.code !== 0) {
+		if (podResult?.code !== 0) {
 			console.warn(`Failed to get pods: ${podResult?.stderr}`);
 			return;
 		}

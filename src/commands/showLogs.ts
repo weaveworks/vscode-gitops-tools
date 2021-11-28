@@ -19,7 +19,7 @@ interface ResourceNode {
  */
 export async function showLogs(deploymentNode: ClusterDeploymentNode): Promise<void> {
 
-	const pods = await kubernetesTools.getPods(deploymentNode.resource.metadata.name, deploymentNode.resource.metadata.namespace);
+	const pods = await kubernetesTools.getPodsOfADeployment(deploymentNode.resource.metadata.name, deploymentNode.resource.metadata.namespace);
 	const pod = pods?.items[0];
 
 	if (!pod) {
