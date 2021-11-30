@@ -119,7 +119,7 @@ export class ClusterNode extends TreeNode {
 			createMarkdownHr(markdown);
 			markdown.appendMarkdown(`Cluster Provider: ${this.clusterProvider || ClusterProvider.Unknown}`);
 			if (this.clusterProviderManuallyOverridden) {
-				markdown.appendMarkdown('<span title="Use context menu on the cluster `Set Cluster Provider` to change."> (User override)</span>');
+				markdown.appendMarkdown(' <span title="Use context menu on the cluster `Set Cluster Provider` to change.">(User override)</span>');
 			}
 		}
 
