@@ -3,10 +3,11 @@ import { CommandId } from '../../commands';
 import { NotificationMessages } from '../../constants';
 import { ContextTypes, setContext } from '../../context';
 import { extensionState } from '../../extensionState';
+import { globalState } from '../../globalState';
 import { Cluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../../kubernetes/kubernetesTypes';
-import { createMarkdownTable } from '../../utils/markdownUtils';
+import { createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
@@ -21,6 +22,12 @@ export class ClusterNode extends TreeNode {
 	 * or some other provider.
 	 */
 	private clusterProvider: ClusterProvider = ClusterProvider.Unknown;
+
+	/**
+	 * User used "Set Cluster Provider" context menu item
+	 * to override the cluster provider detection.
+	 */
+	private clusterProviderManuallyOverridden = false;
 
 	/**
 	 * Saved cluster object.
@@ -74,7 +81,12 @@ export class ClusterNode extends TreeNode {
 	 */
 	async updateNodeContext() {
 		this.isGitOpsEnabled = await kubernetesTools.isGitOpsEnabled(this.name);
-		await this.detectClusterProvider();
+
+		const clusterMetadata = globalState.getClusterMetadata(this.name);
+		if (clusterMetadata?.clusterProvider) {
+			this.clusterProviderManuallyOverridden = true;
+		}
+		this.clusterProvider = clusterMetadata?.clusterProvider || await kubernetesTools.detectClusterProvider(this.name);
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {
@@ -86,13 +98,6 @@ export class ClusterNode extends TreeNode {
 		} else {
 			this.setIcon('cloud');
 		}
-	}
-
-	/**
-	 * Try to detect cluster provider.
-	 */
-	private async detectClusterProvider() {
-		this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
 	}
 
 	// @ts-ignore
@@ -107,12 +112,15 @@ export class ClusterNode extends TreeNode {
 	getMarkdownHover(cluster: Cluster): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(cluster);
 
-		markdown.appendMarkdown('\n\n---\n\n');
+		createMarkdownHr(markdown);
 		markdown.appendMarkdown(`Flux Version: ${extensionState.get('fluxVersion')}`);
 
-		if (this.clusterProvider !== ClusterProvider.Generic) {
-			markdown.appendMarkdown('\n\n---\n\n');
+		if (this.clusterProvider !== ClusterProvider.Generic || this.clusterProviderManuallyOverridden) {
+			createMarkdownHr(markdown);
 			markdown.appendMarkdown(`Cluster Provider: ${this.clusterProvider || ClusterProvider.Unknown}`);
+			if (this.clusterProviderManuallyOverridden) {
+				markdown.appendMarkdown('<span title="Use context menu on the cluster `Set Cluster Provider` to change."> (User override)</span>');
+			}
 		}
 
 		return markdown;
@@ -134,7 +142,7 @@ export class ClusterNode extends TreeNode {
 	async getClusterProvider() {
 
 		if (this.clusterProvider === ClusterProvider.Unknown) {
-			await this.detectClusterProvider();
+			this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
 		}
 
 		if (this.clusterProvider === ClusterProvider.Unknown) {

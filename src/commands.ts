@@ -1,21 +1,22 @@
 import { commands, Disposable, ExtensionContext } from 'vscode';
 import { addGitRepository } from './commands/addGitRepository';
 import { deleteSource } from './commands/deleteSource';
+import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxCheck } from './commands/fluxCheck';
 import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
-import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
-import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
+import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { resumeSource } from './commands/resume';
+import { setClusterProvider } from './commands/setClusterProvider';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
 import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
 import { suspendSource } from './commands/suspend';
 import { showOutputChannel } from './output';
-import { refreshWorkloadsTreeView, refreshSourcesTreeView, refreshAllTreeViews } from './views/treeViews';
+import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
 
 /**
  * Command ids registered by this extension
@@ -50,6 +51,7 @@ export const enum CommandId {
 	FluxReconcileWorkload = 'gitops.flux.reconcileWorkload',
 
 	// tree view
+	SetClusterProvider = 'gitops.setClusterProvider',
 	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
 	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
 	RefreshWorkloadsTreeView = 'gitops.views.refreshWorkloadTreeView',
@@ -92,6 +94,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.FluxDisableGitOps, fluxDisableGitOps);
 
 	// tree views
+	registerCommand(CommandId.SetClusterProvider, setClusterProvider);
 	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViews);
 	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourcesTreeView);
 	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadsTreeView);

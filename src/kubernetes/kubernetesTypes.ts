@@ -529,3 +529,10 @@ export const enum ClusterProvider {
 	 */
 	Unknown = 'Unknown',
 }
+
+export type KnownClusterProviders = Exclude<ClusterProvider, ClusterProvider.Unknown>;
+export const knownClusterProviders: KnownClusterProviders[] = [
+	ClusterProvider.AKS,
+	ClusterProvider.AzureARC,
+	ClusterProvider.Generic,
+];

@@ -36,6 +36,7 @@
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.suspendSource",
 		"onCommand:gitops.resumeSource",
+		"onCommand:gitops.setClusterProvider",
 		"onCommand:gitops.flux.check",
 		"onCommand:gitops.flux.checkPrerequisites",
 		"onCommand:gitops.flux.install",
@@ -63,6 +64,11 @@
 			{
 				"command": "gitops.kubectl.version",
 				"title": "Kubectl Version",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.setClusterProvider",
+				"title": "Set Cluster Provider",
 				"category": "GitOps"
 			},
 			{
@@ -278,7 +284,11 @@
 			"view/item/context": [
 				{
 					"command": "gitops.flux.check",
-					"when": "view == gitops.views.clusters && viewItem =~ /^cluster;/"
+					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/"
+				},
+				{
+					"command": "gitops.setClusterProvider",
+					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/"
 				},
 				{
 					"command": "gitops.flux.install",
@@ -379,6 +389,10 @@
 				},
 				{
 					"command": "gitops.flux.reconcileRepository",
+					"when": "never"
+				},
+				{
+					"command": "gitops.setClusterProvider",
 					"when": "never"
 				}
 			]

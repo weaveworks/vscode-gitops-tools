@@ -1,9 +1,12 @@
+import { window, workspace } from 'vscode';
 import { getExtensionContext } from './extensionContext';
+import { KnownClusterProviders } from './kubernetes/kubernetesTypes';
 
-export interface ClusterAzureMetadata {
-	azureResourceGroup: string;
-	azureSubscription: string;
-	azureClusterName: string;
+export interface ClusterMetadata {
+	azureResourceGroup?: string;
+	azureSubscription?: string;
+	azureClusterName?: string;
+	clusterProvider?: KnownClusterProviders;
 }
 
 const enum GlobalStatePrefixes {
@@ -12,7 +15,9 @@ const enum GlobalStatePrefixes {
 
 class GlobalState {
 
-	constructor() {}
+	private prefix(prefixValue: GlobalStatePrefixes, str: string): string {
+		return `${prefixValue}:${str}`;
+	}
 
 	get(stateKey: string) {
 		return getExtensionContext().globalState.get(stateKey);
@@ -22,12 +27,24 @@ class GlobalState {
 		getExtensionContext().globalState.update(stateKey, newValue);
 	}
 
-	getClusterMetadata(clusterName: string): ClusterAzureMetadata | undefined {
-		return this.get(GlobalStatePrefixes.ClusterMetadata + clusterName) as ClusterAzureMetadata | undefined;
+	getClusterMetadata(clusterName: string): ClusterMetadata | undefined {
+		return this.get(this.prefix(GlobalStatePrefixes.ClusterMetadata, clusterName)) as ClusterMetadata | undefined;
 	}
 
-	setClusterMetadata(clusterName: string, metadata: ClusterAzureMetadata) {
-		this.set(GlobalStatePrefixes.ClusterMetadata + clusterName, metadata);
+	setClusterMetadata(clusterName: string, metadata: ClusterMetadata): void {
+		this.set(this.prefix(GlobalStatePrefixes.ClusterMetadata, clusterName), metadata);
+	}
+
+	/**
+	 * Run while developing to see the entire global storage contents.
+	 */
+	async showGlobalStateValue() {
+		const document = await workspace.openTextDocument({
+			language: 'jsonc',
+			// @ts-ignore
+			content: JSON.stringify(getExtensionContext().globalState._value, null, '  '),
+		});
+		window.showTextDocument(document);
 	}
 }
 
