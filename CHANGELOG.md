@@ -2,6 +2,19 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.13.0 - [2021-12-02]
+
+- [#152](https://github.com/weaveworks/vscode-gitops-tools/issues/152)
+Progress notifications can be annoying
+- [#153](https://github.com/weaveworks/vscode-gitops-tools/issues/153)
+Add loading clusters context
+- [#154](https://github.com/weaveworks/vscode-gitops-tools/issues/154)
+Show Logs fails on 2 controllers from AKS/ARC
+- [#155](https://github.com/weaveworks/vscode-gitops-tools/issues/155)
+Set cluster provider manually
+- [#156](https://github.com/weaveworks/vscode-gitops-tools/issues/156)
+Package Sprint 13 release
+
 # v0.12.0 - [2021-11-25]
 
 - [#116](https://github.com/weaveworks/vscode-gitops-tools/issues/116)
