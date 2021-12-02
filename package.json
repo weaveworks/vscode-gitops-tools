@@ -300,7 +300,7 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository|Bucket)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@0"
 				},
 				{
@@ -315,7 +315,7 @@
 				},
 				{
 					"command": "gitops.views.deleteSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository|Bucket)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@2"
 				},
 				{
@@ -325,11 +325,11 @@
 				},
 				{
 					"command": "gitops.flux.reconcileWorkload",
-					"when": "view == gitops.views.workloads && viewItem =~ /^(Kustomization|HelmRelease)$/"
+					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/"
 				},
 				{
 					"command": "gitops.editor.showLogs",
-					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /^(Deployment)$/"
+					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /(Deployment;)/"
 				}
 			],
 			"explorer/context": [

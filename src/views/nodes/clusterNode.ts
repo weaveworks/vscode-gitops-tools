@@ -126,16 +126,6 @@ export class ClusterNode extends TreeNode {
 		return markdown;
 	}
 
-	// @ts-ignore
-	get contextValue(): string {
-		let gitOpsEnabledContext = '';
-		if (typeof this.isGitOpsEnabled === 'boolean') {
-			gitOpsEnabledContext = this.isGitOpsEnabled ? NodeContext.ClusterGitOpsEnabled : NodeContext.ClusterGitOpsNotEnabled;
-		}
-
-		return this.joinContexts(NodeContext.Cluster, gitOpsEnabledContext);
-	}
-
 	/**
 	 * Return this cluster provider.
 	 */
@@ -150,6 +140,18 @@ export class ClusterNode extends TreeNode {
 		}
 
 		return this.clusterProvider;
+	}
+
+	get contexts() {
+		const result = [NodeContext.Cluster];
+
+		if (typeof this.isGitOpsEnabled === 'boolean') {
+			result.push(
+				this.isGitOpsEnabled ? NodeContext.ClusterGitOpsEnabled : NodeContext.ClusterGitOpsNotEnabled,
+			);
+		}
+
+		return result;
 	}
 
 }

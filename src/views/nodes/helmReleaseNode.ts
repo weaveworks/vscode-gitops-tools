@@ -7,8 +7,6 @@ import { WorkloadNode } from './workloadNode';
  */
 export class HelmReleaseNode extends WorkloadNode {
 
-	contextValue = KubernetesObjectKinds.HelmRelease;
-
 	/**
 	 * Helm release kubernetes resource object
 	 */
@@ -27,5 +25,9 @@ export class HelmReleaseNode extends WorkloadNode {
 
 		this.makeCollapsible();
 
+	}
+
+	get contexts() {
+		return [KubernetesObjectKinds.HelmRelease];
 	}
 }

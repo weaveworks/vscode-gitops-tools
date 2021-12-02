@@ -6,8 +6,6 @@ import { TreeNode, TreeNodeIcon } from './treeNode';
  */
 export class ClusterDeploymentNode extends TreeNode {
 
-	contextValue = KubernetesObjectKinds.Deployment;
-
 	/**
 	 * Cluster deployment kubernetes resource object
 	 */
@@ -43,6 +41,10 @@ export class ClusterDeploymentNode extends TreeNode {
 		} else if (status === 'failure') {
 			this.setIcon(TreeNodeIcon.Warning);
 		}
+	}
+
+	get contexts() {
+		return [KubernetesObjectKinds.Deployment];
 	}
 }
 

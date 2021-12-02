@@ -23,10 +23,15 @@ export class GitRepositoryNode extends SourceNode {
 		this.resource = gitRepository;
 	}
 
-	// @ts-ignore
-	get contextValue(): string {
-		let suspendContext = this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend;
+	get contexts() {
+		const contextsArr: string[] = [KubernetesObjectKinds.GitRepository];
 
-		return this.joinContexts(KubernetesObjectKinds.GitRepository, suspendContext);
+		if (this.resource.spec.suspend) {
+			contextsArr.push(NodeContext.Suspend);
+		} else {
+			contextsArr.push(NodeContext.NotSuspend);
+		}
+
+		return contextsArr;
 	}
 }

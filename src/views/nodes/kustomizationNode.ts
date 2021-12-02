@@ -6,9 +6,6 @@ import { WorkloadNode } from './workloadNode';
  * Defines Kustomization tree view item for display in GitOps Workload tree view.
  */
 export class KustomizationNode extends WorkloadNode {
-
-	contextValue = KubernetesObjectKinds.Kustomization;
-
 	/**
 	 * Kustomize kubernetes resource object
 	 */
@@ -26,5 +23,9 @@ export class KustomizationNode extends WorkloadNode {
 		this.resource = kustomization;
 
 		this.makeCollapsible();
+	}
+
+	get contexts() {
+		return [KubernetesObjectKinds.Kustomization];
 	}
 }

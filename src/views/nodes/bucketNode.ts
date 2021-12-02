@@ -7,8 +7,6 @@ import { SourceNode } from './sourceNode';
  */
 export class BucketNode extends SourceNode {
 
-	contextValue = KubernetesObjectKinds.Bucket;
-
 	/**
 	 * Bucket kubernetes resource object
 	 */
@@ -22,5 +20,9 @@ export class BucketNode extends SourceNode {
 		super(`${KubernetesObjectKinds.Bucket}: ${bucket.metadata?.name}`, bucket);
 
 		this.resource = bucket;
+	}
+
+	get contexts() {
+		return [KubernetesObjectKinds.Bucket];
 	}
 }

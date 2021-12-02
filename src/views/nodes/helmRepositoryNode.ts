@@ -7,8 +7,6 @@ import { SourceNode } from './sourceNode';
  */
 export class HelmRepositoryNode extends SourceNode {
 
-	contextValue = KubernetesObjectKinds.HelmRepository;
-
 	/**
 	 * Helm repository kubernetes resource object
 	 */
@@ -22,5 +20,9 @@ export class HelmRepositoryNode extends SourceNode {
 		super(`${KubernetesObjectKinds.HelmRepository}: ${helmRepository.metadata?.name}`, helmRepository);
 
 		this.resource = helmRepository;
+	}
+
+	get contexts() {
+		return [KubernetesObjectKinds.HelmRepository];
 	}
 }
