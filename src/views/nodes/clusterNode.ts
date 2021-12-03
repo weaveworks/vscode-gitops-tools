@@ -64,7 +64,6 @@ export class ClusterNode extends TreeNode {
 		this.setIcon('cloud');
 	}
 
-	// @ts-ignore
 	get command() {
 		// set current context command to change selected cluster
 		return {
@@ -100,7 +99,6 @@ export class ClusterNode extends TreeNode {
 		}
 	}
 
-	// @ts-ignore
 	get tooltip(): MarkdownString {
 		return this.getMarkdownHover(this.cluster);
 	}

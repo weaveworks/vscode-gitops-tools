@@ -41,7 +41,6 @@ export class WorkloadNode extends TreeNode {
 		}
 	}
 
-	// @ts-ignore
 	get tooltip() {
 		return this.getMarkdownHover(this.resource);
 	}

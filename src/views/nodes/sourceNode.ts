@@ -30,7 +30,6 @@ export class SourceNode extends TreeNode {
 		this.updateRevision(source);
 	}
 
-	// @ts-ignore
 	get tooltip() {
 		return this.getMarkdownHover(this.resource);
 	}

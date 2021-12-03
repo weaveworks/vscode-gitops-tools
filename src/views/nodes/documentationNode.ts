@@ -25,12 +25,10 @@ export class DocumentationNode extends TreeNode {
 		}
 	}
 
-	// @ts-ignore
 	get tooltip() {
 		return this.url;
 	}
 
-	// @ts-ignore
 	get command() {
 		return {
 			command: CommandId.VSCodeOpen,
