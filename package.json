@@ -216,7 +216,7 @@
 			{
 				"view": "gitops.views.sources",
 				"contents": "Loading Sources ...",
-				"when": "gitops:loadingSources && !gitops:noClusterSelected"
+				"when": "gitops:loadingSources && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"view": "gitops.views.sources",
@@ -236,7 +236,7 @@
 			{
 				"view": "gitops.views.workloads",
 				"contents": "Loading Workloads ...",
-				"when": "gitops:loadingWorkloads && !gitops:noClusterSelected"
+				"when": "gitops:loadingWorkloads && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"view": "gitops.views.workloads",
