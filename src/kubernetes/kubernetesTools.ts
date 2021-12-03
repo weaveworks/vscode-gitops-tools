@@ -11,7 +11,7 @@ import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
 import { KubernetesConfig } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
-import { ClusterProvider, DeploymentResult, KubectlVersionResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
+import { ClusterProvider, ConfigMap, DeploymentResult, KubectlVersionResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
 
 /**
@@ -401,21 +401,21 @@ class KubernetesTools {
 	 * @param context target context to get resources from.
 	 */
 	async isClusterAzureARC(context: string): Promise<ClusterProvider> {
-		const deploymentsShellResult = await this.invokeKubectlCommand(`get deployments -n azure-arc --context=${context} -o json`);
+		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n azure-arc --context=${context} --ignore-not-found -o json`);
 
-		if (deploymentsShellResult?.code !== 0) {
-			console.warn(`Failed to get deployments from "${context}" context to determine the cluster type.`);
+		if (configmapShellResult?.code !== 0) {
+			console.warn(`Failed to get configmaps from "${context}" context to determine the cluster type.`);
 			return ClusterProvider.Unknown;
 		}
 
-		const deployments: DeploymentResult | undefined = parseJson(deploymentsShellResult.stdout);
-		if (!deployments) {
-			return ClusterProvider.Unknown;
-		}
-
-		if (deployments.items.length === 10 &&
-			deployments.items.every(deployment => deployment.status.conditions?.[0].type === 'Available')) {
-			return ClusterProvider.AzureARC;
+		const stdout = configmapShellResult.stdout;
+		if (stdout.length) {
+			const azureClusterconfigConfigMap: ConfigMap | undefined = parseJson(stdout);
+			if (azureClusterconfigConfigMap === undefined) {
+				return ClusterProvider.Unknown;
+			} else {
+				return ClusterProvider.AzureARC;
+			}
 		}
 
 		return ClusterProvider.Generic;

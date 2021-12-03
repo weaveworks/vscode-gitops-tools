@@ -1,4 +1,4 @@
-import { V1Deployment, V1Namespace, V1Node, V1Pod } from '@kubernetes/client-node';
+import { V1ConfigMap, V1Deployment, V1Namespace, V1Node, V1Pod } from '@kubernetes/client-node';
 
 /**
  * Defines base Kubernetes object with common fields.
@@ -33,6 +33,11 @@ export type Deployment = Required<V1Deployment> & {
 };
 export type DeploymentResult = KubernetesList<Deployment>;
 
+export type ConfigMap = Required<V1ConfigMap> & {
+	readonly kind: KubernetesObjectKinds.ConfigMap;
+};
+export type ConfigMapResult = KubernetesList<ConfigMap>;
+
 export type Node = Required<V1Node> & {
 	readonly kind: KubernetesObjectKinds.Node;
 };
@@ -57,6 +62,7 @@ export const enum KubernetesObjectKinds {
 	Namespace = 'Namespace',
 	Node = 'Node',
 	Pod = 'Pod',
+	ConfigMap = 'ConfigMap',
 }
 
 interface KubectlVersion {
