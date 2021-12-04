@@ -1,6 +1,7 @@
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node';
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
+import { AzureConstants } from '../azure/azureTools';
 import { ContextTypes, setContext } from '../context';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
@@ -401,7 +402,7 @@ class KubernetesTools {
 	 * @param context target context to get resources from.
 	 */
 	async isClusterAzureARC(context: string): Promise<ClusterProvider> {
-		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n azure-arc --context=${context} --ignore-not-found -o json`);
+		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${context} --ignore-not-found -o json`);
 
 		if (configmapShellResult?.code !== 0) {
 			console.warn(`Failed to get configmaps from "${context}" context to determine the cluster type.`);

@@ -1,5 +1,4 @@
 import { window } from 'vscode';
-import { NotificationMessages } from '../../constants';
 import { ContextTypes, setContext } from '../../context';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
@@ -129,7 +128,7 @@ export class ClusterDataProvider extends DataProvider {
 	 */
 	getCurrentClusterNode(): ClusterNode | undefined {
 		if (!this.isFinishedBuildingTree) {
-			window.showErrorMessage(NotificationMessages.ClustersNotLoaded);
+			window.showErrorMessage('Clusters are not yet loaded.');
 			return;
 		}
 
@@ -139,7 +138,7 @@ export class ClusterDataProvider extends DataProvider {
 			}
 		}
 
-		window.showErrorMessage(NotificationMessages.NoCurrentCluster);
+		window.showErrorMessage('Current cluster was not found.');
 		return undefined;
 	}
 }

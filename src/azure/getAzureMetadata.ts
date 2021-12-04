@@ -3,22 +3,22 @@ import { globalState } from '../globalState';
 
 export interface AzureMetadata {
 	resourceGroup: string;
-	subscription: string;
-	clusterName: string;
+	resourceName: string;
+	subscriptionId: string;
 }
 
 /**
  * Prompt for the azure cluster:
  * 1) Resource group
- * 2) Cluster name (in azure)
+ * 2) Resource name
  * 3) ID of the azure subscription
  * @param clusterContextName cluster name as in kubernetes context
  */
-export async function getAzureMetadata(clusterContextName: string): Promise<AzureMetadata | undefined> {
+export async function askUserForAzureMetadata(clusterContextName: string): Promise<AzureMetadata | undefined> {
 	const azureMetadata = globalState.getClusterMetadata(clusterContextName);
 
 	const resourceGroup = await window.showInputBox({
-		title: 'Enter the Azure Resource group (where the cluster is)',
+		title: 'Enter the Azure Resource Group (where the cluster is)',
 		ignoreFocusOut: true,
 		value: azureMetadata?.azureResourceGroup ?? '',
 	});
@@ -27,35 +27,35 @@ export async function getAzureMetadata(clusterContextName: string): Promise<Azur
 		return;
 	}
 
-	const clusterName = await window.showInputBox({
-		title: 'Enter the cluster name (as defined in Azure)',
+	const resourceName = await window.showInputBox({
+		title: 'Enter the Resource Name',
 		ignoreFocusOut: true,
 		value: azureMetadata?.azureClusterName ?? '',
 	});
 
-	if (!clusterName) {
+	if (!resourceName) {
 		return;
 	}
 
-	const subscription = await window.showInputBox({
-		title: 'Enter the name or ID of the Azure subscription that owns the resource group',
+	const subscriptionId = await window.showInputBox({
+		title: 'Enter ID of Azure subscription that owns the resource group',
 		ignoreFocusOut: true,
 		value: azureMetadata?.azureSubscription ?? '',
 	});
 
-	if (!subscription) {
+	if (!subscriptionId) {
 		return;
 	}
 
 	globalState.setClusterMetadata(clusterContextName, {
 		azureResourceGroup: resourceGroup,
-		azureSubscription: subscription,
-		azureClusterName: clusterName,
+		azureSubscription: subscriptionId,
+		azureClusterName: resourceName,
 	});
 
 	return {
 		resourceGroup,
-		subscription,
-		clusterName,
+		subscriptionId,
+		resourceName,
 	};
 }

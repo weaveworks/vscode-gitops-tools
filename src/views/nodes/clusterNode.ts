@@ -1,6 +1,5 @@
 import { MarkdownString, window } from 'vscode';
 import { CommandId } from '../../commands';
-import { NotificationMessages } from '../../constants';
 import { ContextTypes, setContext } from '../../context';
 import { extensionState } from '../../extensionState';
 import { globalState } from '../../globalState';
@@ -134,7 +133,7 @@ export class ClusterNode extends TreeNode {
 		}
 
 		if (this.clusterProvider === ClusterProvider.Unknown) {
-			window.showErrorMessage(NotificationMessages.ClusterProviderDetectionFailed);
+			window.showErrorMessage('Cluster provider detection failed.');
 		}
 
 		return this.clusterProvider;
