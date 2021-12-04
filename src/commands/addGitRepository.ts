@@ -8,6 +8,7 @@ import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { sanitizeRFC1123 } from '../utils/stringUtils';
+import { delay } from '../utils/utils';
 import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
@@ -109,8 +110,10 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 		showDeployKeyNotification(deployKey);
 	}
 
-	refreshSourcesTreeView();
 	checkIfOpenedFolderGitRepositorySourceExists();
+	// Wait a bit for the repository to have a failed state in case of SSH url
+	await delay(1000);
+	refreshSourcesTreeView();
 }
 
 /**
