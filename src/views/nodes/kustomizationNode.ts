@@ -1,5 +1,6 @@
 import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
 import { Kustomize } from '../../kubernetes/kustomize';
+import { NodeContext } from './nodeContext';
 import { WorkloadNode } from './workloadNode';
 
 /**
@@ -26,6 +27,10 @@ export class KustomizationNode extends WorkloadNode {
 	}
 
 	get contexts() {
-		return [KubernetesObjectKinds.Kustomization];
+		const contextsArr: string[] = [KubernetesObjectKinds.Kustomization];
+		contextsArr.push(
+			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
+		);
+		return contextsArr;
 	}
 }

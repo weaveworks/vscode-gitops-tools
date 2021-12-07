@@ -34,8 +34,8 @@
 	"homepage": "https://github.com/weaveworks/vscode-gitops-tools",
 	"activationEvents": [
 		"onCommand:gitops.kubectl.version",
-		"onCommand:gitops.suspendSource",
-		"onCommand:gitops.resumeSource",
+		"onCommand:gitops.suspend",
+		"onCommand:gitops.resume",
 		"onCommand:gitops.setClusterProvider",
 		"onCommand:gitops.flux.check",
 		"onCommand:gitops.flux.checkPrerequisites",
@@ -77,13 +77,13 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.suspendSource",
-				"title": "Suspend Source",
+				"command": "gitops.suspend",
+				"title": "Suspend",
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.resumeSource",
-				"title": "Resume Source",
+				"command": "gitops.resume",
+				"title": "Resume",
 				"category": "GitOps"
 			},
 			{
@@ -304,13 +304,13 @@
 					"group": "navigation@0"
 				},
 				{
-					"command": "gitops.suspendSource",
-					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/ && viewItem =~ /notSuspend;/",
+					"command": "gitops.suspend",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
 				},
 				{
-					"command": "gitops.resumeSource",
-					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/ && viewItem =~ /suspend;/",
+					"command": "gitops.resume",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /suspend;/",
 					"group": "navigation@1"
 				},
 				{
@@ -348,11 +348,11 @@
 					"when": "never"
 				},
 				{
-					"command": "gitops.suspendSource",
+					"command": "gitops.suspend",
 					"when": "never"
 				},
 				{
-					"command": "gitops.resumeSource",
+					"command": "gitops.resume",
 					"when": "never"
 				},
 				{

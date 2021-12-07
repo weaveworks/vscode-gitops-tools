@@ -1,15 +1,19 @@
+import { window } from 'vscode';
 import { azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
+import { FluxSource, FluxWorkload } from '../flux/fluxTypes';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
-import { getCurrentClusterNode, refreshSourcesTreeView } from '../views/treeViews';
+import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';
+import { KustomizationNode } from '../views/nodes/kustomizationNode';
+import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
- * Resume source and refresh Sources Tree View
+ * Resume source or workload reconciliation and refresh its Tree View.
  *
  * @param node sources tree view node
  */
-export async function resumeSource(node: GitRepositoryNode) {
+export async function resume(node: GitRepositoryNode | HelmReleaseNode | KustomizationNode) {
 
 	const currentClusterNode = getCurrentClusterNode();
 	if (!currentClusterNode) {
@@ -21,14 +25,29 @@ export async function resumeSource(node: GitRepositoryNode) {
 		return;
 	}
 
-	if (clusterProvider === ClusterProvider.AKS ||
-		clusterProvider === ClusterProvider.AzureARC) {
-		await azureTools.resume(node.resource.metadata.name || '', currentClusterNode, clusterProvider);
-	} else {
-		if (node instanceof GitRepositoryNode) {
-			await fluxTools.resume('source git', node.resource.metadata.name || '', node.resource.metadata.namespace || '');
-		}
+	const fluxResourceType: FluxSource | FluxWorkload | 'unknown' = node instanceof GitRepositoryNode ?
+		'source git' : node instanceof HelmReleaseNode ?
+			'helmrelease' : node instanceof KustomizationNode ?
+				'kustomization' : 'unknown';
+	if (fluxResourceType === 'unknown') {
+		window.showErrorMessage(`Unknown object kind ${fluxResourceType}`);
+		return;
 	}
 
-	refreshSourcesTreeView();
+	if (clusterProvider === ClusterProvider.AKS || clusterProvider === ClusterProvider.AzureARC) {
+		// TODO: implement
+		if (fluxResourceType === 'helmrelease' || fluxResourceType === 'kustomization') {
+			window.showInformationMessage('Not implemented on AKS/ARC', { modal: true });
+			return;
+		}
+		await azureTools.resume(node.resource.metadata.name || '', currentClusterNode, clusterProvider);
+	} else {
+		await fluxTools.resume(fluxResourceType, node.resource.metadata.name || '', node.resource.metadata.namespace || '');
+	}
+
+	if (node instanceof GitRepositoryNode) {
+		refreshSourcesTreeView();
+	} else {
+		refreshWorkloadsTreeView();
+	}
 }

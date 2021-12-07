@@ -1,5 +1,6 @@
 import { HelmRelease } from '../../kubernetes/helmRelease';
 import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
+import { NodeContext } from './nodeContext';
 import { WorkloadNode } from './workloadNode';
 
 /**
@@ -28,6 +29,10 @@ export class HelmReleaseNode extends WorkloadNode {
 	}
 
 	get contexts() {
-		return [KubernetesObjectKinds.HelmRelease];
+		const contextsArr: string[] = [KubernetesObjectKinds.HelmRelease];
+		contextsArr.push(
+			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
+		);
+		return contextsArr;
 	}
 }

@@ -25,13 +25,9 @@ export class GitRepositoryNode extends SourceNode {
 
 	get contexts() {
 		const contextsArr: string[] = [KubernetesObjectKinds.GitRepository];
-
-		if (this.resource.spec.suspend) {
-			contextsArr.push(NodeContext.Suspend);
-		} else {
-			contextsArr.push(NodeContext.NotSuspend);
-		}
-
+		contextsArr.push(
+			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
+		);
 		return contextsArr;
 	}
 }

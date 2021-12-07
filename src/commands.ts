@@ -9,12 +9,12 @@ import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
-import { resumeSource } from './commands/resume';
+import { resume } from './commands/resume';
 import { setClusterProvider } from './commands/setClusterProvider';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
 import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
-import { suspendSource } from './commands/suspend';
+import { suspend } from './commands/suspend';
 import { showOutputChannel } from './output';
 import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
 
@@ -40,8 +40,8 @@ export const enum CommandId {
 	SetCurrentKubernetesContext = 'gitops.kubectl.setCurrentContext',
 
 	// flux
-	SuspendSource = 'gitops.suspendSource',
-	ResumeSource = 'gitops.resumeSource',
+	Suspend = 'gitops.suspend',
+	Resume = 'gitops.resume',
 	FluxCheck = 'gitops.flux.check',
 	FluxCheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	FluxEnableGitOps = 'gitops.flux.install',
@@ -83,8 +83,8 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.SetCurrentKubernetesContext, setCurrentKubernetesContext);
 
 	// flux
-	registerCommand(CommandId.SuspendSource, suspendSource);
-	registerCommand(CommandId.ResumeSource, resumeSource);
+	registerCommand(CommandId.Suspend, suspend);
+	registerCommand(CommandId.Resume, resume);
 	registerCommand(CommandId.FluxCheck, fluxCheck);
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);

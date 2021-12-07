@@ -39,10 +39,10 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 
 	// Object-specific properties
 	if (kubernetesObject.kind === KubernetesObjectKinds.GitRepository) {
+		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 		createMarkdownTableRow('spec.ref.branch', kubernetesObject.spec?.ref?.branch, markdown);
 		createMarkdownTableRow('spec.ref.commit', kubernetesObject.spec?.ref?.commit, markdown);
-		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRepository) {
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Bucket) {
@@ -51,12 +51,14 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.provider', kubernetesObject.spec?.provider, markdown);
 		createMarkdownTableRow('spec.insecure', kubernetesObject.spec?.insecure, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Kustomization) {
+		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.prune', kubernetesObject.spec?.prune, markdown);
 		createMarkdownTableRow('spec.sourceRef.kind', kubernetesObject.spec?.sourceRef?.kind, markdown);
 		createMarkdownTableRow('spec.sourceRef.name', kubernetesObject.spec?.sourceRef?.name, markdown);
 		createMarkdownTableRow('spec.force', kubernetesObject.spec?.force, markdown);
 		createMarkdownTableRow('spec.path', kubernetesObject.spec?.path, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRelease) {
+		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);
 		createMarkdownTableRow('spec.chart.spec.sourceRef.kind', kubernetesObject.spec?.chart?.spec?.sourceRef?.kind, markdown);
 		createMarkdownTableRow('spec.chart.spec.sourceRef.name', kubernetesObject.spec?.chart?.spec?.sourceRef?.name, markdown);
