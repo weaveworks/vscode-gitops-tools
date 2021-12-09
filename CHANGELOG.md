@@ -2,6 +2,21 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.14.0 - [2021-12-09]
+
+- [#106](https://github.com/weaveworks/vscode-gitops-tools/issues/106)
+Allow user to create a `Kustomization` from a path in local open repository (Generic cluster)
+- [#160](https://github.com/weaveworks/vscode-gitops-tools/issues/160)
+Detect Azure ARC using ConfigMap
+- [#163](https://github.com/weaveworks/vscode-gitops-tools/issues/163)
+Workload `suspend` [Generic cluster]
+- [#164](https://github.com/weaveworks/vscode-gitops-tools/issues/164)
+Workload `resume` [Generic clusters]
+- [#167](https://github.com/weaveworks/vscode-gitops-tools/issues/167)
+Use information from configmaps for Azure (resource group, cluster name, subscription id)
+- [#174](https://github.com/weaveworks/vscode-gitops-tools/issues/174)
+Package Sprint 14 release
+
 # v0.13.0 - [2021-12-02]
 
 - [#152](https://github.com/weaveworks/vscode-gitops-tools/issues/152)
