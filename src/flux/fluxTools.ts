@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { parseJson } from '../utils/jsonUtils';
 import { FluxSource, FluxWorkload, FluxTreeResources } from './fluxTypes';
@@ -231,6 +232,15 @@ class FluxTools {
 			return {
 				deployKey,
 			};
+		}
+	}
+
+	async createKustomization(kustomizationName: string, sourceName: string, path: string) {
+		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${path}"`);
+
+		if (createKustomizationShellResult?.code !== 0) {
+			window.showErrorMessage(createKustomizationShellResult.stderr);
+			return;
 		}
 	}
 }

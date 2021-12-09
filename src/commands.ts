@@ -1,5 +1,6 @@
 import { commands, Disposable, ExtensionContext } from 'vscode';
 import { addGitRepository } from './commands/addGitRepository';
+import { addKustomization } from './commands/addKustomization';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxCheck } from './commands/fluxCheck';
@@ -42,6 +43,7 @@ export const enum CommandId {
 	// flux
 	Suspend = 'gitops.suspend',
 	Resume = 'gitops.resume',
+	AddKustomization = 'gitops.addKustomization',
 	FluxCheck = 'gitops.flux.check',
 	FluxCheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	FluxEnableGitOps = 'gitops.flux.install',
@@ -85,6 +87,7 @@ export function registerCommands(context: ExtensionContext) {
 	// flux
 	registerCommand(CommandId.Suspend, suspend);
 	registerCommand(CommandId.Resume, resume);
+	registerCommand(CommandId.AddKustomization, addKustomization);
 	registerCommand(CommandId.FluxCheck, fluxCheck);
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);

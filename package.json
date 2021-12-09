@@ -36,6 +36,7 @@
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.suspend",
 		"onCommand:gitops.resume",
+		"onCommand:gitops.addKustomization",
 		"onCommand:gitops.setClusterProvider",
 		"onCommand:gitops.flux.check",
 		"onCommand:gitops.flux.checkPrerequisites",
@@ -143,6 +144,12 @@
 			{
 				"command": "gitops.views.addGitRepository",
 				"title": "Add Git Repository Source",
+				"icon": "$(add)",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.addKustomization",
+				"title": "Add Kustomization",
 				"icon": "$(add)",
 				"category": "GitOps"
 			},
@@ -266,6 +273,11 @@
 					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
 				},
 				{
+					"command": "gitops.addKustomization",
+					"group": "navigation@0",
+					"when": "view == gitops.views.workloads"
+				},
+				{
 					"command": "gitops.flux.reconcileRepository",
 					"group": "navigation@0",
 					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
@@ -335,11 +347,14 @@
 			"explorer/context": [
 				{
 					"command": "gitops.views.addGitRepository",
-					"when": "workspaceFolderCount > 0 && gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
+					"when": "gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
 				},
 				{
 					"command": "gitops.flux.reconcileRepository",
-					"when": "workspaceFolderCount > 0 && gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
+					"when": "gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
+				},
+				{
+					"command": "gitops.addKustomization"
 				}
 			],
 			"commandPalette": [

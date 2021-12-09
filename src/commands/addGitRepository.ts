@@ -111,9 +111,11 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 	}
 
 	checkIfOpenedFolderGitRepositorySourceExists();
-	// Wait a bit for the repository to have a failed state in case of SSH url
-	await delay(1000);
-	refreshSourcesTreeView();
+	setTimeout(async() => {
+		// Wait a bit for the repository to have a failed state in case of SSH url
+		refreshSourcesTreeView();
+	}, 1000);
+	return newGitRepositorySourceName;
 }
 
 /**
