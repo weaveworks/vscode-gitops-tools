@@ -11,6 +11,13 @@
 
 GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Workloads in Visual Studio Code IDE.
 
+# Getting started
+
+- Download the latest `vsix` artifact version from our [Releases](https://github.com/weaveworks/vscode-gitops-tools/releases) page
+- Install it on your local Visual Studio Code following [these instructions](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix)
+
+# GUI
+
 ![VSCode GitOps Tools](docs/images/vscode-gitops-tools.png)
 
 # Features
