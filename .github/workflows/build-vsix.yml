@@ -17,3 +17,7 @@ jobs:
     - run: npm run compile
     - run: npm install -g vsce
     - run: vsce package
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "vscode-gitops-tools-*.vsix"
+        token: ${{ secrets.DEPLOY_TOKEN }}
