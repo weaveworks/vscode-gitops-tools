@@ -9,7 +9,13 @@
   <br />
 </h1>
 
-GitOps extension provides integration with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) CLI to view Kubernetes Clusters, Sources, and Workloads in Visual Studio Code IDE.
+Weaveworks GitOps Extension provides an intuitive way to manage, troubleshoot and operate your Kubernetes environment following the GitOps operating model, accelerating your development lifecycle and simplifying your continous delivery pipelines.
+
+Your feedback is very important to us, please help us by submitting issues for bugs, enhancements and share with us how you are using the extension. 
+
+Weaveworks GitOps Extension integrates with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools), [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) and [`flux`](https://fluxcd.io/) for a consolidated and tightly integrated user experience.
+
+> This extension is under active development and currently available as an alpha product. 
 
 # Getting started
 
@@ -43,16 +49,14 @@ GitOps extension depends on [Kubernetes Tools](https://marketplace.visualstudio.
 Tool | Description | Installation
 --- | --- | ---
 [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) | The kubectl command line tool lets you control Kubernetes clusters.  | [Install Kubectl](https://kubectl.docs.kubernetes.io/installation/kubectl/)
-[`helm`](https://helm.sh) | The package manager for Kubernetes. | [Install Helm](https://helm.sh/docs/intro/install/)
 [`flux`](https://fluxcd.io) | Flux is a set of continuous and progressive delivery solutions for Kubernetes. | [Install Flux](https://fluxcd.io/docs/installation/)
+[`git`](https://git-scm.com) | Git is a free and open source distributed version control system. (only if using the `sync working copy to repository` feature) | [Install git](https://git-scm.com/downloads)
 
 Optional tools:
 
 Tool | Description | Installation
 --- | --- | ---
 [`az`](https://docs.microsoft.com/en-us/cli/azure/) | Azure CLI. (only if using the extension to create or register Azure clusters) | [Install az](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-[`minikube`](https://minikube.sigs.k8s.io/docs/) | minikube is local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. (only if you want to use it) | [Install minikube](https://minikube.sigs.k8s.io/docs/start/)
-[`git`](https://git-scm.com) | Git is a free and open source distributed version control system. (only if using the `sync working copy to repository` feature) | [Install git](https://git-scm.com/downloads)
 [`docker`](https://www.docker.com) | Docker is an open platform for developing, shipping, and running applications. | [Install Docker](https://docs.docker.com/get-docker/)
 
 

@@ -1,0 +1,23 @@
+---
+name: Build and Publish VSIX GitOps Extension Release
+on:
+  push:
+    tags:
+      - '**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: "actions/checkout@v2"
+    - uses: "actions/setup-node@v2"
+      with:
+        node-version: "16"
+    - name: Install dependencies
+      run: npm install
+    - run: npm run compile
+    - run: npm install -g vsce
+    - run: vsce package
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "vscode-gitops-tools-*.vsix"
+        token: ${{ secrets.DEPLOY_TOKEN }}
