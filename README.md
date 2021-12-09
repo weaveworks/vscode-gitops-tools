@@ -11,11 +11,11 @@
 
 Weaveworks GitOps Extension provides an intuitive way to manage, troubleshoot and operate your Kubernetes environment following the GitOps operating model, accelerating your development lifecycle and simplifying your continous delivery pipelines.
 
-Your feedback is very important to us, please help us by submitting issues for bugs, enhancements and share with us how you are using the extension. 
+Your feedback is very important to us, please help us by submitting issues for bugs, enhancements and share with us how you are using the extension.
 
 Weaveworks GitOps Extension integrates with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools), [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) and [`flux`](https://fluxcd.io/) for a consolidated and tightly integrated user experience.
 
-> This extension is under active development and currently available as an alpha product. 
+> This extension is under active development and currently available as an alpha product.
 
 # Getting started
 
@@ -38,6 +38,8 @@ Weaveworks GitOps Extension integrates with [Kubernetes Tools](https://marketpla
 - View Flux controller logs in the webview editor
 - Reconcile Sources and Workloads demand
 - Pull Git Repository Source to user machine and open it in VSCode
+- Create Git Repository from opened in vscode folder
+- Create Kustomization from opened in vscode folder
 - Preview short Kubernetes Object info in rich markdown table tooltips on hover for the loaded Clusters, Sources, and Workloads
 - Load Kubernetes Object manifest `.yaml` configs in vscode editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
 - Open [GitOps](https://www.weave.works/technologies/gitops/) Documentation links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics in your default web browser
