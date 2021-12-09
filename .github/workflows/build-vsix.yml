@@ -1,8 +1,8 @@
 ---
-name: Build VSIX GitOps Extension Release
+name: Build and Publish VSIX GitOps Extension Release
 on:
   push:
-    branches:
+    tags:
       - '**'
 jobs:
   build:
