@@ -236,7 +236,7 @@ class FluxTools {
 	}
 
 	async createKustomization(kustomizationName: string, sourceName: string, path: string) {
-		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${path}"`);
+		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${path}" --prune=true`);
 
 		if (createKustomizationShellResult?.code !== 0) {
 			window.showErrorMessage(createKustomizationShellResult.stderr);
