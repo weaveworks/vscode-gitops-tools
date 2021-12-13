@@ -1,6 +1,6 @@
 import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window, workspace } from 'vscode';
-import { azureTools } from '../azure/azureTools';
+import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { CommandId } from '../commands';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
@@ -90,9 +90,7 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 
 	let deployKey: string | undefined;
 
-	if (clusterProvider === ClusterProvider.AKS ||
-		clusterProvider === ClusterProvider.AzureARC) {
-
+	if (isAzureProvider(clusterProvider)) {
 		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterNode, clusterProvider);
 		deployKey = createGitRepoResult?.deployKey;
 		// az automatically creates a Kustomization

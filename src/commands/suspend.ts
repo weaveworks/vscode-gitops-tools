@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { azureTools } from '../azure/azureTools';
+import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource, FluxWorkload } from '../flux/fluxTypes';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
@@ -35,7 +35,7 @@ export async function suspend(node: GitRepositoryNode | HelmReleaseNode | Kustom
 		return;
 	}
 
-	if (clusterProvider === ClusterProvider.AKS || clusterProvider === ClusterProvider.AzureARC) {
+	if (isAzureProvider(clusterProvider)) {
 		// TODO: implement
 		if (fluxResourceType === 'helmrelease' || fluxResourceType === 'kustomization') {
 			window.showInformationMessage('Not implemented on AKS/ARC', { modal: true });

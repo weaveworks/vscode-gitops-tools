@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { azureTools } from '../azure/azureTools';
+import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
@@ -46,8 +46,7 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 		return;
 	}
 
-	if (clusterProvider === ClusterProvider.AKS ||
-		clusterProvider === ClusterProvider.AzureARC) {
+	if (isAzureProvider(clusterProvider)) {
 		await azureTools.deleteSource(sourceName, currentClusterNode, clusterProvider);
 	} else {
 		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);

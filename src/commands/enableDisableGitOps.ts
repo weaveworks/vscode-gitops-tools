@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { azureTools } from '../azure/azureTools';
+import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
@@ -35,8 +35,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
 		return;
 	}
 
-	if (clusterProvider === ClusterProvider.AKS ||
-		clusterProvider === ClusterProvider.AzureARC) {
+	if (isAzureProvider(clusterProvider)) {
 		// AKS/AKS ARC cluster
 		if (enableGitOps) {
 			await azureTools.enableGitOps(clusterNode, clusterProvider);
