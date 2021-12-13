@@ -110,7 +110,7 @@
 			},
 			{
 				"command": "gitops.flux.reconcileSource",
-				"title": "Reconcile Source",
+				"title": "Reconcile",
 				"category": "GitOps"
 			},
 			{
@@ -121,7 +121,7 @@
 			},
 			{
 				"command": "gitops.flux.reconcileWorkload",
-				"title": "Reconcile Workload",
+				"title": "Reconcile",
 				"category": "GitOps"
 			},
 			{
@@ -161,7 +161,7 @@
 			},
 			{
 				"command": "gitops.views.deleteSource",
-				"title": "Delete Source",
+				"title": "Delete",
 				"category": "GitOps"
 			},
 			{
