@@ -224,7 +224,6 @@ class AzureTools {
 		clusterNode: ClusterNode,
 		clusterProvider: AzureClusterProvider,
 	) {
-		// TODO: source name + kustomization name 64 letter length max?
 		const createKustomizationShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}" --prune true`,
 			clusterNode,

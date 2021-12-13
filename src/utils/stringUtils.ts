@@ -16,7 +16,7 @@ export function shortenRevision(revision = ''): string {
 
 /**
  * Remove not allowed symbols, cast letters to lowercase
- * and truncate the string to match the RFC 1123:
+ * and truncate the string to match the RFC 1123 subdomain:
  *
  * - contain no more than 253 characters
  * - contain only lowercase alphanumeric characters, '-' or '.'

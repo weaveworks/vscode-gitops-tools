@@ -2,6 +2,7 @@ import path from 'path';
 import { Uri, window, workspace } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
+import { validateKustomizationName } from '../flux/fluxUtils';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { getCurrentClusterNode, refreshWorkloadsTreeView } from '../views/treeViews';
@@ -59,6 +60,8 @@ export async function addKustomization(fileExplorerUri?: Uri) {
 		}
 	}
 
+	const isAzure = isAzureProvider(clusterProvider);
+
 	// TODO: when source doesn't exist - it needs different handling for azure provider (azure automatically creates a Kustomization)
 
 	let gitSourceExists = await checkIfOpenedFolderGitRepositorySourceExists();
@@ -83,8 +86,8 @@ export async function addKustomization(fileExplorerUri?: Uri) {
 
 	let newKustomizationName = await window.showInputBox({
 		title: 'Kustomization Name',
-		value: `${gitRepositoryName}-kustomization`,
-		validateInput: value => /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/.test(value) ? '' : `Invalid value: "${value}". A lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.`,
+		value: isAzure ? '' : `${gitRepositoryName}-kustomization`,
+		validateInput: value => validateKustomizationName(value, gitRepositoryName, isAzure),
 	});
 
 	if (newKustomizationName === undefined) {
