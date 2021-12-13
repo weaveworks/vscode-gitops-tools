@@ -1,6 +1,7 @@
 import { commands, Disposable, ExtensionContext } from 'vscode';
 import { addGitRepository } from './commands/addGitRepository';
 import { addKustomization } from './commands/addKustomization';
+import { copyResourceName } from './commands/copyResourceName';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxCheck } from './commands/fluxCheck';
@@ -60,6 +61,7 @@ export const enum CommandId {
 	PullGitRepository = 'gitops.views.pullGitRepository',
 	AddGitRepository = 'gitops.views.addGitRepository',
 	DeleteSource = 'gitops.views.deleteSource',
+	CopyResourceName = 'gitops.copyResourceName',
 
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
@@ -104,6 +106,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.AddGitRepository, addGitRepository);
 	registerCommand(CommandId.DeleteSource, deleteSource);
+	registerCommand(CommandId.CopyResourceName, copyResourceName);
 
 	// editor
 	registerCommand(CommandId.EditorOpenResource, openResource);

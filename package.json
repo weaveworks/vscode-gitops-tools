@@ -51,6 +51,7 @@
 		"onCommand:gitops.views.pullGitRepository",
 		"onCommand:gitops.views.addGitRepository",
 		"onCommand:gitops.views.deleteSource",
+		"onCommand:gitops.copyResourceName",
 		"onCommand:gitops.editor.openResource",
 		"onCommand:gitops.editor.showLogs",
 		"onCommand:gitops.output.show",
@@ -65,6 +66,11 @@
 			{
 				"command": "gitops.kubectl.version",
 				"title": "Kubectl Version",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.copyResourceName",
+				"title": "Copy Name",
 				"category": "GitOps"
 			},
 			{
@@ -337,11 +343,17 @@
 				},
 				{
 					"command": "gitops.flux.reconcileWorkload",
-					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/"
+					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
+					"group": "navigation@2"
 				},
 				{
 					"command": "gitops.editor.showLogs",
 					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /(Deployment;)/"
+				},
+				{
+					"command": "gitops.copyResourceName",
+					"when": "view =~ /^(gitops.views.sources|gitops.views.workloads)$/",
+					"group": "navigation@9"
 				}
 			],
 			"explorer/context": [
@@ -408,6 +420,10 @@
 				},
 				{
 					"command": "gitops.setClusterProvider",
+					"when": "never"
+				},
+				{
+					"command": "gitops.copyResourceName",
 					"when": "never"
 				}
 			]
