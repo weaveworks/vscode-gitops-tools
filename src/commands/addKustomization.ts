@@ -1,8 +1,10 @@
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
+import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
-import { refreshWorkloadsTreeView } from '../views/treeViews';
+import { ClusterProvider } from '../kubernetes/kubernetesTypes';
+import { getCurrentClusterNode, refreshWorkloadsTreeView } from '../views/treeViews';
 import { addGitRepository } from './addGitRepository';
 
 /**
@@ -12,6 +14,17 @@ import { addGitRepository } from './addGitRepository';
  * @param fileExplorerUri uri of the file in the file explorer
  */
 export async function addKustomization(fileExplorerUri?: Uri) {
+
+	const currentClusterNode = getCurrentClusterNode();
+	if (!currentClusterNode) {
+		return;
+	}
+
+	const clusterProvider = await currentClusterNode.getClusterProvider();
+	if (clusterProvider === ClusterProvider.Unknown) {
+		return;
+	}
+
 	let kustomizationFsPath = '';
 	let relativeKustomizationPath = '';
 	/** Use this fsPath to create Git Repository when it doesn't exist  */
@@ -46,6 +59,8 @@ export async function addKustomization(fileExplorerUri?: Uri) {
 		}
 	}
 
+	// TODO: when source doesn't exist - it needs different handling for azure provider (azure automatically creates a Kustomization)
+
 	let gitSourceExists = await checkIfOpenedFolderGitRepositorySourceExists();
 	let gitRepositoryName = gitSourceExists?.gitRepositoryName;
 
@@ -72,11 +87,19 @@ export async function addKustomization(fileExplorerUri?: Uri) {
 		validateInput: value => /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/.test(value) ? '' : `Invalid value: "${value}". A lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.`,
 	});
 
+	if (newKustomizationName === undefined) {
+		return;
+	}
+
 	if (!newKustomizationName) {
 		newKustomizationName = gitRepositoryName;
 	}
 
-	await fluxTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath);
+	if (isAzureProvider(clusterProvider)) {
+		await azureTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath, currentClusterNode, clusterProvider);
+	} else {
+		await fluxTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath);
+	}
 
 	refreshWorkloadsTreeView();
 }

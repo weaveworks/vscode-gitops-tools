@@ -8,6 +8,14 @@ import { askUserForAzureMetadata } from './getAzureMetadata';
 
 type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 
+/**
+ * Return true when the cluster provider is either AKS or Azure Arc.
+ */
+export function isAzureProvider(provider: ClusterProvider): provider is AzureClusterProvider {
+	return provider === ClusterProvider.AKS || provider === ClusterProvider.AzureARC;
+}
+
+
 export const enum AzureConstants {
 	ArcNamespace = 'azure-arc',
 	KubeSystemNamespace = 'kube-system',
@@ -199,6 +207,34 @@ class AzureTools {
 		return {
 			deployKey: output.repositoryPublicKey,
 		};
+	}
+
+	/**
+	 * Create Kustomization.
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux/kustomization?view=azure-cli-latest#az_k8s_configuration_flux_kustomization_create
+	 *
+	 * @param kustomizationName name of the new kustomization
+	 * @param gitRepositoryName git source name of the new kustomization
+	 * @param kustomizationPath kustomization spec path property value
+	 */
+	async createKustomization(
+		kustomizationName: string,
+		gitRepositoryName: string,
+		kustomizationPath: string,
+		clusterNode: ClusterNode,
+		clusterProvider: AzureClusterProvider,
+	) {
+		// TODO: source name + kustomization name 64 letter length max?
+		const createKustomizationShellResult = await this.invokeAzCommand(
+			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}" --prune true`,
+			clusterNode,
+			clusterProvider,
+		);
+
+		if (createKustomizationShellResult?.code !== 0) {
+			window.showErrorMessage(createKustomizationShellResult?.stderr || '');
+			return;
+		}
 	}
 
 	/**
