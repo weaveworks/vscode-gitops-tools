@@ -51,6 +51,7 @@
 		"onCommand:gitops.views.pullGitRepository",
 		"onCommand:gitops.views.addGitRepository",
 		"onCommand:gitops.views.deleteSource",
+		"onCommand:gitops.views.showWorkloadsHelpMessage",
 		"onCommand:gitops.copyResourceName",
 		"onCommand:gitops.editor.openResource",
 		"onCommand:gitops.editor.showLogs",
@@ -163,6 +164,12 @@
 				"command": "gitops.views.deleteSource",
 				"title": "Delete",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.showWorkloadsHelpMessage",
+				"title": "Workloads include Helm Releases and Kustomizations, as well as a tree of all other objects created by them",
+				"category": "GitOps",
+				"icon": "$(question)"
 			},
 			{
 				"command": "gitops.editor.openResource",
@@ -295,7 +302,12 @@
 				},
 				{
 					"command": "gitops.views.refreshWorkloadTreeView",
-					"group": "navigation",
+					"group": "navigation@1",
+					"when": "view == gitops.views.workloads"
+				},
+				{
+					"command": "gitops.views.showWorkloadsHelpMessage",
+					"group": "navigation@2",
 					"when": "view == gitops.views.workloads"
 				}
 			],
@@ -424,6 +436,10 @@
 				},
 				{
 					"command": "gitops.copyResourceName",
+					"when": "never"
+				},
+				{
+					"command": "gitops.views.showWorkloadsHelpMessage",
 					"when": "never"
 				}
 			]

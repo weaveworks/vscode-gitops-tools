@@ -16,6 +16,7 @@ import { setClusterProvider } from './commands/setClusterProvider';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
 import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
+import { showWorkloadsHelpMessage } from './commands/showWorkloadsHelpMessage';
 import { suspend } from './commands/suspend';
 import { showOutputChannel } from './output';
 import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
@@ -60,6 +61,7 @@ export const enum CommandId {
 	RefreshWorkloadsTreeView = 'gitops.views.refreshWorkloadTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
 	AddGitRepository = 'gitops.views.addGitRepository',
+	ShowWorkloadsHelpMessage = 'gitops.views.showWorkloadsHelpMessage',
 	DeleteSource = 'gitops.views.deleteSource',
 	CopyResourceName = 'gitops.copyResourceName',
 
@@ -105,6 +107,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadsTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.AddGitRepository, addGitRepository);
+	registerCommand(CommandId.ShowWorkloadsHelpMessage, showWorkloadsHelpMessage);
 	registerCommand(CommandId.DeleteSource, deleteSource);
 	registerCommand(CommandId.CopyResourceName, copyResourceName);
 
