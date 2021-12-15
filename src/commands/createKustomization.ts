@@ -153,6 +153,15 @@ async function createKustomizationAzureCluster(
 	}
 
 	if (!gitRepositoryName) {
+
+		const createGitSourceButton = 'Create Git Repository';
+		const modalResult = await window.showWarningMessage('Git repository source does not exist yet.', {
+			modal: true,
+		}, createGitSourceButton);
+		if (modalResult !== createGitSourceButton) {
+			return;
+		}
+
 		await createGitRepository(workspaceFolderUri, newKustomizationName, relativeKustomizationPath);
 	} else {
 		await azureTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath, clusterNode, clusterProvider);
