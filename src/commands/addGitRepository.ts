@@ -8,7 +8,6 @@ import { checkGitVersion } from '../install';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { sanitizeRFC1123 } from '../utils/stringUtils';
-import { delay } from '../utils/utils';
 import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
@@ -17,7 +16,7 @@ import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView
  * of the new git repository source.
  * @param fileExplorerUri uri of the file in the file explorer
  */
-export async function addGitRepository(fileExplorerUri?: Uri) {
+export async function addGitRepository(fileExplorerUri?: Uri, kustomizationName?: string, kustomizationPath?: string) {
 
 	const gitInstalled = await checkGitVersion();
 	if (!gitInstalled) {
@@ -91,7 +90,7 @@ export async function addGitRepository(fileExplorerUri?: Uri) {
 	let deployKey: string | undefined;
 
 	if (isAzureProvider(clusterProvider)) {
-		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterNode, clusterProvider);
+		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterNode, clusterProvider, kustomizationName, kustomizationPath);
 		deployKey = createGitRepoResult?.deployKey;
 		// az automatically creates a Kustomization
 		refreshWorkloadsTreeView();

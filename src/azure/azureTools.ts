@@ -6,7 +6,7 @@ import { parseJson } from '../utils/jsonUtils';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { askUserForAzureMetadata } from './getAzureMetadata';
 
-type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
+export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 
 /**
  * Return true when the cluster provider is either AKS or Azure Arc.
@@ -171,7 +171,7 @@ class AzureTools {
 	}
 
 	/**
-	 * Create git repository source.
+	 * Create git repository source (optionally, with a Kustomization).
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_create
 	 *
 	 * @param newGitRepositorySourceName kubernetes resource name
@@ -180,6 +180,8 @@ class AzureTools {
 	 * @param isSSH true when the git url protocol is SSH
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
+	 * @param kustomizationName new kustomization name
+	 * @param kustomizationPath new kustozmiation path
 	 */
 	async createGitRepository(
 		newGitRepositorySourceName: string,
@@ -188,9 +190,17 @@ class AzureTools {
 		isSSH: boolean,
 		clusterNode: ClusterNode,
 		clusterProvider: AzureClusterProvider,
+		kustomizationName?: string,
+		kustomizationPath?: string,
 	): Promise<{ deployKey: string; } | undefined> {
+
+		let kustomizationQueryPart = '';
+		if (kustomizationName !== undefined && kustomizationPath !== undefined) {
+			kustomizationQueryPart = `--kustomization name=${kustomizationName} path=${kustomizationPath} prune=true`;
+		}
+
 		const gitCreateShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux create -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch}`,
+			`az k8s-configuration flux create -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch} ${kustomizationQueryPart}`,
 			clusterNode,
 			clusterProvider,
 		);

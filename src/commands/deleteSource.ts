@@ -7,7 +7,7 @@ import { ClusterProvider, KubernetesObjectKinds } from '../kubernetes/kubernetes
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
-import { getCurrentClusterNode, refreshSourcesTreeView } from '../views/treeViews';
+import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
  * Delete a source
@@ -48,6 +48,7 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 
 	if (isAzureProvider(clusterProvider)) {
 		await azureTools.deleteSource(sourceName, currentClusterNode, clusterProvider);
+		refreshWorkloadsTreeView();
 	} else {
 		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);
 	}
