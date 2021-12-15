@@ -1,6 +1,6 @@
 import { commands, Disposable, ExtensionContext } from 'vscode';
-import { addGitRepository } from './commands/addGitRepository';
-import { addKustomization } from './commands/addKustomization';
+import { createGitRepository } from './commands/createGitRepository';
+import { createKustomization } from './commands/createKustomization';
 import { copyResourceName } from './commands/copyResourceName';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
@@ -45,7 +45,6 @@ export const enum CommandId {
 	// flux
 	Suspend = 'gitops.suspend',
 	Resume = 'gitops.resume',
-	AddKustomization = 'gitops.addKustomization',
 	FluxCheck = 'gitops.flux.check',
 	FluxCheckPrerequisites = 'gitops.flux.checkPrerequisites',
 	FluxEnableGitOps = 'gitops.flux.install',
@@ -60,7 +59,8 @@ export const enum CommandId {
 	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
 	RefreshWorkloadsTreeView = 'gitops.views.refreshWorkloadTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
-	AddGitRepository = 'gitops.views.addGitRepository',
+	CreateGitRepository = 'gitops.views.createGitRepository',
+	CreateKustomization = 'gitops.createKustomization',
 	ShowWorkloadsHelpMessage = 'gitops.views.showWorkloadsHelpMessage',
 	DeleteSource = 'gitops.views.deleteSource',
 	CopyResourceName = 'gitops.copyResourceName',
@@ -91,7 +91,7 @@ export function registerCommands(context: ExtensionContext) {
 	// flux
 	registerCommand(CommandId.Suspend, suspend);
 	registerCommand(CommandId.Resume, resume);
-	registerCommand(CommandId.AddKustomization, addKustomization);
+	registerCommand(CommandId.CreateKustomization, createKustomization);
 	registerCommand(CommandId.FluxCheck, fluxCheck);
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);
@@ -106,7 +106,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourcesTreeView);
 	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadsTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
-	registerCommand(CommandId.AddGitRepository, addGitRepository);
+	registerCommand(CommandId.CreateGitRepository, createGitRepository);
 	registerCommand(CommandId.ShowWorkloadsHelpMessage, showWorkloadsHelpMessage);
 	registerCommand(CommandId.DeleteSource, deleteSource);
 	registerCommand(CommandId.CopyResourceName, copyResourceName);

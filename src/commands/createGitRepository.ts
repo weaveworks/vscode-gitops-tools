@@ -16,7 +16,7 @@ import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView
  * of the new git repository source.
  * @param fileExplorerUri uri of the file in the file explorer
  */
-export async function addGitRepository(fileExplorerUri?: Uri, kustomizationName?: string, kustomizationPath?: string) {
+export async function createGitRepository(fileExplorerUri?: Uri, kustomizationName?: string, kustomizationPath?: string) {
 
 	const gitInstalled = await checkGitVersion();
 	if (!gitInstalled) {

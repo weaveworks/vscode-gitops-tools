@@ -7,7 +7,7 @@ import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpen
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterNode } from '../views/nodes/clusterNode';
 import { getCurrentClusterNode, refreshWorkloadsTreeView } from '../views/treeViews';
-import { addGitRepository } from './addGitRepository';
+import { createGitRepository } from './createGitRepository';
 
 /**
  * Create kustomization from File Explorer context menu
@@ -15,7 +15,7 @@ import { addGitRepository } from './addGitRepository';
  *
  * @param fileExplorerUri uri of the file in the file explorer
  */
-export async function addKustomization(fileExplorerUri?: Uri): Promise<void> {
+export async function createKustomization(fileExplorerUri?: Uri): Promise<void> {
 
 	const clusterNode = getCurrentClusterNode();
 	if (!clusterNode) {
@@ -73,9 +73,9 @@ export async function addKustomization(fileExplorerUri?: Uri): Promise<void> {
 	let gitRepositoryName = gitSourceExists?.gitRepositoryName;
 
 	if (isAzureProvider(clusterProvider)) {
-		await addKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, clusterNode, clusterProvider);
+		await createKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, clusterNode, clusterProvider);
 	} else {
-		await addKustomizationGenericCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri);
+		await createKustomizationGenericCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri);
 	}
 
 	refreshWorkloadsTreeView();
@@ -88,7 +88,7 @@ export async function addKustomization(fileExplorerUri?: Uri): Promise<void> {
  * @param relativeKustomizationPath future kustomization's spec `path` value
  * @param workspaceFolderUri opened in vscode folder containing the relative path
  */
-async function addKustomizationGenericCluster(
+async function createKustomizationGenericCluster(
 	gitRepositoryName: string | undefined,
 	relativeKustomizationPath: string,
 	workspaceFolderUri: Uri,
@@ -103,7 +103,7 @@ async function addKustomizationGenericCluster(
 			return;
 		}
 
-		gitRepositoryName = await addGitRepository(workspaceFolderUri);
+		gitRepositoryName = await createGitRepository(workspaceFolderUri);
 	}
 
 	if (!gitRepositoryName) {
@@ -135,7 +135,7 @@ async function addKustomizationGenericCluster(
  * @param relativeKustomizationPath future kustomization's spec `path` value
  * @param workspaceFolderUri opened in vscode folder containing the relative path
  */
-async function addKustomizationAzureCluster(
+async function createKustomizationAzureCluster(
 	gitRepositoryName: string | undefined,
 	relativeKustomizationPath: string,
 	workspaceFolderUri: Uri,
@@ -154,7 +154,7 @@ async function addKustomizationAzureCluster(
 	}
 
 	if (!gitRepositoryName) {
-		await addGitRepository(workspaceFolderUri, newKustomizationName, relativeKustomizationPath);
+		await createGitRepository(workspaceFolderUri, newKustomizationName, relativeKustomizationPath);
 	} else {
 		await azureTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath, clusterNode, clusterProvider);
 	}

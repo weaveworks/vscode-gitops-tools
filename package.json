@@ -36,7 +36,7 @@
 		"onCommand:gitops.kubectl.version",
 		"onCommand:gitops.suspend",
 		"onCommand:gitops.resume",
-		"onCommand:gitops.addKustomization",
+		"onCommand:gitops.createKustomization",
 		"onCommand:gitops.setClusterProvider",
 		"onCommand:gitops.flux.check",
 		"onCommand:gitops.flux.checkPrerequisites",
@@ -49,7 +49,7 @@
 		"onCommand:gitops.views.refreshSourceTreeView",
 		"onCommand:gitops.views.refreshWorkloadTreeView",
 		"onCommand:gitops.views.pullGitRepository",
-		"onCommand:gitops.views.addGitRepository",
+		"onCommand:gitops.views.createGitRepository",
 		"onCommand:gitops.views.deleteSource",
 		"onCommand:gitops.views.showWorkloadsHelpMessage",
 		"onCommand:gitops.copyResourceName",
@@ -149,13 +149,13 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.views.addGitRepository",
+				"command": "gitops.views.createGitRepository",
 				"title": "Add Git Repository Source",
 				"icon": "$(add)",
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.addKustomization",
+				"command": "gitops.createKustomization",
 				"title": "Add Kustomization",
 				"icon": "$(add)",
 				"category": "GitOps"
@@ -281,12 +281,12 @@
 					"when": "view == gitops.views.clusters"
 				},
 				{
-					"command": "gitops.views.addGitRepository",
+					"command": "gitops.views.createGitRepository",
 					"group": "navigation@0",
 					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
 				},
 				{
-					"command": "gitops.addKustomization",
+					"command": "gitops.createKustomization",
 					"group": "navigation@0",
 					"when": "view == gitops.views.workloads"
 				},
@@ -370,7 +370,7 @@
 			],
 			"explorer/context": [
 				{
-					"command": "gitops.views.addGitRepository",
+					"command": "gitops.views.createGitRepository",
 					"when": "gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
 				},
 				{
@@ -378,7 +378,7 @@
 					"when": "gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
 				},
 				{
-					"command": "gitops.addKustomization"
+					"command": "gitops.createKustomization"
 				}
 			],
 			"commandPalette": [
