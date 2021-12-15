@@ -37,7 +37,6 @@ export async function createKustomization(fileExplorerUri?: Uri): Promise<void> 
 		kustomizationFsPath = fileExplorerUri.fsPath;
 	} else {
 		// executed from Command Palette or from `+` button in Workloads tree view
-		// TODO: handle when no folder is opened?
 		const pickedFolder = await window.showOpenDialog({
 			title: 'Select a folder (used for "path" property on the new Kustomization object)',
 			canSelectFiles: false,

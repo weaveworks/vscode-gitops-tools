@@ -288,7 +288,7 @@
 				{
 					"command": "gitops.createKustomization",
 					"group": "navigation@0",
-					"when": "view == gitops.views.workloads"
+					"when": "view == gitops.views.workloads && workspaceFolderCount > 0"
 				},
 				{
 					"command": "gitops.flux.reconcileRepository",
