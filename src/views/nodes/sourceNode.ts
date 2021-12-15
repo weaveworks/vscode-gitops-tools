@@ -23,15 +23,26 @@ export class SourceNode extends TreeNode {
 
 		this.resource = source;
 
-		// update fetch failed status (should go before hover)
+		// update reconciliation status
 		this.updateStatus(source);
-
-		// show shortened revision in node description
-		this.updateRevision(source);
 	}
 
 	get tooltip() {
 		return this.getMarkdownHover(this.resource);
+	}
+
+	// @ts-ignore
+	get description() {
+		const isSuspendIcon = this.resource.spec?.suspend ? '⏸ ' : '';
+		let revisionOrError = '';
+
+		if (this.isReconcileFailed) {
+			revisionOrError = `${this.resource.status.conditions?.[0].reason}`;
+		} else {
+			revisionOrError = shortenRevision(this.resource.status.artifact?.revision);
+		}
+
+		return `${isSuspendIcon}${revisionOrError}`;
 	}
 
 	/**
@@ -63,17 +74,6 @@ export class SourceNode extends TreeNode {
 		} else {
 			this.setIcon(TreeNodeIcon.Success);
 			this.isReconcileFailed = false;
-		}
-	}
-
-	/**
-	 * Show shortened revision in node description
-	 */
-	updateRevision(source: GitRepository | HelmRepository | Bucket) {
-		this.description = shortenRevision(source.status.artifact?.revision);
-
-		if (this.isReconcileFailed) {
-			this.description = `${source.status.conditions?.[0].reason}`;
 		}
 	}
 }

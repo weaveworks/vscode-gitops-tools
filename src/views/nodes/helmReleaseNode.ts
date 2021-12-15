@@ -20,8 +20,6 @@ export class HelmReleaseNode extends WorkloadNode {
 	constructor(helmRelease: HelmRelease) {
 		super(helmRelease.metadata?.name || '', helmRelease);
 
-		this.description = KubernetesObjectKinds.HelmRelease;
-
 		this.resource = helmRelease;
 
 		this.makeCollapsible();

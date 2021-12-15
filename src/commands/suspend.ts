@@ -49,6 +49,9 @@ export async function suspend(node: GitRepositoryNode | HelmReleaseNode | Kustom
 
 	if (node instanceof GitRepositoryNode) {
 		refreshSourcesTreeView();
+		if (isAzureProvider(clusterProvider)) {
+			refreshWorkloadsTreeView();
+		}
 	} else {
 		refreshWorkloadsTreeView();
 	}

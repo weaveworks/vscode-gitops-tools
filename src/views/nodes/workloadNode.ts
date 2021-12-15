@@ -45,6 +45,12 @@ export class WorkloadNode extends TreeNode {
 		return this.getMarkdownHover(this.resource);
 	}
 
+	// @ts-ignore
+	get description() {
+		const isSuspendIcon = this.resource.spec?.suspend ? '⏸ ' : '';
+		return `${isSuspendIcon}${this.resource.kind}`;
+	}
+
 	/**
 	 * Creates markdwon string for Source tree view item tooltip.
 	 * @param resource GitRepository, HelmRepository or Bucket kubernetes object.

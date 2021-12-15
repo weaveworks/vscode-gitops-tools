@@ -19,8 +19,6 @@ export class KustomizationNode extends WorkloadNode {
 	constructor(kustomization: Kustomize) {
 		super(kustomization.metadata?.name || '', kustomization);
 
-		this.description = KubernetesObjectKinds.Kustomization;
-
 		this.resource = kustomization;
 
 		this.makeCollapsible();

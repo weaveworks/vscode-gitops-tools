@@ -47,6 +47,9 @@ export async function resume(node: GitRepositoryNode | HelmReleaseNode | Kustomi
 
 	if (node instanceof GitRepositoryNode) {
 		refreshSourcesTreeView();
+		if (isAzureProvider(clusterProvider)) {
+			refreshWorkloadsTreeView();
+		}
 	} else {
 		refreshWorkloadsTreeView();
 	}
