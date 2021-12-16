@@ -2,6 +2,23 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.15.0 - [2021-12-16]
+
+- [#157](https://github.com/weaveworks/vscode-gitops-tools/issues/157)
+Allow user to create a Kustomization from a path in local open repository (ARC)
+- [#158](https://github.com/weaveworks/vscode-gitops-tools/issues/158)
+Allow user to create a Kustomization from a path in local open repository (AKS)
+- [#172](https://github.com/weaveworks/vscode-gitops-tools/issues/172)
+Add tooltip to Workloads to describe what is included in that definition
+- [#175](https://github.com/weaveworks/vscode-gitops-tools/issues/175)
+Copy resource name
+- [#180](https://github.com/weaveworks/vscode-gitops-tools/issues/180)
+Show suspend status for Sources and Workloads
+- [#181](https://github.com/weaveworks/vscode-gitops-tools/issues/181)
+dependabot reported vulnerabilities
+- [#182](https://github.com/weaveworks/vscode-gitops-tools/issues/182)
+Package Sprint 15 release
+
 # v0.14.0 - [2021-12-09]
 
 - [#106](https://github.com/weaveworks/vscode-gitops-tools/issues/106)
