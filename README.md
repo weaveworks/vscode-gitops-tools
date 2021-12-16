@@ -32,7 +32,7 @@ Once you have satisfied these requirements, you are ready to install the GitOps 
 
 # Dependencies
 
-The GitOps Extension depends on the [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) extension, which will be automatically installed on your system if you don't already have it. 
+The GitOps Extension depends on the [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) extension, which will be automatically installed on your system if you don't already have it.
 
 You will need `kubectl`, and `flux` CLI at the minimum to use this GitOps extension and its Kubernetes cluster management operations.
 
@@ -41,8 +41,8 @@ For users running clusters in Azure including AKS and Arc clusters, the `az` com
 Tool | Description | Installation
 --- | --- | ---
 [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) | The kubectl command line tool lets you control Kubernetes clusters.  | [Install Kubectl](https://kubectl.docs.kubernetes.io/installation/kubectl/)
-[`Flux` CLI](https://fluxcd.io) | Flux is a set of continuous and progressive delivery solutions for Kubernetes. | [Install Flux CLI](https://fluxcd.io/docs/installation/#install-the-flux-cli)
-[`git`](https://git-scm.com) | Git is a free and open source distributed version control system. (only if using the `sync working copy to repository` feature) | [Install git](https://git-scm.com/downloads)
+[`flux`](https://fluxcd.io) | Flux is a set of continuous and progressive delivery solutions for Kubernetes. | [Install Flux CLI](https://fluxcd.io/docs/installation/#install-the-flux-cli)
+[`git`](https://git-scm.com) | Git is a free and open source distributed version control system. | [Install git](https://git-scm.com/downloads)
 
 Optional tools:
 
