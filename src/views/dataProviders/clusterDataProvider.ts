@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { ContextTypes, setContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../context';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
@@ -31,21 +31,21 @@ export class ClusterDataProvider extends DataProvider {
 	async buildTree(): Promise<ClusterNode[]> {
 
 		this.isFinishedBuildingTree = false;
-		setContext(ContextTypes.NoClusters, false);
+		setVSCodeContext(ContextTypes.NoClusters, false);
 		statusBar.startLoadingTree();
-		setContext(ContextTypes.LoadingClusters, true);
+		setVSCodeContext(ContextTypes.LoadingClusters, true);
 
-		// load configured kubernetes clusters
-		const clusters = await kubernetesTools.getClusters();
-		if (!clusters) {
-			setContext(ContextTypes.NoClusters, true);
+		const contexts = await kubernetesTools.getContexts();
+
+		if (!contexts) {
+			setVSCodeContext(ContextTypes.NoClusters, true);
 			return [];
 		}
 
 		const clusterNodes: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
-		for (const cluster of clusters) {
+		for (const cluster of contexts) {
 			const clusterNode = new ClusterNode(cluster);
 			if (cluster.name === currentContext) {
 				clusterNode.isCurrent = true;
@@ -73,7 +73,7 @@ export class ClusterDataProvider extends DataProvider {
 
 		statusBar.stopLoadingTree();
 		this.isFinishedBuildingTree = true;
-		setContext(ContextTypes.LoadingClusters, false);
+		setVSCodeContext(ContextTypes.LoadingClusters, false);
 
 		this.clusterNodes = clusterNodes;
 		return clusterNodes;

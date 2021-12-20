@@ -1,4 +1,4 @@
-import { ContextTypes, setContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../context';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
 import { BucketNode } from '../nodes/bucketNode';
@@ -22,7 +22,7 @@ export class SourceDataProvider extends DataProvider {
 
 		const treeItems: SourceNode[] = [];
 
-		setContext(ContextTypes.LoadingSources, true);
+		setVSCodeContext(ContextTypes.LoadingSources, true);
 
 		// load git repositories for the current cluster
 		const gitRepositories = await kubernetesTools.getGitRepositories();
@@ -48,8 +48,8 @@ export class SourceDataProvider extends DataProvider {
 			}
 		}
 
-		setContext(ContextTypes.LoadingSources, false);
-		setContext(ContextTypes.NoSources, treeItems.length === 0);
+		setVSCodeContext(ContextTypes.LoadingSources, false);
+		setVSCodeContext(ContextTypes.NoSources, treeItems.length === 0);
 		statusBar.stopLoadingTree();
 
 		return treeItems;

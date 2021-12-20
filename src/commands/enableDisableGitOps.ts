@@ -27,7 +27,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
 	}
 
 	const enableGitOpsButton = enableGitOps ? 'Enable' : 'Disable';
-	const confirmationMessage = `Do you want to	${enableGitOps ? 'enable' : 'disable'} GitOps on the "${clusterNode.name}" cluster?`;
+	const confirmationMessage = `Do you want to	${enableGitOps ? 'enable' : 'disable'} GitOps on the "${clusterNode.clusterName}" cluster?`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, enableGitOpsButton);
@@ -44,7 +44,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
 		}
 	} else {
 		// generic cluster
-		const context = clusterNode.name;
+		const context = clusterNode.contextName;
 		if (enableGitOps) {
 			await fluxTools.install(context);
 		} else {

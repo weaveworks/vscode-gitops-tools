@@ -1,6 +1,6 @@
 import { workspace } from 'vscode';
 import { getGitRepositoryState, nameGitRepositorySource } from '../commands/createGitRepository';
-import { ContextTypes, setContext } from '../context';
+import { ContextTypes, setVSCodeContext } from '../context';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 
 /**
@@ -42,8 +42,8 @@ export async function checkIfOpenedFolderGitRepositorySourceExists() {
 		}
 	}
 
-	setContext(ContextTypes.OpenFolderGitRepositoryExist, gitRepositoryExists);
-	setContext(ContextTypes.OpenFolderGitRepositoryExistDetermined, true);
+	setVSCodeContext(ContextTypes.OpenFolderGitRepositoryExist, gitRepositoryExists);
+	setVSCodeContext(ContextTypes.OpenFolderGitRepositoryExistDetermined, true);
 
 
 	if (gitRepositoryExistsName && gitRepositoryExistsNamespace) {

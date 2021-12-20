@@ -48,6 +48,6 @@ export type ContextKey = keyof ContextValues;
  * Type-safe way to set context for future use in:
  * menus, keybindings, welcomeView...
  */
-export async function setContext<T extends ContextKey>(context: T, value: ContextValues[T]) {
+export async function setVSCodeContext<T extends ContextKey>(context: T, value: ContextValues[T]) {
 	return await commands.executeCommand(CommandId.VSCodeSetContext, context, value);
 }

@@ -1,4 +1,4 @@
-import { ContextTypes, setContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../context';
 import { fluxTools } from '../../flux/fluxTools';
 import { FluxTreeResources } from '../../flux/fluxTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
@@ -30,7 +30,7 @@ export class WorkloadDataProvider extends DataProvider {
 
 		const workloadNodes: WorkloadNode[] = [];
 
-		setContext(ContextTypes.LoadingWorkloads, true);
+		setVSCodeContext(ContextTypes.LoadingWorkloads, true);
 
 		const [kustomizations, helmReleases, namespaces] = await Promise.all([
 			// Fetch all workloads
@@ -60,8 +60,8 @@ export class WorkloadDataProvider extends DataProvider {
 			this.updateWorkloadChildren(node);
 		}
 
-		setContext(ContextTypes.LoadingWorkloads, false);
-		setContext(ContextTypes.NoWorkloads, workloadNodes.length === 0);
+		setVSCodeContext(ContextTypes.LoadingWorkloads, false);
+		setVSCodeContext(ContextTypes.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
 		return workloadNodes;

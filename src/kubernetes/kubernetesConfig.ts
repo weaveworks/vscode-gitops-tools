@@ -5,15 +5,8 @@
 export interface KubernetesConfig {
 	readonly apiVersion: string;
 	readonly 'current-context': string;
-	readonly clusters: Cluster[] | undefined;
-	readonly contexts: {
-		readonly name: string;
-		readonly context: {
-			readonly cluster: string;
-			readonly user: string;
-			readonly namespace?: string;
-		};
-	}[] | undefined;
+	readonly clusters: KubernetesCluster[] | undefined;
+	readonly contexts: KubernetesContext[] | undefined;
 	readonly users: {
 		readonly name: string;
 		readonly user: Record<string, unknown>;
@@ -21,9 +14,9 @@ export interface KubernetesConfig {
 }
 
 /**
- * Cluster info from `kubectl config view`.
+ * Cluster info object.
  */
-export interface Cluster {
+export interface KubernetesCluster {
 	readonly name: string;
 	readonly cluster: {
 		readonly server: string;
@@ -31,3 +24,24 @@ export interface Cluster {
 		readonly 'certificate-authority-data'?: string;
 	};
 }
+
+/**
+ * Context info object.
+ */
+export interface KubernetesContext {
+	readonly name: string;
+	readonly context: {
+		readonly cluster: string;
+		readonly user: string;
+		readonly namespace?: string;
+	};
+}
+
+/**
+ * Kubernetes context but with cluster object inside it.
+ */
+export type KubernetesContextWithCluster = KubernetesContext & {
+	context: {
+		clusterInfo?: KubernetesCluster;
+	};
+};

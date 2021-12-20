@@ -2,7 +2,7 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { AzureConstants } from '../azure/azureTools';
-import { ContextTypes, setContext } from '../context';
+import { ContextTypes, setVSCodeContext } from '../context';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
 import { parseJson } from '../utils/jsonUtils';
@@ -10,7 +10,7 @@ import { BucketResult } from './bucket';
 import { GitRepositoryResult } from './gitRepository';
 import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
-import { KubernetesConfig } from './kubernetesConfig';
+import { KubernetesConfig, KubernetesContextWithCluster } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
 import { ClusterProvider, ConfigMap, DeploymentResult, KubectlVersionResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
@@ -104,11 +104,11 @@ class KubernetesTools {
 		const currentContextShellResult = await this.invokeKubectlCommand('config current-context');
 		if (!currentContextShellResult || currentContextShellResult.stderr) {
 			console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
-			setContext(ContextTypes.NoClusterSelected, true);
+			setVSCodeContext(ContextTypes.NoClusterSelected, true);
 			return;
 		}
 		const currentContext = currentContextShellResult.stdout.trim();
-		setContext(ContextTypes.NoClusterSelected, !currentContext);
+		setVSCodeContext(ContextTypes.NoClusterSelected, !currentContext);
 		return currentContext;
 	}
 
@@ -132,10 +132,10 @@ class KubernetesTools {
 			return;
 		}
 
-		setContext(ContextTypes.NoClusterSelected, false);
-		setContext(ContextTypes.CurrentClusterGitOpsNotEnabled, false);
-		setContext(ContextTypes.NoSources, false);
-		setContext(ContextTypes.NoWorkloads, false);
+		setVSCodeContext(ContextTypes.NoClusterSelected, false);
+		setVSCodeContext(ContextTypes.CurrentClusterGitOpsNotEnabled, false);
+		setVSCodeContext(ContextTypes.NoSources, false);
+		setVSCodeContext(ContextTypes.NoWorkloads, false);
 		this.clusterSupportedResourceKinds = undefined;
 
 		// TODO: maybe emit an event?
@@ -147,14 +147,22 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Gets all clusters from the local kubectl config.
+	 * Get a list of contexts from kubeconfig.
+	 * Also add cluster info to the context objects.
 	 */
-	async getClusters() {
-		const kubectlConfigValue = await this.getKubectlConfig();
-		if (!kubectlConfigValue) {
+	async getContexts(): Promise<KubernetesContextWithCluster[] | undefined> {
+		const kubectlConfig = await this.getKubectlConfig();
+		if (!kubectlConfig || !kubectlConfig.contexts) {
 			return;
 		}
-		return kubectlConfigValue.clusters;
+
+		return kubectlConfig.contexts.map((context: KubernetesContextWithCluster) => {
+			const clusterInfo = kubectlConfig.clusters?.find(cluster => cluster.name === context.context.cluster);
+			if (clusterInfo) {
+				context.context.clusterInfo = clusterInfo;
+			}
+			return context;
+		});
 	}
 
 	/**
@@ -267,10 +275,10 @@ class KubernetesTools {
 	/**
 	 * Return true if gitops is enabled in the current cluster.
 	 * Function checks if `flux-system` namespace contains flux controllers.
-	 * @param clusterName target cluster name
+	 * @param contextName target cluster name
 	 */
-	async isGitOpsEnabled(clusterName: string) {
-		const fluxControllers = await this.getFluxControllers(clusterName);
+	async isGitOpsEnabled(contextName: string) {
+		const fluxControllers = await this.getFluxControllers(contextName);
 
 		if (!fluxControllers) {
 			return;

@@ -41,7 +41,7 @@ class AzureTools {
 		let azureMetadata = await this.getAzureMetadata(clusterNode, clusterProvider);
 		if (!azureMetadata) {
 			window.showWarningMessage('Failed to get Azure resource name, resource group, subscription ID.');
-			azureMetadata = await askUserForAzureMetadata(clusterNode.name);
+			azureMetadata = await askUserForAzureMetadata(clusterNode.contextName);
 		}
 
 		if (!azureMetadata) {
@@ -67,9 +67,9 @@ class AzureTools {
 
 		let configMapShellResult: ShellResult | undefined;
 		if (clusterProvider === ClusterProvider.AKS) {
-			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps extension-manager-config -n ${AzureConstants.KubeSystemNamespace} --context=${clusterNode.name} --ignore-not-found -o json`);
+			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps extension-manager-config -n ${AzureConstants.KubeSystemNamespace} --context=${clusterNode.contextName} --ignore-not-found -o json`);
 		} else {
-			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${clusterNode.name} --ignore-not-found -o json`);
+			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${clusterNode.contextName} --ignore-not-found -o json`);
 		}
 
 		if (configMapShellResult?.code !== 0) {

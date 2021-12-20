@@ -3,7 +3,7 @@ import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemColla
 import { CommandId } from '../../commands';
 import { asAbsolutePath } from '../../extensionContext';
 import { FileTypes } from '../../fileTypes';
-import { Cluster } from '../../kubernetes/kubernetesConfig';
+import { KubernetesContextWithCluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';
 
@@ -22,7 +22,7 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Kubernetes resource.
 	 */
-	resource?: Exclude<KnownTreeNodeResources, Cluster> | KubernetesObject;
+	resource?: Exclude<KnownTreeNodeResources, KubernetesContextWithCluster> | KubernetesObject;
 
 	/**
 	 * Reference to the parent node (if exists).

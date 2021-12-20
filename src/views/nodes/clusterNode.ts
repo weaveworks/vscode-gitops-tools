@@ -1,9 +1,9 @@
 import { MarkdownString, window } from 'vscode';
 import { CommandId } from '../../commands';
-import { ContextTypes, setContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../context';
 import { extensionState } from '../../extensionState';
 import { globalState } from '../../globalState';
-import { Cluster } from '../../kubernetes/kubernetesConfig';
+import { KubernetesCluster, KubernetesContextWithCluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
@@ -12,7 +12,7 @@ import { TreeNode } from './treeNode';
 
 /**
  * Defines Cluster tree view item for displaying
- * configured kubernetes clusters in GitOps Clusters tree view.
+ * kubernetes contexts in Clusters tree view.
  */
 export class ClusterNode extends TreeNode {
 
@@ -29,14 +29,24 @@ export class ClusterNode extends TreeNode {
 	private clusterProviderManuallyOverridden = false;
 
 	/**
-	 * Saved cluster object.
+	 * Cluster object.
 	 */
-	cluster: Cluster;
+	private cluster?: KubernetesCluster;
+
+	/**
+	 * Cluster context.
+	 */
+	private clusterContext: KubernetesContextWithCluster;
+
+	/**
+	 * Context name.
+	 */
+	contextName: string;
 
 	/**
 	 * Cluster name.
 	 */
-	name: string;
+	clusterName: string;
 
 	/**
 	 * Current/active cluster/context.
@@ -51,14 +61,16 @@ export class ClusterNode extends TreeNode {
 
 	/**
 	 * Creates new Cluster tree view item for display.
-	 * @param cluster Cluster object info.
+	 * @param kubernetesContext Cluster object info.
 	 */
-	constructor(cluster: Cluster) {
-		super(cluster.name);
+	constructor(kubernetesContext: KubernetesContextWithCluster) {
+		super(kubernetesContext.name);
 
-		this.cluster = cluster;
-		this.name = cluster.name;
-		this.description = cluster.cluster.server;
+		this.cluster = kubernetesContext.context.clusterInfo;
+		this.clusterContext = kubernetesContext;
+		this.clusterName = kubernetesContext.name;
+		this.contextName = kubernetesContext.name;
+		this.description = kubernetesContext.context.clusterInfo?.cluster.server;
 
 		this.setIcon('cloud');
 	}
@@ -67,7 +79,7 @@ export class ClusterNode extends TreeNode {
 		// set current context command to change selected cluster
 		return {
 			command: CommandId.SetCurrentKubernetesContext,
-			arguments: [this.name],
+			arguments: [this.contextName],
 			title: 'Set current context',
 		};
 	}
@@ -78,17 +90,17 @@ export class ClusterNode extends TreeNode {
 	 * - Cluster provider.
 	 */
 	async updateNodeContext() {
-		this.isGitOpsEnabled = await kubernetesTools.isGitOpsEnabled(this.name);
+		this.isGitOpsEnabled = await kubernetesTools.isGitOpsEnabled(this.contextName);
 
-		const clusterMetadata = globalState.getClusterMetadata(this.name);
+		const clusterMetadata = globalState.getClusterMetadata(this.clusterName);
 		if (clusterMetadata?.clusterProvider) {
 			this.clusterProviderManuallyOverridden = true;
 		}
-		this.clusterProvider = clusterMetadata?.clusterProvider || await kubernetesTools.detectClusterProvider(this.name);
+		this.clusterProvider = clusterMetadata?.clusterProvider || await kubernetesTools.detectClusterProvider(this.contextName);
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {
-			setContext(ContextTypes.CurrentClusterGitOpsNotEnabled, !this.isGitOpsEnabled);
+			setVSCodeContext(ContextTypes.CurrentClusterGitOpsNotEnabled, !this.isGitOpsEnabled);
 		}
 
 		if (this.isGitOpsEnabled) {
@@ -99,14 +111,14 @@ export class ClusterNode extends TreeNode {
 	}
 
 	get tooltip(): MarkdownString {
-		return this.getMarkdownHover(this.cluster);
+		return this.getMarkdownHover(this.clusterContext);
 	}
 
 	/**
 	 * Creates markdwon string for the Cluster tree view item tooltip.
 	 * @param cluster Cluster info object.
 	 */
-	getMarkdownHover(cluster: Cluster): MarkdownString {
+	getMarkdownHover(cluster: KubernetesContextWithCluster): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(cluster);
 
 		createMarkdownHr(markdown);
@@ -129,7 +141,7 @@ export class ClusterNode extends TreeNode {
 	async getClusterProvider() {
 
 		if (this.clusterProvider === ClusterProvider.Unknown) {
-			this.clusterProvider = await kubernetesTools.detectClusterProvider(this.name);
+			this.clusterProvider = await kubernetesTools.detectClusterProvider(this.contextName);
 		}
 
 		if (this.clusterProvider === ClusterProvider.Unknown) {

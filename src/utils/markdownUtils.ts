@@ -3,11 +3,11 @@ import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { HelmRepository } from '../kubernetes/helmRepository';
-import { Cluster } from '../kubernetes/kubernetesConfig';
+import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/kubernetesConfig';
 import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/kubernetesTypes';
 import { Kustomize } from '../kubernetes/kustomize';
 
-export type KnownTreeNodeResources = Cluster | Namespace | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
+export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
 
 /**
  * Create markdown table for tree view item hovers.
@@ -23,11 +23,12 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	markdown.appendMarkdown(':--- | :---\n');
 
 	// Cluster type is incompatible with the rest. Handle it first.
-	if ('cluster' in kubernetesObject) {
-		createMarkdownTableRow('name', kubernetesObject.name, markdown);
-		createMarkdownTableRow('cluster.server', kubernetesObject.cluster?.server, markdown);
-		createMarkdownTableRow('cluster.certificate-authority', kubernetesObject.cluster?.['certificate-authority'], markdown);
-		createMarkdownTableRow('cluster.certificate-authority-data', kubernetesObject.cluster?.['certificate-authority-data'], markdown);
+	if ('context' in kubernetesObject) {
+		createMarkdownTableRow('context name', kubernetesObject.name, markdown);
+		createMarkdownTableRow('cluster name', kubernetesObject.context.clusterInfo?.name, markdown);
+		createMarkdownTableRow('cluster.server', kubernetesObject.context.clusterInfo?.cluster?.server, markdown);
+		createMarkdownTableRow('cluster.certificate-authority', kubernetesObject.context.clusterInfo?.cluster?.['certificate-authority'], markdown);
+		createMarkdownTableRow('cluster.certificate-authority-data', kubernetesObject.context.clusterInfo?.cluster?.['certificate-authority-data'], markdown);
 		return markdown;
 	}
 

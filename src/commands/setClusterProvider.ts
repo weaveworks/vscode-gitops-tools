@@ -10,13 +10,13 @@ export async function setClusterProvider(clusterNode: ClusterNode) {
 	const quickPickItems: string[] = [...knownClusterProviders, automatically];
 
 	const pickedProvider = await window.showQuickPick(quickPickItems, {
-		title: `Choose cluster provider for "${clusterNode.name}" cluster.`,
+		title: `Choose cluster provider for "${clusterNode.clusterName}" cluster.`,
 	});
 	if (!pickedProvider) {
 		return;
 	}
 
-	const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterNode.name) || {};
+	const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterNode.clusterName) || {};
 	const oldClusterProvider = clusterMetadata.clusterProvider;
 
 	if (pickedProvider === automatically) {
@@ -25,7 +25,7 @@ export async function setClusterProvider(clusterNode: ClusterNode) {
 		clusterMetadata.clusterProvider = pickedProvider as KnownClusterProviders;
 	}
 
-	globalState.setClusterMetadata(clusterNode.name, clusterMetadata);
+	globalState.setClusterMetadata(clusterNode.clusterName, clusterMetadata);
 
 	if (clusterMetadata.clusterProvider !== oldClusterProvider) {
 		refreshAllTreeViews();

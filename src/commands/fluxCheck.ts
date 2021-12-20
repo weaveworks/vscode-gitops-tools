@@ -6,5 +6,5 @@ import { ClusterNode } from '../views/nodes/clusterNode';
  * @param clusterNode target cluster node (from tree node context menu)
  */
 export async function fluxCheck(clusterNode: ClusterNode) {
-	shell.execWithOutput(`flux check --context ${clusterNode.name}`);
+	shell.execWithOutput(`flux check --context ${clusterNode.contextName}`);
 }
