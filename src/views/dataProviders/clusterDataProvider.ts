@@ -4,7 +4,7 @@ import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
-import { ClusterNode } from '../nodes/clusterNode';
+import { ClusterContextNode } from '../nodes/clusterContextNode';
 import { refreshClustersTreeView, revealClusterNode } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
@@ -17,7 +17,7 @@ export class ClusterDataProvider extends DataProvider {
 	/**
 	 * Cache clusterNodes to acess them later.
 	 */
-	clusterNodes: ClusterNode[] = [];
+	clusterNodes: ClusterContextNode[] = [];
 
 	/**
 	 * Whether or not the tree view finished building (not entirely, there's still async calls)
@@ -28,7 +28,7 @@ export class ClusterDataProvider extends DataProvider {
 	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
-	async buildTree(): Promise<ClusterNode[]> {
+	async buildTree(): Promise<ClusterContextNode[]> {
 
 		this.isFinishedBuildingTree = false;
 		setVSCodeContext(ContextTypes.NoClusters, false);
@@ -42,11 +42,11 @@ export class ClusterDataProvider extends DataProvider {
 			return [];
 		}
 
-		const clusterNodes: ClusterNode[] = [];
-		let currentContextTreeItem: ClusterNode | undefined;
+		const clusterNodes: ClusterContextNode[] = [];
+		let currentContextTreeItem: ClusterContextNode | undefined;
 		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
 		for (const cluster of contexts) {
-			const clusterNode = new ClusterNode(cluster);
+			const clusterNode = new ClusterContextNode(cluster);
 			if (cluster.name === currentContext) {
 				clusterNode.isCurrent = true;
 				currentContextTreeItem = clusterNode;
@@ -83,7 +83,7 @@ export class ClusterDataProvider extends DataProvider {
 	 * Update deployment status for flux controllers.
 	 * Get status from running flux commands instead of kubectl.
 	 */
-	async updateDeploymentStatus(clusterNode?: ClusterNode) {
+	async updateDeploymentStatus(clusterNode?: ClusterContextNode) {
 		if (!clusterNode) {
 			return;
 		}
@@ -116,7 +116,7 @@ export class ClusterDataProvider extends DataProvider {
 	 * Update cluster context for all cluster nodes one by one.
 	 * @param clusterNodes all cluster nodes in this tree view.
 	 */
-	async updateClusterContexts(clusterNodes: ClusterNode[]) {
+	async updateClusterContexts(clusterNodes: ClusterContextNode[]) {
 		await Promise.all(clusterNodes.map(async clusterNode => {
 			await clusterNode.updateNodeContext();
 			refreshClustersTreeView(clusterNode);
@@ -126,7 +126,7 @@ export class ClusterDataProvider extends DataProvider {
 	/**
 	 * Return cluster node from the current kubernetes context.
 	 */
-	getCurrentClusterNode(): ClusterNode | undefined {
+	getCurrentClusterNode(): ClusterContextNode | undefined {
 		if (!this.isFinishedBuildingTree) {
 			window.showErrorMessage('Clusters are not yet loaded.');
 			return;

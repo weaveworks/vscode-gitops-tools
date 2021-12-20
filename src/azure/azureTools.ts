@@ -3,7 +3,7 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap } from '../kubernetes/kubernetesTypes';
 import { shell, ShellResult } from '../shell';
 import { parseJson } from '../utils/jsonUtils';
-import { ClusterNode } from '../views/nodes/clusterNode';
+import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { askUserForAzureMetadata } from './getAzureMetadata';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
@@ -34,14 +34,14 @@ class AzureTools {
 	 */
 	private async invokeAzCommand(
 		command: string,
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | ShellResult> {
 
 		let azureMetadata = await this.getAzureMetadata(clusterNode, clusterProvider);
 		if (!azureMetadata) {
 			window.showWarningMessage('Failed to get Azure resource name, resource group, subscription ID.');
-			azureMetadata = await askUserForAzureMetadata(clusterNode.contextName);
+			azureMetadata = await askUserForAzureMetadata(clusterNode.clusterName);
 		}
 
 		if (!azureMetadata) {
@@ -61,7 +61,7 @@ class AzureTools {
 	 * @param clusterProvider target cluster provider
 	 */
 	async getAzureMetadata(
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	) {
 
@@ -102,7 +102,7 @@ class AzureTools {
 	 * @param clusterProvider target cluster provider
 	 */
 	async enableGitOps(
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
@@ -120,7 +120,7 @@ class AzureTools {
 	 * @param clusterProvider target cluster provider
 	 */
 	async disableGitOps(
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	) {
 		const fluxConfigurations = await this.listFluxConfigurations(clusterNode, clusterProvider);
@@ -154,7 +154,7 @@ class AzureTools {
 	 * @param clusterProvider target cluster provider
 	 */
 	private async listFluxConfigurations(
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | any[]> {
 		const configurationShellResult = await this.invokeAzCommand(
@@ -188,7 +188,7 @@ class AzureTools {
 		gitUrl: string,
 		gitBranch: string,
 		isSSH: boolean,
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 		kustomizationName?: string,
 		kustomizationPath?: string,
@@ -231,7 +231,7 @@ class AzureTools {
 		kustomizationName: string,
 		gitRepositoryName: string,
 		kustomizationPath: string,
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	) {
 		const createKustomizationShellResult = await this.invokeAzCommand(
@@ -256,7 +256,7 @@ class AzureTools {
 	 */
 	async deleteSource(
 		sourceName: string,
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
@@ -276,7 +276,7 @@ class AzureTools {
 	 */
 	async suspend(
 		sourceName: string,
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
@@ -296,7 +296,7 @@ class AzureTools {
 	 */
 	async resume(
 		sourceName: string,
-		clusterNode: ClusterNode,
+		clusterNode: ClusterContextNode,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(

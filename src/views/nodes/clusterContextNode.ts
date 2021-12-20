@@ -12,9 +12,9 @@ import { TreeNode } from './treeNode';
 
 /**
  * Defines Cluster tree view item for displaying
- * kubernetes contexts in Clusters tree view.
+ * kubernetes contexts inside the Clusters tree view.
  */
-export class ClusterNode extends TreeNode {
+export class ClusterContextNode extends TreeNode {
 
 	/**
 	 * Whether cluster is managed by AKS or Azure ARC

@@ -1,10 +1,10 @@
 import { window } from 'vscode';
 import { ClusterMetadata, globalState } from '../globalState';
 import { KnownClusterProviders, knownClusterProviders } from '../kubernetes/kubernetesTypes';
-import { ClusterNode } from '../views/nodes/clusterNode';
+import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { refreshAllTreeViews } from '../views/treeViews';
 
-export async function setClusterProvider(clusterNode: ClusterNode) {
+export async function setClusterProvider(clusterNode: ClusterContextNode) {
 
 	const automatically = 'Automatically (Let the extension infer)';
 	const quickPickItems: string[] = [...knownClusterProviders, automatically];

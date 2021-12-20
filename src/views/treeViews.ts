@@ -3,7 +3,7 @@ import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
-import { ClusterNode } from './nodes/clusterNode';
+import { ClusterContextNode } from './nodes/clusterContextNode';
 import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
 
@@ -93,7 +93,7 @@ export function getCurrentClusterNode() {
  * Expand, focus or select a tree node inside the Clusters tree view.
  * @param clusterNode Target cluster node
  */
-export async function revealClusterNode(clusterNode: ClusterNode, {
+export async function revealClusterNode(clusterNode: ClusterContextNode, {
 	expand = false,
 	focus = false,
 	select = false,

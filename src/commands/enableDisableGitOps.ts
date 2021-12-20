@@ -3,7 +3,7 @@ import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
-import { ClusterNode } from '../views/nodes/clusterNode';
+import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { getCurrentClusterNode, refreshAllTreeViews } from '../views/treeViews';
 
 /**
@@ -11,7 +11,7 @@ import { getCurrentClusterNode, refreshAllTreeViews } from '../views/treeViews';
  * @param clusterNode target cluster tree view item
  * @param enableGitOps Specifies if function should install or uninstall
  */
-async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableGitOps: boolean) {
+async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, enableGitOps: boolean) {
 
 	if (!clusterNode) {
 		// was executed from the welcome view - get current cluster node
@@ -64,7 +64,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
  * Install flux to the passed or current cluster (if first argument is undefined)
  * @param clusterNode target cluster tree node
  */
-export async function fluxEnableGitOps(clusterNode: ClusterNode | undefined) {
+export async function fluxEnableGitOps(clusterNode: ClusterContextNode | undefined) {
 	return await enableDisableGitOps(clusterNode, true);
 }
 
@@ -72,6 +72,6 @@ export async function fluxEnableGitOps(clusterNode: ClusterNode | undefined) {
  * Uninstall flux from the passed or current cluster (if first argument is undefined)
  * @param clusterNode target cluster tree node
  */
-export async function fluxDisableGitOps(clusterNode: ClusterNode | undefined) {
+export async function fluxDisableGitOps(clusterNode: ClusterContextNode | undefined) {
 	return await enableDisableGitOps(clusterNode, false);
 }

@@ -5,7 +5,7 @@ import { fluxTools } from '../flux/fluxTools';
 import { validateKustomizationName } from '../flux/fluxUtils';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
-import { ClusterNode } from '../views/nodes/clusterNode';
+import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { getCurrentClusterNode, refreshWorkloadsTreeView } from '../views/treeViews';
 import { createGitRepository } from './createGitRepository';
 
@@ -138,7 +138,7 @@ async function createKustomizationAzureCluster(
 	gitRepositoryName: string | undefined,
 	relativeKustomizationPath: string,
 	workspaceFolderUri: Uri,
-	clusterNode: ClusterNode,
+	clusterNode: ClusterContextNode,
 	clusterProvider: AzureClusterProvider,
 ): Promise<void> {
 
