@@ -19,6 +19,7 @@ export function isAzureProvider(provider: ClusterProvider): provider is AzureClu
 export const enum AzureConstants {
 	ArcNamespace = 'azure-arc',
 	KubeSystemNamespace = 'kube-system',
+	FluxExtensionName = 'flux',
 }
 
 class AzureTools {
@@ -40,7 +41,7 @@ class AzureTools {
 
 		let azureMetadata = await this.getAzureMetadata(clusterNode, clusterProvider);
 		if (!azureMetadata) {
-			window.showWarningMessage('Failed to get Azure resource name, resource group, subscription ID.');
+			window.showWarningMessage('Failed to get Azure resource name or resource group or subscription ID.');
 			azureMetadata = await askUserForAzureMetadata(clusterNode.clusterName);
 		}
 
@@ -106,7 +107,7 @@ class AzureTools {
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
-			'az k8s-extension create --name gitops --extension-type microsoft.flux --scope cluster --release-train stable',
+			`az k8s-extension create --name ${AzureConstants.FluxExtensionName} --extension-type microsoft.flux --scope cluster`,
 			clusterNode,
 			clusterProvider,
 		);
@@ -140,7 +141,7 @@ class AzureTools {
 
 		// delete flux extension
 		await this.invokeAzCommand(
-			'az k8s-extension delete --name gitops --yes',
+			`az k8s-extension delete --name ${AzureConstants.FluxExtensionName} --yes`,
 			clusterNode,
 			clusterProvider,
 		);
