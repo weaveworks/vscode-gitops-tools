@@ -1,6 +1,7 @@
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { AzureClusterProvider, azureTools } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
+import { GitInfo } from '../git/getOpenedFolderGitInfo';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 import { getNonce, getWebviewOptions } from './webviewUtils';
@@ -105,7 +106,7 @@ export class CreateSourcePanel {
 	private readonly _extensionUri: Uri;
 	private _disposables: Disposable[] = [];
 
-	public static createOrShow(extensionUri: Uri) {
+	public static createOrShow(extensionUri: Uri, gitInfo: GitInfo | undefined) {
 		const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
 
 		// If we already have a panel, show it.
@@ -122,19 +123,19 @@ export class CreateSourcePanel {
 			getWebviewOptions(extensionUri),
 		);
 
-		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri);
+		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri, gitInfo);
 	}
 
-	public static revive(panel: WebviewPanel, extensionUri: Uri) {
-		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri);
+	public static revive(panel: WebviewPanel, extensionUri: Uri, gitInfo: GitInfo | undefined) {
+		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri, gitInfo);
 	}
 
-	private constructor(panel: WebviewPanel, extensionUri: Uri) {
+	private constructor(panel: WebviewPanel, extensionUri: Uri, gitInfo: GitInfo | undefined) {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
 
 		// Set the webview's initial html content
-		this._update();
+		this._update(gitInfo);
 
 		// Listen for when the panel is disposed
 		// This happens when the user closes the panel or when the panel is closed programmatically
@@ -143,7 +144,7 @@ export class CreateSourcePanel {
 		// Update the content based on view changes
 		this._panel.onDidChangeViewState(e => {
 			if (this._panel.visible) {
-				this._update();
+				this._update(gitInfo);
 			}
 		}, null, this._disposables );
 
@@ -233,7 +234,7 @@ export class CreateSourcePanel {
 		this._panel.webview.postMessage(message);
 	}
 
-	private async _updateWebviewContent() {
+	private async _updateWebviewContent(gitInfo: GitInfo | undefined) {
 		const clusterInfo = await getCurrentClusterInfo();
 		if (!clusterInfo) {
 			// window.showErrorMessage('Failed to get current cluster node or provider');
@@ -247,9 +248,9 @@ export class CreateSourcePanel {
 				contextName: clusterInfo.clusterNode.contextName,
 				clusterProvider: clusterInfo.clusterProvider,
 				isAzure: clusterInfo.clusterProvider === ClusterProvider.AKS || clusterInfo.clusterProvider === ClusterProvider.AzureARC,
-				newSourceName: '',
-				newSourceBranch: '',
-				newSourceUrl: '',
+				newSourceName: gitInfo?.newRepoName || '',
+				newSourceUrl: gitInfo?.url || '',
+				newSourceBranch: gitInfo?.branch || '',
 			},
 		});
 	}
@@ -257,9 +258,9 @@ export class CreateSourcePanel {
 	/**
 	 * Set webview html and send a message to update the contents.
 	 */
-	private _update() {
+	private _update(gitInfo: GitInfo | undefined) {
 		this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
-		this._updateWebviewContent();
+		this._updateWebviewContent(gitInfo);
 	}
 
 	private _getHtmlForWebview(webview: Webview) {

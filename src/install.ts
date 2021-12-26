@@ -70,7 +70,7 @@ export async function checkGitVersion(): Promise<string | undefined> {
 
 	if (gitVersion === undefined) {
 		const installButton = 'Install';
-		const confirm = await window.showErrorMessage('Please install Git to be able to pull a git repository source.', installButton);
+		const confirm = await window.showErrorMessage('Please install Git.', installButton);
 		if (confirm === installButton) {
 			commands.executeCommand('vscode.open', Uri.parse('https://git-scm.com/downloads'));
 		}
