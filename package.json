@@ -152,13 +152,13 @@
 			},
 			{
 				"command": "gitops.views.createGitRepository",
-				"title": "Add Git Repository Source",
+				"title": "Create Git Repository Source",
 				"icon": "$(add)",
 				"category": "GitOps"
 			},
 			{
 				"command": "gitops.createKustomization",
-				"title": "Add Kustomization",
+				"title": "Create Kustomization",
 				"icon": "$(add)",
 				"category": "GitOps"
 			},
@@ -295,7 +295,7 @@
 				{
 					"command": "gitops.editor.createSource",
 					"group": "navigation@0",
-					"when": "view == gitops.views.sources"
+					"when": "view == gitops.views.sources && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 				},
 				{
 					"command": "gitops.createKustomization",
