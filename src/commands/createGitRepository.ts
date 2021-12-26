@@ -122,7 +122,7 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
  * `${organization}-${repository}-${branch}`
  * ```
  *
- * The source name should comply with RFC 1123.
+ * The source name should comply with RFC 1123 subdomain.
  *
  * @param url git url string, for example `https://github.com/murillodigital/team-ssp` or
  * `git@github.com:fluxcd/source-controller.git`

@@ -55,7 +55,9 @@
 		"onCommand:gitops.copyResourceName",
 		"onCommand:gitops.editor.openResource",
 		"onCommand:gitops.editor.showLogs",
+		"onCommand:gitops.editor.createSource",
 		"onCommand:gitops.output.show",
+		"onWebviewPanel:createSource",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
 		"onView:gitops.views.workloads",
@@ -174,8 +176,13 @@
 			{
 				"command": "gitops.editor.openResource",
 				"title": "View Config",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.editor.createSource",
+				"title": "Create Source",
 				"category": "GitOps",
-				"icon": "$(symbol-reference)"
+				"icon": "$(diff-added)"
 			},
 			{
 				"command": "gitops.output.show",
@@ -284,6 +291,11 @@
 					"command": "gitops.views.createGitRepository",
 					"group": "navigation@0",
 					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
+				},
+				{
+					"command": "gitops.editor.createSource",
+					"group": "navigation@0",
+					"when": "view == gitops.views.sources"
 				},
 				{
 					"command": "gitops.createKustomization",
@@ -467,6 +479,7 @@
 		"@types/semver": "^7.3.9",
 		"@types/shelljs": "^0.8.9",
 		"@types/vscode": "^1.59.0",
+		"@types/vscode-webview": "^1.57.0",
 		"@typescript-eslint/eslint-plugin": "^5.7.0",
 		"@typescript-eslint/parser": "^5.7.0",
 		"eslint": "^8.4.1",

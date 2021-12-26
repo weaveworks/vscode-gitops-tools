@@ -42,8 +42,10 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	if (kubernetesObject.kind === KubernetesObjectKinds.GitRepository) {
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
-		createMarkdownTableRow('spec.ref.branch', kubernetesObject.spec?.ref?.branch, markdown);
 		createMarkdownTableRow('spec.ref.commit', kubernetesObject.spec?.ref?.commit, markdown);
+		createMarkdownTableRow('spec.ref.branch', kubernetesObject.spec?.ref?.branch, markdown);
+		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
+		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRepository) {
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Bucket) {

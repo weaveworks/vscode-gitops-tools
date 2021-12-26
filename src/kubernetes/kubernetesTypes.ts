@@ -522,11 +522,11 @@ export const enum ClusterProvider {
 	 */
 	AKS = 'AKS',
 	/**
-	 * Cluster managed by Azure ARC.
+	 * Cluster managed by Azure Arc.
 	 */
-	AzureARC = 'Azure ARC',
+	AzureARC = 'Azure Arc',
 	/**
-	 * Any cluster that is not AKS and not AzureARC is
+	 * Any cluster that is not AKS and not Azure Arc is
 	 * considered generic at this point.
 	 */
 	Generic = 'Generic',

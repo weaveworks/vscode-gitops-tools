@@ -1,8 +1,9 @@
 import { TreeItem, TreeView, window } from 'vscode';
-import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
+import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
+import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
 import { ClusterContextNode } from './nodes/clusterContextNode';
 import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
@@ -87,6 +88,26 @@ export function refreshWorkloadsTreeView(node?: TreeNode) {
  */
 export function getCurrentClusterNode() {
 	return clusterTreeViewProvider.getCurrentClusterNode();
+}
+
+/**
+ * TODO: use this function istead of getCurrentClusterNode() & getClusterProvider() in other places
+ */
+export async function getCurrentClusterInfo() {
+	const clusterNode = getCurrentClusterNode();
+	if (!clusterNode) {
+		return;
+	}
+
+	const clusterProvider = await clusterNode.getClusterProvider();
+	if (clusterProvider === ClusterProvider.Unknown) {
+		return;
+	}
+
+	return {
+		clusterNode,
+		clusterProvider,
+	};
 }
 
 /**

@@ -1,0 +1,42 @@
+body {
+	font-size: 14px;
+	background-color: var(--vscode-sideBar-background);
+}
+
+input:not([type='checkbox']):not([type='radio']),
+textarea {
+	padding: 5px;
+	border: 1px solid var(--vscode-input-border);
+}
+
+hr {
+	border-style: solid;
+	border-bottom: none;
+	border-width: 1px;
+	border-color: var(--vscode-sideBar-border, var(--vscode-panel-border, '#666'));
+}
+
+code {
+	font-size: inherit;
+}
+
+.app {
+	max-width: max(50%, 800px);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.header-label {
+	display: block;
+	margin-bottom: 0.1rem;
+	margin-top: 0.6rem;
+}
+
+.submit-button {
+	width: fit-content;
+	padding: 6px 12px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 10px 0;
+	float: right;
+}
