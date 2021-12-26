@@ -9,6 +9,10 @@ textarea {
 	border: 1px solid var(--vscode-input-border);
 }
 
+h2 {
+	padding-top: 1em;
+}
+
 hr {
 	border-style: solid;
 	border-bottom: none;
@@ -28,8 +32,8 @@ code {
 
 .header-label {
 	display: block;
-	margin-bottom: 0.1rem;
-	margin-top: 0.6rem;
+	margin-bottom: 0.1em;
+	margin-top: 0.6em;
 }
 
 .submit-button {

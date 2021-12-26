@@ -270,6 +270,14 @@ class AzureTools {
 		localAuthRef: string;
 		sshPrivateKey: string;
 		sshPrivateKeyFile: string;
+		kustomizationName: string;
+		kustomizationPath: string;
+		kustomizationDependsOn: string;
+		kustomizationTimeout: string;
+		kustomizationSyncInterval: string;
+		kustomizationRetryInterval: string;
+		kustomizationPrune: string;
+		kustomizationForce: string;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
@@ -288,8 +296,22 @@ class AzureTools {
 		const sshPrivateKeyArg = args.sshPrivateKey ? ` --ssh-private-key "${args.sshPrivateKey}"` : '';
 		const sshPrivateKeyFileArg = args.sshPrivateKeyFile ? ` --ssh-private-key-file "${args.sshPrivateKeyFile}"` : '';
 
+		let kustomizationPart = '';
+		const kustomizationName = args.kustomizationName ? ` name="${args.kustomizationName}"` : '';
+		const kustomizationPath = args.kustomizationPath ? ` path="${args.kustomizationPath}"` : '';
+		const kustomizationDependsOn = args.kustomizationDependsOn ? ` depends_on="${args.kustomizationDependsOn}"` : '';
+		const kustomizationTimeout = args.kustomizationTimeout ? ` timeout="${args.kustomizationTimeout}"` : '';
+		const kustomizationSyncInterval = args.kustomizationSyncInterval ? ` sync_interval="${args.kustomizationSyncInterval}"` : '';
+		const kustomizationRetryInterval = args.kustomizationRetryInterval ? ` retry_interval="${args.kustomizationRetryInterval}"` : '';
+		const kustomizationPrune = args.kustomizationPrune ? ` prune="${args.kustomizationPrune}"` : '';
+		const kustomizationForce = args.kustomizationForce ? ` force="${args.kustomizationForce}"` : '';
+
+		if (kustomizationName || kustomizationPath || kustomizationDependsOn || kustomizationTimeout || kustomizationSyncInterval || kustomizationRetryInterval || kustomizationPrune || kustomizationForce) {
+			kustomizationPart = ` --kustomization ${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
+		}
+
 		await this.invokeAzCommand(
-			`az k8s-configuration flux create -n ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}`,
+			`az k8s-configuration flux create -n ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${kustomizationPart}`,
 			args.contextName,
 			args.clusterProvider,
 		);

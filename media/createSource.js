@@ -44,13 +44,22 @@ const azureKnownHostsFileId = 'az-known-hosts-file';
 const azureLocalAuthRefId = 'az-local-auth-ref';
 const azureSSHPrivateKeyId = 'az-ssh-private-key';
 const azureSSHPrivateKeyFileId = 'az-ssh-private-key-file';
+// Azure cluster Kustomization inputs
+const azureKustomizationNameId = 'az-kustomization-name';
+const azureKustomizationPathId = 'az-kustomization-path';
+const azureKustomizationDependsOnId = 'az-kustomization-depends-on';
+const azureKustomizationTimeoutId = 'az-kustomization-timeout';
+const azureKustomizationSyncIntervalId = 'az-kustomization-sync-interval';
+const azureKustomizationRetryIntervalId = 'az-kustomization-retry-interval';
+const azureKustomizationPruneId = 'az-kustomization-prune';
+const azureKustomizationForceId = 'az-kustomization-force';
 
 /**
  * @typedef {{ id: string; title: string; flagName: string; }[]} FormItems
  */
 
 // skipped flux flags: --git-implementation, --recurse-submodules, --ssh-ecdsa-curve, --ssh-key-algorithm, --ssh-rsa-bits
-/** @type { FormItems } */
+/** @type {FormItems} */
 const genericClusterItems = [
 	{
 		id: fluxUrlId,
@@ -109,7 +118,7 @@ const genericClusterItems = [
 	},
 ];
 
-/** @type { FormItems } */
+/** @type {FormItems} */
 const azureClusterItems = [
 	{
 		id: azureUrlId,
@@ -192,6 +201,49 @@ const azureClusterItems = [
 		flagName: '--ssh-private-key-file',
 	},
 ];
+/** @type {FormItems} */
+const azureKustomizationFormItems = [
+	{
+		id: azureKustomizationNameId,
+		title: 'Name',
+		flagName: 'name',
+	},
+	{
+		id: azureKustomizationPathId,
+		title: 'Path',
+		flagName: 'path',
+	},
+	{
+		id: azureKustomizationDependsOnId,
+		title: 'Depends On',
+		flagName: 'depends_on',
+	},
+	{
+		id: azureKustomizationTimeoutId,
+		title: 'Timeout',
+		flagName: 'timeout',
+	},
+	{
+		id: azureKustomizationSyncIntervalId,
+		title: 'Sync interval',
+		flagName: 'sync_interval',
+	},
+	{
+		id: azureKustomizationRetryIntervalId,
+		title: 'Retry interval',
+		flagName: 'retry_interval',
+	},
+	{
+		id: azureKustomizationPruneId,
+		title: 'Prune (true or false)',
+		flagName: 'prune',
+	},
+	{
+		id: azureKustomizationForceId,
+		title: 'Force (true or false)',
+		flagName: 'force',
+	},
+];
 
 // Element references
 const $clusterName = document.getElementById('cluster-name');
@@ -223,6 +275,14 @@ $submitButton?.addEventListener('click', () => {
 				localAuthRef: getInputValue(azureLocalAuthRefId),
 				sshPrivateKey: getInputValue(azureSSHPrivateKeyId),
 				sshPrivateKeyFile: getInputValue(azureSSHPrivateKeyFileId),
+				kustomizationName: getInputValue(azureKustomizationNameId),
+				kustomizationPath: getInputValue(azureKustomizationPathId),
+				kustomizationDependsOn: getInputValue(azureKustomizationDependsOnId),
+				kustomizationTimeout: getInputValue(azureKustomizationTimeoutId),
+				kustomizationSyncInterval: getInputValue(azureKustomizationSyncIntervalId),
+				kustomizationRetryInterval: getInputValue(azureKustomizationRetryIntervalId),
+				kustomizationPrune: getInputValue(azureKustomizationPruneId),
+				kustomizationForce: getInputValue(azureKustomizationForceId),
 			},
 		});
 	} else {
@@ -285,7 +345,11 @@ window.addEventListener('message', event => {
 			webviewTempState.contextName = message.value.contextName;
 			webviewTempState.clusterName = message.value.clusterName;
 
-			renderFormItems(webviewTempState.isAzure ? azureClusterItems : genericClusterItems);
+			renderFormItems(
+				webviewTempState.isAzure ? azureClusterItems : genericClusterItems,
+				azureKustomizationFormItems,
+				webviewTempState.isAzure,
+			);
 
 			// Update headers
 			if ($clusterName) {
@@ -315,27 +379,54 @@ window.addEventListener('message', event => {
 
 /**
  * Render different form for generic or Azure cluster
- * @param formItems { FormItems }
+ * @param formItems {FormItems}
+ * @param kustomizationItems {FormItems}
+ * @param isAzure {boolean}
  */
-function renderFormItems(formItems) {
+function renderFormItems(formItems, kustomizationItems, isAzure) {
 	// clear the form from any elements
 	if ($formItems) {
 		$formItems.innerHTML = '';
 	}
 	// render the form
 	for (const item of formItems) {
-		const $label = document.createElement('label');
-		$label.classList.add('header-label');
-		$label.htmlFor = item.id;
-		$label.textContent = `${item.title} `;
-		const $code = document.createElement('code');
-		$code.textContent = item.flagName;
-		const $input = document.createElement('input');
-		$input.type = 'text';
-		$input.id = item.id;
-
-		$label.appendChild($code);
-		$formItems?.appendChild($label);
-		$formItems?.appendChild($input);
+		$formItems?.appendChild(renderFormItem(item));
 	}
+
+	if (isAzure) {
+		const $kustomizationHeader = document.createElement('h2');
+		$kustomizationHeader.textContent = 'Kustomization';
+		const $hr = document.createElement('hr');
+
+		$formItems?.appendChild($kustomizationHeader);
+		$formItems?.appendChild($hr);
+
+		for (const item of kustomizationItems) {
+			$formItems?.appendChild(renderFormItem(item));
+		}
+	}
+}
+
+/**
+ * @param item {FormItems[0]}
+ * @returns {HTMLDivElement}
+ */
+function renderFormItem(item) {
+	const $formItem = document.createElement('div');
+
+	const $label = document.createElement('label');
+	$label.classList.add('header-label');
+	$label.htmlFor = item.id;
+	$label.textContent = `${item.title} `;
+	const $code = document.createElement('code');
+	$code.textContent = item.flagName;
+	const $input = document.createElement('input');
+	$input.type = 'text';
+	$input.id = item.id;
+
+	$label.appendChild($code);
+	$formItem.appendChild($label);
+	$formItem.appendChild($input);
+
+	return $formItem;
 }

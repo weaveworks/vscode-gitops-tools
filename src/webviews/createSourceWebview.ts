@@ -66,6 +66,14 @@ export interface CreateSourceAzureCluster {
 		localAuthRef: string;
 		sshPrivateKey: string;
 		sshPrivateKeyFile: string;
+		kustomizationName: string;
+		kustomizationPath: string;
+		kustomizationDependsOn: string;
+		kustomizationTimeout: string;
+		kustomizationSyncInterval: string;
+		kustomizationRetryInterval: string;
+		kustomizationPrune: string;
+		kustomizationForce: string;
 	};
 }
 /**
@@ -181,6 +189,14 @@ export class CreateSourcePanel {
 						localAuthRef: message.value.localAuthRef,
 						sshPrivateKey: message.value.sshPrivateKey,
 						sshPrivateKeyFile: message.value.sshPrivateKeyFile,
+						kustomizationName: message.value.kustomizationName,
+						kustomizationPath: message.value.kustomizationPath,
+						kustomizationDependsOn: message.value.kustomizationDependsOn,
+						kustomizationTimeout: message.value.kustomizationTimeout,
+						kustomizationSyncInterval: message.value.kustomizationSyncInterval,
+						kustomizationRetryInterval: message.value.kustomizationRetryInterval,
+						kustomizationPrune: message.value.kustomizationPrune,
+						kustomizationForce: message.value.kustomizationForce,
 					});
 					refreshSourcesTreeView();
 					refreshWorkloadsTreeView();
@@ -298,7 +314,7 @@ export class CreateSourcePanel {
 						<input type="radio" id="git" name="kind" value="git" checked> <label for="git">Git Repository</label>
 					</div>
 					<div id="form-items"></div>
-					<button type="button" id="createSource" class="submit-button">Create</button>
+					<button type="button" id="create-source" class="submit-button">Create</button>
 				</main>
 
 				<script nonce="${nonce}" src="${scriptUri}" defer></script>
