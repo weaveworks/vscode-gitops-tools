@@ -31,8 +31,7 @@ input[type="radio"],
 input[type="radio"] + label,
 input[type="checkbox"],
 input[type="checkbox"] + label {
-  vertical-align: middle;
-	margin-top: 0.2em;
+	vertical-align: middle;
 	display: inline-block;
 }
 
