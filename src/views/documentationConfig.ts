@@ -59,6 +59,32 @@ export const documentationLinks: DocumentationLink[] = [
 		],
 	},
 	{
+		title: 'Azure Kubernetes Documentation',
+		url: 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2',
+		links: [
+			{
+				title: 'Conceptual GitOps with Flux v2',
+				url: 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2',
+			},
+			{
+				title: 'Tutorial GitOps with Flux v2',
+				url: 'https://docs.microsoft.com/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2',
+			},
+			{
+				title: 'Conceptual CI/CD with GitOps Flux v2',
+				url: 'https://docs.microsoft.com/azure/azure-arc/kubernetes/conceptual-gitops-flux2-ci-cd',
+			},
+			{
+				title: 'Tutorial CI/CD with GitOps Flux v2',
+				url: 'https://docs.microsoft.com/azure/azure-arc/kubernetes/tutorial-gitops-flux2-ci-cd',
+			},
+			{
+				title: 'Troubleshooting',
+				url: 'https://docs.microsoft.com/azure/azure-arc/kubernetes/troubleshooting#gitops-management',
+			},
+		],
+	},
+	{
 		title: 'Wego Documentation',
 		url: 'https://docs.gitops.weave.works',
 		links: [
