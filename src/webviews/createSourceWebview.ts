@@ -1,5 +1,7 @@
+import { readFileSync } from 'fs';
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { AzureClusterProvider, azureTools } from '../azure/azureTools';
+import { asAbsolutePath } from '../extensionContext';
 import { fluxTools } from '../flux/fluxTools';
 import { GitInfo } from '../git/getOpenedFolderGitInfo';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
@@ -314,7 +316,7 @@ export class CreateSourcePanel {
 						<label class="header-label" for="git">Source Kind <code></code></label>
 						<input type="radio" id="git" name="kind" value="git" checked> <label for="git">Git Repository</label>
 					</div>
-					<div id="form-items"></div>
+					${readFileSync(asAbsolutePath('./media/createSource.html').fsPath).toString()}
 					<button type="button" id="create-source" class="submit-button">Create</button>
 				</main>
 

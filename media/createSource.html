@@ -1,0 +1,116 @@
+<div id="generic-form" hidden>
+	<div>
+			<label class="header-label" for="url">Git repository url <code>--url</code></label><input type="text" id="url" />
+	</div>
+	<div>
+			<label class="header-label" for="branch">Git branch <code>--branch</code></label><input type="text" id="branch" />
+	</div>
+	<div>
+			<label class="header-label" for="tag">Git tag <code>--tag</code></label><input type="text" id="tag" />
+	</div>
+	<div>
+			<label class="header-label" for="tag-semver">Git tag semver range <code>--tag-semver</code></label><input type="text" id="tag-semver" />
+	</div>
+	<div>
+			<label class="header-label" for="interval">Source sync interval (in minutes) <code>--interval</code></label><input type="text" id="interval" />
+	</div>
+	<div>
+			<label class="header-label" for="timeout">Source sync timeout (in minutes) <code>--timeout</code></label><input type="text" id="timeout" />
+	</div>
+	<div>
+			<label class="header-label" for="ca-file">Path to TLS CA file used for validating self-signed certificates <code>--ca-file</code></label><input type="text" id="ca-file" />
+	</div>
+	<div>
+			<label class="header-label" for="private-key-file">Path to a passwordless private key file used for authenticating to the Git SSH server <code>--private-key-file</code></label><input type="text" id="private-key-file" />
+	</div>
+	<div>
+			<label class="header-label" for="username">Basic authentication username <code>--username</code></label><input type="text" id="username" />
+	</div>
+	<div>
+			<label class="header-label" for="password">Basic authentication password <code>--password</code></label><input type="text" id="password" />
+	</div>
+	<div>
+			<label class="header-label" for="secret-ref">The name of an existing secret containing SSH or basic credentials <code>--secret-ref</code></label><input type="text" id="secret-ref" />
+	</div>
+</div>
+
+<div id="azure-form" hidden>
+	<div>
+			<label class="header-label" for="az-url">Git repository url <code>--url</code></label><input type="text" id="az-url" />
+	</div>
+	<div>
+			<label class="header-label" for="az-branch">Git branch <code>--branch</code></label><input type="text" id="az-branch" />
+	</div>
+	<div>
+			<label class="header-label" for="az-tag">Git tag <code>--tag</code></label><input type="text" id="az-tag" />
+	</div>
+	<div>
+			<label class="header-label" for="az-tag-semver">Git tag semver range <code>--semver</code></label><input type="text" id="az-tag-semver" />
+	</div>
+	<div>
+			<label class="header-label" for="az-commit">Git commit <code>--commit</code></label><input type="text" id="az-commit" />
+	</div>
+	<div>
+			<label class="header-label" for="az-interval">Source sync interval (in minutes) <code>--interval</code></label><input type="text" id="az-interval" />
+	</div>
+	<div>
+			<label class="header-label" for="az-timeout">Source sync timeout (in minutes) <code>--timeout</code></label><input type="text" id="az-timeout" />
+	</div>
+	<div>
+			<label class="header-label" for="az-https-ca-cert">Base64-encoded HTTPS CA certificate for TLS communication with private repository sync <code>--https-ca-cert</code></label><input type="text" id="az-https-ca-cert" />
+	</div>
+	<div>
+			<label class="header-label" for="az-https-ca-cert-file">File path to HTTPS CA certificate file for TLS communication with private repository sync <code>--https-ca-cert-file</code></label>
+			<input type="text" id="az-https-ca-cert-file" />
+	</div>
+	<div>
+			<label class="header-label" for="az-https-key">HTTPS token/password for private repository sync <code>--https-key</code></label><input type="text" id="az-https-key" />
+	</div>
+	<div>
+			<label class="header-label" for="az-https-user">HTTPS username for private repository sync <code>--https-user</code></label><input type="text" id="az-https-user" />
+	</div>
+	<div>
+			<label class="header-label" for="az-known-hosts">Base64-encoded known_hosts data containing public SSH keys required to access private Git instances <code>--known-hosts</code></label><input type="text" id="az-known-hosts" />
+	</div>
+	<div>
+			<label class="header-label" for="az-known-hosts-file">File path to known_hosts contents containing public SSH keys required to access private Git instances <code>--known-hosts-file</code></label>
+			<input type="text" id="az-known-hosts-file" />
+	</div>
+	<div>
+			<label class="header-label" for="az-local-auth-ref">Local reference to a kubernetes secret in the configuration namespace to use for communication to the source <code>--local-auth-ref</code></label>
+			<input type="text" id="az-local-auth-ref" />
+	</div>
+	<div>
+			<label class="header-label" for="az-ssh-private-key">Base64-encoded private ssh key for private repository sync <code>--ssh-private-key</code></label><input type="text" id="az-ssh-private-key" />
+	</div>
+	<div>
+			<label class="header-label" for="az-ssh-private-key-file">File path to private ssh key for private repository sync <code>--ssh-private-key-file</code></label><input type="text" id="az-ssh-private-key-file" />
+	</div>
+
+	<h2>Kustomization <code>--kustomization</code></h2>
+	<hr />
+	<div>
+			<label class="header-label" for="az-kustomization-name">Name <code>name</code></label><input type="text" id="az-kustomization-name" />
+	</div>
+	<div>
+			<label class="header-label" for="az-kustomization-path">Path <code>path</code></label><input type="text" id="az-kustomization-path" />
+	</div>
+	<div>
+			<label class="header-label" for="az-kustomization-depends-on">Depends On <code>depends_on</code></label><input type="text" id="az-kustomization-depends-on" />
+	</div>
+	<div>
+			<label class="header-label" for="az-kustomization-timeout">Timeout <code>timeout</code></label><input type="text" id="az-kustomization-timeout" />
+	</div>
+	<div>
+			<label class="header-label" for="az-kustomization-sync-interval">Sync interval <code>sync_interval</code></label><input type="text" id="az-kustomization-sync-interval" />
+	</div>
+	<div>
+			<label class="header-label" for="az-kustomization-retry-interval">Retry interval <code>retry_interval</code></label><input type="text" id="az-kustomization-retry-interval" />
+	</div>
+	<div>
+			<label class="header-label" for="az-kustomization-prune">Prune (true or false) <code>prune</code></label><input type="text" id="az-kustomization-prune" />
+	</div>
+	<div>
+			<label class="header-label" for="az-kustomization-force">Force (true or false) <code>force</code></label><input type="text" id="az-kustomization-force" />
+	</div>
+</div>
