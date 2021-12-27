@@ -1,4 +1,4 @@
-import { ThemeIcon, TreeItemCollapsibleState, Uri } from 'vscode';
+import { ThemeIcon, Uri } from 'vscode';
 import { CommandId } from '../../commands';
 import { DocumentationLink } from '../documentationConfig';
 import { TreeNode } from './treeNode';
@@ -18,9 +18,7 @@ export class DocumentationNode extends TreeNode {
 
 		this.url = link.url;
 
-		if (isParent) {
-			this.collapsibleState = TreeItemCollapsibleState.Expanded;
-		} else {
+		if (!isParent) {
 			this.setIcon(new ThemeIcon('link-external'));
 		}
 	}
