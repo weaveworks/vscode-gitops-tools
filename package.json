@@ -153,7 +153,6 @@
 			{
 				"command": "gitops.views.createGitRepository",
 				"title": "Create Git Repository Source",
-				"icon": "$(add)",
 				"category": "GitOps"
 			},
 			{
@@ -182,7 +181,7 @@
 				"command": "gitops.editor.createSource",
 				"title": "Create Source",
 				"category": "GitOps",
-				"icon": "$(diff-added)"
+				"icon": "$(add)"
 			},
 			{
 				"command": "gitops.output.show",
@@ -286,11 +285,6 @@
 					"command": "gitops.views.refreshAllTreeViews",
 					"group": "navigation",
 					"when": "view == gitops.views.clusters"
-				},
-				{
-					"command": "gitops.views.createGitRepository",
-					"group": "navigation@0",
-					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
 				},
 				{
 					"command": "gitops.editor.createSource",
