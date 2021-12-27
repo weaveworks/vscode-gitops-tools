@@ -119,7 +119,6 @@
 			{
 				"command": "gitops.flux.reconcileRepository",
 				"title": "Reconcile Repository",
-				"icon": "$(sync)",
 				"category": "GitOps"
 			},
 			{
@@ -295,11 +294,6 @@
 					"command": "gitops.createKustomization",
 					"group": "navigation@0",
 					"when": "view == gitops.views.workloads && workspaceFolderCount > 0"
-				},
-				{
-					"command": "gitops.flux.reconcileRepository",
-					"group": "navigation@0",
-					"when": "view == gitops.views.sources && gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
 				},
 				{
 					"command": "gitops.views.refreshSourceTreeView",
