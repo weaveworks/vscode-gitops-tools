@@ -12,10 +12,10 @@ export interface AzureMetadata {
  * 1) Resource group
  * 2) Resource name
  * 3) ID of the azure subscription
- * @param clusterName cluster name as in kubernetes config
+ * @param contextName cluster name as in kubernetes config
  */
-export async function askUserForAzureMetadata(clusterName: string): Promise<AzureMetadata | undefined> {
-	const azureMetadata = globalState.getClusterMetadata(clusterName);
+export async function askUserForAzureMetadata(contextName: string): Promise<AzureMetadata | undefined> {
+	const azureMetadata = globalState.getClusterMetadata(contextName);
 
 	const resourceGroup = await window.showInputBox({
 		title: 'Enter the Azure Resource Group (where the cluster is)',
@@ -47,7 +47,7 @@ export async function askUserForAzureMetadata(clusterName: string): Promise<Azur
 		return;
 	}
 
-	globalState.setClusterMetadata(clusterName, {
+	globalState.setClusterMetadata(contextName, {
 		azureResourceGroup: resourceGroup,
 		azureSubscription: subscriptionId,
 		azureClusterName: resourceName,

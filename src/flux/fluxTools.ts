@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { parseJson } from '../utils/jsonUtils';
-import { FluxSource, FluxWorkload, FluxTreeResources } from './fluxTypes';
+import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxTypes';
 
 /**
  * Special symbols used in flux output.
@@ -233,6 +233,49 @@ class FluxTools {
 				deployKey,
 			};
 		}
+	}
+
+	/**
+	 * @see https://fluxcd.io/docs/cmd/flux_create_source/
+	 */
+	async createSourceGit2(args: {
+		name: string;
+		url: string;
+		branch: string;
+		tag: string;
+		semver: string;
+		interval: string;
+		timeout: string;
+		caFile: string;
+		privateKeyFile: string;
+		username: string;
+		password: string;
+		secretRef: string;
+		gitImplementation: string;
+		recurseSubmodules: boolean;
+		sshKeyAlgorithm: string;
+		sshEcdsaCurve: string;
+		sshRsaBits: string;
+	}) {
+		const urlArg = ` --url "${args.url}"`;
+		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
+		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
+		const semverArg = args.semver ? ` --tag-semver "${args.semver}"` : '';
+		const intervalArg = args.interval ? ` --interval "${args.interval}"` : '';
+		const timeoutArg = args.timeout ? ` --timeout "${args.timeout}"` : '';
+		const caFileArg = args.caFile ? ` --ca-file "${args.caFile}"` : '';
+		const privateKeyFileArg = args.privateKeyFile ? ` --private-key-file "${args.privateKeyFile}"` : '';
+		const usernameArg = args.username ? ` --username "${args.username}"` : '';
+		const passwordArg = args.password ? ` --password "${args.password}"` : '';
+		const secretRefArg = args.secretRef ? ` --secret-ref "${args.secretRef}"` : '';
+		const gitImplementation = args.gitImplementation ? ` --git-implementation "${args.gitImplementation}"` : '';
+		const recurseSubmodules = args.recurseSubmodules ? ' --recurse-submodules' : '';
+		const sshKeyAlgorithm = args.sshKeyAlgorithm ? ` --ssh-key-algorithm "${args.sshKeyAlgorithm}"` : '';
+		const sshEcdsaCurve = args.sshEcdsaCurve ? ` --ssh-ecdsa-curve "${args.sshEcdsaCurve}"` : '';
+		const sshRsaBits = args.sshRsaBits ? ` --ssh-rsa-bits "${args.sshRsaBits}"` : '';
+
+
+		await shell.execWithOutput(`flux create source git ${args.name}${urlArg}${branchArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits}`);
 	}
 
 	async createKustomization(kustomizationName: string, sourceName: string, kustomizationPath: string) {

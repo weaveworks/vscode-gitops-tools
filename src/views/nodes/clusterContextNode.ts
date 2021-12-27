@@ -145,6 +145,7 @@ export class ClusterContextNode extends TreeNode {
 		}
 
 		if (this.clusterProvider === ClusterProvider.Unknown) {
+			// TODO: maybe this should include a button to override the cluster provider detection?
 			window.showErrorMessage('Cluster provider detection failed.');
 		}
 

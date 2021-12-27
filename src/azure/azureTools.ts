@@ -35,14 +35,14 @@ class AzureTools {
 	 */
 	private async invokeAzCommand(
 		command: string,
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | ShellResult> {
 
-		let azureMetadata = await this.getAzureMetadata(clusterNode, clusterProvider);
+		let azureMetadata = await this.getAzureMetadata(contextName, clusterProvider);
 		if (!azureMetadata) {
 			window.showWarningMessage('Failed to get Azure resource name or resource group or subscription ID.');
-			azureMetadata = await askUserForAzureMetadata(clusterNode.clusterName);
+			azureMetadata = await askUserForAzureMetadata(contextName);
 		}
 
 		if (!azureMetadata) {
@@ -62,15 +62,15 @@ class AzureTools {
 	 * @param clusterProvider target cluster provider
 	 */
 	async getAzureMetadata(
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 
 		let configMapShellResult: ShellResult | undefined;
 		if (clusterProvider === ClusterProvider.AKS) {
-			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps extension-manager-config -n ${AzureConstants.KubeSystemNamespace} --context=${clusterNode.contextName} --ignore-not-found -o json`);
+			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps extension-manager-config -n ${AzureConstants.KubeSystemNamespace} --context=${contextName} --ignore-not-found -o json`);
 		} else {
-			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${clusterNode.contextName} --ignore-not-found -o json`);
+			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${contextName} --ignore-not-found -o json`);
 		}
 
 		if (configMapShellResult?.code !== 0) {
@@ -108,7 +108,7 @@ class AzureTools {
 	) {
 		await this.invokeAzCommand(
 			`az k8s-extension create --name ${AzureConstants.FluxExtensionName} --extension-type microsoft.flux --scope cluster`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 	}
@@ -135,14 +135,14 @@ class AzureTools {
 		// delete all flux configurations
 		await Promise.all(namesOfFluxConfigs.map(fluxConfigName => this.invokeAzCommand(
 			`az k8s-configuration flux delete -n ${fluxConfigName} --yes`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		)));
 
 		// delete flux extension
 		await this.invokeAzCommand(
 			`az k8s-extension delete --name ${AzureConstants.FluxExtensionName} --yes`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 	}
@@ -160,7 +160,7 @@ class AzureTools {
 	): Promise<undefined | any[]> {
 		const configurationShellResult = await this.invokeAzCommand(
 			'az k8s-configuration flux list',
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 
@@ -202,7 +202,7 @@ class AzureTools {
 
 		const gitCreateShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux create -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch} ${kustomizationQueryPart}`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 
@@ -237,7 +237,7 @@ class AzureTools {
 	) {
 		const createKustomizationShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}" --prune true`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 
@@ -245,6 +245,76 @@ class AzureTools {
 			window.showErrorMessage(createKustomizationShellResult?.stderr || '');
 			return;
 		}
+	}
+
+	/**
+	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_create
+	 */
+	async createSourceGit2(args: {
+		sourceName: string;
+		contextName: string;
+		clusterProvider: AzureClusterProvider;
+		url: string;
+		branch: string;
+		tag: string;
+		semver: string;
+		commit: string;
+		interval: string;
+		timeout: string;
+		caCert: string;
+		caCertFile: string;
+		httpsKey: string;
+		httpsUser: string;
+		knownHosts: string;
+		knownHostsFile: string;
+		localAuthRef: string;
+		sshPrivateKey: string;
+		sshPrivateKeyFile: string;
+		kustomizationName: string;
+		kustomizationPath: string;
+		kustomizationDependsOn: string;
+		kustomizationTimeout: string;
+		kustomizationSyncInterval: string;
+		kustomizationRetryInterval: string;
+		kustomizationPrune: boolean;
+		kustomizationForce: boolean;
+	}) {
+		const urlArg = ` --url "${args.url}"`;
+		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
+		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
+		const semverArg = args.semver ? ` --semver "${args.semver}"` : '';
+		const commitArg = args.commit ? ` --commit "${args.commit}"` : '';
+		const intervalArg = args.interval ? ` --interval "${args.interval}"` : '';
+		const timeoutArg = args.timeout ? ` --timeout "${args.timeout}"` : '';
+		const caCertArg = args.caCert ? ` --https-ca-cert "${args.caCert}"` : '';
+		const caCertFileArg = args.caCertFile ? ` --https-ca-cert-file "${args.caCertFile}"` : '';
+		const httpsKeyArg = args.httpsKey ? ` --https-key "${args.httpsKey}"` : '';
+		const httpsUserArg = args.httpsUser ? ` --https-user "${args.httpsUser}"` : '';
+		const knownHostsArg = args.knownHosts ? ` --known-hosts "${args.knownHosts}"` : '';
+		const knownHostsFileArg = args.knownHostsFile ? ` --known-hosts-file "${args.knownHostsFile}"` : '';
+		const localAuthRefArg = args.localAuthRef ? ` --local-auth-ref "${args.localAuthRef}"` : '';
+		const sshPrivateKeyArg = args.sshPrivateKey ? ` --ssh-private-key "${args.sshPrivateKey}"` : '';
+		const sshPrivateKeyFileArg = args.sshPrivateKeyFile ? ` --ssh-private-key-file "${args.sshPrivateKeyFile}"` : '';
+
+		let kustomizationPart = '';
+		const kustomizationName = args.kustomizationName ? ` name="${args.kustomizationName}"` : '';
+		const kustomizationPath = args.kustomizationPath ? ` path="${args.kustomizationPath}"` : '';
+		const kustomizationDependsOn = args.kustomizationDependsOn ? ` depends_on="${args.kustomizationDependsOn}"` : '';
+		const kustomizationTimeout = args.kustomizationTimeout ? ` timeout="${args.kustomizationTimeout}"` : '';
+		const kustomizationSyncInterval = args.kustomizationSyncInterval ? ` sync_interval="${args.kustomizationSyncInterval}"` : '';
+		const kustomizationRetryInterval = args.kustomizationRetryInterval ? ` retry_interval="${args.kustomizationRetryInterval}"` : '';
+		const kustomizationPrune = args.kustomizationPrune ? ' prune=true' : 'prune=false';
+		const kustomizationForce = args.kustomizationForce ? ' force=true' : 'prune=false';
+
+		if (kustomizationName || kustomizationPath || kustomizationDependsOn || kustomizationTimeout || kustomizationSyncInterval || kustomizationRetryInterval || kustomizationPrune || kustomizationForce) {
+			kustomizationPart = ` --kustomization${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
+		}
+
+		await this.invokeAzCommand(
+			`az k8s-configuration flux create -n ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${kustomizationPart}`,
+			args.contextName,
+			args.clusterProvider,
+		);
 	}
 
 	/**
@@ -262,7 +332,7 @@ class AzureTools {
 	) {
 		await this.invokeAzCommand(
 			`az k8s-configuration flux delete -n ${sourceName} --yes`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 	}
@@ -282,7 +352,7 @@ class AzureTools {
 	) {
 		await this.invokeAzCommand(
 			`az k8s-configuration flux update -n ${sourceName} --suspend true`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 	}
@@ -302,7 +372,7 @@ class AzureTools {
 	) {
 		await this.invokeAzCommand(
 			`az k8s-configuration flux update -n ${sourceName} --suspend false`,
-			clusterNode,
+			clusterNode.contextName,
 			clusterProvider,
 		);
 	}
