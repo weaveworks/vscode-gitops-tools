@@ -447,6 +447,10 @@
 				{
 					"command": "gitops.views.showWorkloadsHelpMessage",
 					"when": "never"
+				},
+				{
+					"command": "gitops.editor.createSource",
+					"when": "never"
 				}
 			]
 		}
