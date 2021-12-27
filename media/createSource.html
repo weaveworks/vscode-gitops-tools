@@ -22,7 +22,7 @@
 		<input type="radio" id="go-git" name="git-implementation" value="go-git" checked> <label for="go-git">go-git</label>
 		<input type="radio" id="libgit2" name="git-implementation" value="libgit2"> <label for="libgit2">libgit2</label>
 	</div>
-	<div>
+	<div id="recurse-submodules-section">
 		<label class="header-label" for="recurse-submodules">When enabled, configures the GitRepository source to initialize and include Git submodules in the artifact it produces <code>--recurse-submodules</code></label><input type="checkbox" id="recurse-submodules"><label for="recurse-submodules">Recurse submodules</label>
 	</div>
 	<div>
@@ -46,15 +46,13 @@
 		<input type="radio" id="ecdsa" name="ssh-key-algorithm" value="ecdsa" checked> <label for="ecdsa">ecdsa</label>
 		<input type="radio" id="ed25519" name="ssh-key-algorithm" value="ed25519"> <label for="ed25519">ed25519</label>
 	</div>
-	<!-- TODO: only show curve when ecdsa -->
-	<div>
+	<div id="ssh-ecdsa-curve-section">
 		<label class="header-label" for="p384">SSH ECDSA public key curve <code>--ssh-ecdsa-curve</code></label>
 		<input type="radio" id="p256" name="ssh-ecdsa-curve" value="p256"> <label for="p256">p256</label>
 		<input type="radio" id="p384" name="ssh-ecdsa-curve" value="p384" checked> <label for="p384">p384</label>
 		<input type="radio" id="p521" name="ssh-ecdsa-curve" value="p521"> <label for="p521">p521</label>
 	</div>
-	<!-- TODO: only show rsa bits when rsa -->
-	<div>
+	<div id="ssh-rsa-bits-section" hidden>
 		<label class="header-label" for="ssh-rsa-bits">SSH RSA public key bit size (multiplies of 8) <code>--ssh-rsa-bits</code></label><input type="number" step="8" id="ssh-rsa-bits" value="2048" />
 	</div>
 </div>

@@ -23,6 +23,10 @@ const fluxSemverId = 'tag-semver';
 const fluxIntervalId = 'interval';
 const fluxTimeoutId = 'timeout';
 const fluxGitImplementationId = 'git-implementation';
+const fluxGoGitImplementationId = 'go-git';
+const fluxLibgit2ImplementationId = 'libgit2';
+const fluxSshKeyAlgorithmEcdsa = 'ecdsa';
+const fluxSshKeyAlgorithmRsa = 'rsa';
 const fluxRecurseSubmodulesId = 'recurse-submodules';
 const fluxEcdsaCurveId = 'ssh-ecdsa-curve';
 const fluxSshKeyAlgorithmId = 'ssh-key-algorithm';
@@ -65,6 +69,14 @@ const $clusteProviderHeader = /** @type HTMLDivElement */ (document.getElementBy
 const $genericForm = /** @type HTMLDivElement */ (document.getElementById('generic-form'));
 const $azureForm = /** @type HTMLDivElement */ (document.getElementById('azure-form'));
 const $submitButton = /** @type HTMLButtonElement */ (document.getElementById('create-source'));
+const $recurseSubmodulesSection = /** @type HTMLDivElement */ (document.getElementById('recurse-submodules-section'));
+const $sshEcdsaCurveSection = /** @type HTMLDivElement */ (document.getElementById('ssh-ecdsa-curve-section'));
+const $sshRsaBitsSection = /** @type HTMLDivElement */ (document.getElementById('ssh-rsa-bits-section'));
+// Inputs
+const $goGitImplementation = /** @type HTMLInputElement */ (document.getElementById(fluxGoGitImplementationId));
+const $libgit2Implementation = /** @type HTMLInputElement */ (document.getElementById(fluxLibgit2ImplementationId));
+const $ecdsa = /** @type HTMLInputElement */ (document.getElementById(fluxSshKeyAlgorithmEcdsa));
+const $rsa = /** @type HTMLInputElement */ (document.getElementById(fluxSshKeyAlgorithmRsa));
 
 $submitButton.addEventListener('click', () => {
 	if (webviewTempState.isAzure) {
@@ -126,6 +138,21 @@ $submitButton.addEventListener('click', () => {
 		});
 	}
 });
+
+// Only show --recurse-submodules if the --git-implementation is `go-git`
+for (const $gitImplementation of document.querySelectorAll(`[name="${fluxGitImplementationId}"]`) || []) {
+	$gitImplementation.addEventListener('click', () => {
+		$recurseSubmodulesSection.hidden = !$goGitImplementation.checked;
+	});
+}
+for (const $sshAlgorithm of document.querySelectorAll(`[name="${fluxSshKeyAlgorithmId}"]`) || []) {
+	$sshAlgorithm.addEventListener('click', () => {
+		// Only show --ssh-ecdsa-curve if the --ssh-key-algorithm is `ecdsa`
+		$sshEcdsaCurveSection.hidden = !$ecdsa.checked;
+		// Only show --ssh-rsa-bits if the --ssh-key-algorithm is `rsa`
+		$sshRsaBitsSection.hidden = !$rsa.checked;
+	});
+}
 
 /**
  * @param message {import('../src/webviews/createSourceWebview').MessageFromWebview}
