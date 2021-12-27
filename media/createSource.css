@@ -24,6 +24,18 @@ code {
 	font-size: inherit;
 }
 
+input[type="radio"] {
+	margin-right: 0;
+}
+input[type="radio"],
+input[type="radio"] + label,
+input[type="checkbox"],
+input[type="checkbox"] + label {
+  vertical-align: middle;
+	margin-top: 0.2em;
+	display: inline-block;
+}
+
 .app {
 	max-width: max(50%, 800px);
 	margin-left: auto;

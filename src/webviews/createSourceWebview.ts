@@ -42,6 +42,11 @@ export interface CreateSourceGenericCluster {
 		username: string;
 		password: string;
 		secretRef: string;
+		gitImplementation: string;
+		recurseSubmodules: boolean;
+		sshKeyAlgorithm: string;
+		sshEcdsaCurve: string;
+		sshRsaBits: string;
 	};
 }
 /**
@@ -167,6 +172,11 @@ export class CreateSourcePanel {
 						password: message.value.password,
 						privateKeyFile: message.value.privateKeyFile,
 						secretRef: message.value.secretRef,
+						gitImplementation: message.value.gitImplementation,
+						recurseSubmodules: message.value.recurseSubmodules,
+						sshKeyAlgorithm: message.value.sshKeyAlgorithm,
+						sshEcdsaCurve: message.value.sshEcdsaCurve,
+						sshRsaBits: message.value.sshRsaBits,
 					});
 					refreshSourcesTreeView();
 					break;

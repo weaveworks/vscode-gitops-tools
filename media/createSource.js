@@ -22,6 +22,11 @@ const fluxTagId = 'tag';
 const fluxSemverId = 'tag-semver';
 const fluxIntervalId = 'interval';
 const fluxTimeoutId = 'timeout';
+const fluxGitImplementationId = 'git-implementation';
+const fluxRecurseSubmodulesId = 'recurse-submodules';
+const fluxEcdsaCurveId = 'ssh-ecdsa-curve';
+const fluxSshKeyAlgorithmId = 'ssh-key-algorithm';
+const fluxSshRsaBitsId = 'ssh-rsa-bits';
 const fluxCaFileId = 'ca-file';
 const fluxPrivateKeyFileId = 'private-key-file';
 const fluxUsernameId = 'username';
@@ -54,8 +59,6 @@ const azureKustomizationRetryIntervalId = 'az-kustomization-retry-interval';
 const azureKustomizationPruneId = 'az-kustomization-prune';
 const azureKustomizationForceId = 'az-kustomization-force';
 
-// TODO: skipped flux flags: --git-implementation, --recurse-submodules, --ssh-ecdsa-curve, --ssh-key-algorithm, --ssh-rsa-bits
-
 // Element references
 const $clusterName = /** @type HTMLDivElement */ (document.getElementById('cluster-name'));
 const $clusteProviderHeader = /** @type HTMLDivElement */ (document.getElementById('cluster-provider'));
@@ -63,7 +66,7 @@ const $genericForm = /** @type HTMLDivElement */ (document.getElementById('gener
 const $azureForm = /** @type HTMLDivElement */ (document.getElementById('azure-form'));
 const $submitButton = /** @type HTMLButtonElement */ (document.getElementById('create-source'));
 
-$submitButton?.addEventListener('click', () => {
+$submitButton.addEventListener('click', () => {
 	if (webviewTempState.isAzure) {
 		postVSCodeMessage({
 			type: 'createSourceAzureCluster',
@@ -114,6 +117,11 @@ $submitButton?.addEventListener('click', () => {
 				password: getInputValue(fluxPasswordId),
 				privateKeyFile: getInputValue(fluxPrivateKeyFileId),
 				secretRef: getInputValue(fluxSecretRefId),
+				gitImplementation: getRadioValue(fluxGitImplementationId),
+				sshKeyAlgorithm: getRadioValue(fluxSshKeyAlgorithmId),
+				sshEcdsaCurve: getRadioValue(fluxEcdsaCurveId),
+				sshRsaBits: getInputValue(fluxSshRsaBitsId),
+				recurseSubmodules: getCheckboxValue(fluxRecurseSubmodulesId),
 			},
 		});
 	}
@@ -139,11 +147,29 @@ function showNotification(text, isModal = false) {
 }
 
 /**
- * @param inputId {string}
+ * Get text input value (by id).
+ * @param {string} inputId
  * @returns {string} input value or empty string
  */
 function getInputValue(inputId) {
 	return /** @type null | HTMLInputElement */ (document.getElementById(inputId))?.value || '';
+}
+
+/**
+ * Get radio group checked value (by name).
+ * @param {string} radioName
+ * @returns {string} checked radio button value
+ */
+function getRadioValue(radioName) {
+	return /** @type HTMLInputElement */ (document.querySelector(`input[name="${radioName}"]:checked`)).value;
+}
+/**
+ * Get checkbox value (by id).
+ * @param {string} checkboxId
+ * @returns {boolean} true or false
+ */
+function getCheckboxValue(checkboxId) {
+	return /** @type HTMLInputElement */ (document.getElementById(checkboxId)).checked;
 }
 
 window.addEventListener('message', event => {
