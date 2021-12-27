@@ -276,8 +276,8 @@ class AzureTools {
 		kustomizationTimeout: string;
 		kustomizationSyncInterval: string;
 		kustomizationRetryInterval: string;
-		kustomizationPrune: string;
-		kustomizationForce: string;
+		kustomizationPrune: boolean;
+		kustomizationForce: boolean;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
@@ -303,11 +303,11 @@ class AzureTools {
 		const kustomizationTimeout = args.kustomizationTimeout ? ` timeout="${args.kustomizationTimeout}"` : '';
 		const kustomizationSyncInterval = args.kustomizationSyncInterval ? ` sync_interval="${args.kustomizationSyncInterval}"` : '';
 		const kustomizationRetryInterval = args.kustomizationRetryInterval ? ` retry_interval="${args.kustomizationRetryInterval}"` : '';
-		const kustomizationPrune = args.kustomizationPrune ? ` prune="${args.kustomizationPrune}"` : '';
-		const kustomizationForce = args.kustomizationForce ? ` force="${args.kustomizationForce}"` : '';
+		const kustomizationPrune = args.kustomizationPrune ? ' prune=true' : 'prune=false';
+		const kustomizationForce = args.kustomizationForce ? ' force=true' : 'prune=false';
 
 		if (kustomizationName || kustomizationPath || kustomizationDependsOn || kustomizationTimeout || kustomizationSyncInterval || kustomizationRetryInterval || kustomizationPrune || kustomizationForce) {
-			kustomizationPart = ` --kustomization ${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
+			kustomizationPart = ` --kustomization${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
 		}
 
 		await this.invokeAzCommand(

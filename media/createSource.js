@@ -96,8 +96,8 @@ $submitButton.addEventListener('click', () => {
 				kustomizationTimeout: getInputValue(azureKustomizationTimeoutId),
 				kustomizationSyncInterval: getInputValue(azureKustomizationSyncIntervalId),
 				kustomizationRetryInterval: getInputValue(azureKustomizationRetryIntervalId),
-				kustomizationPrune: getInputValue(azureKustomizationPruneId),
-				kustomizationForce: getInputValue(azureKustomizationForceId),
+				kustomizationPrune: getCheckboxValue(azureKustomizationPruneId),
+				kustomizationForce: getCheckboxValue(azureKustomizationForceId),
 			},
 		});
 	} else {

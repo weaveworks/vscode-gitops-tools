@@ -80,8 +80,8 @@ export interface CreateSourceAzureCluster {
 		kustomizationTimeout: string;
 		kustomizationSyncInterval: string;
 		kustomizationRetryInterval: string;
-		kustomizationPrune: string;
-		kustomizationForce: string;
+		kustomizationPrune: boolean;
+		kustomizationForce: boolean;
 	};
 }
 /**

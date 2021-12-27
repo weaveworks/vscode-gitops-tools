@@ -134,9 +134,9 @@
 		<label class="header-label" for="az-kustomization-retry-interval">Retry interval <code>retry_interval</code></label><input type="text" id="az-kustomization-retry-interval" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-prune">Prune (true or false) <code>prune</code></label><input type="text" id="az-kustomization-prune" />
+		<label class="header-label" for="az-kustomization-prune">Garbage collect resources deployed by the kustomization on the cluster <code>prune</code></label><input type="checkbox" id="az-kustomization-prune"><label for="az-kustomization-prune">Prune</label>
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-force">Force (true or false) <code>force</code></label><input type="text" id="az-kustomization-force" />
+		<label class="header-label" for="az-kustomization-force">Re-create resources that cannot be updated on the cluster (i.e. jobs) <code>force</code></label><input type="checkbox" id="az-kustomization-force"><label for="az-kustomization-force">Force</label>
 	</div>
 </div>
