@@ -295,7 +295,7 @@
 				{
 					"command": "gitops.editor.createSource",
 					"group": "navigation@0",
-					"when": "view == gitops.views.sources && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+					"when": "view == gitops.views.sources && !gitops:loadingClusters && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 				},
 				{
 					"command": "gitops.createKustomization",
