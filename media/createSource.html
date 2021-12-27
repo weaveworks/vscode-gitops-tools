@@ -62,19 +62,19 @@
 
 <div id="azure-form" hidden>
 	<div>
-		<label class="header-label" for="az-url">Git repository url <code>--url</code></label><input type="text" id="az-url" />
+		<label class="header-label" for="az-url">URL of the git repo source to reconcile <code>--url</code></label><input type="text" id="az-url" />
 	</div>
 	<div>
-		<label class="header-label" for="az-branch">Git branch <code>--branch</code></label><input type="text" id="az-branch" />
+		<label class="header-label" for="az-branch">Branch within the git source to reconcile with the cluster <code>--branch</code></label><input type="text" id="az-branch" />
 	</div>
 	<div>
-			<label class="header-label" for="az-tag">Git tag <code>--tag</code></label><input type="text" id="az-tag" />
+			<label class="header-label" for="az-tag">Tag within the git source to reconcile with the cluster <code>--tag</code></label><input type="text" id="az-tag" />
 	</div>
 	<div>
 		<label class="header-label" for="az-tag-semver">Git tag semver range <code>--semver</code></label><input type="text" id="az-tag-semver" />
 	</div>
 	<div>
-		<label class="header-label" for="az-commit">Git commit <code>--commit</code></label><input type="text" id="az-commit" />
+		<label class="header-label" for="az-commit">Commit within the git source to reconcile with the cluster <code>--commit</code></label><input type="text" id="az-commit" />
 	</div>
 	<div>
 		<label class="header-label" for="az-interval">Source sync interval (in minutes) <code>--interval</code></label><input type="text" id="az-interval" />
@@ -116,22 +116,22 @@
 	<h2>Kustomization <code>--kustomization</code></h2>
 	<hr />
 	<div>
-		<label class="header-label" for="az-kustomization-name">Name <code>name</code></label><input type="text" id="az-kustomization-name" />
+		<label class="header-label" for="az-kustomization-name">Name of the flux configuration <code>name</code></label><input type="text" id="az-kustomization-name" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-path">Path <code>path</code></label><input type="text" id="az-kustomization-path" />
+		<label class="header-label" for="az-kustomization-path">Specify the path in the source that the kustomization should apply <code>path</code></label><input type="text" id="az-kustomization-path" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-depends-on">Depends On <code>depends_on</code></label><input type="text" id="az-kustomization-depends-on" />
+		<label class="header-label" for="az-kustomization-depends-on">Comma-separated list of kustomization dependencies <code>depends_on</code></label><input type="text" id="az-kustomization-depends-on" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-timeout">Timeout <code>timeout</code></label><input type="text" id="az-kustomization-timeout" />
+		<label class="header-label" for="az-kustomization-timeout">Maximum time to reconcile the kustomization before timing out <code>timeout</code></label><input type="text" id="az-kustomization-timeout" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-sync-interval">Sync interval <code>sync_interval</code></label><input type="text" id="az-kustomization-sync-interval" />
+		<label class="header-label" for="az-kustomization-sync-interval">Time between reconciliations of the kustomization on the cluster <code>sync_interval</code></label><input type="text" id="az-kustomization-sync-interval" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-retry-interval">Retry interval <code>retry_interval</code></label><input type="text" id="az-kustomization-retry-interval" />
+		<label class="header-label" for="az-kustomization-retry-interval">Time between reconciliations of the kustomization on the cluster on failures, defaults to --sync-interval <code>retry_interval</code></label><input type="text" id="az-kustomization-retry-interval" />
 	</div>
 	<div>
 		<label class="header-label" for="az-kustomization-prune">Garbage collect resources deployed by the kustomization on the cluster <code>prune</code></label><input type="checkbox" id="az-kustomization-prune"><label for="az-kustomization-prune">Prune</label>
