@@ -45,6 +45,7 @@
 		"onCommand:gitops.flux.reconcileSource",
 		"onCommand:gitops.flux.reconcileRepository",
 		"onCommand:gitops.flux.reconcileWorkload",
+		"onCommand:gitops.flux.trace",
 		"onCommand:gitops.views.refreshAllTreeViews",
 		"onCommand:gitops.views.refreshSourceTreeView",
 		"onCommand:gitops.views.refreshWorkloadTreeView",
@@ -124,6 +125,11 @@
 			{
 				"command": "gitops.flux.reconcileWorkload",
 				"title": "Reconcile",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.flux.trace",
+				"title": "Trace",
 				"category": "GitOps"
 			},
 			{
@@ -366,6 +372,11 @@
 					"command": "gitops.copyResourceName",
 					"when": "view =~ /^(gitops.views.sources|gitops.views.workloads)$/",
 					"group": "navigation@9"
+				},
+				{
+					"command": "gitops.flux.trace",
+					"when": "view == gitops.views.workloads && viewItem != Namespace;",
+					"group": "navigation@4"
 				}
 			],
 			"explorer/context": [
@@ -444,6 +455,10 @@
 				},
 				{
 					"command": "gitops.editor.createSource",
+					"when": "never"
+				},
+				{
+					"command": "gitops.flux.trace",
 					"when": "never"
 				}
 			]

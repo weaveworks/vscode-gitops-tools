@@ -19,6 +19,7 @@ import { showKubectlVersion } from './commands/showKubectlVersion';
 import { showLogs } from './commands/showLogs';
 import { showWorkloadsHelpMessage } from './commands/showWorkloadsHelpMessage';
 import { suspend } from './commands/suspend';
+import { trace } from './commands/trace';
 import { showOutputChannel } from './output';
 import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
 
@@ -53,6 +54,7 @@ export const enum CommandId {
 	FluxReconcileSource = 'gitops.flux.reconcileSource',
 	FluxReconcileRepository = 'gitops.flux.reconcileRepository',
 	FluxReconcileWorkload = 'gitops.flux.reconcileWorkload',
+	FluxTrace = 'gitops.flux.trace',
 
 	// tree view
 	SetClusterProvider = 'gitops.setClusterProvider',
@@ -101,6 +103,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.FluxReconcileWorkload, fluxReconcileWorkload);
 	registerCommand(CommandId.FluxEnableGitOps, fluxEnableGitOps);
 	registerCommand(CommandId.FluxDisableGitOps, fluxDisableGitOps);
+	registerCommand(CommandId.FluxTrace, trace);
 
 	// tree views
 	registerCommand(CommandId.SetClusterProvider, setClusterProvider);

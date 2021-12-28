@@ -189,6 +189,13 @@ class FluxTools {
 	}
 
 	/**
+	 * @see https://fluxcd.io/docs/cmd/flux_trace/
+	 */
+	async trace(name: string, kind: string, apiVersion: string, namespace: string) {
+		await shell.execWithOutput(`flux trace ${name} --kind=${kind} --api-version=${apiVersion} --namespace=${namespace}`);
+	}
+
+	/**
 	 * Run `flux delete`
 	 * @see https://fluxcd.io/docs/cmd/flux_delete/
 	 *

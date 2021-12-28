@@ -1,4 +1,4 @@
-import { Namespace } from '../../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds, Namespace } from '../../kubernetes/kubernetesTypes';
 import { TreeNode } from './treeNode';
 
 /**
@@ -13,8 +13,13 @@ export class NamespaceNode extends TreeNode {
 
 	constructor(namespace: Namespace) {
 		super(namespace.metadata?.name || '');
-		// this.description = KubernetesObjectKinds.Namespace;
+
+		this.description = KubernetesObjectKinds.Namespace;
 
 		this.resource = namespace;
+	}
+
+	get contexts() {
+		return [KubernetesObjectKinds.Namespace];
 	}
 }

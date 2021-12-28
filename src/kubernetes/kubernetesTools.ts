@@ -496,6 +496,21 @@ class KubernetesTools {
 		return Uri.parse(url);
 	}
 
+	/**
+	 * Get one resouce object by kind/name and namespace
+	 * @param name name of the target resource
+	 * @param namespace namespace of the target resource
+	 * @param kind kind of the target resource
+	 */
+	async getResource(name: string, namespace: string, kind: string): Promise<undefined | KubernetesObject> {
+		const resourceShellResult = await this.invokeKubectlCommand(`get ${kind}/${name} --namespace=${namespace} -o json`);
+		if (resourceShellResult?.code !== 0) {
+			return;
+		}
+
+		return parseJson(resourceShellResult.stdout);
+	}
+
 }
 
 export const kubernetesTools = new KubernetesTools();
