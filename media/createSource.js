@@ -84,8 +84,10 @@ $submitButton.addEventListener('click', () => {
 			type: 'createSourceAzureCluster',
 			value: {
 				contextName: webviewTempState.contextName,
+				// @ts-ignore
 				clusterProvider: webviewTempState.clusterProvider,
 				sourceName: getInputValue(sourceNameId),
+				sourceKind: 'git',
 				url: getInputValue(azureUrlId),
 				branch: getInputValue(azureBranchId),
 				tag: getInputValue(azureTagId),

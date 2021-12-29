@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { AzureClusterProvider, azureTools } from '../azure/azureTools';
+import { createGitRepositoryAzureCluster, createGitRepositoryGenericCluster } from '../commands/createSource';
 import { asAbsolutePath } from '../extensionContext';
 import { fluxTools } from '../flux/fluxTools';
 import { GitInfo } from '../git/getOpenedFolderGitInfo';
@@ -56,7 +57,8 @@ export interface CreateSourceAzureCluster {
 	type: 'createSourceAzureCluster';
 	value: {
 		contextName: string;
-		clusterProvider: string;
+		clusterProvider: AzureClusterProvider;
+		sourceKind: 'git';
 		sourceName: string;
 		url: string;
 		branch: string;
@@ -159,60 +161,11 @@ export class CreateSourcePanel {
 		this._panel.webview.onDidReceiveMessage(async (message: MessageFromWebview) => {
 			switch (message.type) {
 				case 'createSourceGenericCluster': {
-					await fluxTools.createSourceGit2({
-						name: message.value.sourceName,
-						url: message.value.url,
-						branch: message.value.branch,
-						semver: message.value.semver,
-						tag: message.value.tag,
-						interval: message.value.interval,
-						timeout: message.value.timeout,
-						caFile: message.value.caFile,
-						username: message.value.username,
-						password: message.value.password,
-						privateKeyFile: message.value.privateKeyFile,
-						secretRef: message.value.secretRef,
-						gitImplementation: message.value.gitImplementation,
-						recurseSubmodules: message.value.recurseSubmodules,
-						sshKeyAlgorithm: message.value.sshKeyAlgorithm,
-						sshEcdsaCurve: message.value.sshEcdsaCurve,
-						sshRsaBits: message.value.sshRsaBits,
-					});
-					refreshSourcesTreeView();
+					await createGitRepositoryGenericCluster(message.value);
 					break;
 				}
 				case 'createSourceAzureCluster': {
-					await azureTools.createSourceGit2({
-						clusterProvider: message.value.clusterProvider as AzureClusterProvider,
-						contextName: message.value.contextName,
-						sourceName: message.value.sourceName,
-						url: message.value.url,
-						branch: message.value.branch,
-						tag: message.value.tag,
-						semver: message.value.semver,
-						commit: message.value.commit,
-						interval: message.value.interval,
-						timeout: message.value.timeout,
-						caCert: message.value.caCert,
-						caCertFile: message.value.caCertFile,
-						httpsUser: message.value.httpsUser,
-						httpsKey: message.value.httpsKey,
-						knownHosts: message.value.knownHosts,
-						knownHostsFile: message.value.knownHostsFile,
-						localAuthRef: message.value.localAuthRef,
-						sshPrivateKey: message.value.sshPrivateKey,
-						sshPrivateKeyFile: message.value.sshPrivateKeyFile,
-						kustomizationName: message.value.kustomizationName,
-						kustomizationPath: message.value.kustomizationPath,
-						kustomizationDependsOn: message.value.kustomizationDependsOn,
-						kustomizationTimeout: message.value.kustomizationTimeout,
-						kustomizationSyncInterval: message.value.kustomizationSyncInterval,
-						kustomizationRetryInterval: message.value.kustomizationRetryInterval,
-						kustomizationPrune: message.value.kustomizationPrune,
-						kustomizationForce: message.value.kustomizationForce,
-					});
-					refreshSourcesTreeView();
-					refreshWorkloadsTreeView();
+					await createGitRepositoryAzureCluster(message.value);
 					break;
 				}
 				case 'showNotification': {

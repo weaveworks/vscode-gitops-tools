@@ -2,7 +2,7 @@ import { commands, Disposable, ExtensionContext } from 'vscode';
 import { copyResourceName } from './commands/copyResourceName';
 import { createGitRepository } from './commands/createGitRepository';
 import { createKustomization } from './commands/createKustomization';
-import { createSource } from './commands/createSource';
+import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxCheck } from './commands/fluxCheck';
@@ -73,7 +73,7 @@ export const enum CommandId {
 
 	// webview
 	ShowLogs = 'gitops.editor.showLogs',
-	CreateSource = 'gitops.editor.createSource',
+	OpenCreateSourceWebview = 'gitops.editor.createSource',
 
 	// output commands
 	ShowOutputChannel = 'gitops.output.show',
@@ -121,7 +121,7 @@ export function registerCommands(context: ExtensionContext) {
 
 	// webview
 	registerCommand(CommandId.ShowLogs, showLogs);
-	registerCommand(CommandId.CreateSource, createSource);
+	registerCommand(CommandId.OpenCreateSourceWebview, openCreateSourceWebview);
 
 	// output
 	registerCommand(CommandId.ShowOutputChannel, showOutputChannel);

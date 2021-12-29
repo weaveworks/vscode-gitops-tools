@@ -246,7 +246,7 @@ class FluxTools {
 	 * @see https://fluxcd.io/docs/cmd/flux_create_source/
 	 */
 	async createSourceGit2(args: {
-		name: string;
+		sourceName: string;
 		url: string;
 		branch: string;
 		tag: string;
@@ -281,8 +281,27 @@ class FluxTools {
 		const sshEcdsaCurve = args.sshEcdsaCurve ? ` --ssh-ecdsa-curve "${args.sshEcdsaCurve}"` : '';
 		const sshRsaBits = args.sshRsaBits ? ` --ssh-rsa-bits "${args.sshRsaBits}"` : '';
 
+		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits} --silent`);
 
-		await shell.execWithOutput(`flux create source git ${args.name}${urlArg}${branchArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits}`);
+		const output = createSourceShellResult.stdout || createSourceShellResult.stderr;
+
+		// parse deploy key if the repository url is using SSH protocol
+		let deployKey: string | undefined;
+		const lines = this.splitLines(output);
+		const deployKeyPrefix = `${FluxOutputSymbols.Plus} deploy key:`;
+		for (const line of lines) {
+			if (line.startsWith(deployKeyPrefix)) {
+				deployKey = line.slice(deployKeyPrefix.length).trim();
+			}
+		}
+
+		if (!deployKey) {
+			return;
+		}
+
+		return {
+			deployKey,
+		};
 	}
 
 	async createKustomization(kustomizationName: string, sourceName: string, kustomizationPath: string) {

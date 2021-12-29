@@ -1,6 +1,7 @@
 import gitUrlParse from 'git-url-parse';
 import { Uri } from 'vscode';
-import { getGitRepositoryState, makeSSHUrlFromGitUrl, nameGitRepositorySource } from '../commands/createGitRepository';
+import { getGitRepositoryState, nameGitRepositorySource } from '../commands/createGitRepository';
+import { makeSSHUrlFromGitUrl } from '../commands/createSource';
 import { checkGitVersion } from '../install';
 import { getCurrentClusterInfo } from '../views/treeViews';
 
@@ -37,6 +38,7 @@ export async function getOpenedFolderGitInfo(targetFolderUri: Uri): Promise<GitI
 	const parsedGitUrl = gitUrlParse(gitUrl);
 
 	if (parsedGitUrl.protocol === 'ssh') {
+		// TODO: only transform GitHub url?
 		gitUrl = makeSSHUrlFromGitUrl(gitUrl);
 	}
 

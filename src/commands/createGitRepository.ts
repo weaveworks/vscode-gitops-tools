@@ -1,7 +1,6 @@
 import gitUrlParse from 'git-url-parse';
-import { commands, env, Uri, window, workspace } from 'vscode';
+import { Uri, window, workspace } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
-import { CommandId } from '../commands';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
@@ -9,6 +8,7 @@ import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { sanitizeRFC1123 } from '../utils/stringUtils';
 import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+import { makeSSHUrlFromGitUrl, showDeployKeyNotificationIfNeeded } from './createSource';
 
 /**
  * Add git repository source whether from an opened folder
@@ -81,7 +81,6 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 
 	const parsedGitUrl = gitUrlParse(gitUrl);
 	const isSSH = parsedGitUrl.protocol === 'ssh';
-	const isGitHub = parsedGitUrl.source === 'github.com';
 
 	if (isSSH) {
 		gitUrl = makeSSHUrlFromGitUrl(gitUrl);
@@ -100,12 +99,7 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 		deployKey = createGitRepoResult?.deployKey;
 	}
 
-	if (isSSH && deployKey) {
-		if (isGitHub) {
-			showGitHubDeployKeysNotification(gitUrl);
-		}
-		showDeployKeyNotification(deployKey);
-	}
+	showDeployKeyNotificationIfNeeded(gitUrl, deployKey);
 
 	checkIfOpenedFolderGitRepositorySourceExists();
 	setTimeout(async() => {
@@ -229,44 +223,3 @@ export async function getGitRepositoryState(cwd: string, showErrorNotifications:
 	};
 }
 
-/**
- * Transform an url from `git@github.com:usernamehw/sample-k8s.git` to
- * `ssh://git@github.com/usernamehw/sample-k8s`
- * @param gitUrl target git url
- */
-export function makeSSHUrlFromGitUrl(gitUrl: string): string {
-	if (gitUrl.startsWith('ssh')) {
-		return gitUrl;
-	}
-
-	const parsedGitUrl = gitUrlParse(gitUrl);
-
-	const port = parsedGitUrl.port ? `:${parsedGitUrl.port}` : '';
-
-	return `ssh://${parsedGitUrl.user}@${parsedGitUrl.source}${port}/${parsedGitUrl.full_name}`;
-}
-/**
- * Make a link to the "Deploy keys" page for
- * the provided GitHub repository url.
- * @param GitHub repository url
- */
-export function deployKeysGitHubPage(repoUrl: string) {
-	const parsedGitUrl = gitUrlParse(repoUrl);
-	return `https://github.com/${parsedGitUrl.owner}/${parsedGitUrl.name}/settings/keys`;
-}
-
-async function showDeployKeyNotification(deployKey: string) {
-	const copyButton = 'Copy';
-	const confirm = await window.showInformationMessage(`Add deploy key to the repository: ${deployKey}`, copyButton);
-	if (confirm === copyButton) {
-		env.clipboard.writeText(deployKey);
-	}
-}
-
-async function showGitHubDeployKeysNotification(url: string) {
-	const deployKeysButton = 'Open';
-	const confirm = await window.showInformationMessage('Open repository "Deploy keys" page', deployKeysButton);
-	if (confirm === deployKeysButton) {
-		commands.executeCommand(CommandId.VSCodeOpen, Uri.parse(deployKeysGitHubPage(url)));
-	}
-}

@@ -252,6 +252,7 @@ class AzureTools {
 	 */
 	async createSourceGit2(args: {
 		sourceName: string;
+		sourceKind: 'git';
 		contextName: string;
 		clusterProvider: AzureClusterProvider;
 		url: string;
@@ -310,11 +311,29 @@ class AzureTools {
 			kustomizationPart = ` --kustomization${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
 		}
 
-		await this.invokeAzCommand(
+		const createSourceShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux create -n ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${kustomizationPart}`,
 			args.contextName,
 			args.clusterProvider,
 		);
+
+		if (createSourceShellResult?.code !== 0 || args.sourceKind !== 'git') {
+			return;
+		}
+
+		const createSourceOutput = parseJson(createSourceShellResult.stdout);
+		if (!createSourceOutput) {
+			return;
+		}
+
+		const deployKey: string | undefined = createSourceOutput.repositoryPublicKey;
+		if (!deployKey) {
+			return;
+		}
+
+		return {
+			deployKey,
+		};
 	}
 
 	/**
