@@ -303,8 +303,8 @@ class AzureTools {
 		const kustomizationTimeout = args.kustomizationTimeout ? ` timeout="${args.kustomizationTimeout}"` : '';
 		const kustomizationSyncInterval = args.kustomizationSyncInterval ? ` sync_interval="${args.kustomizationSyncInterval}"` : '';
 		const kustomizationRetryInterval = args.kustomizationRetryInterval ? ` retry_interval="${args.kustomizationRetryInterval}"` : '';
-		const kustomizationPrune = args.kustomizationPrune ? ' prune=true' : 'prune=false';
-		const kustomizationForce = args.kustomizationForce ? ' force=true' : 'prune=false';
+		const kustomizationPrune = args.kustomizationPrune ? ' prune=true' : ' prune=false';
+		const kustomizationForce = args.kustomizationForce ? ' force=true' : ' prune=false';
 
 		if (kustomizationName || kustomizationPath || kustomizationDependsOn || kustomizationTimeout || kustomizationSyncInterval || kustomizationRetryInterval || kustomizationPrune || kustomizationForce) {
 			kustomizationPart = ` --kustomization${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
