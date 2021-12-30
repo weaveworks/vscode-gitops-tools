@@ -38,7 +38,6 @@ export async function getOpenedFolderGitInfo(targetFolderUri: Uri): Promise<GitI
 	const parsedGitUrl = gitUrlParse(gitUrl);
 
 	if (parsedGitUrl.protocol === 'ssh') {
-		// TODO: only transform GitHub url?
 		gitUrl = makeSSHUrlFromGitUrl(gitUrl);
 	}
 

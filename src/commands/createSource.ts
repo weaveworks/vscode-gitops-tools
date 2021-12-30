@@ -6,6 +6,15 @@ import { fluxTools } from '../flux/fluxTools';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 export async function createGitRepositoryGenericCluster(args: Parameters<typeof fluxTools['createSourceGit2']>[0]) {
+
+	const parsedGitUrl = gitUrlParse(args.url);
+	if (isUrlSourceAzureDevops(parsedGitUrl.source)) {
+		// Azure devops git repo doesn't work with git implementation `go-git` and
+		// it does not support SSH key algorithm `ecdsa`
+		args.sshKeyAlgorithm = 'rsa';
+		args.gitImplementation = 'libgit2';
+	}
+
 	const deployKey = await fluxTools.createSourceGit2({
 		sourceName: args.sourceName,
 		url: args.url,
@@ -26,7 +35,10 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 		sshRsaBits: args.sshRsaBits,
 	});
 
-	refreshSourcesTreeView();
+	setTimeout(() => {
+		// Wait a bit for the repository to have a failed state in case of SSH url
+		refreshSourcesTreeView();
+	}, 1000);
 	showDeployKeyNotificationIfNeeded(args.url, deployKey?.deployKey);
 }
 
@@ -62,8 +74,11 @@ export async function createGitRepositoryAzureCluster(args: Parameters<typeof az
 		kustomizationForce: args.kustomizationForce,
 	});
 
-	refreshSourcesTreeView();
-	refreshWorkloadsTreeView();
+	setTimeout(() => {
+		// Wait a bit for the repository to have a failed state in case of SSH url
+		refreshSourcesTreeView();
+		refreshWorkloadsTreeView();
+	}, 1000);
 	showDeployKeyNotificationIfNeeded(args.url, deployKey?.deployKey);
 }
 
@@ -78,11 +93,14 @@ export function showDeployKeyNotificationIfNeeded(url: string, deployKey?: strin
 
 	const parsedGitUrl = gitUrlParse(url);
 	const isSSH = parsedGitUrl.protocol === 'ssh';
-	const isGitHub = parsedGitUrl.source === 'github.com';
+	const isGitHub = isUrlSourceGitHub(parsedGitUrl.source);
+	const isAzureDevops = isUrlSourceAzureDevops(parsedGitUrl.source);
 
 	if (isSSH && deployKey) {
 		if (isGitHub) {
-			showGitHubDeployKeysNotification(url);
+			showDeployKeysPageNotification(Uri.parse(deployKeysGitHubPage(url)));
+		} else if (isAzureDevops) {
+			showDeployKeysPageNotification(Uri.parse(deployKeysAzureDevopsPage(url)));
 		}
 		showDeployKeyNotification(deployKey);
 	}
@@ -100,9 +118,7 @@ export function makeSSHUrlFromGitUrl(gitUrl: string): string {
 
 	const parsedGitUrl = gitUrlParse(gitUrl);
 
-	const port = parsedGitUrl.port ? `:${parsedGitUrl.port}` : '';
-
-	return `ssh://${parsedGitUrl.user}@${parsedGitUrl.source}${port}/${parsedGitUrl.full_name}`;
+	return `ssh://${parsedGitUrl.user}@${parsedGitUrl.resource}${parsedGitUrl.pathname}`;
 }
 /**
  * Make a link to the "Deploy keys" page for
@@ -113,6 +129,15 @@ export function deployKeysGitHubPage(repoUrl: string) {
 	const parsedGitUrl = gitUrlParse(repoUrl);
 	return `https://github.com/${parsedGitUrl.owner}/${parsedGitUrl.name}/settings/keys`;
 }
+/**
+ * Make a link to the "SSH Public Keys" page for
+ * the provided Azure Devops repository url.
+ * @param GitHub repository url
+ */
+export function deployKeysAzureDevopsPage(repoUrl: string) {
+	const parsedGitUrl = gitUrlParse(repoUrl);
+	return `https://dev.azure.com/${parsedGitUrl.name}/_usersSettings/keys`;
+}
 
 export async function showDeployKeyNotification(deployKey: string) {
 	const copyButton = 'Copy';
@@ -122,10 +147,17 @@ export async function showDeployKeyNotification(deployKey: string) {
 	}
 }
 
-export async function showGitHubDeployKeysNotification(url: string) {
+export async function showDeployKeysPageNotification(uri: Uri) {
 	const deployKeysButton = 'Open';
 	const confirm = await window.showInformationMessage('Open repository "Deploy keys" page', deployKeysButton);
 	if (confirm === deployKeysButton) {
-		commands.executeCommand(CommandId.VSCodeOpen, Uri.parse(deployKeysGitHubPage(url)));
+		commands.executeCommand(CommandId.VSCodeOpen, uri);
 	}
+}
+
+export function isUrlSourceAzureDevops(urlSource: string) {
+	return urlSource === 'dev.azure.com';
+}
+export function isUrlSourceGitHub(urlSource: string) {
+	return urlSource === 'github.com';
 }

@@ -9,7 +9,7 @@ export function getWebviewOptions(extensionUri: Uri): WebviewOptionsType {
 		// And restrict the webview to only loading content from our extension's `media` directory.
 		localResourceRoots: [Uri.joinPath(extensionUri, 'media')],
 		// Keep the webview state after active editor switch (not for vscode reloads)
-		// retainContextWhenHidden: true,
+		retainContextWhenHidden: true,
 	};
 	return webviewOptions;
 }
