@@ -1,4 +1,4 @@
-name: General Bug Report
+name: Bug Report
 description: 'Issue with the GitOps extension'
 body:
   - type: textarea
@@ -22,6 +22,13 @@ body:
   - type: textarea
     attributes:
       label: Versions
-      description: 'Versions of the extension, the editor and the installed CLI tools. All of the versions can be found via the `GitOps: Show Installed Versions` command.'
+      description: 'Versions of the extension, editor and installed CLI tools. All of the versions can be found via the `GitOps: Show Installed Versions` command.'
+      value: |
+        kubectl version:
+        Flux version:
+        Git version:
+        Azure version:
+        Extension version:
+        VSCode version:
     validations:
       required: true
