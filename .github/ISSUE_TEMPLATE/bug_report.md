@@ -1,28 +1,38 @@
-name: General Bug Report
-description: 'Issue with the GitOps extension'
-labels: []
-body:
-  - type: textarea
-    attributes:
-      label: Expected behaviour
-      description: 'What do you think should have happened?'
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Actual behaviour
-      description: What happened?
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Steps to reproduce
-      description: 'Self-contained, minimal reproducing code samples are **extremely** helpful and will expedite addressing your issue. If you think a GIF of what is happening would be helpful, consider tools like https://www.cockos.com/licecap/, https://github.com/phw/peek or https://www.screentogif.com/'
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Versions
-      description: 'Versions of the extension, the editor and the installed CLI tools. All of the versions can be found via the `GitOps: Show Installed Versions` command.'
-    validations:
-      required: true
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+**Describe the bug**
+A clear and concise description of what the bug is.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+**Expected behavior**
+A clear and concise description of what you expected to happen.
+
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
+
+**Desktop (please complete the following information):**
+ - OS: [e.g. iOS]
+ - Browser [e.g. chrome, safari]
+ - Version [e.g. 22]
+
+**Smartphone (please complete the following information):**
+ - Device: [e.g. iPhone6]
+ - OS: [e.g. iOS8.1]
+ - Browser [e.g. stock browser, safari]
+ - Version [e.g. 22]
+
+**Additional context**
+Add any other context about the problem here.
