@@ -2,6 +2,33 @@ import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands';
 import { extensionState } from './extensionState';
 import { shell } from './shell';
+import { parseJson } from './utils/jsonUtils';
+
+export async function getKubectlVersion(): Promise<string | undefined> {
+	const shellResult = await shell.exec('kubectl version --short');
+
+	if (shellResult?.code === 0) {
+		return shellResult.stdout;
+	}
+}
+
+interface AzureVersion {
+	'azure-cli': string;
+	'azure-cli-core': string;
+	'azure-cli-telemetry': string;
+	'extensions': {
+		// there might be other extensions but they are not important
+		'k8s-configuration': string;
+		'k8s-extension': string;
+	};
+}
+export async function getAzureVersion(): Promise<AzureVersion | undefined> {
+	const shellResult = await shell.exec('az version');
+
+	if (shellResult?.code === 0) {
+		return parseJson(shellResult.stdout);
+	}
+}
 
 /**
  * Return flux version string.

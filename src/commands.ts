@@ -2,7 +2,6 @@ import { commands, Disposable, ExtensionContext } from 'vscode';
 import { copyResourceName } from './commands/copyResourceName';
 import { createGitRepository } from './commands/createGitRepository';
 import { createKustomization } from './commands/createKustomization';
-import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxCheck } from './commands/fluxCheck';
@@ -10,12 +9,13 @@ import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
 import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
+import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { resume } from './commands/resume';
 import { setClusterProvider } from './commands/setClusterProvider';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
-import { showKubectlVersion } from './commands/showKubectlVersion';
+import { showInstalledVersions } from './commands/showInstalledVersions';
 import { showLogs } from './commands/showLogs';
 import { showWorkloadsHelpMessage } from './commands/showWorkloadsHelpMessage';
 import { suspend } from './commands/suspend';
@@ -41,7 +41,6 @@ export const enum CommandId {
 	VSCodeSetContext = 'setContext',
 
 	// kubectl
-	KubectlVersion = 'gitops.kubectl.version',
 	SetCurrentKubernetesContext = 'gitops.kubectl.setCurrentContext',
 
 	// flux
@@ -77,6 +76,9 @@ export const enum CommandId {
 
 	// output commands
 	ShowOutputChannel = 'gitops.output.show',
+
+	// others
+	ShowInstalledVersions = 'gitops.showInstalledVersions',
 }
 
 let _context: ExtensionContext;
@@ -89,7 +91,6 @@ export function registerCommands(context: ExtensionContext) {
 	_context = context;
 
 	// kubectl
-	registerCommand(CommandId.KubectlVersion, showKubectlVersion);
 	registerCommand(CommandId.SetCurrentKubernetesContext, setCurrentKubernetesContext);
 
 	// flux
@@ -125,6 +126,9 @@ export function registerCommands(context: ExtensionContext) {
 
 	// output
 	registerCommand(CommandId.ShowOutputChannel, showOutputChannel);
+
+	// others
+	registerCommand(CommandId.ShowInstalledVersions, showInstalledVersions);
 }
 
 /**

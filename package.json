@@ -33,7 +33,7 @@
 	"bugs": "https://github.com/weaveworks/vscode-gitops-tools/issues",
 	"homepage": "https://github.com/weaveworks/vscode-gitops-tools",
 	"activationEvents": [
-		"onCommand:gitops.kubectl.version",
+		"onCommand:gitops.showInstalledVersions",
 		"onCommand:gitops.suspend",
 		"onCommand:gitops.resume",
 		"onCommand:gitops.createKustomization",
@@ -68,8 +68,8 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "gitops.kubectl.version",
-				"title": "Kubectl Version",
+				"command": "gitops.showInstalledVersions",
+				"title": "Show Installed Versions",
 				"category": "GitOps"
 			},
 			{
