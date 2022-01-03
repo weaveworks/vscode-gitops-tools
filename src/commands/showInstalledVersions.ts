@@ -1,3 +1,4 @@
+import os from 'os';
 import { env, extensions, version, window } from 'vscode';
 import { getAzureVersion, getFluxVersion, getGitVersion, getKubectlVersion } from '../install';
 
@@ -30,6 +31,7 @@ Git: ${gitVersion?.trim() || 'not found'}
 ${azureVersionsString}
 VSCode: ${version}
 Extension: ${getExtensionVersion() || 'unknown'}
+OS: ${getOSVersion() || 'unknown'}
 `.trim();
 
 	const copyButton = 'Copy';
@@ -44,4 +46,10 @@ Extension: ${getExtensionVersion() || 'unknown'}
  */
 function getExtensionVersion() {
 	return extensions.getExtension('weaveworks.vscode-gitops-tools')?.packageJSON.version;
+}
+/**
+ * Get Operating System its verison.
+ */
+function getOSVersion() {
+	return `${os.type} ${os.release}`;
 }

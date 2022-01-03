@@ -30,5 +30,6 @@ body:
         Azure version:
         Extension version:
         VSCode version:
+        Operating System (OS) and its version:
     validations:
       required: true
