@@ -1,4 +1,4 @@
-import { commands, Disposable, ExtensionContext } from 'vscode';
+import { commands, Disposable, ExtensionContext, window } from 'vscode';
 import { copyResourceName } from './commands/copyResourceName';
 import { createGitRepository } from './commands/createGitRepository';
 import { createKustomization } from './commands/createKustomization';
@@ -21,6 +21,7 @@ import { showWorkloadsHelpMessage } from './commands/showWorkloadsHelpMessage';
 import { suspend } from './commands/suspend';
 import { trace } from './commands/trace';
 import { showOutputChannel } from './output';
+import { telemetry } from './telemetry';
 import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
 
 /**
@@ -139,13 +140,17 @@ export function registerCommands(context: ExtensionContext) {
  */
 function registerCommand(commandId: string, callback: (...args: any[])=> any, thisArg?: any): void {
 
-	const command: Disposable = commands.registerCommand(commandId, (...args) => {
+	const command: Disposable = commands.registerCommand(commandId, async(...args) => {
+
+		telemetry.send('EXECUTE_COMMAND', { commandId });
 
 		// Show error in console when it happens in any of the commands registered by this extension.
 		// By default VSCode only shows that "Error running command <command>" but not its text.
 		try {
-			callback(...args);
-		} catch(e) {
+			await callback(...args);
+		} catch(e: unknown) {
+			telemetry.sendError('UNCAUGHT_EXCEPTION', 'UNCAUGHT_ERROR', e as Error);
+			window.showErrorMessage(String(e));
 			console.error(e);
 		}
 	}, thisArg);

@@ -1,5 +1,6 @@
 import os from 'os';
 import { env, extensions, version, window } from 'vscode';
+import { GitOpsExtensionConstants } from '../extension';
 import { getAzureVersion, getFluxVersion, getGitVersion, getKubectlVersion } from '../install';
 
 /**
@@ -44,8 +45,8 @@ OS: ${getOSVersion() || 'unknown'}
 /**
  * Get installed version of GitOps extension (from `package.json`).
  */
-function getExtensionVersion() {
-	return extensions.getExtension('weaveworks.vscode-gitops-tools')?.packageJSON.version;
+export function getExtensionVersion() {
+	return extensions.getExtension(GitOpsExtensionConstants.ExtensionId)?.packageJSON.version || 'unknown version';
 }
 /**
  * Get Operating System its verison.

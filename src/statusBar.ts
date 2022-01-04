@@ -2,7 +2,7 @@ import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 
 class StatusBar {
 
-	public statusBarItem: StatusBarItem;
+	private statusBarItem: StatusBarItem;
 	private statusBarItemName = 'gitops';
 
 	private numberOfLoadingTreeViews = 0;
@@ -42,6 +42,10 @@ class StatusBar {
 			this.statusBarItem.hide();
 			this.statusBarItem.dispose();
 		}
+	}
+
+	dispose() {
+		this.statusBarItem.dispose();
 	}
 }
 
