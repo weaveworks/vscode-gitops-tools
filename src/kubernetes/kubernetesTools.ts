@@ -5,6 +5,7 @@ import { AzureConstants } from '../azure/azureTools';
 import { ContextTypes, setVSCodeContext } from '../context';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
+import { telemetry } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { BucketResult } from './bucket';
 import { GitRepositoryResult } from './gitRepository';
@@ -41,9 +42,11 @@ class KubernetesTools {
 		if (this.kubectlApi) {
 			return this.kubectlApi;
 		}
+
 		const kubectl = await kubernetes.extension.kubectl.v1;
 		if (!kubectl.available) {
 			window.showErrorMessage(`Kubernetes Tools Kubectl API is unavailable: ${kubectl.reason}`);
+			telemetry.sendError('KUBERNETES_TOOLS_API_UNAVAILABLE', new Error(kubectl.reason));
 			return;
 		}
 		this.kubectlApi = kubectl.api;
@@ -91,6 +94,7 @@ class KubernetesTools {
 	async getKubectlConfig(): Promise<undefined | KubernetesConfig> {
 		const configShellResult = await this.invokeKubectlCommand('config view -o json');
 		if (!configShellResult || configShellResult.stderr) {
+			telemetry.sendError('FAILED_TO_GET_KUBECTL_CONFIG');
 			console.warn(`Failed to get kubectl config: ${configShellResult?.stderr}`);
 			return;
 		}
@@ -103,6 +107,7 @@ class KubernetesTools {
 	async getCurrentContext(): Promise<undefined | string> {
 		const currentContextShellResult = await this.invokeKubectlCommand('config current-context');
 		if (!currentContextShellResult || currentContextShellResult.stderr) {
+			telemetry.sendError('FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT');
 			console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
 			setVSCodeContext(ContextTypes.NoClusterSelected, true);
 			return;
@@ -128,6 +133,7 @@ class KubernetesTools {
 
 		const setContextShellResult = await this.invokeKubectlCommand(`config use-context ${contextName}`);
 		if (setContextShellResult?.stderr) {
+			telemetry.sendError('FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT');
 			window.showErrorMessage(`Failed to set kubectl context to ${contextName}: ${setContextShellResult?.stderr}`);
 			return;
 		}
@@ -329,6 +335,7 @@ class KubernetesTools {
 		const resourcesShellResult = await this.invokeKubectlCommand(query);
 
 		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
+			telemetry.sendError('FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD');
 			window.showErrorMessage(`Failed to get ${workload} created resources: ${resourcesShellResult?.stderr}`);
 			return undefined;
 		}
@@ -381,6 +388,7 @@ class KubernetesTools {
 		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
 
 		if (nodesShellResult?.code !== 0) {
+			telemetry.sendError('FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER');
 			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type.`);
 			return ClusterProvider.Unknown;
 		}
@@ -413,6 +421,7 @@ class KubernetesTools {
 		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${context} --ignore-not-found -o json`);
 
 		if (configmapShellResult?.code !== 0) {
+			telemetry.sendError('FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER');
 			console.warn(`Failed to get configmaps from "${context}" context to determine the cluster type.`);
 			return ClusterProvider.Unknown;
 		}
@@ -428,19 +437,6 @@ class KubernetesTools {
 		}
 
 		return ClusterProvider.Generic;
-	}
-
-	/**
-	 * Return kubectl version (client + server) in json format.
-	 */
-	async getKubectlVersion(): Promise<KubectlVersionResult | undefined> {
-		const shellResult = await this.invokeKubectlCommand('version -o json');
-		if (!shellResult) {
-			return;
-		}
-		if (shellResult.code === 0) {
-			return parseJson(shellResult.stdout);
-		}
 	}
 
 	/**
