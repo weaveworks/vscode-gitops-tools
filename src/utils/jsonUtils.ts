@@ -1,11 +1,16 @@
+import { window } from 'vscode';
+import { telemetry } from '../telemetry';
+
 export function parseJson(jsonString: string): any {
 	let jsonData: any;
+
 	try {
 		jsonData = JSON.parse(jsonString.trim());
-	} catch(e) {
-		// TODO: add and user proper logging for JSON parse errors
-		console.warn(`JSON.parse() failed ${e}`);
+	} catch(e: unknown) {
+		window.showErrorMessage(`JSON.parse() failed ${e}`);
+		telemetry.sendError('CAUGHT_ERROR', new Error('parseJson() failed'));
 		return;
 	}
+
 	return jsonData;
 }

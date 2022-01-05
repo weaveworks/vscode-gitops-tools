@@ -4,7 +4,6 @@ import { getExtensionVersion } from './commands/showInstalledVersions';
 import { GitOpsExtensionConstants } from './extension';
 import { getExtensionContext } from './extensionContext';
 
-type TelemetryErrorType = 'CAUGHT_ERROR' | 'UNCAUGHT_ERROR';
 type TelemetryEvent = 'STARTUP' | 'EXECUTE_COMMAND';
 type ErrorEvent = 'UNCAUGHT_EXCEPTION' | 'CAUGHT_ERROR' | 'UNHANDLED_REJECTION';
 
@@ -52,21 +51,17 @@ class Telemetry {
 	/**
 	 * Send caught or uncaught errors.
 	 *
-	 * @param errorType caught/uncaught error (uncaught will use `Exception`
-	 * event type while caught error would just use custom event).
 	 * @param eventName sent message title
 	 * @param error error object of the uncaught exception
 	 */
-	sendError(eventName: ErrorEvent,errorType: TelemetryErrorType, error: Error): void {
+	sendError(eventName: ErrorEvent, error: Error): void {
 		if (!this.canSend()) {
 			return;
 		}
 
-		if (errorType === 'UNCAUGHT_ERROR') {
-			this.reporter.sendTelemetryException(error);
-		} else {
-			this.reporter.sendTelemetryErrorEvent(eventName);
-		}
+		this.reporter.sendTelemetryException(error, {
+			name: eventName,
+		});
 	}
 
 	dispose(): void {

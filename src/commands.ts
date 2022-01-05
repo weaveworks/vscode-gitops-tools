@@ -149,7 +149,7 @@ function registerCommand(commandId: string, callback: (...args: any[])=> any, th
 		try {
 			await callback(...args);
 		} catch(e: unknown) {
-			telemetry.sendError('UNCAUGHT_EXCEPTION', 'UNCAUGHT_ERROR', e as Error);
+			telemetry.sendError('UNCAUGHT_EXCEPTION', e as Error);
 			window.showErrorMessage(String(e));
 			console.error(e);
 		}
