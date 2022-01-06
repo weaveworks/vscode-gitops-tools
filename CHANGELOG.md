@@ -2,7 +2,7 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
-# v0.15.0 - [2022-01-06]
+# v0.16.0 - [2022-01-06]
 
 - [#169](https://github.com/weaveworks/vscode-gitops-tools/issues/169)
 Automatically use compatible algorithm for Azure DevOps Repository
