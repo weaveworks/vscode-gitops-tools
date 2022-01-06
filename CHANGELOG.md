@@ -2,6 +2,33 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.15.0 - [2022-01-06]
+
+- [#169](https://github.com/weaveworks/vscode-gitops-tools/issues/169)
+Automatically use compatible algorithm for Azure DevOps Repository
+- [#178](https://github.com/weaveworks/vscode-gitops-tools/issues/178)
+Create a Bug/Feature Template
+- [#183](https://github.com/weaveworks/vscode-gitops-tools/issues/183)
+Config context name is not always same as cluster name
+- [#184](https://github.com/weaveworks/vscode-gitops-tools/issues/184)
+use `flux` azure extension name instead of `gitops`
+- [#185](https://github.com/weaveworks/vscode-gitops-tools/issues/185)
+Enable GitOps prompt message spelling fix
+- [#186](https://github.com/weaveworks/vscode-gitops-tools/issues/186)
+Create Source params are insufficient and incorrect
+- [#187](https://github.com/weaveworks/vscode-gitops-tools/issues/187)
+Add telemetry events
+- [#189](https://github.com/weaveworks/vscode-gitops-tools/issues/189)
+Remove reconcile icon from Sources pane header
+- [#190](https://github.com/weaveworks/vscode-gitops-tools/issues/190)
+Implement `flux trace` for all objects children of workloads
+- [#191](https://github.com/weaveworks/vscode-gitops-tools/issues/191)
+Add Azure Arc documentation to Documentation Pane
+- [#192](https://github.com/weaveworks/vscode-gitops-tools/issues/192)
+Default for top-level items in Documentation section to be collapsed
+- [#194](https://github.com/weaveworks/vscode-gitops-tools/issues/194)
+Package Sprint 16 release
+
 # v0.15.0 - [2021-12-16]
 
 - [#157](https://github.com/weaveworks/vscode-gitops-tools/issues/157)
