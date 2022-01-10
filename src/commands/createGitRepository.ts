@@ -4,10 +4,9 @@ import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { sanitizeRFC1123 } from '../utils/stringUtils';
-import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 import { makeSSHUrlFromGitUrl, showDeployKeyNotificationIfNeeded } from './createSource';
 
 /**
@@ -23,13 +22,8 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 		return;
 	}
 
-	const currentClusterNode = getCurrentClusterNode();
-	if (!currentClusterNode) {
-		return;
-	}
-
-	const clusterProvider = await currentClusterNode.getClusterProvider();
-	if (clusterProvider === ClusterProvider.Unknown) {
+	const currentClusterInfo = await getCurrentClusterInfo();
+	if (!currentClusterInfo) {
 		return;
 	}
 
@@ -88,8 +82,8 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 
 	let deployKey: string | undefined;
 
-	if (isAzureProvider(clusterProvider)) {
-		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterNode, clusterProvider, kustomizationName, kustomizationPath);
+	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
+		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider, kustomizationName, kustomizationPath);
 		deployKey = createGitRepoResult?.deployKey;
 		// az automatically creates a Kustomization
 		refreshWorkloadsTreeView();

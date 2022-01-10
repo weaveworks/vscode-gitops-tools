@@ -86,12 +86,13 @@ export function refreshWorkloadsTreeView(node?: TreeNode) {
 /**
  * @see {@link clusterTreeViewProvider.getCurrentClusterNode}
  */
-export function getCurrentClusterNode() {
+function getCurrentClusterNode() {
 	return clusterTreeViewProvider.getCurrentClusterNode();
 }
 
 /**
- * TODO: use this function istead of getCurrentClusterNode() & getClusterProvider() in other places
+ * Return current cluster node & current cluster provider or undefined
+ * if either of them is undefined.
  */
 export async function getCurrentClusterInfo() {
 	const clusterNode = getCurrentClusterNode();

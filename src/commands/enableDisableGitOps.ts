@@ -4,7 +4,7 @@ import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterContextNode } from '../views/nodes/clusterContextNode';
-import { getCurrentClusterNode, refreshAllTreeViews } from '../views/treeViews';
+import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
 
 /**
  * Install or uninstall flux from the passed or current cluster (if first argument is undefined)
@@ -15,10 +15,12 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 
 	if (!clusterNode) {
 		// was executed from the welcome view - get current cluster node
-		clusterNode = getCurrentClusterNode();
-		if (!clusterNode) {
-			return;
+		const currentClusterInfo = await getCurrentClusterInfo();
+		if (!currentClusterInfo) {
+		  return;
 		}
+
+		clusterNode = currentClusterInfo.clusterNode;
 	}
 
 	const clusterProvider = await clusterNode.getClusterProvider();

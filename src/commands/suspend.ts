@@ -2,11 +2,10 @@ import { window } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource, FluxWorkload } from '../flux/fluxTypes';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';
 import { KustomizationNode } from '../views/nodes/kustomizationNode';
-import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
  * Suspend source or workload reconciliation and refresh its Tree View.
@@ -15,13 +14,8 @@ import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView
  */
 export async function suspend(node: GitRepositoryNode | HelmReleaseNode | KustomizationNode) {
 
-	const currentClusterNode = getCurrentClusterNode();
-	if (!currentClusterNode) {
-		return;
-	}
-
-	const clusterProvider = await currentClusterNode.getClusterProvider();
-	if (clusterProvider === ClusterProvider.Unknown) {
+	const currentClusterInfo = await getCurrentClusterInfo();
+	if (!currentClusterInfo) {
 		return;
 	}
 
@@ -35,21 +29,21 @@ export async function suspend(node: GitRepositoryNode | HelmReleaseNode | Kustom
 		return;
 	}
 
-	if (isAzureProvider(clusterProvider)) {
+	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
 		// TODO: implement
 		if (fluxResourceType === 'helmrelease' || fluxResourceType === 'kustomization') {
 			window.showInformationMessage('Not implemented on AKS/ARC', { modal: true });
 			return;
 		}
 
-		await azureTools.suspend(node.resource.metadata.name || '', currentClusterNode, clusterProvider);
+		await azureTools.suspend(node.resource.metadata.name || '', currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider);
 	} else {
 		await fluxTools.suspend(fluxResourceType, node.resource.metadata.name || '', node.resource.metadata.namespace || '');
 	}
 
 	if (node instanceof GitRepositoryNode) {
 		refreshSourcesTreeView();
-		if (isAzureProvider(clusterProvider)) {
+		if (isAzureProvider(currentClusterInfo.clusterProvider)) {
 			refreshWorkloadsTreeView();
 		}
 	} else {

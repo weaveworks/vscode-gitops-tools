@@ -3,11 +3,11 @@ import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
-import { ClusterProvider, KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
-import { getCurrentClusterNode, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
  * Delete a source
@@ -36,18 +36,13 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 		return;
 	}
 
-	const currentClusterNode = getCurrentClusterNode();
-	if (!currentClusterNode) {
+	const currentClusterInfo = await getCurrentClusterInfo();
+	if (!currentClusterInfo) {
 		return;
 	}
 
-	const clusterProvider = await currentClusterNode.getClusterProvider();
-	if (clusterProvider === ClusterProvider.Unknown) {
-		return;
-	}
-
-	if (isAzureProvider(clusterProvider)) {
-		await azureTools.deleteSource(sourceName, currentClusterNode, clusterProvider);
+	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
+		await azureTools.deleteSource(sourceName, currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider);
 		refreshWorkloadsTreeView();
 	} else {
 		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);

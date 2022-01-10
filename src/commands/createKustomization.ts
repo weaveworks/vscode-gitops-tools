@@ -4,9 +4,8 @@ import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azur
 import { fluxTools } from '../flux/fluxTools';
 import { validateKustomizationName } from '../flux/fluxUtils';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterContextNode } from '../views/nodes/clusterContextNode';
-import { getCurrentClusterNode, refreshWorkloadsTreeView } from '../views/treeViews';
+import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeViews';
 import { createGitRepository } from './createGitRepository';
 
 /**
@@ -17,13 +16,8 @@ import { createGitRepository } from './createGitRepository';
  */
 export async function createKustomization(fileExplorerUri?: Uri): Promise<void> {
 
-	const clusterNode = getCurrentClusterNode();
-	if (!clusterNode) {
-		return;
-	}
-
-	const clusterProvider = await clusterNode.getClusterProvider();
-	if (clusterProvider === ClusterProvider.Unknown) {
+	const currentClusterInfo = await getCurrentClusterInfo();
+	if (!currentClusterInfo) {
 		return;
 	}
 
@@ -71,8 +65,8 @@ export async function createKustomization(fileExplorerUri?: Uri): Promise<void> 
 	let gitSourceExists = await checkIfOpenedFolderGitRepositorySourceExists();
 	let gitRepositoryName = gitSourceExists?.gitRepositoryName;
 
-	if (isAzureProvider(clusterProvider)) {
-		await createKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, clusterNode, clusterProvider);
+	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
+		await createKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider);
 	} else {
 		await createKustomizationGenericCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri);
 	}
