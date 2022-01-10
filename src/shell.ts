@@ -6,6 +6,9 @@ import { output } from './output';
 // 🚧 WORK IN PROGRESS.
 
 /**
+ * Ignore `"vs-kubernetes.use-wsl" setting.
+ * Always return false.
+ *
  * Get setting value of Kubernetes extension
  * of whether or not to use wsl on windows.
  *
@@ -13,7 +16,10 @@ import { output } from './output';
  * https://github.com/Azure/vscode-kubernetes-tools/issues/695
  */
 export function getUseWsl(): boolean {
-	return workspace.getConfiguration('vs-kubernetes')['use-wsl'];
+	// ignore upstream repository undocumented setting when
+	// running any cli commands from this extension
+	return false;
+	// return workspace.getConfiguration('vs-kubernetes')['use-wsl'];
 }
 
 /**

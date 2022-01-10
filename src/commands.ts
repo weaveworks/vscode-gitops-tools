@@ -9,6 +9,7 @@ import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
 import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
+import { installFluxCli } from './commands/installFluxCli';
 import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
@@ -80,6 +81,7 @@ export const enum CommandId {
 
 	// others
 	ShowInstalledVersions = 'gitops.showInstalledVersions',
+	InstallFluxCli = 'gitops.installFluxCli',
 }
 
 let _context: ExtensionContext;
@@ -130,6 +132,7 @@ export function registerCommands(context: ExtensionContext) {
 
 	// others
 	registerCommand(CommandId.ShowInstalledVersions, showInstalledVersions);
+	registerCommand(CommandId.InstallFluxCli, installFluxCli);
 }
 
 /**

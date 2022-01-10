@@ -58,6 +58,7 @@
 		"onCommand:gitops.editor.showLogs",
 		"onCommand:gitops.editor.createSource",
 		"onCommand:gitops.output.show",
+		"onCommand:gitops.installFluxCli",
 		"onWebviewPanel:createSource",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
@@ -70,6 +71,11 @@
 			{
 				"command": "gitops.showInstalledVersions",
 				"title": "Show Installed Versions",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.installFluxCli",
+				"title": "Install Flux CLI",
 				"category": "GitOps"
 			},
 			{
@@ -459,6 +465,10 @@
 				},
 				{
 					"command": "gitops.flux.trace",
+					"when": "never"
+				},
+				{
+					"command": "gitops.installFluxCli",
 					"when": "never"
 				}
 			]

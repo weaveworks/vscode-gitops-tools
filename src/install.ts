@@ -1,5 +1,6 @@
 import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands';
+import { installFluxCli } from './commands/installFluxCli';
 import { extensionState } from './extensionState';
 import { shell } from './shell';
 import { parseJson } from './utils/jsonUtils';
@@ -55,7 +56,7 @@ export async function promptToInstallFlux(): Promise<void> {
 		const installButton = 'Install Flux';
 		const confirm = await window.showErrorMessage('Please install flux CLI to use GitOps Tools.', installButton);
 		if (confirm === installButton) {
-			commands.executeCommand('vscode.open', Uri.parse('https://fluxcd.io/docs/installation/'));
+			installFluxCli();
 		}
 	}
 }
