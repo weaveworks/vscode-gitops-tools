@@ -21,8 +21,8 @@ export async function showInstalledVersions() {
 
 	const azureVersionsString = azureVersion ? `
 Azure: ${azureVersion?.['azure-cli']}
-Azure extension "k8s-configuration": ${azureVersion.extensions['k8s-configuration']}
-Azure extension "k8s-extension": ${azureVersion.extensions['k8s-extension']}
+Azure extension "k8s-configuration": ${azureVersion.extensions['k8s-configuration'] || 'not installed'}
+Azure extension "k8s-extension": ${azureVersion.extensions['k8s-extension'] || 'not installed'}
 	`.trim() : 'not found';
 
 	const versions = `
@@ -52,5 +52,5 @@ export function getExtensionVersion() {
  * Get Operating System its verison.
  */
 function getOSVersion() {
-	return `${os.type} ${os.release}`;
+	return `${os.type} ${os.arch} ${os.release}`;
 }
