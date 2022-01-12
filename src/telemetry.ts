@@ -4,9 +4,37 @@ import { getExtensionVersion } from './commands/showInstalledVersions';
 import { GitOpsExtensionConstants } from './extension';
 import { getExtensionContext } from './extensionContext';
 
-type TelemetryEvent = 'STARTUP' | 'EXECUTE_COMMAND';
 type SpecificErrorEvent = 'KUBERNETES_TOOLS_API_UNAVAILABLE' | 'FAILED_TO_GET_KUBECTL_CONFIG' | 'FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT' | 'FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT' | 'FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD' | 'FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER' | 'FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER';
 type ErrorEvent = 'UNCAUGHT_EXCEPTION' | 'CAUGHT_ERROR' | SpecificErrorEvent;
+
+export const enum TelemetryEventNames {
+	/**
+	 * Extension startup event.
+	 */
+	Startup = 'STARTUP',
+	/**
+	 * Enable gitops event (flux install)
+	 */
+	EnableGitOps = 'ENABLE_GITOPS',
+	/**
+	 * Disable gitops event (flux uninstall)
+	 */
+	DisableGitOps = 'DISABLE_GITOPS',
+}
+
+/**
+ * Map event names with the data type of payload sent
+ * When undefined - send only the event name.
+ */
+interface TelemetryEventNamePropertyMapping {
+	[TelemetryEventNames.Startup]: undefined;
+	[TelemetryEventNames.EnableGitOps]: {
+		clusterProvider: string;
+	};
+	[TelemetryEventNames.DisableGitOps]: {
+		clusterProvider: string;
+	};
+}
 
 class Telemetry {
 	private reporter: TelemetryReporter;
@@ -37,16 +65,13 @@ class Telemetry {
 	 * @param eventName sent message title
 	 * @param payload custom properties to add to the message
 	 */
-	send(eventName: TelemetryEvent, payload?: Record<string, string>): void {
+	send<T extends TelemetryEventNamePropertyMapping, E extends keyof T>(eventName: E, payload?: T[E]): void {
 		if (!this.canSend()) {
 			return;
 		}
 
-		if (eventName === 'EXECUTE_COMMAND') {
-			this.reporter.sendTelemetryEvent(`${eventName}:${payload?.commandId}`, payload);
-		} else {
-			this.reporter.sendTelemetryEvent(eventName, payload);
-		}
+		// @ts-ignore
+		this.reporter.sendTelemetryEvent(eventName, payload);
 	}
 
 	/**

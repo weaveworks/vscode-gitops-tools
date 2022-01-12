@@ -3,6 +3,7 @@ import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
+import { telemetry, TelemetryEventNames } from '../telemetry';
 import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
 
@@ -35,6 +36,16 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 	}, enableGitOpsButton);
 	if (confirm !== enableGitOpsButton) {
 		return;
+	}
+
+	if (enableGitOps) {
+		telemetry.send(TelemetryEventNames.EnableGitOps, {
+			clusterProvider,
+		});
+	} else {
+		telemetry.send(TelemetryEventNames.DisableGitOps, {
+			clusterProvider,
+		});
 	}
 
 	if (isAzureProvider(clusterProvider)) {

@@ -4,7 +4,7 @@ import { setExtensionContext } from './extensionContext';
 import { checkIfOpenedFolderGitRepositorySourceExists } from './git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
-import { telemetry } from './telemetry';
+import { telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews } from './views/treeViews';
 
 export const enum GitOpsExtensionConstants {
@@ -20,7 +20,7 @@ export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
 	setExtensionContext(context);
 
-	telemetry.send('STARTUP');
+	telemetry.send(TelemetryEventNames.Startup);
 
 	// create gitops tree views
 	createTreeViews();

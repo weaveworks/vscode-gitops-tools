@@ -145,8 +145,6 @@ function registerCommand(commandId: string, callback: (...args: any[])=> any, th
 
 	const command: Disposable = commands.registerCommand(commandId, async(...args) => {
 
-		telemetry.send('EXECUTE_COMMAND', { commandId });
-
 		// Show error in console when it happens in any of the commands registered by this extension.
 		// By default VSCode only shows that "Error running command <command>" but not its text.
 		try {
