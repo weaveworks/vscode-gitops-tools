@@ -1,12 +1,11 @@
 import { readFileSync } from 'fs';
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
-import { AzureClusterProvider, azureTools } from '../azure/azureTools';
+import { AzureClusterProvider } from '../azure/azureTools';
 import { createGitRepositoryAzureCluster, createGitRepositoryGenericCluster } from '../commands/createSource';
 import { asAbsolutePath } from '../extensionContext';
-import { fluxTools } from '../flux/fluxTools';
 import { GitInfo } from '../git/getOpenedFolderGitInfo';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
-import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+import { getCurrentClusterInfo } from '../views/treeViews';
 import { getNonce, getWebviewOptions } from './webviewUtils';
 
 /**

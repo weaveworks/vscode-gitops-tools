@@ -4,6 +4,7 @@ import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { telemetry, TelemetryEventNames } from '../telemetry';
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
@@ -35,6 +36,10 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 	if (!confirm) {
 		return;
 	}
+
+	telemetry.send(TelemetryEventNames.DeleteSource, {
+		kind: sourceNode.resource.kind,
+	});
 
 	const currentClusterInfo = await getCurrentClusterInfo();
 	if (!currentClusterInfo) {

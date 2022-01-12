@@ -1,6 +1,7 @@
 import { workspace } from 'vscode';
 import { getExtensionContext } from '../extensionContext';
 import { getOpenedFolderGitInfo } from '../git/getOpenedFolderGitInfo';
+import { telemetry, TelemetryEventNames } from '../telemetry';
 import { CreateSourcePanel } from '../webviews/createSourceWebview';
 
 /**
@@ -11,6 +12,9 @@ import { CreateSourcePanel } from '../webviews/createSourceWebview';
  * Also prefill new git source name/branch/url if possible.
  */
 export async function openCreateSourceWebview() {
+
+	telemetry.send(TelemetryEventNames.CreateSourceButtonPress);
+
 	let gitInfo;
 	if (workspace.workspaceFolders && workspace.workspaceFolders.length === 1) {
 		// if only 1 folder is opened - get git remote url & branch & new source name

@@ -3,6 +3,8 @@ import { commands, env, Uri, window } from 'vscode';
 import { AzureClusterProvider, azureTools } from '../azure/azureTools';
 import { CommandId } from '../commands';
 import { fluxTools } from '../flux/fluxTools';
+import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { telemetry, TelemetryEventNames } from '../telemetry';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 export async function createGitRepositoryGenericCluster(args: Parameters<typeof fluxTools['createSourceGit2']>[0]) {
@@ -14,6 +16,10 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 		args.sshKeyAlgorithm = 'rsa';
 		args.gitImplementation = 'libgit2';
 	}
+
+	telemetry.send(TelemetryEventNames.CreateSource, {
+		kind: KubernetesObjectKinds.GitRepository,
+	});
 
 	const deployKey = await fluxTools.createSourceGit2({
 		sourceName: args.sourceName,
@@ -43,6 +49,11 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 }
 
 export async function createGitRepositoryAzureCluster(args: Parameters<typeof azureTools['createSourceGit2']>[0]) {
+
+	telemetry.send(TelemetryEventNames.CreateSource, {
+		kind: KubernetesObjectKinds.GitRepository,
+	});
+
 	const deployKey = await azureTools.createSourceGit2({
 		clusterProvider: args.clusterProvider as AzureClusterProvider,
 		contextName: args.contextName,

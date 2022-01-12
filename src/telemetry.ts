@@ -13,6 +13,10 @@ export const enum TelemetryEventNames {
 	 */
 	Startup = 'STARTUP',
 	/**
+	 * First ever extension activation.
+	 */
+	NewInstall = 'NEW_INSTALL',
+	/**
 	 * Enable gitops event (flux install).
 	 */
 	EnableGitOps = 'ENABLE_GITOPS',
@@ -21,9 +25,17 @@ export const enum TelemetryEventNames {
 	 */
 	DisableGitOps = 'DISABLE_GITOPS',
 	/**
-	 * First ever extension activation.
+	 * Pressed `+` button to open the webview editor.
 	 */
-	NewInstall = 'NEW_INSTALL',
+	CreateSourceButtonPress = 'CREATE_SOURCE_BUTTON_PRESSED',
+	/**
+	 * Create Flux Source event.
+	 */
+	CreateSource = 'CREATE_SOURCE',
+	/**
+	 * Delete Flux Source event.
+	 */
+	DeleteSource = 'DELETE_SOURCE',
 }
 
 /**
@@ -39,6 +51,13 @@ interface TelemetryEventNamePropertyMapping {
 		clusterProvider: string;
 	};
 	[TelemetryEventNames.NewInstall]: undefined;
+	[TelemetryEventNames.CreateSourceButtonPress]: undefined;
+	[TelemetryEventNames.CreateSource]: {
+		kind: string;
+	};
+	[TelemetryEventNames.DeleteSource]: {
+		kind: string;
+	};
 }
 
 class Telemetry {
