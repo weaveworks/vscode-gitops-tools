@@ -466,10 +466,6 @@
 				{
 					"command": "gitops.flux.trace",
 					"when": "never"
-				},
-				{
-					"command": "gitops.installFluxCli",
-					"when": "never"
 				}
 			]
 		}
@@ -510,6 +506,7 @@
 	},
 	"dependencies": {
 		"@kubernetes/client-node": "^0.16.1",
+		"extract-zip": "^2.0.1",
 		"git-url-parse": "^11.6.0",
 		"semver": "^7.3.5",
 		"shelljs": "^0.8.5",
