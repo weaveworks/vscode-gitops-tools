@@ -9,6 +9,7 @@ import { createTreeViews } from './views/treeViews';
 
 export const enum GitOpsExtensionConstants {
 	ExtensionId = 'weaveworks.vscode-gitops-tools',
+	FirstEverActivationStorageKey = 'firstEverActivation',
 }
 
 /**
@@ -20,8 +21,6 @@ export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
 	setExtensionContext(context);
 
-	telemetry.send(TelemetryEventNames.Startup);
-
 	// create gitops tree views
 	createTreeViews();
 
@@ -32,6 +31,13 @@ export async function activate(context: ExtensionContext) {
 	// depending if the current opened folder is a git repository and already added
 	// to the cluster
 	checkIfOpenedFolderGitRepositorySourceExists();
+
+	telemetry.send(TelemetryEventNames.Startup);
+
+	if (context.globalState.get(GitOpsExtensionConstants.FirstEverActivationStorageKey) === undefined) {
+		telemetry.send(TelemetryEventNames.NewInstall);
+		context.globalState.update(GitOpsExtensionConstants.FirstEverActivationStorageKey, false);
+	}
 
 	// show error notification if flux is not installed
 	await promptToInstallFlux();

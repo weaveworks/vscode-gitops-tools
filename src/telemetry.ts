@@ -13,13 +13,17 @@ export const enum TelemetryEventNames {
 	 */
 	Startup = 'STARTUP',
 	/**
-	 * Enable gitops event (flux install)
+	 * Enable gitops event (flux install).
 	 */
 	EnableGitOps = 'ENABLE_GITOPS',
 	/**
-	 * Disable gitops event (flux uninstall)
+	 * Disable gitops event (flux uninstall).
 	 */
 	DisableGitOps = 'DISABLE_GITOPS',
+	/**
+	 * First ever extension activation.
+	 */
+	NewInstall = 'NEW_INSTALL',
 }
 
 /**
@@ -34,6 +38,7 @@ interface TelemetryEventNamePropertyMapping {
 	[TelemetryEventNames.DisableGitOps]: {
 		clusterProvider: string;
 	};
+	[TelemetryEventNames.NewInstall]: undefined;
 }
 
 class Telemetry {
