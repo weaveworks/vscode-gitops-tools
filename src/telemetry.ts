@@ -27,7 +27,7 @@ export const enum TelemetryEventNames {
 	/**
 	 * Pressed `+` button to open the webview editor.
 	 */
-	CreateSourceButtonPress = 'CREATE_SOURCE_BUTTON_PRESSED',
+	CreateSourceOpenWebview = 'CREATE_SOURCE_OPEN_WEBVIEW',
 	/**
 	 * Create Flux Source event.
 	 */
@@ -51,7 +51,7 @@ interface TelemetryEventNamePropertyMapping {
 		clusterProvider: string;
 	};
 	[TelemetryEventNames.NewInstall]: undefined;
-	[TelemetryEventNames.CreateSourceButtonPress]: undefined;
+	[TelemetryEventNames.CreateSourceOpenWebview]: undefined;
 	[TelemetryEventNames.CreateSource]: {
 		kind: string;
 	};

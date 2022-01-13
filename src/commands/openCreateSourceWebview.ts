@@ -13,7 +13,7 @@ import { CreateSourcePanel } from '../webviews/createSourceWebview';
  */
 export async function openCreateSourceWebview() {
 
-	telemetry.send(TelemetryEventNames.CreateSourceButtonPress);
+	telemetry.send(TelemetryEventNames.CreateSourceOpenWebview);
 
 	let gitInfo;
 	if (workspace.workspaceFolders && workspace.workspaceFolders.length === 1) {
