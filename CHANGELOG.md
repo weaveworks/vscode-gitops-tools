@@ -2,6 +2,23 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.17.0 - [2022-01-13]
+
+- [#179](https://github.com/weaveworks/vscode-gitops-tools/issues/179)
+Auto-Install `flux` extension rather than directing to installation page
+- [#187](https://github.com/weaveworks/vscode-gitops-tools/issues/187)
+Add telemetry events
+- [#196](https://github.com/weaveworks/vscode-gitops-tools/issues/196)
+Telemetry events - General extension usage data
+- [#197](https://github.com/weaveworks/vscode-gitops-tools/issues/197)
+Telemetry events - Source data
+- [#199](https://github.com/weaveworks/vscode-gitops-tools/issues/199)
+Telemetry events - cluster data
+- [#201](https://github.com/weaveworks/vscode-gitops-tools/issues/201)
+Create Source webview fails to load
+- [#204](https://github.com/weaveworks/vscode-gitops-tools/issues/204)
+Package Sprint 17 release
+
 # v0.16.0 - [2022-01-06]
 
 - [#169](https://github.com/weaveworks/vscode-gitops-tools/issues/169)
