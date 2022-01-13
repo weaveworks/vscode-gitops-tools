@@ -1,3 +1,4 @@
+import { exec } from 'child_process';
 import extractZip from 'extract-zip';
 import fs from 'fs';
 import https from 'https';
@@ -126,10 +127,17 @@ export async function moveFile(filePath: string, destinationPath: string): Promi
 }
 
 /**
- * Create a directory.
+ * Create a directory (ignore if exists).
  */
 export async function createDir(dirPath: string): Promise<Errorable<null>> {
 	return new Promise(resolve => {
+		// ignore if exists
+		if (fs.existsSync(dirPath)) {
+			return resolve({
+				succeeded: true,
+				result: null,
+			});
+		}
 		fs.mkdir(dirPath, err => {
 			if (err) {
 				resolve({
@@ -172,3 +180,46 @@ export function getAppdataPath(): Errorable<string> {
 	};
 }
 
+/**
+ * Add fs path to the PATH environment variable (Windows OS).
+ * Doesn't require elevating.
+ */
+export async function appendToPathEnvironmentVariableWindows(pathToAppend: string): Promise<Errorable<null>> {
+	return new Promise(resolve => {
+		const powershellScript = `
+$oldPath = [Environment]::GetEnvironmentVariable('PATH', 'User');
+[Environment]::SetEnvironmentVariable('PATH', "${path.normalize(pathToAppend)};$oldPath",'User');
+
+# because sometimes explorer.exe just doesn't get the message that things were updated.
+if (-not ("win32.nativemethods" -as [type])) {
+		# import sendmessagetimeout from win32
+		add-type -Namespace Win32 -Name NativeMethods -MemberDefinition @"
+[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+public static extern IntPtr SendMessageTimeout(
+IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam,
+uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);
+"@
+}
+
+$HWND_BROADCAST = [intptr]0xffff;
+$WM_SETTINGCHANGE = 0x1a;
+$result = [uintptr]::zero
+
+# notify all windows of environment block change
+[win32.nativemethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE,  [uintptr]::Zero, "Environment", 2, 5000, [ref]$result) | Out-Null
+`;
+		exec(powershellScript, { 'shell':'powershell.exe' }, (error, stdout, stderr) => {
+			if (error || stderr) {
+				resolve({
+					succeeded: false,
+					error: [error?.message || stderr],
+				});
+			} else {
+				resolve({
+					succeeded: true,
+					result: null,
+				});
+			}
+		});
+	});
+}

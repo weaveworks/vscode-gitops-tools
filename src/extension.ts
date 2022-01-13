@@ -10,6 +10,7 @@ import { createTreeViews } from './views/treeViews';
 export const enum GitOpsExtensionConstants {
 	ExtensionId = 'weaveworks.vscode-gitops-tools',
 	FirstEverActivationStorageKey = 'firstEverActivation',
+	FluxPath = 'fluxPath',
 }
 
 /**
@@ -43,6 +44,7 @@ export async function activate(context: ExtensionContext) {
 	await promptToInstallFlux();
 
 	// run Flux prerequisites check
+	// TODO: only run when flux is installed
 	await checkPrerequisites();
 }
 

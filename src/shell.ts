@@ -1,6 +1,8 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
 import { Progress, ProgressLocation, window, workspace } from 'vscode';
+import { GitOpsExtensionConstants } from './extension';
+import { getExtensionContext } from './extensionContext';
 import { output } from './output';
 
 // 🚧 WORK IN PROGRESS.
@@ -74,15 +76,19 @@ function platform(): Platform {
 	}
 }
 
-function execOpts({ cwd }: { cwd?: string; } = {}): any {
-	// let env = process.env;
-	// if (isWindows()) {
-	//     env = Object.assign({ }, env, { HOME: home() });
-	// }
-	// env = shellEnvironment(env);
+function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
+	let env = undefined;
+	if (isWindows()) {
+		const fluxPath = getExtensionContext().globalState.get(GitOpsExtensionConstants.FluxPath);
+		if (fluxPath) {
+			env = process.env;
+			env.Path += `;${fluxPath}`;
+		}
+	}
+
 	const opts: shelljs.ExecOptions = {
 		cwd: cwd,
-		// env: env,
+		env: env,
 		async: true,
 	};
 	return opts;
@@ -135,19 +141,20 @@ async function execWithOutput(
 			const childProcess = shelljs.exec(cmd, {
 				async: true,
 				cwd: cwd,
+				env: execOpts().env,
 			});
 
 			let stdout = '';
 			let stderr = '';
 
-			childProcess.stdout?.on('data', data => {
+			childProcess.stdout?.on('data', (data: string) => {
 				stdout += data;
 				output.send(data, { addNewline: false, revealOutputView: false });
 				progress.report({
 					message: data,
 				});
 			});
-			childProcess.stderr?.on('data', data => {
+			childProcess.stderr?.on('data', (data: string) => {
 				stderr += data;
 				output.send(data, { addNewline: false, revealOutputView: false });
 				progress.report({

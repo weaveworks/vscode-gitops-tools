@@ -4,11 +4,15 @@ import https from 'https';
 import os from 'os';
 import path from 'path';
 import request from 'request';
-import { commands, Uri, window } from 'vscode';
+import { window } from 'vscode';
 import { failed } from '../errorable';
+import { GitOpsExtensionConstants } from '../extension';
+import { getExtensionContext } from '../extensionContext';
+import { output } from '../output';
 import { Platform, shell } from '../shell';
 import { runTerminalCommand } from '../terminal';
-import { createDir, downloadFile, getAppdataPath, moveFile, unzipFile } from '../utils/fsUtils';
+import { appendToPathEnvironmentVariableWindows, createDir, downloadFile, getAppdataPath, moveFile, unzipFile } from '../utils/fsUtils';
+import { refreshAllTreeViews } from '../views/treeViews';
 
 const fluxGitHubUserProject = 'fluxcd/flux2';
 
@@ -48,52 +52,72 @@ export async function installFluxCli() {
 	}
 
 	if (platform === Platform.Windows) {
-		commands.executeCommand('vscode.open', Uri.parse('https://fluxcd.io/docs/installation/'));
+		const latestFluxVersion = await getLatestVersion(fluxGitHubUserProject);
+
+		output.send(`Latest Flux version: ${latestFluxVersion}\n`, { revealOutputView: true, addNewline: false });
+
+		const gitHubAssetName = `flux_${latestFluxVersion}_windows_${os.arch() === 'x64' ? 'amd64' : '386'}.zip`;
+		const downloadLink = `https://github.com/${fluxGitHubUserProject}/releases/latest/download/${gitHubAssetName}`;
+		const localZipFilePath = path.join(os.tmpdir(), gitHubAssetName);
+
+		const downloadResult = await downloadFile(downloadLink, localZipFilePath);
+		if (failed(downloadResult)) {
+			window.showErrorMessage(`File download failed: ${downloadResult.error[0]}`);
+			return;
+		}
+
+		output.send(`✔ ${downloadLink} downloaded\n`, { addNewline: false });
+
+		// TODO: download hash, compare it to the file
+
+		const unzipResult = await unzipFile(localZipFilePath);
+		if (failed(unzipResult)) {
+			window.showErrorMessage(`File unzip failed: ${unzipResult.error[0]}`);
+			return;
+		}
+
+		output.send(`✔ Extracted: "${localZipFilePath}"\n`, { addNewline: false });
+
+		const appDataPathResult = getAppdataPath();
+		if (failed(appDataPathResult)) {
+			window.showErrorMessage(appDataPathResult.error[0]);
+			return;
+		}
+
+		const executablePath = path.join(unzipResult.result, 'flux.exe');
+		const appDataFluxExecutablePath = path.join(appDataPathResult.result, 'flux', 'flux.exe');
+
+		const createDirResult = await createDir(path.join(appDataPathResult.result, 'flux'));
+		if (failed(createDirResult)) {
+			window.showErrorMessage(createDirResult.error[0]);
+			return;
+		}
+
+		const moveFileResult = await moveFile(executablePath, appDataFluxExecutablePath);
+		if (failed(moveFileResult)) {
+			window.showErrorMessage(moveFileResult.error[0]);
+			return;
+		}
+
+		output.send(`✔ Flux executable path is: "${appDataFluxExecutablePath}"\n`, { addNewline: false });
+
+		const appendToPathResult = await appendToPathEnvironmentVariableWindows(path.join(appDataPathResult.result, 'flux'));
+		if (failed(appendToPathResult)) {
+			window.showErrorMessage(appendToPathResult.error[0]);
+			return;
+		}
+
+		output.send('✔ Flux added to the PATH environment variable.\n', { addNewline: false });
+
+		getExtensionContext().globalState.update(GitOpsExtensionConstants.FluxPath, path.join(appDataPathResult.result, 'flux'));
+
+		// TODO: delete temp files
+
+		output.send(`✔ Flux ${latestFluxVersion} successfully installed.\n`, { addNewline: false });
+
+		refreshAllTreeViews();
+
 		return;
-		// const latestFluxVersion = await getLatestVersion(fluxGitHubUserProject);
-		// const gitHubAssetName = `flux_${latestFluxVersion}_windows_${os.arch() === 'x64' ? 'amd64' : '386'}.zip`;
-		// const downloadLink = `https://github.com/${fluxGitHubUserProject}/releases/latest/download/${gitHubAssetName}`;
-		// const localZipFilePath = path.join(os.tmpdir(), gitHubAssetName);
-
-		// const downloadResult = await downloadFile(downloadLink, localZipFilePath);
-		// if (failed(downloadResult)) {
-		// 	window.showErrorMessage(`File download failed: ${downloadResult.error[0]}`);
-		// 	return;
-		// }
-
-		// // TODO: download hash, compare it to the file
-
-		// const unzipResult = await unzipFile(localZipFilePath);
-		// if (failed(unzipResult)) {
-		// 	window.showErrorMessage(`File unzip failed: ${unzipResult.error[0]}`);
-		// 	return;
-		// }
-
-		// const appDataPathResult = getAppdataPath();
-		// if (failed(appDataPathResult)) {
-		// 	window.showErrorMessage(appDataPathResult.error[0]);
-		// 	return;
-		// }
-
-		// const executablePath = path.join(unzipResult.result, 'flux.exe');
-		// const programFilesFluxExecutablePath = path.join(appDataPathResult.result, 'flux', 'flux.exe');
-
-		// const createDirResult = await createDir(path.join(appDataPathResult.result, 'flux'));
-		// if (failed(createDirResult)) {
-		// 	window.showErrorMessage(createDirResult.error[0]);
-		// 	return;
-		// }
-
-		// const moveFileResult = await moveFile(executablePath, programFilesFluxExecutablePath);
-		// if (failed(moveFileResult)) {
-		// 	window.showErrorMessage(moveFileResult.error[0]);
-		// 	return;
-		// }
-
-		// // TODO: delete temp files
-		// // TODO: add executable to the PATH
-
-		// return;
 	}
 
 	// Linux/MacOS
