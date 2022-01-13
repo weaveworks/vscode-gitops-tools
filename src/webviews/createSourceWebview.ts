@@ -224,7 +224,9 @@ export class CreateSourcePanel {
 	 */
 	private _update(gitInfo: GitInfo | undefined) {
 		this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
-		this._updateWebviewContent(gitInfo);
+		setTimeout(() => {
+			this._updateWebviewContent(gitInfo);
+		}, 400);// wait until the html is parsed and event listener for `message` is set
 	}
 
 	private _getHtmlForWebview(webview: Webview) {
