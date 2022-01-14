@@ -1,8 +1,9 @@
 import { ExtensionContext } from 'vscode';
 import { registerCommands } from './commands';
+import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
 import { checkIfOpenedFolderGitRepositorySourceExists } from './git/checkIfOpenedFolderGitRepositorySourceExists';
-import { checkPrerequisites, promptToInstallFlux } from './install';
+import { checkFluxPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews } from './views/treeViews';
@@ -41,11 +42,11 @@ export async function activate(context: ExtensionContext) {
 	}
 
 	// show error notification if flux is not installed
-	await promptToInstallFlux();
-
-	// run Flux prerequisites check
-	// TODO: only run when flux is installed
-	await checkPrerequisites();
+	const fluxFoundResult = await promptToInstallFlux();
+	if (succeeded(fluxFoundResult)) {
+		// check flux prerequisites
+		await checkFluxPrerequisites();
+	}
 }
 
 /**

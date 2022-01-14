@@ -1,6 +1,7 @@
 import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands';
 import { installFluxCli } from './commands/installFluxCli';
+import { Errorable } from './errorable';
 import { extensionState } from './extensionState';
 import { shell } from './shell';
 import { parseJson } from './utils/jsonUtils';
@@ -49,15 +50,27 @@ export async function getFluxVersion(): Promise<string | undefined> {
  * Show notification with button to install flux
  * (only when flux was not found).
  */
-export async function promptToInstallFlux(): Promise<void> {
+export async function promptToInstallFlux(): Promise<Errorable<null>> {
 	const fluxVersion = await getFluxVersion();
-
 	if (!fluxVersion) {
-		const installButton = 'Install Flux';
-		const confirm = await window.showErrorMessage('Please install flux CLI to use GitOps Tools.', installButton);
-		if (confirm === installButton) {
-			installFluxCli();
-		}
+		showInstallFluxNotification();
+		return {
+			succeeded: false,
+			error: ['Flux not found'],
+		};
+	} else {
+		return {
+			succeeded: true,
+			result: null,
+		};
+	}
+}
+
+async function showInstallFluxNotification() {
+	const installButton = 'Install Flux';
+	const pressedButton = await window.showErrorMessage('Please install flux CLI to use GitOps Tools.', installButton);
+	if (pressedButton === installButton) {
+		installFluxCli();
 	}
 }
 
@@ -66,7 +79,7 @@ export async function promptToInstallFlux(): Promise<void> {
  * flux prerequisite check has failed.
  * @see https://fluxcd.io/docs/cmd/flux_check/
  */
-export async function checkPrerequisites() {
+export async function checkFluxPrerequisites() {
 	const prerequisiteShellResult = await shell.execWithOutput('flux check --pre', { revealOutputView: false });
 
 	if (prerequisiteShellResult?.code !== 0) {
