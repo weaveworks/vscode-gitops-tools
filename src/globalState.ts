@@ -46,6 +46,15 @@ class GlobalState {
 		});
 		window.showTextDocument(document);
 	}
+
+	/**
+	 * Dev function (clear all global state properties).
+	 */
+	clearGlobalState() {
+		for (const key of getExtensionContext().globalState.keys()) {
+			this.set(key, undefined);
+		}
+	}
 }
 
 /**

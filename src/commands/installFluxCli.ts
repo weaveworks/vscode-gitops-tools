@@ -4,8 +4,8 @@ import https from 'https';
 import os from 'os';
 import path from 'path';
 import request from 'request';
-import { window } from 'vscode';
-import { failed } from '../errorable';
+import { commands, window } from 'vscode';
+import { Errorable, failed, succeeded } from '../errorable';
 import { GitOpsExtensionConstants } from '../extension';
 import { getExtensionContext } from '../extensionContext';
 import { output } from '../output';
@@ -48,6 +48,20 @@ export async function installFluxCli() {
 	const platform = shell.platform();
 	if (platform === Platform.Unsupported) {
 		window.showErrorMessage(`Unsupported platform ${process.platform}`);
+		return;
+	}
+
+	// Use system package manager if possible https://gofi.sh
+	const goFishInstalledResult = await isGoFishInstalled();
+	if (succeeded(goFishInstalledResult)) {
+		const installFluxResult = await shell.execWithOutput('gofish install flux');
+		if (installFluxResult.code === 0) {
+			const reloadEditorButton = 'Reload Editor';
+			const pressedButton = await window.showInformationMessage('Flux successfully installed.', reloadEditorButton);
+			if (pressedButton === reloadEditorButton) {
+				commands.executeCommand('workbench.action.reloadWindow');
+			}
+		}
 		return;
 	}
 
@@ -148,4 +162,19 @@ export async function installFluxCli() {
 			}
 		},
 	);
+}
+
+async function isGoFishInstalled(): Promise<Errorable<null>> {
+	const gofishVersionShellResult = await shell.exec('gofish version');
+	if (gofishVersionShellResult?.code === 0) {
+		return {
+			succeeded: true,
+			result: null,
+		};
+	} else {
+		return {
+			succeeded: false,
+			error: [gofishVersionShellResult?.stderr || String(gofishVersionShellResult?.code)],
+		};
+	}
 }
