@@ -21,23 +21,39 @@ const fluxGitHubUserProject = 'fluxcd/flux2';
  *
  * @param gitHubUserProject user/project string e.g. `fluxcd/flux2`
  * @returns version string e.g. `0.24.1`
- *
- * TODO: convert to Errorable
  */
-async function getLatestVersion(gitHubUserProject: string): Promise<string | undefined> {
+async function getLatestVersionFromGitHub(gitHubUserProject: string): Promise<Errorable<string>> {
 	return new Promise(resolve => {
 		https.get(`https://github.com/${gitHubUserProject}/releases/latest`, (res: IncomingMessage) => {
 
 			const location = res.headers.location;
 			if (!location) {
-				window.showErrorMessage(`Failed to get latest ${gitHubUserProject} version: No location in response.`);
+				resolve({
+					succeeded: false,
+					error: [`Failed to get latest ${gitHubUserProject} version: No location in response.`],
+				});
 				return;
 			}
 
-			resolve(location.split('/').pop()?.replace(/^v/, ''));
+			const latestVersion = location.split('/').pop()?.replace(/^v/, '');
+			if (!latestVersion) {
+				resolve({
+					succeeded: false,
+					error: ['Failed to parse version from the location header.'],
+				});
+				return;
+			}
+
+			resolve({
+				succeeded: true,
+				result: latestVersion,
+			});
 
 		}).on('error', err => {
-			window.showErrorMessage(err.message);
+			resolve({
+				succeeded: false,
+				error: [err.message],
+			});
 		});
 	});
 }
@@ -117,7 +133,6 @@ async function computeChecksumWindows(filePath: string, hashAlgorithm: 'MD5' | '
 	};
 }
 
-
 /**
  * Install flux2 cli on the user machine https://github.com/fluxcd/flux2
  */
@@ -144,16 +159,16 @@ export async function installFluxCli() {
 	}
 
 	if (platform === Platform.Windows) {
-		const latestFluxVersion = await getLatestVersion(fluxGitHubUserProject);
-		if (!latestFluxVersion) {
-			window.showErrorMessage('Failed to infer the latest Flux version');
+		const latestFluxVersion = await getLatestVersionFromGitHub(fluxGitHubUserProject);
+		if (failed(latestFluxVersion)) {
+			window.showErrorMessage(`Failed to infer the latest Flux version ${latestFluxVersion.error[0]}`);
 			return;
 		}
 
-		output.send(`✔ Latest Flux version: ${latestFluxVersion}\n`, { revealOutputView: true, addNewline: false });
+		output.send(`✔ Latest Flux version: ${latestFluxVersion.result}\n`, { revealOutputView: true, addNewline: false });
 
 		const archString = os.arch() === 'arm64' ? 'arm64' : 'x64' ? 'amd64' : '386';
-		const gitHubAssetArchiveName = `flux_${latestFluxVersion}_windows_${archString}.zip`;
+		const gitHubAssetArchiveName = `flux_${latestFluxVersion.result}_windows_${archString}.zip`;
 		const downloadLink = `https://github.com/${fluxGitHubUserProject}/releases/latest/download/${gitHubAssetArchiveName}`;
 		const localArchiveFilePath = path.join(os.tmpdir(), gitHubAssetArchiveName);
 
@@ -188,7 +203,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		const checksumDownloadResult = await downloadFluxChecksums(gitHubAssetArchiveName, latestFluxVersion);
+		const checksumDownloadResult = await downloadFluxChecksums(gitHubAssetArchiveName, latestFluxVersion.result);
 		if (failed(checksumDownloadResult)) {
 			window.showErrorMessage(`Failed to download the checksums.txt file ${checksumDownloadResult.error[0]}`);
 			return;
@@ -234,7 +249,7 @@ export async function installFluxCli() {
 
 		// TODO: delete temp files
 
-		output.send(`✔ Flux ${latestFluxVersion} successfully installed`);
+		output.send(`✔ Flux ${latestFluxVersion.result} successfully installed`);
 
 		refreshAllTreeViews();
 
