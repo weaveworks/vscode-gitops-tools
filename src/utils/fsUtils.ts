@@ -24,7 +24,7 @@ export function quoteFsPath(fsPath: string) {
  * @param url target url
  * @param filePath local destination file path
  */
-export async function downloadFile(url: string, filePath: string): Promise<Errorable<true>> {
+export async function downloadFile(url: string, filePath: string): Promise<Errorable<null>> {
 	return new Promise(resolve => {
 
 		const file = fs.createWriteStream(filePath);
@@ -40,10 +40,13 @@ export async function downloadFile(url: string, filePath: string): Promise<Error
 						error: [`Response status is ${response.statusCode}, but "headers.location" is missing.`],
 					});
 				} else {
-					downloadFile(location, filePath).then(() => resolve({
-						succeeded: true,
-						result: true,
-					}));
+					downloadFile(location, filePath).then(() => {
+						file.close();
+						resolve({
+							succeeded: true,
+							result: null,
+						});
+					});
 				}
 			} else {
 				file.close();
@@ -58,7 +61,7 @@ export async function downloadFile(url: string, filePath: string): Promise<Error
 		file.on('finish', function() {
 			resolve({
 				succeeded: true,
-				result: true,
+				result: null,
 			});
 		});
 
@@ -71,6 +74,7 @@ export async function downloadFile(url: string, filePath: string): Promise<Error
 			});
 		});
 		file.on('error', err => {
+			file.close();
 			fs.unlink(filePath, () => {});
 			resolve({
 				succeeded: false,
@@ -218,6 +222,28 @@ $result = [uintptr]::zero
 				resolve({
 					succeeded: true,
 					result: null,
+				});
+			}
+		});
+	});
+}
+
+/**
+ * Read file from disk (async).
+ * Return file contents `toString()`
+ */
+export async function readFile(filePath: string): Promise<Errorable<string>> {
+	return new Promise(resolve => {
+		fs.readFile(filePath, (err, data) => {
+			if (err) {
+				return resolve({
+					succeeded: false,
+					error: [err.message],
+				});
+			} else {
+				return resolve({
+					succeeded: true,
+					result: data.toString(),
 				});
 			}
 		});

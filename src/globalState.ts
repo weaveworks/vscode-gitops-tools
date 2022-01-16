@@ -13,6 +13,9 @@ const enum GlobalStatePrefixes {
 	ClusterMetadata = 'clusterMetadata',
 }
 
+/**
+ * TODO: keep context as property
+ */
 class GlobalState {
 
 	private prefix(prefixValue: GlobalStatePrefixes, str: string): string {

@@ -466,6 +466,10 @@
 				{
 					"command": "gitops.flux.trace",
 					"when": "never"
+				},
+				{
+					"command": "gitops.installFluxCli",
+					"when": "gitops:isDev"
 				}
 			]
 		}

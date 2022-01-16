@@ -18,6 +18,8 @@ export const enum ContextTypes {
 
 	OpenFolderGitRepositoryExistDetermined = 'gitops:openFolderGitRepositoryExistDetermined',
 	OpenFolderGitRepositoryExist = 'gitops:openFolderGitRepositoryExist',
+
+	IsDev = 'gitops:isDev',
 }
 
 /**
@@ -37,6 +39,8 @@ interface ContextValues {
 
 	[ContextTypes.OpenFolderGitRepositoryExist]: boolean;
 	[ContextTypes.OpenFolderGitRepositoryExistDetermined]: boolean;
+
+	[ContextTypes.IsDev]: boolean;
 }
 
 /**

@@ -16,7 +16,7 @@ class Output {
 	/**
 	 * Send a message to one of the Output Channels of this extension.
 	 *
-	 * @param message String to show in the output channel
+	 * TODO: 3 options for newline: none, enforce1(next message should be on new line), enforce 2(make 1 empty line between items)
 	 */
 	send(
 		message: string,

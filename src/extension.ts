@@ -1,5 +1,6 @@
-import { ExtensionContext } from 'vscode';
+import { ExtensionContext, ExtensionMode } from 'vscode';
 import { registerCommands } from './commands';
+import { ContextTypes, setVSCodeContext } from './context';
 import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
 import { checkIfOpenedFolderGitRepositorySourceExists } from './git/checkIfOpenedFolderGitRepositorySourceExists';
@@ -40,6 +41,9 @@ export async function activate(context: ExtensionContext) {
 		telemetry.send(TelemetryEventNames.NewInstall);
 		context.globalState.update(GitOpsExtensionConstants.FirstEverActivationStorageKey, false);
 	}
+
+	// set vscode context: developing extension
+	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development);
 
 	// show error notification if flux is not installed
 	const fluxFoundResult = await promptToInstallFlux();
