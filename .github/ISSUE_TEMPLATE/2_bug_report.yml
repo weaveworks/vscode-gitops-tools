@@ -22,7 +22,7 @@ body:
   - type: textarea
     attributes:
       label: Versions
-      description: 'Versions of the extension, editor and installed CLI tools. All of the versions can be found via the `GitOps: Show Installed Versions` command.'
+      description: 'Versions of the extension, editor and installed CLI tools. All of the versions can be found via the `GitOps: Show Installed Versions` command in the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) `Ctrl`+`Shift`+`P` (`Cmd`+`Shift`+`P` on Mac).'
       value: |
         kubectl version:
         Flux version:
