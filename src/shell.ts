@@ -136,7 +136,7 @@ async function execWithOutput(
 
 	async function innerExec(progress: Progress<{ message?: string | undefined; increment?: number | undefined; }>) {
 		 return new Promise<ShellResult>(resolve => {
-			output.send(`> ${cmd}\n`, { addNewline: false, revealOutputView });
+			output.send(`> ${cmd}`, { newline: 'single', revealOutputView });
 
 			const childProcess = shelljs.exec(cmd, {
 				async: true,
@@ -149,21 +149,21 @@ async function execWithOutput(
 
 			childProcess.stdout?.on('data', (data: string) => {
 				stdout += data;
-				output.send(data, { addNewline: false, revealOutputView: false });
+				output.send(data, { newline: 'none', revealOutputView: false });
 				progress.report({
 					message: data,
 				});
 			});
 			childProcess.stderr?.on('data', (data: string) => {
 				stderr += data;
-				output.send(data, { addNewline: false, revealOutputView: false });
+				output.send(data, { newline: 'none', revealOutputView: false });
 				progress.report({
 					message: data,
 				});
 			});
 
 			childProcess.on('exit', (code: number) => {
-				output.send('\n', { addNewline: false, revealOutputView: false });
+				output.send('\n', { newline: 'none', revealOutputView: false });
 
 				resolve({
 					code,

@@ -66,9 +66,9 @@ class KubernetesTools {
 
 		const kubectlShellResult = await kubectl.invokeCommand(command);
 
-		output.send(`> kubectl ${command}\n`, {
+		output.send(`> kubectl ${command}`, {
 			channelName: 'GitOps: kubectl',
-			addNewline: false,
+			newline: 'single',
 			revealOutputView: false,
 		});
 

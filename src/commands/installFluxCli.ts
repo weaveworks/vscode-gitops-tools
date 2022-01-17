@@ -161,7 +161,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		output.send(`✔ Latest Flux version: ${latestFluxVersionResult.result}\n`, { revealOutputView: true, addNewline: false });
+		output.send(`✔ Latest Flux version: ${latestFluxVersionResult.result}`, { revealOutputView: true, newline: 'single' });
 
 		const archString = os.arch() === 'arm64' ? 'arm64' : 'x64' ? 'amd64' : '386';
 		const gitHubAssetArchiveName = `flux_${latestFluxVersionResult.result}_windows_${archString}.zip`;
@@ -174,7 +174,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		output.send(`✔ ${downloadLink} downloaded\n`, { addNewline: false });
+		output.send(`✔ ${downloadLink} downloaded`, { newline: 'single' });
 
 		const unzipResult = await unzipFile(localArchiveFilePath);
 		if (failed(unzipResult)) {
@@ -182,7 +182,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		output.send(`✔ Extracted: "${localArchiveFilePath}"\n`, { addNewline: false });
+		output.send(`✔ Extracted: "${localArchiveFilePath}"`, { newline: 'single' });
 
 		const appDataPathResult = getAppdataPath();
 		if (failed(appDataPathResult)) {
@@ -223,7 +223,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		output.send('✔ Checksum matches\n', { addNewline: false });
+		output.send('✔ Checksum matches', { newline: 'single' });
 
 		const moveFileResult = await moveFile(executablePath, appDataFluxExecutablePath);
 		if (failed(moveFileResult)) {
@@ -231,7 +231,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		output.send(`✔ Flux executable path is: "${appDataFluxExecutablePath}"\n`, { addNewline: false });
+		output.send(`✔ Flux executable path is: "${appDataFluxExecutablePath}"`, { newline: 'single' });
 
 		const appendToPathResult = await appendToPathEnvironmentVariableWindows(path.join(appDataPathResult.result, 'flux'));
 		if (failed(appendToPathResult)) {
@@ -239,7 +239,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		output.send('✔ Flux added to the PATH environment variable\n', { addNewline: false });
+		output.send('✔ Flux added to the PATH environment variable', { newline: 'single' });
 
 		getExtensionContext().globalState.update(GitOpsExtensionConstants.FluxPath, path.join(appDataPathResult.result, 'flux'));
 

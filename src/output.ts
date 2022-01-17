@@ -15,18 +15,16 @@ class Output {
 
 	/**
 	 * Send a message to one of the Output Channels of this extension.
-	 *
-	 * TODO: 3 options for newline: none, enforce1(next message should be on new line), enforce 2(make 1 empty line between items)
 	 */
 	send(
 		message: string,
 		{
-			addNewline = true,
+			newline = 'double',
 			revealOutputView = true,
 			logLevel = 'info',
 			channelName = 'GitOps',
 		}: {
-			addNewline?: boolean;
+			newline?: 'none' | 'single' | 'double';
 			revealOutputView?: boolean;
 			logLevel?: 'info' | 'warn' | 'error';
 			channelName?: OutputChannelName;
@@ -54,12 +52,11 @@ class Output {
 			message = `ERROR ${message}`;
 		}
 
-		if (addNewline) {
-			if (message.endsWith('\n')) {
-				message += '\n';
-			} else {
-				message += '\n\n';
-			}
+		// enforce newlines at the end, but don't append to the existing ones
+		if (newline === 'single') {
+			message = `${message.replace(/\n$/, '')}\n`;
+		} else if (newline === 'double') {
+			message = `${message.replace(/\n?\n$/, '')}\n\n`;
 		}
 
 		channel.append(message);
