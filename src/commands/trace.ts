@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { fluxTools } from '../flux/fluxTools';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { telemetry } from '../telemetry';
 import { AnyResourceNode } from '../views/nodes/anyResourceNode';
 import { WorkloadNode } from '../views/nodes/workloadNode';
 
@@ -13,8 +14,14 @@ export async function trace(node: AnyResourceNode | WorkloadNode) {
 	const resourceKind = node.resource.kind || '';
 	let resourceApiVersion = node.resource.apiVersion || '';
 
-	if (!resourceName || !resourceKind) {
-		window.showErrorMessage('"name" and "kind" are required to run `flux trace`.');
+	if (!resourceName) {
+		window.showErrorMessage('"name" is required to run `flux trace`.');
+		telemetry.sendError('"name" is required to run `flux trace`.');
+		return;
+	}
+	if (!resourceKind) {
+		window.showErrorMessage('"kind" is required to run `flux trace`');
+		telemetry.sendError('"kind" is required to run `flux trace`');
 		return;
 	}
 
@@ -24,6 +31,7 @@ export async function trace(node: AnyResourceNode | WorkloadNode) {
 		const apiVersion = resource?.apiVersion;
 		if (!apiVersion && !apiVersion) {
 			window.showErrorMessage('"apiVersion" is required to run `flux trace`');
+			telemetry.sendError('"apiVersion" is required to run `flux trace`');
 			return;
 		}
 		resourceApiVersion = apiVersion;

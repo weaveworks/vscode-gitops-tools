@@ -4,8 +4,30 @@ import { getExtensionVersion } from './commands/showInstalledVersions';
 import { GitOpsExtensionConstants } from './extension';
 import { getExtensionContext } from './extensionContext';
 
-type SpecificErrorEvent = 'KUBERNETES_TOOLS_API_UNAVAILABLE' | 'FAILED_TO_GET_KUBECTL_CONFIG' | 'FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT' | 'FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT' | 'FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD' | 'FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER' | 'FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER';
-type ErrorEvent = 'UNCAUGHT_EXCEPTION' | 'CAUGHT_ERROR' | SpecificErrorEvent;
+
+export const enum SpecificErrorEvent {
+	/**
+	 * Uncaught exception. Doesn't tell much. Need to see stack trace attached.
+	 */
+	UNCAUGHT_EXCEPTION = 'UNCAUGHT_EXCEPTION',
+	/**
+	 * There is no check at the startup for whether or not
+	 * the `git` is installed.
+	 * User tried to execute one of the commands that required git cli,
+	 * bit it's not found on the machine.
+	 */
+	GIT_NOT_INSTALLED = 'GIT_NOT_INSTALLED',
+	KUBERNETES_TOOLS_API_UNAVAILABLE = 'KUBERNETES_TOOLS_API_UNAVAILABLE',
+	FAILED_TO_GET_KUBECTL_CONFIG = 'FAILED_TO_GET_KUBECTL_CONFIG',
+	FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT = 'FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT',
+	FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT = 'FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT',
+	FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD = 'FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD',
+	FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER = 'FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER',
+	FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER = 'FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER',
+	FAILED_TO_OPEN_RESOURCE = 'FAILED_TO_OPEN_RESOURCE',
+}
+
+export type TelemetryErrorEvent = SpecificErrorEvent | string;
 
 export const enum TelemetryEventNames {
 	/**
@@ -104,7 +126,7 @@ class Telemetry {
 	 * @param eventName sent message title
 	 * @param error error object of the uncaught exception
 	 */
-	sendError(eventName: ErrorEvent, error?: Error): void {
+	sendError(eventName: TelemetryErrorEvent, error?: Error): void {
 		if (!this.canSend()) {
 			return;
 		}

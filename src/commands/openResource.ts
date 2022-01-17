@@ -1,4 +1,5 @@
 import { Uri, window, workspace } from 'vscode';
+import { SpecificErrorEvent, telemetry } from '../telemetry';
 
 /**
  * Open resource in the editor
@@ -10,5 +11,8 @@ export async function openResource(uri: Uri): Promise<void> {
 			window.showTextDocument(document);
 		}
 	},
-	error => window.showErrorMessage(`Error loading document: ${error}`));
+	error =>  {
+		window.showErrorMessage(`Error loading document: ${error}`);
+		telemetry.sendError(SpecificErrorEvent.FAILED_TO_OPEN_RESOURCE);
+	});
 }

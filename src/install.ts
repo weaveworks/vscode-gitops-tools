@@ -4,6 +4,7 @@ import { installFluxCli } from './commands/installFluxCli';
 import { Errorable } from './errorable';
 import { extensionState } from './extensionState';
 import { shell } from './shell';
+import { SpecificErrorEvent, telemetry } from './telemetry';
 import { parseJson } from './utils/jsonUtils';
 
 export async function getKubectlVersion(): Promise<string | undefined> {
@@ -110,6 +111,7 @@ export async function checkGitVersion(): Promise<string | undefined> {
 	const gitVersion: string | undefined = await getGitVersion();
 
 	if (gitVersion === undefined) {
+		telemetry.sendError(SpecificErrorEvent.GIT_NOT_INSTALLED);
 		const installButton = 'Install';
 		const confirm = await window.showErrorMessage('Please install Git.', installButton);
 		if (confirm === installButton) {

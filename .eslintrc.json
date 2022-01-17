@@ -25,7 +25,8 @@
 			{
 				"selector": "enumMember",
 				"format": [
-					"PascalCase"
+					"PascalCase",
+					"UPPER_CASE"
 				]
 			}
 		],

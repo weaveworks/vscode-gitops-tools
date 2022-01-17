@@ -16,6 +16,9 @@ import { output } from './output';
  *
  * Undocumented setting:
  * https://github.com/Azure/vscode-kubernetes-tools/issues/695
+ *
+ * Possibly removed:
+ * https://github.com/vscode-kubernetes-tools/vscode-kubernetes-tools/issues/1031
  */
 export function getUseWsl(): boolean {
 	// ignore upstream repository undocumented setting when
