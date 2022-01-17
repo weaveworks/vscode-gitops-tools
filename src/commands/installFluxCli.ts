@@ -11,7 +11,7 @@ import { getExtensionContext } from '../extensionContext';
 import { output } from '../output';
 import { Platform, shell } from '../shell';
 import { runTerminalCommand } from '../terminal';
-import { appendToPathEnvironmentVariableWindows, createDir, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from '../utils/fsUtils';
+import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from '../utils/fsUtils';
 import { refreshAllTreeViews } from '../views/treeViews';
 
 const fluxGitHubUserProject = 'fluxcd/flux2';
@@ -62,7 +62,7 @@ async function getLatestVersionFromGitHub(gitHubUserProject: string): Promise<Er
  * Download a `checksums.txt` file from the Flux GitHub repository
  * and return it's path on the disk in case of success.
  */
-async function downloadFluxChecksums(gitHubAssetName: string, latestFluxVersion: string): Promise<Errorable<string>> {
+async function downloadFluxChecksums(latestFluxVersion: string): Promise<Errorable<string>> {
 	const checksumsFileName = `flux_${latestFluxVersion}_checksums.txt`;
 	const downloadLink = `https://github.com/${fluxGitHubUserProject}/releases/latest/download/${checksumsFileName}`;
 	const localChecksumPath = path.join(os.tmpdir(), checksumsFileName);
@@ -149,26 +149,22 @@ export async function installFluxCli() {
 	if (succeeded(goFishInstalledResult)) {
 		const installFluxResult = await shell.execWithOutput('gofish install flux');
 		if (installFluxResult.code === 0) {
-			const reloadEditorButton = 'Reload Editor';
-			const pressedButton = await window.showInformationMessage('Flux successfully installed.', reloadEditorButton);
-			if (pressedButton === reloadEditorButton) {
-				commands.executeCommand('workbench.action.reloadWindow');
-			}
+			showNotificationToReloadTheEditor();
 		}
 		return;
 	}
 
 	if (platform === Platform.Windows) {
-		const latestFluxVersion = await getLatestVersionFromGitHub(fluxGitHubUserProject);
-		if (failed(latestFluxVersion)) {
-			window.showErrorMessage(`Failed to infer the latest Flux version ${latestFluxVersion.error[0]}`);
+		const latestFluxVersionResult = await getLatestVersionFromGitHub(fluxGitHubUserProject);
+		if (failed(latestFluxVersionResult)) {
+			window.showErrorMessage(`Failed to infer the latest Flux version ${latestFluxVersionResult.error[0]}`);
 			return;
 		}
 
-		output.send(`✔ Latest Flux version: ${latestFluxVersion.result}\n`, { revealOutputView: true, addNewline: false });
+		output.send(`✔ Latest Flux version: ${latestFluxVersionResult.result}\n`, { revealOutputView: true, addNewline: false });
 
 		const archString = os.arch() === 'arm64' ? 'arm64' : 'x64' ? 'amd64' : '386';
-		const gitHubAssetArchiveName = `flux_${latestFluxVersion.result}_windows_${archString}.zip`;
+		const gitHubAssetArchiveName = `flux_${latestFluxVersionResult.result}_windows_${archString}.zip`;
 		const downloadLink = `https://github.com/${fluxGitHubUserProject}/releases/latest/download/${gitHubAssetArchiveName}`;
 		const localArchiveFilePath = path.join(os.tmpdir(), gitHubAssetArchiveName);
 
@@ -203,7 +199,7 @@ export async function installFluxCli() {
 			return;
 		}
 
-		const checksumDownloadResult = await downloadFluxChecksums(gitHubAssetArchiveName, latestFluxVersion.result);
+		const checksumDownloadResult = await downloadFluxChecksums(latestFluxVersionResult.result);
 		if (failed(checksumDownloadResult)) {
 			window.showErrorMessage(`Failed to download the checksums.txt file ${checksumDownloadResult.error[0]}`);
 			return;
@@ -247,11 +243,13 @@ export async function installFluxCli() {
 
 		getExtensionContext().globalState.update(GitOpsExtensionConstants.FluxPath, path.join(appDataPathResult.result, 'flux'));
 
-		// TODO: delete temp files
+		deleteFile(localArchiveFilePath);
+		deleteFile(path.join(os.tmpdir(), `flux_${latestFluxVersionResult.result}_checksums.txt`));
 
-		output.send(`✔ Flux ${latestFluxVersion.result} successfully installed`);
+		output.send(`✔ Flux ${latestFluxVersionResult.result} successfully installed`);
 
 		refreshAllTreeViews();
+		showNotificationToReloadTheEditor();
 
 		return;
 	}
@@ -298,5 +296,13 @@ async function isGoFishInstalled(): Promise<Errorable<null>> {
 			succeeded: false,
 			error: [gofishVersionShellResult?.stderr || String(gofishVersionShellResult?.code)],
 		};
+	}
+}
+
+async function showNotificationToReloadTheEditor() {
+	const reloadEditorButton = 'Reload Editor';
+	const pressedButton = await window.showInformationMessage('Flux successfully installed.', reloadEditorButton);
+	if (pressedButton === reloadEditorButton) {
+		commands.executeCommand('workbench.action.reloadWindow');
 	}
 }

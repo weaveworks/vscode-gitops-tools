@@ -249,3 +249,23 @@ export async function readFile(filePath: string): Promise<Errorable<string>> {
 		});
 	});
 }
+/**
+ * Delete file from disk (async).
+ */
+export async function deleteFile(filePath: string): Promise<Errorable<null>> {
+	return new Promise(resolve => {
+		fs.unlink(filePath, err => {
+			if (err) {
+				resolve({
+					succeeded: false,
+					error: [err.message],
+				});
+			} else {
+				resolve({
+					succeeded: true,
+					result: null,
+				});
+			}
+		});
+	});
+}
