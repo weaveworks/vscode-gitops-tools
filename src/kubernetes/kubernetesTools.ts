@@ -13,7 +13,7 @@ import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
 import { KubernetesConfig, KubernetesContextWithCluster } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
-import { ClusterProvider, ConfigMap, DeploymentResult, KubectlVersionResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
+import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
 import { KustomizeResult } from './kustomize';
 
 /**
@@ -195,6 +195,7 @@ class KubernetesTools {
 		const podResult = await this.invokeKubectlCommand(`get pod ${nameArg} ${namespaceArg} -o json`);
 
 		if (podResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_PODS_OF_A_DEPLOYMENT);
 			console.warn(`Failed to get pods: ${podResult?.stderr}`);
 			return;
 		}
@@ -207,7 +208,8 @@ class KubernetesTools {
 	 */
 	async getKustomizations(): Promise<undefined | KustomizeResult> {
 		const kustomizationShellResult = await this.invokeKubectlCommand('get Kustomization -A -o json');
-		if (!kustomizationShellResult || kustomizationShellResult.stderr) {
+		if (kustomizationShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_KUSTOMIZATIONS);
 			console.warn(`Failed to get kubectl kustomizations: ${kustomizationShellResult?.stderr}`);
 			return;
 		}
@@ -219,7 +221,8 @@ class KubernetesTools {
 	 */
 	async getHelmReleases(): Promise<undefined | HelmReleaseResult> {
 		const helmReleaseShellResult = await this.invokeKubectlCommand('get HelmRelease -A -o json');
-		if (!helmReleaseShellResult || helmReleaseShellResult.stderr) {
+		if (helmReleaseShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_HELM_RELEASES);
 			console.warn(`Failed to get kubectl helm releases: ${helmReleaseShellResult?.stderr}`);
 			return;
 		}
@@ -231,7 +234,8 @@ class KubernetesTools {
 	 */
 	async getGitRepositories(): Promise<undefined | GitRepositoryResult> {
 		const gitRepositoryShellResult = await this.invokeKubectlCommand('get GitRepository -A -o json');
-		if (!gitRepositoryShellResult || gitRepositoryShellResult.stderr) {
+		if (gitRepositoryShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_GIT_REPOSITORIES);
 			console.warn(`Failed to get kubectl git repositories: ${gitRepositoryShellResult?.stderr}`);
 			return;
 		}
@@ -243,7 +247,8 @@ class KubernetesTools {
 	 */
 	async getHelmRepositories(): Promise<undefined | HelmRepositoryResult> {
 		const helmRepositoryShellResult = await this.invokeKubectlCommand('get HelmRepository -A -o json');
-		if (!helmRepositoryShellResult || helmRepositoryShellResult.stderr) {
+		if (helmRepositoryShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_HELM_REPOSITORIES);
 			console.warn(`Failed to get kubectl helm repositories: ${helmRepositoryShellResult?.stderr}`);
 			return;
 		}
@@ -255,7 +260,8 @@ class KubernetesTools {
 	 */
 	async getBuckets(): Promise<undefined | BucketResult> {
 		const bucketShellResult = await this.invokeKubectlCommand('get Bucket -A -o json');
-		if (!bucketShellResult || bucketShellResult.stderr) {
+		if (bucketShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_BUCKETS);
 			console.warn(`Failed to get kubectl buckets: ${bucketShellResult?.stderr}`);
 			return;
 		}
@@ -271,6 +277,7 @@ class KubernetesTools {
 		const fluxDeploymentShellResult = await this.invokeKubectlCommand(`get deployment --namespace=flux-system ${contextArg} -o json`);
 
 		if (fluxDeploymentShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_FLUX_CONTROLLERS);
 			console.warn(`Failed to get flux controllers: ${fluxDeploymentShellResult?.stderr}`);
 			return;
 		}
@@ -302,8 +309,9 @@ class KubernetesTools {
 		}
 
 		const kindsShellResult = await this.invokeKubectlCommand('api-resources --verbs=list -o name');
-		if (!kindsShellResult || kindsShellResult.stderr) {
+		if (kindsShellResult?.code !== 0) {
 			this.clusterSupportedResourceKinds = undefined;
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
 			console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
 			return;
 		}
@@ -350,6 +358,7 @@ class KubernetesTools {
 		const namespacesShellResult = await this.invokeKubectlCommand('get ns -o json');
 
 		if (namespacesShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_NAMESPACES);
 			window.showErrorMessage(`Failed to get namespaces ${namespacesShellResult?.stderr}`);
 			return;
 		}
@@ -374,6 +383,7 @@ class KubernetesTools {
 
 		if (tryProviderAKS === ClusterProvider.Unknown ||
 			tryProviderAzureARC === ClusterProvider.Unknown) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_DETECT_CLUSTER_PROVIDER);
 			return ClusterProvider.Unknown;
 		} else {
 			return ClusterProvider.Generic;
@@ -493,7 +503,7 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Get one resouce object by kind/name and namespace
+	 * Get one resource object by kind/name and namespace
 	 * @param name name of the target resource
 	 * @param namespace namespace of the target resource
 	 * @param kind kind of the target resource
@@ -501,6 +511,7 @@ class KubernetesTools {
 	async getResource(name: string, namespace: string, kind: string): Promise<undefined | KubernetesObject> {
 		const resourceShellResult = await this.invokeKubectlCommand(`get ${kind}/${name} --namespace=${namespace} -o json`);
 		if (resourceShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_RESOURCE);
 			return;
 		}
 

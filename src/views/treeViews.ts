@@ -95,6 +95,7 @@ function getCurrentClusterNode() {
  * if either of them is undefined.
  */
 export async function getCurrentClusterInfo() {
+	// TODO: skip clusterNode, get actual needed info (currentClusterName, currentContextName, isGitOpsEnabled, clusterProvider)
 	const clusterNode = getCurrentClusterNode();
 	if (!clusterNode) {
 		return;

@@ -111,7 +111,7 @@ export async function checkGitVersion(): Promise<string | undefined> {
 	const gitVersion: string | undefined = await getGitVersion();
 
 	if (gitVersion === undefined) {
-		telemetry.sendError(SpecificErrorEvent.GIT_NOT_INSTALLED);
+		telemetry.sendError(SpecificErrorEvent.GIT_NOT_INSTALLED, new Error('Git not installed'));
 		const installButton = 'Install';
 		const confirm = await window.showErrorMessage('Please install Git.', installButton);
 		if (confirm === installButton) {

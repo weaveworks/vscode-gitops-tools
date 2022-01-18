@@ -4,6 +4,7 @@ import semverSatisfies from 'semver/functions/satisfies';
 import { commands, Uri, window } from 'vscode';
 import { checkGitVersion } from '../install';
 import { shell } from '../shell';
+import { SpecificErrorEvent, telemetry } from '../telemetry';
 import { quoteFsPath } from '../utils/fsUtils';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 
@@ -57,6 +58,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 	const gitCloneShellResult = await shell.execWithOutput(query);
 
 	if (gitCloneShellResult.code !== 0) {
+		telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_GIT_CLONE);
 		window.showErrorMessage(gitCloneShellResult?.stderr || '');
 		return;
 	}
