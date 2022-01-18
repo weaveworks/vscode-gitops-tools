@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
+import { SpecificErrorEvent, telemetry } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxTypes';
 
@@ -52,6 +53,7 @@ class FluxTools {
 		const result = await shell.execWithOutput('flux check', { revealOutputView: false });
 
 		if (result?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_CHECK);
 			const stderr = result?.stderr;
 			if (stderr) {
 				window.showErrorMessage(String(result?.stderr || ''));
@@ -117,6 +119,7 @@ class FluxTools {
 		const treeShellResult = await shell.exec(`flux tree kustomization ${name} -n ${namespace} -o json`);
 
 		if (treeShellResult?.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_TREE);
 			window.showErrorMessage(`Failed to get resources created by the workload ${name}. ERROR: ${treeShellResult?.stderr}`);
 			return;
 		}
@@ -135,7 +138,10 @@ class FluxTools {
 		if (context) {
 			contextArg = `--context=${context}`;
 		}
-		await shell.execWithOutput(`flux install ${contextArg}`);
+		const installShellResult = await shell.execWithOutput(`flux install ${contextArg}`);
+		if (installShellResult.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_INSTALL);
+		}
 	}
 
 	/**
@@ -149,7 +155,10 @@ class FluxTools {
 		if (context) {
 			contextArg = `--context=${context}`;
 		}
-		await shell.execWithOutput(`flux uninstall --silent ${contextArg}`);
+		const uninstallShellResult = await shell.execWithOutput(`flux uninstall --silent ${contextArg}`);
+		if (uninstallShellResult.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_UNINSTALL);
+		}
 	}
 
 	/**
@@ -161,7 +170,10 @@ class FluxTools {
 	 * @param namespace resource namespace
 	 */
 	async suspend(type: FluxSource | FluxWorkload, name: string, namespace: string) {
-		await shell.execWithOutput(`flux suspend ${type} ${name} -n ${namespace}`);
+		const suspendShellResult = await shell.execWithOutput(`flux suspend ${type} ${name} -n ${namespace}`);
+		if (suspendShellResult.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_SUSPEND);
+		}
 	}
 
 	/**
@@ -173,7 +185,10 @@ class FluxTools {
 	 * @param namespace resource namespace
 	 */
 	async resume(type: FluxSource | FluxWorkload, name: string, namespace: string) {
-		await shell.execWithOutput(`flux resume ${type} ${name} -n ${namespace}`);
+		const resumeShellResult = await shell.execWithOutput(`flux resume ${type} ${name} -n ${namespace}`);
+		if (resumeShellResult.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_RESUME);
+		}
 	}
 
 	/**
@@ -185,14 +200,20 @@ class FluxTools {
 	 * @param namespace resource namespace
 	 */
 	async reconcile(type: FluxSource | FluxWorkload, name: string, namespace: string) {
-		await shell.execWithOutput(`flux reconcile ${type} ${name} -n ${namespace}`);
+		const reconcileShellResult = await shell.execWithOutput(`flux reconcile ${type} ${name} -n ${namespace}`);
+		if (reconcileShellResult.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_RECONCILE);
+		}
 	}
 
 	/**
 	 * @see https://fluxcd.io/docs/cmd/flux_trace/
 	 */
 	async trace(name: string, kind: string, apiVersion: string, namespace: string) {
-		await shell.execWithOutput(`flux trace ${name} --kind=${kind} --api-version=${apiVersion} --namespace=${namespace}`);
+		const traceShellResult = await shell.execWithOutput(`flux trace ${name} --kind=${kind} --api-version=${apiVersion} --namespace=${namespace}`);
+		if (traceShellResult.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_TRACE);
+		}
 	}
 
 	/**
@@ -204,13 +225,18 @@ class FluxTools {
 	 * @param namespace resource namespace
 	 */
 	async deleteSource(type: FluxSource, name: string, namespace: string) {
-		await shell.execWithOutput(`flux delete ${type} ${name} -n ${namespace} --silent`);
+		const deleteSourceShellResult = await shell.execWithOutput(`flux delete ${type} ${name} -n ${namespace} --silent`);
+		if (deleteSourceShellResult.code !== 0) {
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_DELETE_SOURCE);
+		}
 	}
 
 	/**
 	 * Run `flux create source git`. If the protocol of the url is SSH -
 	 * try to parse the deploy key from the flux output.
 	 * @see https://fluxcd.io/docs/cmd/flux_create_source_git/
+	 *
+	 * TODO: delete this method, use createSourceGit2() instead
 	 *
 	 * @param name resource name
 	 * @param url git url
@@ -309,6 +335,7 @@ class FluxTools {
 
 		if (createKustomizationShellResult?.code !== 0) {
 			window.showErrorMessage(createKustomizationShellResult.stderr);
+			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
 			return;
 		}
 	}
