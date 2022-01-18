@@ -156,13 +156,13 @@ class Telemetry {
 			return;
 		}
 
-		if (error) {
-			this.reporter.sendTelemetryException(error, {
-				name: eventName,
-			});
-		} else {
-			this.reporter.sendTelemetryEvent(eventName);
+		if (!error) {
+			error = new Error(eventName);
 		}
+
+		this.reporter.sendTelemetryException(error, {
+			name: eventName,
+		});
 
 	}
 
