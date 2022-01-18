@@ -371,18 +371,17 @@ class KubernetesTools {
 	 * @param context target context to get resources from.
 	 */
 	async detectClusterProvider(context: string): Promise<ClusterProvider> {
-		const tryProviderAKS = await this.isClusterAKS(context);
-		if (tryProviderAKS === ClusterProvider.AKS) {
-			return ClusterProvider.AKS;
-		}
-
 		const tryProviderAzureARC = await this.isClusterAzureARC(context);
 		if (tryProviderAzureARC === ClusterProvider.AzureARC) {
 			return ClusterProvider.AzureARC;
 		}
 
-		if (tryProviderAKS === ClusterProvider.Unknown ||
-			tryProviderAzureARC === ClusterProvider.Unknown) {
+		const tryProviderAKS = await this.isClusterAKS(context);
+		if (tryProviderAKS === ClusterProvider.AKS) {
+			return ClusterProvider.AKS;
+		}
+
+		if (tryProviderAKS === ClusterProvider.Unknown || tryProviderAzureARC === ClusterProvider.Unknown) {
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_DETECT_CLUSTER_PROVIDER);
 			return ClusterProvider.Unknown;
 		} else {
@@ -394,7 +393,7 @@ class KubernetesTools {
 	 * Try to determine if the cluster is AKS or not.
 	 * @param context target context to get resources from.
 	 */
-	async isClusterAKS(context: string): Promise<ClusterProvider> {
+	private async isClusterAKS(context: string): Promise<ClusterProvider> {
 		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
 
 		if (nodesShellResult?.code !== 0) {
@@ -427,7 +426,7 @@ class KubernetesTools {
 	 * Try to determine if the cluster is managed by Azure ARC or not.
 	 * @param context target context to get resources from.
 	 */
-	async isClusterAzureARC(context: string): Promise<ClusterProvider> {
+	private async isClusterAzureARC(context: string): Promise<ClusterProvider> {
 		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${context} --ignore-not-found -o json`);
 
 		if (configmapShellResult?.code !== 0) {
