@@ -1,10 +1,11 @@
 import { window } from 'vscode';
 import { ContextTypes, setVSCodeContext } from '../../context';
+import { failed } from '../../errorable';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
-import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { ClusterContextNode } from '../nodes/clusterContextNode';
+import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { refreshClustersTreeView, revealClusterNode } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
@@ -15,26 +16,15 @@ import { DataProvider } from './dataProvider';
 export class ClusterDataProvider extends DataProvider {
 
 	/**
-	 * Cache clusterNodes to acess them later.
-	 */
-	clusterNodes: ClusterContextNode[] = [];
-
-	/**
-	 * Whether or not the tree view finished building (not entirely, there's still async calls)
-	 * and {@link clusterNodes} array was populated.
-	 */
-	isFinishedBuildingTree = false;
-
-	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async buildTree(): Promise<ClusterContextNode[]> {
 
-		this.isFinishedBuildingTree = false;
 		setVSCodeContext(ContextTypes.NoClusters, false);
 		statusBar.startLoadingTree();
 		setVSCodeContext(ContextTypes.LoadingClusters, true);
 
+		// TODO: show error when it happens
 		const contexts = await kubernetesTools.getContexts();
 
 		if (!contexts) {
@@ -44,7 +34,15 @@ export class ClusterDataProvider extends DataProvider {
 
 		const clusterNodes: ClusterContextNode[] = [];
 		let currentContextTreeItem: ClusterContextNode | undefined;
-		const currentContext = (await kubernetesTools.getCurrentContext()) || '';
+
+		const currentContextResult = await kubernetesTools.getCurrentContext();
+		let currentContext = '';
+		if (failed(currentContextResult)) {
+			window.showErrorMessage(`Failed to get current context: ${currentContextResult.error[0]}`);
+		} else {
+			currentContext = currentContextResult.result;
+		}
+
 		for (const cluster of contexts) {
 			const clusterNode = new ClusterContextNode(cluster);
 			if (cluster.name === currentContext) {
@@ -72,10 +70,8 @@ export class ClusterDataProvider extends DataProvider {
 		this.updateClusterContexts(clusterNodes);
 
 		statusBar.stopLoadingTree();
-		this.isFinishedBuildingTree = true;
 		setVSCodeContext(ContextTypes.LoadingClusters, false);
 
-		this.clusterNodes = clusterNodes;
 		return clusterNodes;
 	}
 
@@ -121,24 +117,5 @@ export class ClusterDataProvider extends DataProvider {
 			await clusterNode.updateNodeContext();
 			refreshClustersTreeView(clusterNode);
 		}));
-	}
-
-	/**
-	 * Return cluster node from the current kubernetes context.
-	 */
-	getCurrentClusterNode(): ClusterContextNode | undefined {
-		if (!this.isFinishedBuildingTree) {
-			window.showErrorMessage('Clusters are not yet loaded.');
-			return;
-		}
-
-		for (const clusterNode of this.clusterNodes) {
-			if (clusterNode.isCurrent) {
-				return clusterNode;
-			}
-		}
-
-		window.showErrorMessage('Current cluster was not found.');
-		return undefined;
 	}
 }

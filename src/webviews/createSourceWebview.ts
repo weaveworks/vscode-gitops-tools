@@ -1,10 +1,10 @@
 import { readFileSync } from 'fs';
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
-import { AzureClusterProvider } from '../azure/azureTools';
+import { AzureClusterProvider, isAzureProvider } from '../azure/azureTools';
 import { createGitRepositoryAzureCluster, createGitRepositoryGenericCluster } from '../commands/createSource';
+import { failed } from '../errorable';
 import { asAbsolutePath } from '../extensionContext';
 import { GitInfo } from '../git/getOpenedFolderGitInfo';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { getCurrentClusterInfo } from '../views/treeViews';
 import { getNonce, getWebviewOptions } from './webviewUtils';
 
@@ -200,18 +200,17 @@ export class CreateSourcePanel {
 
 	private async _updateWebviewContent(gitInfo: GitInfo | undefined) {
 		const clusterInfo = await getCurrentClusterInfo();
-		if (!clusterInfo) {
-			// window.showErrorMessage('Failed to get current cluster node or provider');
+		if (failed(clusterInfo)) {
 			return;
 		}
 
 		this._postMessage({
 			type: 'updateWebviewContent',
 			value: {
-				clusterName: clusterInfo.clusterNode.clusterName,
-				contextName: clusterInfo.clusterNode.contextName,
-				clusterProvider: clusterInfo.clusterProvider,
-				isAzure: clusterInfo.clusterProvider === ClusterProvider.AKS || clusterInfo.clusterProvider === ClusterProvider.AzureARC,
+				clusterName: clusterInfo.result.clusterName,
+				contextName: clusterInfo.result.contextName,
+				clusterProvider: clusterInfo.result.clusterProvider,
+				isAzure: isAzureProvider(clusterInfo.result.clusterProvider),
 				newSourceName: gitInfo?.newRepoName || '',
 				newSourceUrl: gitInfo?.url || '',
 				newSourceBranch: gitInfo?.branch || '',

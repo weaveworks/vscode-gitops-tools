@@ -1,10 +1,10 @@
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
 import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { failed } from '../errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { validateKustomizationName } from '../flux/fluxUtils';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
-import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeViews';
 import { createGitRepository } from './createGitRepository';
 
@@ -17,7 +17,7 @@ import { createGitRepository } from './createGitRepository';
 export async function createKustomization(fileExplorerUri?: Uri): Promise<void> {
 
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (!currentClusterInfo) {
+	if (failed(currentClusterInfo)) {
 		return;
 	}
 
@@ -65,8 +65,8 @@ export async function createKustomization(fileExplorerUri?: Uri): Promise<void> 
 	let gitSourceExists = await checkIfOpenedFolderGitRepositorySourceExists();
 	let gitRepositoryName = gitSourceExists?.gitRepositoryName;
 
-	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
-		await createKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider);
+	if (currentClusterInfo.result.isAzure) {
+		await createKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
 		await createKustomizationGenericCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri);
 	}
@@ -132,7 +132,7 @@ async function createKustomizationAzureCluster(
 	gitRepositoryName: string | undefined,
 	relativeKustomizationPath: string,
 	workspaceFolderUri: Uri,
-	clusterNode: ClusterContextNode,
+	contextName: string,
 	clusterProvider: AzureClusterProvider,
 ): Promise<void> {
 
@@ -158,6 +158,6 @@ async function createKustomizationAzureCluster(
 
 		await createGitRepository(workspaceFolderUri, newKustomizationName, relativeKustomizationPath);
 	} else {
-		await azureTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath, clusterNode, clusterProvider);
+		await azureTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath, contextName, clusterProvider);
 	}
 }

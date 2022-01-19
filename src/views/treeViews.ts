@@ -1,4 +1,7 @@
 import { TreeItem, TreeView, window } from 'vscode';
+import { isAzureProvider } from '../azure/azureTools';
+import { Errorable, failed } from '../errorable';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
@@ -83,32 +86,53 @@ export function refreshWorkloadsTreeView(node?: TreeNode) {
 	workloadTreeViewProvider.refresh(node);
 }
 
-/**
- * @see {@link clusterTreeViewProvider.getCurrentClusterNode}
- */
-function getCurrentClusterNode() {
-	return clusterTreeViewProvider.getCurrentClusterNode();
+interface CurrentClusterInfo {
+	contextName: string;
+	clusterName: string;
+	clusterProvider: ClusterProvider;
+	isAzure: boolean;
 }
 
 /**
- * Return current cluster node & current cluster provider or undefined
- * if either of them is undefined.
+ * Return current cluster name & current context & current cluster provider.
  */
-export async function getCurrentClusterInfo() {
-	// TODO: skip clusterNode, get actual needed info (currentClusterName, currentContextName, isGitOpsEnabled, clusterProvider)
-	const clusterNode = getCurrentClusterNode();
-	if (!clusterNode) {
-		return;
+export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterInfo>> {
+	const currentContextResult = await kubernetesTools.getCurrentContext();
+	if (failed(currentContextResult)) {
+		const error = `Failed to get current context ${currentContextResult.error[0]}`;
+		window.showErrorMessage(error);
+		return {
+			succeeded: false,
+			error: [error],
+		};
 	}
-
-	const clusterProvider = await clusterNode.getClusterProvider();
-	if (clusterProvider === ClusterProvider.Unknown) {
-		return;
+	const currentContextName = currentContextResult.result;
+	const contexts = await kubernetesTools.getContexts();
+	if (!contexts) {
+		window.showErrorMessage('Failed to get contexts');
+		return {
+			succeeded: false,
+			error: ['Failed to get contexts'],
+		};
 	}
+	const currentClusterName = contexts.find(context => context.name === currentContextName)?.context.clusterInfo?.name;
+	if (!currentClusterName) {
+		window.showErrorMessage('Failed to find current context.');
+		return {
+			succeeded: false,
+			error: ['Failed to get currentClusterName'],
+		};
+	}
+	const currentClusterProvider = await kubernetesTools.detectClusterProvider(currentContextName);
 
 	return {
-		clusterNode,
-		clusterProvider,
+		succeeded: true,
+		result: {
+			clusterName: currentClusterName,
+			contextName: currentContextName,
+			clusterProvider: currentClusterProvider,
+			isAzure: isAzureProvider(currentClusterProvider),
+		},
 	};
 }
 

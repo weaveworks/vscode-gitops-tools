@@ -1,5 +1,6 @@
 import { window } from 'vscode';
-import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { failed } from '../errorable';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
@@ -43,12 +44,12 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 	});
 
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (!currentClusterInfo) {
+	if (failed(currentClusterInfo)) {
 		return;
 	}
 
-	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
-		await azureTools.deleteSource(sourceName, currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider);
+	if (currentClusterInfo.result.isAzure) {
+		await azureTools.deleteSource(sourceName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 		refreshWorkloadsTreeView();
 	} else {
 		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);

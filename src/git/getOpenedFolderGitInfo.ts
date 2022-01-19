@@ -3,7 +3,6 @@ import { Uri } from 'vscode';
 import { getGitRepositoryState, nameGitRepositorySource } from '../commands/createGitRepository';
 import { makeSSHUrlFromGitUrl } from '../commands/createSource';
 import { checkGitVersion } from '../install';
-import { getCurrentClusterInfo } from '../views/treeViews';
 
 export interface GitInfo {
 	newRepoName: string;
@@ -18,11 +17,6 @@ export interface GitInfo {
 export async function getOpenedFolderGitInfo(targetFolderUri: Uri): Promise<GitInfo | undefined> {
 	const gitInstalled = await checkGitVersion();
 	if (!gitInstalled) {
-		return;
-	}
-
-	const clusterInfo = await getCurrentClusterInfo();
-	if (!clusterInfo) {
 		return;
 	}
 

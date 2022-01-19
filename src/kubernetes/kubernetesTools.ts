@@ -3,6 +3,7 @@ import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { AzureConstants } from '../azure/azureTools';
 import { ContextTypes, setVSCodeContext } from '../context';
+import { Errorable, succeeded } from '../errorable';
 import { telemetry } from '../extension';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
@@ -105,17 +106,26 @@ class KubernetesTools {
 	/**
 	 * Gets current kubectl context name.
 	 */
-	async getCurrentContext(): Promise<undefined | string> {
+	async getCurrentContext(): Promise<Errorable<string>> {
+
 		const currentContextShellResult = await this.invokeKubectlCommand('config current-context');
-		if (!currentContextShellResult || currentContextShellResult.stderr) {
+		if (currentContextShellResult?.code !== 0) {
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT);
 			console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
 			setVSCodeContext(ContextTypes.NoClusterSelected, true);
-			return;
+			return {
+				succeeded: false,
+				error: [`${currentContextShellResult?.code || ''} ${currentContextShellResult?.stderr}`],
+			};
 		}
+
 		const currentContext = currentContextShellResult.stdout.trim();
-		setVSCodeContext(ContextTypes.NoClusterSelected, !currentContext);
-		return currentContext;
+		setVSCodeContext(ContextTypes.NoClusterSelected, false);
+
+		return {
+			succeeded: true,
+			result: currentContext,
+		};
 	}
 
 	/**
@@ -125,8 +135,8 @@ class KubernetesTools {
 	 * whether or not context was switched or didn't need it (current).
 	 */
 	async setCurrentContext(contextName: string): Promise<undefined | { isChanged: boolean;	}> {
-		const currentContext = await this.getCurrentContext();
-		if (currentContext && currentContext === contextName) {
+		const currentContextResult = await this.getCurrentContext();
+		if (succeeded(currentContextResult) && currentContextResult.result === contextName) {
 			return {
 				isChanged: false,
 			};

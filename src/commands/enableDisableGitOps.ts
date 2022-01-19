@@ -1,8 +1,10 @@
 import { window } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { failed } from '../errorable';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { ClusterContextNode } from '../views/nodes/clusterContextNode';
@@ -15,23 +17,27 @@ import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
  */
 async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, enableGitOps: boolean) {
 
+	let contextName = clusterNode?.contextName || '';
+	let clusterName = clusterNode?.clusterName || '';
+
 	if (!clusterNode) {
-		// was executed from the welcome view - get current cluster node
+		// was executed from the welcome view - get current context
 		const currentClusterInfo = await getCurrentClusterInfo();
-		if (!currentClusterInfo) {
+		if (failed(currentClusterInfo)) {
 		  return;
 		}
 
-		clusterNode = currentClusterInfo.clusterNode;
+		contextName = currentClusterInfo.result.contextName;
+		clusterName = currentClusterInfo.result.clusterName;
 	}
 
-	const clusterProvider = await clusterNode.getClusterProvider();
+	const clusterProvider = await kubernetesTools.detectClusterProvider(contextName);
 	if (clusterProvider === ClusterProvider.Unknown) {
 		return;
 	}
 
 	const enableGitOpsButton = enableGitOps ? 'Enable' : 'Disable';
-	const confirmationMessage = `Do you want to ${enableGitOps ? 'enable' : 'disable'} GitOps on the "${clusterNode.clusterName}" cluster?`;
+	const confirmationMessage = `Do you want to ${enableGitOps ? 'enable' : 'disable'} GitOps on the "${clusterName}" cluster?`;
 	const confirm = await window.showWarningMessage(confirmationMessage, {
 		modal: true,
 	}, enableGitOpsButton);
@@ -50,19 +56,17 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 	}
 
 	if (isAzureProvider(clusterProvider)) {
-		// AKS/AKS ARC cluster
 		if (enableGitOps) {
-			await azureTools.enableGitOps(clusterNode, clusterProvider);
+			await azureTools.enableGitOps(contextName, clusterProvider);
 		} else {
-			await azureTools.disableGitOps(clusterNode, clusterProvider);
+			await azureTools.disableGitOps(contextName, clusterProvider);
 		}
 	} else {
 		// generic cluster
-		const context = clusterNode.contextName;
 		if (enableGitOps) {
-			await fluxTools.install(context);
+			await fluxTools.install(contextName);
 		} else {
-			await fluxTools.uninstall(context);
+			await fluxTools.uninstall(contextName);
 		}
 	}
 

@@ -76,7 +76,7 @@ export class ClusterContextNode extends TreeNode {
 	}
 
 	get command() {
-		// set current context command to change selected cluster
+		// set current context command to change selected context
 		return {
 			command: CommandId.SetCurrentKubernetesContext,
 			arguments: [this.contextName],
@@ -133,23 +133,6 @@ export class ClusterContextNode extends TreeNode {
 		}
 
 		return markdown;
-	}
-
-	/**
-	 * Return this cluster provider.
-	 */
-	async getClusterProvider() {
-
-		if (this.clusterProvider === ClusterProvider.Unknown) {
-			this.clusterProvider = await kubernetesTools.detectClusterProvider(this.contextName);
-		}
-
-		if (this.clusterProvider === ClusterProvider.Unknown) {
-			// TODO: maybe this should include a button to override the cluster provider detection?
-			window.showErrorMessage('Cluster provider detection failed.');
-		}
-
-		return this.clusterProvider;
 	}
 
 	get contexts() {

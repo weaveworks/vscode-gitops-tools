@@ -3,7 +3,6 @@ import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap } from '../kubernetes/kubernetesTypes';
 import { shell, ShellResult } from '../shell';
 import { parseJson } from '../utils/jsonUtils';
-import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { askUserForAzureMetadata } from './getAzureMetadata';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
@@ -99,16 +98,16 @@ class AzureTools {
 	 * Enable GitOps
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az_k8s_extension_create
 	 *
-	 * @param clusterNode target cluster node
+	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
 	async enableGitOps(
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
 			`az k8s-extension create --name ${AzureConstants.FluxExtensionName} --extension-type microsoft.flux --scope cluster`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 	}
@@ -117,14 +116,14 @@ class AzureTools {
 	 * Disable GitOps
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az_k8s_extension_delete
 	 *
-	 * @param clusterNode target cluster node
+	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
 	async disableGitOps(
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
-		const fluxConfigurations = await this.listFluxConfigurations(clusterNode, clusterProvider);
+		const fluxConfigurations = await this.listFluxConfigurations(contextName, clusterProvider);
 
 		if (!fluxConfigurations) {
 			return;
@@ -135,14 +134,14 @@ class AzureTools {
 		// delete all flux configurations
 		await Promise.all(namesOfFluxConfigs.map(fluxConfigName => this.invokeAzCommand(
 			`az k8s-configuration flux delete -n ${fluxConfigName} --yes`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		)));
 
 		// delete flux extension
 		await this.invokeAzCommand(
 			`az k8s-extension delete --name ${AzureConstants.FluxExtensionName} --yes`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 	}
@@ -151,16 +150,16 @@ class AzureTools {
 	 * Return all flux resources managed by Azure.
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_list
 	 *
-	 * @param clusterNode target cluster node
+	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
 	private async listFluxConfigurations(
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | any[]> {
 		const configurationShellResult = await this.invokeAzCommand(
 			'az k8s-configuration flux list',
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 
@@ -179,7 +178,7 @@ class AzureTools {
 	 * @param gitUrl git repository url
 	 * @param gitBranch git repository active branch
 	 * @param isSSH true when the git url protocol is SSH
-	 * @param clusterNode target cluster node
+	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 * @param kustomizationName new kustomization name
 	 * @param kustomizationPath new kustozmiation path
@@ -189,7 +188,7 @@ class AzureTools {
 		gitUrl: string,
 		gitBranch: string,
 		isSSH: boolean,
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 		kustomizationName?: string,
 		kustomizationPath?: string,
@@ -202,7 +201,7 @@ class AzureTools {
 
 		const gitCreateShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux create -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch} ${kustomizationQueryPart}`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 
@@ -232,12 +231,12 @@ class AzureTools {
 		kustomizationName: string,
 		gitRepositoryName: string,
 		kustomizationPath: string,
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 		const createKustomizationShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}" --prune true`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 
@@ -341,17 +340,17 @@ class AzureTools {
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_delete
 	 *
 	 * @param sourceName target source name
-	 * @param clusterNode target cluster node
+	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
 	async deleteSource(
 		sourceName: string,
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
 			`az k8s-configuration flux delete -n ${sourceName} --yes`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 	}
@@ -361,17 +360,17 @@ class AzureTools {
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_update
 	 *
 	 * @param sourceName target source name
-	 * @param clusterNode target cluster node
+	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
 	async suspend(
 		sourceName: string,
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
 			`az k8s-configuration flux update -n ${sourceName} --suspend true`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 	}
@@ -381,17 +380,17 @@ class AzureTools {
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_update
 	 *
 	 * @param sourceName target source name
-	 * @param clusterNode target cluster node
+	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
 	async resume(
 		sourceName: string,
-		clusterNode: ClusterContextNode,
+		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 		await this.invokeAzCommand(
 			`az k8s-configuration flux update -n ${sourceName} --suspend false`,
-			clusterNode.contextName,
+			contextName,
 			clusterProvider,
 		);
 	}

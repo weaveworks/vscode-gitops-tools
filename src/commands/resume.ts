@@ -1,5 +1,6 @@
 import { window } from 'vscode';
-import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { failed } from '../errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource, FluxWorkload } from '../flux/fluxTypes';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
@@ -15,7 +16,7 @@ import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView
 export async function resume(node: GitRepositoryNode | HelmReleaseNode | KustomizationNode) {
 
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (!currentClusterInfo) {
+	if (failed(currentClusterInfo)) {
 		return;
 	}
 
@@ -28,20 +29,20 @@ export async function resume(node: GitRepositoryNode | HelmReleaseNode | Kustomi
 		return;
 	}
 
-	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
+	if (currentClusterInfo.result.isAzure) {
 		// TODO: implement
 		if (fluxResourceType === 'helmrelease' || fluxResourceType === 'kustomization') {
 			window.showInformationMessage('Not implemented on AKS/ARC', { modal: true });
 			return;
 		}
-		await azureTools.resume(node.resource.metadata.name || '', currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider);
+		await azureTools.resume(node.resource.metadata.name || '', currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
 		await fluxTools.resume(fluxResourceType, node.resource.metadata.name || '', node.resource.metadata.namespace || '');
 	}
 
 	if (node instanceof GitRepositoryNode) {
 		refreshSourcesTreeView();
-		if (isAzureProvider(currentClusterInfo.clusterProvider)) {
+		if (currentClusterInfo.result.isAzure) {
 			refreshWorkloadsTreeView();
 		}
 	} else {

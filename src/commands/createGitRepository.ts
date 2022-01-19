@@ -1,6 +1,7 @@
 import gitUrlParse from 'git-url-parse';
 import { Uri, window, workspace } from 'vscode';
-import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { failed } from '../errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
@@ -23,7 +24,7 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 	}
 
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (!currentClusterInfo) {
+	if (failed(currentClusterInfo)) {
 		return;
 	}
 
@@ -82,8 +83,8 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 
 	let deployKey: string | undefined;
 
-	if (isAzureProvider(currentClusterInfo.clusterProvider)) {
-		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterInfo.clusterNode, currentClusterInfo.clusterProvider, kustomizationName, kustomizationPath);
+	if (currentClusterInfo.result.isAzure) {
+		const createGitRepoResult = await azureTools.createGitRepository(newGitRepositorySourceName, gitUrl, gitBranch, isSSH, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider, kustomizationName, kustomizationPath);
 		deployKey = createGitRepoResult?.deployKey;
 		// az automatically creates a Kustomization
 		refreshWorkloadsTreeView();
