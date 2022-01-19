@@ -1,12 +1,14 @@
 import { ExtensionContext, ExtensionMode } from 'vscode';
 import { registerCommands } from './commands';
+import { getExtensionVersion } from './commands/showInstalledVersions';
 import { ContextTypes, setVSCodeContext } from './context';
 import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
 import { checkIfOpenedFolderGitRepositorySourceExists } from './git/checkIfOpenedFolderGitRepositorySourceExists';
+import { GlobalState } from './globalState';
 import { checkFluxPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
-import { telemetry, TelemetryEventNames } from './telemetry';
+import { Telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews } from './views/treeViews';
 
 export const enum GitOpsExtensionConstants {
@@ -14,6 +16,11 @@ export const enum GitOpsExtensionConstants {
 	FirstEverActivationStorageKey = 'firstEverActivation',
 	FluxPath = 'fluxPath',
 }
+
+/** State that is saved even between editor reloads */
+export let globalState: GlobalState;
+/** Methods to report telemetry over Application Insights (Exceptions or Custom Events). */
+export let telemetry: Telemetry;
 
 /**
  * Called when GitOps extension is activated.
@@ -23,6 +30,9 @@ export async function activate(context: ExtensionContext) {
 
 	// Keep a reference to the extension context
 	setExtensionContext(context);
+
+	globalState = new GlobalState(context);
+	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
 	// create gitops tree views
 	createTreeViews();
@@ -57,6 +67,6 @@ export async function activate(context: ExtensionContext) {
  * Called when extension is deactivated.
  */
 export function deactivate() {
-	telemetry.dispose();
-	statusBar.dispose();
+	telemetry?.dispose();
+	statusBar?.dispose();
 }

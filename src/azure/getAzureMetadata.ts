@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { globalState } from '../globalState';
+import { globalState } from '../extension';
 
 export interface AzureMetadata {
 	resourceGroup: string;

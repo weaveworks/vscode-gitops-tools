@@ -1,10 +1,11 @@
 import { window } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
-import { telemetry, TelemetryEventNames } from '../telemetry';
+import { TelemetryEventNames } from '../telemetry';
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';

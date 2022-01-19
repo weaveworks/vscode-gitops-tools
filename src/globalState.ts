@@ -1,4 +1,4 @@
-import { window, workspace } from 'vscode';
+import { ExtensionContext, window, workspace } from 'vscode';
 import { getExtensionContext } from './extensionContext';
 import { KnownClusterProviders } from './kubernetes/kubernetesTypes';
 
@@ -13,21 +13,21 @@ const enum GlobalStatePrefixes {
 	ClusterMetadata = 'clusterMetadata',
 }
 
-/**
- * TODO: keep context as property
- */
-class GlobalState {
+// TODO: use globalState instead of getExtensionContext().globalState everywhere
+export class GlobalState {
+
+	constructor(private context: ExtensionContext) {}
 
 	private prefix(prefixValue: GlobalStatePrefixes, str: string): string {
 		return `${prefixValue}:${str}`;
 	}
 
 	get(stateKey: string) {
-		return getExtensionContext().globalState.get(stateKey);
+		return this.context.globalState.get(stateKey);
 	}
 
 	set(stateKey: string, newValue: any): void {
-		getExtensionContext().globalState.update(stateKey, newValue);
+		this.context.globalState.update(stateKey, newValue);
 	}
 
 	getClusterMetadata(clusterName: string): ClusterMetadata | undefined {
@@ -60,7 +60,3 @@ class GlobalState {
 	}
 }
 
-/**
- * Global state (saved in vscode global storage).
- */
-export const globalState = new GlobalState();

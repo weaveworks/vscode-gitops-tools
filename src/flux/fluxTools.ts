@@ -1,7 +1,8 @@
 import { window } from 'vscode';
+import { telemetry } from '../extension';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
-import { SpecificErrorEvent, telemetry } from '../telemetry';
+import { SpecificErrorEvent } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxTypes';
 

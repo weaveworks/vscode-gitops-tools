@@ -1,5 +1,6 @@
 import { window } from 'vscode';
-import { SpecificErrorEvent, telemetry } from '../telemetry';
+import { telemetry } from '../extension';
+import { SpecificErrorEvent } from '../telemetry';
 
 export function parseJson(jsonString: string): any {
 	let jsonData: any;

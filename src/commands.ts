@@ -21,8 +21,9 @@ import { showLogs } from './commands/showLogs';
 import { showWorkloadsHelpMessage } from './commands/showWorkloadsHelpMessage';
 import { suspend } from './commands/suspend';
 import { trace } from './commands/trace';
+import { telemetry } from './extension';
 import { showOutputChannel } from './output';
-import { SpecificErrorEvent, telemetry } from './telemetry';
+import { SpecificErrorEvent } from './telemetry';
 import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
 
 /**

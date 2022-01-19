@@ -1,9 +1,10 @@
 import { window } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
-import { telemetry, TelemetryEventNames } from '../telemetry';
+import { TelemetryEventNames } from '../telemetry';
 import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
 

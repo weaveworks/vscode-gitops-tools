@@ -2,9 +2,10 @@ import path from 'path';
 import semverGt from 'semver/functions/gt';
 import semverSatisfies from 'semver/functions/satisfies';
 import { commands, Uri, window } from 'vscode';
+import { telemetry } from '../extension';
 import { checkGitVersion } from '../install';
 import { shell } from '../shell';
-import { SpecificErrorEvent, telemetry } from '../telemetry';
+import { SpecificErrorEvent } from '../telemetry';
 import { quoteFsPath } from '../utils/fsUtils';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 

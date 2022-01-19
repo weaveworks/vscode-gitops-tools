@@ -1,7 +1,8 @@
 import { workspace } from 'vscode';
+import { telemetry } from '../extension';
 import { getExtensionContext } from '../extensionContext';
 import { getOpenedFolderGitInfo } from '../git/getOpenedFolderGitInfo';
-import { telemetry, TelemetryEventNames } from '../telemetry';
+import { TelemetryEventNames } from '../telemetry';
 import { CreateSourcePanel } from '../webviews/createSourceWebview';
 
 /**

@@ -2,9 +2,10 @@ import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands';
 import { installFluxCli } from './commands/installFluxCli';
 import { Errorable } from './errorable';
+import { telemetry } from './extension';
 import { extensionState } from './extensionState';
 import { shell } from './shell';
-import { SpecificErrorEvent, telemetry } from './telemetry';
+import { SpecificErrorEvent } from './telemetry';
 import { parseJson } from './utils/jsonUtils';
 
 export async function getKubectlVersion(): Promise<string | undefined> {

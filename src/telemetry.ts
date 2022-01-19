@@ -1,8 +1,5 @@
-import { env, ExtensionMode } from 'vscode';
+import { env, ExtensionContext, ExtensionMode } from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
-import { getExtensionVersion } from './commands/showInstalledVersions';
-import { GitOpsExtensionConstants } from './extension';
-import { getExtensionContext } from './extensionContext';
 
 
 export const enum SpecificErrorEvent {
@@ -107,12 +104,15 @@ interface TelemetryEventNamePropertyMapping {
 	};
 }
 
-class Telemetry {
+export class Telemetry {
+
+	private context: ExtensionContext;
 	private reporter: TelemetryReporter;
 
-	constructor(extensionVersion: string) {
+	constructor(context: ExtensionContext, extensionVersion: string, extensionId: string) {
+		this.context = context;
 		const key = 'da19a1446ba2-369b-0484-b857-e706cf38'.split('').reverse().join('');
-		this.reporter = new TelemetryReporter(GitOpsExtensionConstants.ExtensionId, extensionVersion, key);
+		this.reporter = new TelemetryReporter(extensionId, extensionVersion, key);
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Telemetry {
 	 */
 	private canSend(): boolean {
 		// Don't send telemetry when developing or testing the extension
-		if (getExtensionContext().extensionMode !== ExtensionMode.Production) {
+		if (this.context.extensionMode !== ExtensionMode.Production) {
 			return false;
 		}
 		// Don't send telemetry when user disabled it in Settings
@@ -171,8 +171,4 @@ class Telemetry {
 	}
 }
 
-/**
- * Methods to report telemetry over Application Insights (Exceptions or Custom Events).
- */
-export const telemetry = new Telemetry(getExtensionVersion());
 

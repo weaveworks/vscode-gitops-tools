@@ -2,9 +2,10 @@ import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window } from 'vscode';
 import { AzureClusterProvider, azureTools } from '../azure/azureTools';
 import { CommandId } from '../commands';
+import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
-import { telemetry, TelemetryEventNames } from '../telemetry';
+import { TelemetryEventNames } from '../telemetry';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 export async function createGitRepositoryGenericCluster(args: Parameters<typeof fluxTools['createSourceGit2']>[0]) {
