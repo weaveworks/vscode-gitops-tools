@@ -1,5 +1,6 @@
-import { ThemeIcon, Uri } from 'vscode';
+import { Uri } from 'vscode';
 import { CommandId } from '../../commands';
+import { asAbsolutePath } from '../../extensionContext';
 import { DocumentationLink } from '../documentationConfig';
 import { TreeNode } from './treeNode';
 
@@ -18,8 +19,8 @@ export class DocumentationNode extends TreeNode {
 
 		this.url = link.url;
 
-		if (!isParent) {
-			this.setIcon(new ThemeIcon('link-external'));
+		if (link.icon) {
+			this.iconPath = asAbsolutePath(link.icon);
 		}
 	}
 

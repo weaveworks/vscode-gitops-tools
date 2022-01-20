@@ -5,6 +5,7 @@
 export interface DocumentationLink {
 	title: string;
 	url: string;
+	icon?: string;
 	links?: DocumentationLink[];
 }
 
@@ -13,8 +14,9 @@ export interface DocumentationLink {
  */
 export const documentationLinks: DocumentationLink[] = [
 	{
-		title: 'Flux Documentation',
+		title: 'Flux',
 		url: 'https://fluxcd.io/docs',
+		icon: 'resources/icons/flux-logo.png',
 		links: [
 			{
 				title: 'Core Concepts',
@@ -59,8 +61,9 @@ export const documentationLinks: DocumentationLink[] = [
 		],
 	},
 	{
-		title: 'Azure Kubernetes Documentation',
+		title: 'Azure Kubernetes',
 		url: 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2',
+		icon: 'resources/icons/azure-logo.png',
 		links: [
 			{
 				title: 'Conceptual GitOps with Flux v2',
@@ -85,8 +88,9 @@ export const documentationLinks: DocumentationLink[] = [
 		],
 	},
 	{
-		title: 'Wego Documentation',
+		title: 'Wego',
 		url: 'https://docs.gitops.weave.works',
+		icon: 'resources/icons/gitops-logo.png',
 		links: [
 			{
 				title: 'Introduction',
