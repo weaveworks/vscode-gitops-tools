@@ -1,4 +1,4 @@
-import { ContextTypes, setVSCodeContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
 import { BucketNode } from '../nodes/bucketNode';

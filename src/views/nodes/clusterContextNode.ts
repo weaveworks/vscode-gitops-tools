@@ -1,6 +1,6 @@
 import { MarkdownString, window } from 'vscode';
 import { CommandId } from '../../commands';
-import { ContextTypes, setVSCodeContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { globalState } from '../../extension';
 import { extensionState } from '../../extensionState';
 import { KubernetesCluster, KubernetesContextWithCluster } from '../../kubernetes/kubernetesConfig';

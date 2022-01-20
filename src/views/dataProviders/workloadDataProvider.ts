@@ -1,4 +1,4 @@
-import { ContextTypes, setVSCodeContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { fluxTools } from '../../flux/fluxTools';
 import { FluxTreeResources } from '../../flux/fluxTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';

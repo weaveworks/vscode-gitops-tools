@@ -2,7 +2,7 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { AzureConstants } from '../azure/azureTools';
-import { ContextTypes, setVSCodeContext } from '../context';
+import { ContextTypes, setVSCodeContext } from '../vscodeContext';
 import { Errorable, succeeded } from '../errorable';
 import { telemetry } from '../extension';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';

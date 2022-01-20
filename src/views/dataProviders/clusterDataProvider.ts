@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { ContextTypes, setVSCodeContext } from '../../context';
+import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { failed } from '../../errorable';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';

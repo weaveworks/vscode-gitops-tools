@@ -1,7 +1,7 @@
 import { ExtensionContext, ExtensionMode } from 'vscode';
 import { registerCommands } from './commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
-import { ContextTypes, setVSCodeContext } from './context';
+import { ContextTypes, setVSCodeContext } from './vscodeContext';
 import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
 import { checkIfOpenedFolderGitRepositorySourceExists } from './git/checkIfOpenedFolderGitRepositorySourceExists';

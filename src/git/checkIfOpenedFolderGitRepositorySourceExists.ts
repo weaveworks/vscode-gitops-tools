@@ -1,6 +1,6 @@
 import { workspace } from 'vscode';
 import { getGitRepositoryState, nameGitRepositorySource } from '../commands/createGitRepository';
-import { ContextTypes, setVSCodeContext } from '../context';
+import { ContextTypes, setVSCodeContext } from '../vscodeContext';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 
 /**

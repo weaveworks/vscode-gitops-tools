@@ -170,6 +170,7 @@
 				"command": "gitops.createKustomization",
 				"title": "Create Kustomization",
 				"icon": "$(add)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:loadingClusters && !gitops:loadingWorkloads",
 				"category": "GitOps"
 			},
 			{
@@ -192,6 +193,7 @@
 				"command": "gitops.editor.createSource",
 				"title": "Create Source",
 				"category": "GitOps",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:loadingClusters && !gitops:loadingSources",
 				"icon": "$(add)"
 			},
 			{
@@ -300,12 +302,12 @@
 				{
 					"command": "gitops.editor.createSource",
 					"group": "navigation@0",
-					"when": "view == gitops.views.sources && !gitops:loadingClusters && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+					"when": "view == gitops.views.sources"
 				},
 				{
 					"command": "gitops.createKustomization",
 					"group": "navigation@0",
-					"when": "view == gitops.views.workloads && workspaceFolderCount > 0"
+					"when": "view == gitops.views.workloads"
 				},
 				{
 					"command": "gitops.views.refreshSourceTreeView",
