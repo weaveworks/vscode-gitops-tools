@@ -45,7 +45,7 @@ export class GlobalState {
 		const document = await workspace.openTextDocument({
 			language: 'jsonc',
 			// @ts-ignore
-			content: JSON.stringify(getExtensionContext().globalState._value, null, '  '),
+			content: JSON.stringify(this.context.globalState._value, null, '  '),
 		});
 		window.showTextDocument(document);
 	}
@@ -54,7 +54,7 @@ export class GlobalState {
 	 * Dev function (clear all global state properties).
 	 */
 	clearGlobalState() {
-		for (const key of getExtensionContext().globalState.keys()) {
+		for (const key of this.context.globalState.keys()) {
 			this.set(key, undefined);
 		}
 	}

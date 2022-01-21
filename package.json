@@ -33,6 +33,7 @@
 	"bugs": "https://github.com/weaveworks/vscode-gitops-tools/issues",
 	"homepage": "https://github.com/weaveworks/vscode-gitops-tools",
 	"activationEvents": [
+		"onCommand:gitops.dev.showGlobalState",
 		"onCommand:gitops.showInstalledVersions",
 		"onCommand:gitops.suspend",
 		"onCommand:gitops.resume",
@@ -204,6 +205,11 @@
 			{
 				"command": "gitops.editor.showLogs",
 				"title": "Show Logs",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.dev.showGlobalState",
+				"title": "Show Global State",
 				"category": "GitOps"
 			}
 		],
@@ -471,6 +477,10 @@
 				},
 				{
 					"command": "gitops.installFluxCli",
+					"when": "gitops:isDev"
+				},
+				{
+					"command": "gitops.dev.showGlobalState",
 					"when": "gitops:isDev"
 				}
 			]

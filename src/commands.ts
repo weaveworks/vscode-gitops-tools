@@ -16,6 +16,7 @@ import { pullGitRepository } from './commands/pullGitRepository';
 import { resume } from './commands/resume';
 import { setClusterProvider } from './commands/setClusterProvider';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
+import { showGlobalState } from './commands/showGlobalState';
 import { showInstalledVersions } from './commands/showInstalledVersions';
 import { showLogs } from './commands/showLogs';
 import { showWorkloadsHelpMessage } from './commands/showWorkloadsHelpMessage';
@@ -83,6 +84,7 @@ export const enum CommandId {
 	// others
 	ShowInstalledVersions = 'gitops.showInstalledVersions',
 	InstallFluxCli = 'gitops.installFluxCli',
+	ShowGlobalState = 'gitops.dev.showGlobalState',
 }
 
 let _context: ExtensionContext;
@@ -134,6 +136,7 @@ export function registerCommands(context: ExtensionContext) {
 	// others
 	registerCommand(CommandId.ShowInstalledVersions, showInstalledVersions);
 	registerCommand(CommandId.InstallFluxCli, installFluxCli);
+	registerCommand(CommandId.ShowGlobalState, showGlobalState);
 }
 
 /**
