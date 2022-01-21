@@ -1,18 +1,45 @@
 import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands';
 import { installFluxCli } from './commands/installFluxCli';
-import { Errorable } from './errorable';
+import { Errorable, failed } from './errorable';
 import { telemetry } from './extension';
 import { extensionState } from './extensionState';
-import { shell } from './shell';
+import { shell, shellCodeError } from './shell';
 import { SpecificErrorEvent } from './telemetry';
 import { parseJson } from './utils/jsonUtils';
 
-export async function getKubectlVersion(): Promise<string | undefined> {
-	const shellResult = await shell.exec('kubectl version --short');
+interface KubectlVersion {
+	major: string;
+	minor: string;
+	gitVersion: string;
+	gitCommit: string;
+	gitTreeState: string;
+	buildDate: string;
+	goVersion: string;
+	compiler: string;
+	platform: string;
+}
 
-	if (shellResult?.code === 0) {
-		return shellResult.stdout;
+/** Result of running `kubectl version -o json` */
+export interface KubectlVersionResult {
+	clientVersion: KubectlVersion;
+	serverVersion: KubectlVersion;
+}
+
+export async function getKubectlVersion(): Promise<Errorable<KubectlVersionResult>> {
+	const kubectlVersionShellResult = await shell.exec('kubectl version --short -o json');
+
+	if (kubectlVersionShellResult?.code === 0) {
+		const version: KubectlVersionResult = parseJson(kubectlVersionShellResult.stdout);
+		return {
+			succeeded: true,
+			result: version,
+		};
+	} else {
+		return {
+			succeeded: false,
+			error: [shellCodeError(kubectlVersionShellResult)],
+		};
 	}
 }
 
@@ -26,25 +53,45 @@ interface AzureVersion {
 		'k8s-extension': string;
 	};
 }
-export async function getAzureVersion(): Promise<AzureVersion | undefined> {
-	const shellResult = await shell.exec('az version');
 
-	if (shellResult?.code === 0) {
-		return parseJson(shellResult.stdout);
+export async function getAzureVersion(): Promise<Errorable<AzureVersion>> {
+	const azureVersionShellResult = await shell.exec('az version');
+
+	if (azureVersionShellResult?.code === 0) {
+		return {
+			succeeded: true,
+			result: parseJson(azureVersionShellResult.stdout),
+		};
+	} else {
+		return {
+			succeeded: false,
+			error: [shellCodeError(azureVersionShellResult)],
+		};
 	}
 }
 
+interface FluxVersion {
+	flux: string;
+}
 /**
  * Return flux version string.
  * @see https://fluxcd.io/docs/cmd/flux_version/
  */
-export async function getFluxVersion(): Promise<string | undefined> {
-	const shellResult = await shell.exec('flux --version');
+export async function getFluxVersion(): Promise<Errorable<string>> {
+	const fluxVersionShellResult = await shell.exec('flux version --client -o json');
 
-	if (shellResult?.code === 0) {
-		const fluxVersion = shellResult.stdout.slice(13).trim();
-		extensionState.set('fluxVersion', fluxVersion);
-		return fluxVersion;
+	if (fluxVersionShellResult?.code === 0) {
+		const fluxVersion: FluxVersion = parseJson(fluxVersionShellResult.stdout.trim());
+		extensionState.set('fluxVersion', fluxVersion.flux);
+		return {
+			succeeded: true,
+			result: fluxVersion.flux,
+		};
+	} else {
+		return {
+			succeeded: false,
+			error: [shellCodeError(fluxVersionShellResult)],
+		};
 	}
 }
 
@@ -54,7 +101,7 @@ export async function getFluxVersion(): Promise<string | undefined> {
  */
 export async function promptToInstallFlux(): Promise<Errorable<null>> {
 	const fluxVersion = await getFluxVersion();
-	if (!fluxVersion) {
+	if (failed(fluxVersion)) {
 		showInstallFluxNotification();
 		return {
 			succeeded: false,
@@ -97,11 +144,20 @@ export async function checkFluxPrerequisites() {
  * Return git version or undefined depending
  * on whether or not git was found on the user machine.
  */
-export async function getGitVersion(): Promise<string | undefined> {
+export async function getGitVersion(): Promise<Errorable<string>> {
 	const gitVersionShellResult = await shell.execWithOutput('git --version', { revealOutputView: false });
 
 	if (gitVersionShellResult?.code === 0) {
-		return gitVersionShellResult.stdout.slice('git version '.length);
+		const gitVersion = gitVersionShellResult.stdout.slice('git version '.length).trim();
+		return {
+			succeeded: true,
+			result: gitVersion,
+		};
+	} else {
+		return {
+			succeeded: false,
+			error: [shellCodeError(gitVersionShellResult)],
+		};
 	}
 }
 
@@ -109,16 +165,16 @@ export async function getGitVersion(): Promise<string | undefined> {
  * Check if git is found and prompt to install it (if needed).
  */
 export async function checkGitVersion(): Promise<string | undefined> {
-	const gitVersion: string | undefined = await getGitVersion();
+	const gitVersionShellResult = await getGitVersion();
 
-	if (gitVersion === undefined) {
-		telemetry.sendError(SpecificErrorEvent.GIT_NOT_INSTALLED, new Error('Git not installed'));
+	if (failed(gitVersionShellResult)) {
+		telemetry.sendError(SpecificErrorEvent.GIT_NOT_INSTALLED);
 		const installButton = 'Install';
 		const confirm = await window.showErrorMessage('Please install Git.', installButton);
 		if (confirm === installButton) {
 			commands.executeCommand('vscode.open', Uri.parse('https://git-scm.com/downloads'));
 		}
 	} else {
-		return gitVersion;
+		return gitVersionShellResult.result;
 	}
 }

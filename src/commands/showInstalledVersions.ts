@@ -1,5 +1,6 @@
 import os from 'os';
 import { env, extensions, version, window } from 'vscode';
+import { failed } from '../errorable';
 import { GitOpsExtensionConstants } from '../extension';
 import { getAzureVersion, getFluxVersion, getGitVersion, getKubectlVersion } from '../install';
 
@@ -14,21 +15,23 @@ export async function showInstalledVersions() {
 		getAzureVersion(),
 	]);
 
-	const kubectlVersionString = kubectlVersion ? kubectlVersion.trim()
-		.split('\n')
-		.map(ver => `kubectl ${ver}`)
-		.join('\n') : 'not found';
+	const kubectlVersionString = failed(kubectlVersion) ? 'kubectl: not found' : `kubectl client ${kubectlVersion.result.clientVersion.gitVersion}\nkubectl server ${kubectlVersion.result.serverVersion.gitVersion}`;
 
-	const azureVersionsString = azureVersion ? `
-Azure: ${azureVersion?.['azure-cli']}
-Azure extension "k8s-configuration": ${azureVersion.extensions['k8s-configuration'] || 'not installed'}
-Azure extension "k8s-extension": ${azureVersion.extensions['k8s-extension'] || 'not installed'}
-	`.trim() : 'not found';
+	let azureVersionsString = '';
+	if (failed(azureVersion)) {
+		azureVersionsString = 'Azure: not found';
+	} else {
+		azureVersionsString = `
+Azure: ${azureVersion.result['azure-cli']}
+Azure extension "k8s-configuration": ${azureVersion.result.extensions['k8s-configuration'] || 'not installed'}
+Azure extension "k8s-extension": ${azureVersion.result.extensions['k8s-extension'] || 'not installed'}
+`.trim();
+	}
 
 	const versions = `
 ${kubectlVersionString}
-Flux: ${fluxVersion || 'not found'}
-Git: ${gitVersion?.trim() || 'not found'}
+Flux: ${failed(fluxVersion) ? 'not found' : fluxVersion.result}
+Git: ${failed(gitVersion) ? 'not found' : gitVersion.result}
 ${azureVersionsString}
 VSCode: ${version}
 Extension: ${getExtensionVersion() || 'unknown'}

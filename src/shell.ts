@@ -1,6 +1,6 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
-import { Progress, ProgressLocation, window, workspace } from 'vscode';
+import { Progress, ProgressLocation, window } from 'vscode';
 import { GitOpsExtensionConstants } from './extension';
 import { getExtensionContext } from './extensionContext';
 import { output } from './output';
@@ -45,6 +45,12 @@ export interface ShellResult {
 	readonly code: number;
 	readonly stdout: string;
 	readonly stderr: string;
+}
+/**
+ * Return shell error and code.
+ */
+export function shellCodeError(shellResult?: ShellResult) {
+	return `Error: ${shellResult?.stderr}. Code: ${shellResult?.code}`;
 }
 
 export type ShellHandler = (code: number, stdout: string, stderr: string)=> void;
@@ -97,13 +103,17 @@ function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
 	return opts;
 }
 
-async function exec(cmd: string, { cwd }: { cwd?: string; } = {}): Promise<ShellResult | undefined> {
+async function exec(cmd: string, { cwd }: { cwd?: string; } = {}): Promise<ShellResult> {
 	try {
 		return await execCore(cmd, execOpts({ cwd }), null);
 	} catch (e) {
 		console.error(e);
 		window.showErrorMessage(String(e));
-		return undefined;
+		return {
+			code: 2,
+			stdout: '',
+			stderr: `Failed to execute ${e}`,
+		};
 	}
 }
 
