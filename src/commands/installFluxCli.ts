@@ -6,8 +6,8 @@ import path from 'path';
 import request from 'request';
 import { commands, window } from 'vscode';
 import { Errorable, failed, succeeded } from '../errorable';
-import { GitOpsExtensionConstants } from '../extension';
-import { getExtensionContext } from '../extensionContext';
+import { globalState } from '../extension';
+import { GlobalStateKey } from '../globalState';
 import { output } from '../output';
 import { Platform, shell } from '../shell';
 import { runTerminalCommand } from '../terminal';
@@ -241,7 +241,7 @@ export async function installFluxCli() {
 
 		output.send('✔ Flux added to the PATH environment variable', { newline: 'single' });
 
-		getExtensionContext().globalState.update(GitOpsExtensionConstants.FluxPath, path.join(appDataPathResult.result, 'flux'));
+		globalState.set(GlobalStateKey.FluxPath, path.join(appDataPathResult.result, 'flux'));
 
 		deleteFile(localArchiveFilePath);
 		deleteFile(path.join(os.tmpdir(), `flux_${latestFluxVersionResult.result}_checksums.txt`));

@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap } from '../kubernetes/kubernetesTypes';
-import { shell, ShellResult } from '../shell';
+import { shell, shellCodeError, ShellResult } from '../shell';
 import { parseJson } from '../utils/jsonUtils';
 import { askUserForAzureMetadata } from './getAzureMetadata';
 
@@ -40,10 +40,8 @@ class AzureTools {
 
 		let azureMetadata = await this.getAzureMetadata(contextName, clusterProvider);
 		if (!azureMetadata) {
-			window.showWarningMessage('Failed to get Azure resource name or resource group or subscription ID.');
 			azureMetadata = await askUserForAzureMetadata(contextName);
 		}
-
 		if (!azureMetadata) {
 			return;
 		}
@@ -73,6 +71,7 @@ class AzureTools {
 		}
 
 		if (configMapShellResult?.code !== 0) {
+			window.showErrorMessage(`Failed to get Azure resource name or resource group or subscription ID. ${shellCodeError(configMapShellResult)}`);
 			return;
 		}
 

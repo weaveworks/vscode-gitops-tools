@@ -5,7 +5,7 @@ import { ContextTypes, setVSCodeContext } from './vscodeContext';
 import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
 import { checkIfOpenedFolderGitRepositorySourceExists } from './git/checkIfOpenedFolderGitRepositorySourceExists';
-import { GlobalState } from './globalState';
+import { GlobalState, GlobalStateKey } from './globalState';
 import { checkFluxPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
@@ -13,8 +13,6 @@ import { createTreeViews } from './views/treeViews';
 
 export const enum GitOpsExtensionConstants {
 	ExtensionId = 'weaveworks.vscode-gitops-tools',
-	FirstEverActivationStorageKey = 'firstEverActivation',
-	FluxPath = 'fluxPath',
 }
 
 /** State that is saved even between editor reloads */
@@ -47,9 +45,9 @@ export async function activate(context: ExtensionContext) {
 
 	telemetry.send(TelemetryEventNames.Startup);
 
-	if (context.globalState.get(GitOpsExtensionConstants.FirstEverActivationStorageKey) === undefined) {
+	if (globalState.get(GlobalStateKey.FirstEverActivationStorageKey) === undefined) {
 		telemetry.send(TelemetryEventNames.NewInstall);
-		context.globalState.update(GitOpsExtensionConstants.FirstEverActivationStorageKey, false);
+		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}
 
 	// set vscode context: developing extension

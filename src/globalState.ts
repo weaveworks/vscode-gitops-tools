@@ -1,5 +1,4 @@
 import { ExtensionContext, window, workspace } from 'vscode';
-import { getExtensionContext } from './extensionContext';
 import { KnownClusterProviders } from './kubernetes/kubernetesTypes';
 
 export interface ClusterMetadata {
@@ -13,7 +12,16 @@ const enum GlobalStatePrefixes {
 	ClusterMetadata = 'clusterMetadata',
 }
 
-// TODO: use globalState instead of getExtensionContext().globalState everywhere
+export const enum GlobalStateKey {
+	FluxPath = 'fluxPath',
+	FirstEverActivationStorageKey = 'firstEverActivation',
+}
+
+interface GlobalStateKeyMapping {
+	[GlobalStateKey.FluxPath]: string;
+	[GlobalStateKey.FirstEverActivationStorageKey]: boolean;
+}
+
 export class GlobalState {
 
 	constructor(private context: ExtensionContext) {}
@@ -22,20 +30,20 @@ export class GlobalState {
 		return `${prefixValue}:${str}`;
 	}
 
-	get(stateKey: string) {
-		return this.context.globalState.get(stateKey);
+	get<T extends GlobalStateKeyMapping, E extends keyof T>(stateKey: E): T[E] | undefined {
+		return this.context.globalState.get(stateKey as string);
 	}
 
-	set(stateKey: string, newValue: any): void {
-		this.context.globalState.update(stateKey, newValue);
+	set<T extends GlobalStateKeyMapping, E extends keyof T>(stateKey: E, newValue: T[E]): void {
+		this.context.globalState.update(stateKey as string, newValue);
 	}
 
 	getClusterMetadata(clusterName: string): ClusterMetadata | undefined {
-		return this.get(this.prefix(GlobalStatePrefixes.ClusterMetadata, clusterName)) as ClusterMetadata | undefined;
+		return this.context.globalState.get(this.prefix(GlobalStatePrefixes.ClusterMetadata, clusterName));
 	}
 
 	setClusterMetadata(clusterName: string, metadata: ClusterMetadata): void {
-		this.set(this.prefix(GlobalStatePrefixes.ClusterMetadata, clusterName), metadata);
+		this.context.globalState.update(this.prefix(GlobalStatePrefixes.ClusterMetadata, clusterName), metadata);
 	}
 
 	/**
@@ -55,7 +63,7 @@ export class GlobalState {
 	 */
 	clearGlobalState() {
 		for (const key of this.context.globalState.keys()) {
-			this.set(key, undefined);
+			this.context.globalState.update(key, undefined);
 		}
 	}
 }

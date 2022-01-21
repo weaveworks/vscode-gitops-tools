@@ -1,8 +1,8 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
 import { Progress, ProgressLocation, window } from 'vscode';
-import { GitOpsExtensionConstants } from './extension';
-import { getExtensionContext } from './extensionContext';
+import { globalState } from './extension';
+import { GlobalStateKey } from './globalState';
 import { output } from './output';
 
 // 🚧 WORK IN PROGRESS.
@@ -88,7 +88,7 @@ function platform(): Platform {
 function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
 	let env = undefined;
 	if (isWindows()) {
-		const fluxPath = getExtensionContext().globalState.get(GitOpsExtensionConstants.FluxPath);
+		const fluxPath = globalState.get(GlobalStateKey.FluxPath);
 		if (fluxPath) {
 			env = process.env;
 			env.Path += `;${fluxPath}`;
