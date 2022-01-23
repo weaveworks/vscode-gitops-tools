@@ -50,6 +50,8 @@ export async function activate(context: ExtensionContext) {
 		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}
 
+	setTimeout(() => setVSCodeContext(ContextTypes.IsStartupFinished, true), 1000);
+
 	// set vscode context: developing extension
 	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development);
 
