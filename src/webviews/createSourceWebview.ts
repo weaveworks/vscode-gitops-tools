@@ -226,6 +226,7 @@ export class CreateSourcePanel {
 		setTimeout(() => {
 			this._updateWebviewContent(gitInfo);
 		}, 500);// wait until the html is parsed and event listener for `message` is set
+		// TODO: it's still not loaded 100% of the time, send only when it's loaded (after message back)
 	}
 
 	private _getHtmlForWebview(webview: Webview) {

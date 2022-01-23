@@ -131,10 +131,10 @@ $submitButton.addEventListener('click', () => {
 				password: getInputValue(fluxPasswordId),
 				privateKeyFile: getInputValue(fluxPrivateKeyFileId),
 				secretRef: getInputValue(fluxSecretRefId),
-				gitImplementation: getRadioValue(fluxGitImplementationId),
-				sshKeyAlgorithm: getRadioValue(fluxSshKeyAlgorithmId),
-				sshEcdsaCurve: getRadioValue(fluxEcdsaCurveId),
-				sshRsaBits: getInputValue(fluxSshRsaBitsId),
+				gitImplementation: sendIfNotDefaultValue('git-implementation', getRadioValue(fluxGitImplementationId)),
+				sshKeyAlgorithm: sendIfNotDefaultValue('ssh-key-algorithm', getRadioValue(fluxSshKeyAlgorithmId)),
+				sshEcdsaCurve: sendIfNotDefaultValue('ssh-ecdsa-curve', getRadioValue(fluxEcdsaCurveId)),
+				sshRsaBits: sendIfNotDefaultValue('ssh-rsa-bits', getInputValue(fluxSshRsaBitsId)),
 				recurseSubmodules: getCheckboxValue(fluxRecurseSubmodulesId),
 			},
 		});
@@ -199,6 +199,24 @@ function getRadioValue(radioName) {
  */
 function getCheckboxValue(checkboxId) {
 	return /** @type HTMLInputElement */ (document.getElementById(checkboxId)).checked;
+}
+
+/**
+ * Don't send default input values.
+ *
+ * @param {'git-implementation' | 'ssh-key-algorithm' | 'ssh-ecdsa-curve' | 'ssh-rsa-bits'} inputName
+ * @param {string} value
+ */
+function sendIfNotDefaultValue(inputName, value) {
+	if (
+		(inputName === 'git-implementation' && value === 'go-git') ||
+		(inputName === 'ssh-key-algorithm' && value === 'ecdsa') ||
+		(inputName === 'ssh-ecdsa-curve' && value === 'p384') ||
+		(inputName === 'ssh-rsa-bits' && value === '2048')
+	) {
+		return '';
+	}
+	return value;
 }
 
 window.addEventListener('message', event => {

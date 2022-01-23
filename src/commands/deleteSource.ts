@@ -32,10 +32,10 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 		return;
 	}
 
-	const confirm = await window.showWarningMessage(`Do you want to delete ${sourceType} "${sourceName}"?`, {
+	const pressedButton = await window.showWarningMessage(`Do you want to delete Source ${sourceNode.resource.kind} "${sourceName}"?`, {
 		modal: true,
 	}, confirmButton);
-	if (!confirm) {
+	if (!pressedButton) {
 		return;
 	}
 
