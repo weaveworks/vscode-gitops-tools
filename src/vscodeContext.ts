@@ -12,6 +12,7 @@ export const enum ContextTypes {
 	LoadingSources = 'gitops:loadingSources',
 	LoadingWorkloads = 'gitops:loadingWorkloads',
 
+	FailedToLoadClusterContexts = 'gitops:failedToLoadClusterContexts',
 	NoClusters = 'gitops:noClusters',
 	NoSources = 'gitops:noSources',
 	NoWorkloads = 'gitops:noWorkloads',
@@ -38,6 +39,7 @@ interface ContextValues {
 	[ContextTypes.LoadingSources]: boolean;
 	[ContextTypes.LoadingWorkloads]: boolean;
 
+	[ContextTypes.FailedToLoadClusterContexts]: boolean;
 	[ContextTypes.NoClusters]: boolean;
 	[ContextTypes.NoSources]: boolean;
 	[ContextTypes.NoWorkloads]: boolean;

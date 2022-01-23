@@ -2,13 +2,14 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { AzureConstants } from '../azure/azureTools';
-import { ContextTypes, setVSCodeContext } from '../vscodeContext';
-import { Errorable, succeeded } from '../errorable';
+import { Errorable, failed, succeeded } from '../errorable';
 import { telemetry } from '../extension';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
+import { shellCodeError } from '../shell';
 import { SpecificErrorEvent } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
+import { ContextTypes, setVSCodeContext } from '../vscodeContext';
 import { BucketResult } from './bucket';
 import { GitRepositoryResult } from './gitRepository';
 import { HelmReleaseResult } from './helmRelease';
@@ -93,14 +94,22 @@ class KubernetesTools {
 	/**
 	 * Gets current kubectl config with available contexts and clusters.
 	 */
-	async getKubectlConfig(): Promise<undefined | KubernetesConfig> {
+	async getKubectlConfig(): Promise<Errorable<KubernetesConfig>> {
 		const configShellResult = await this.invokeKubectlCommand('config view -o json');
-		if (!configShellResult || configShellResult.stderr) {
+
+		if (configShellResult?.code !== 0) {
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_KUBECTL_CONFIG);
-			console.warn(`Failed to get kubectl config: ${configShellResult?.stderr}`);
-			return;
+			return {
+				succeeded: false,
+				error: [shellCodeError(configShellResult)],
+			};
 		}
-		return parseJson(configShellResult.stdout);
+
+		const kubectlConfig = parseJson(configShellResult.stdout);
+		return {
+			succeeded: true,
+			result: kubectlConfig,
+		};
 	}
 
 	/**
@@ -167,19 +176,34 @@ class KubernetesTools {
 	 * Get a list of contexts from kubeconfig.
 	 * Also add cluster info to the context objects.
 	 */
-	async getContexts(): Promise<KubernetesContextWithCluster[] | undefined> {
+	async getContexts(): Promise<Errorable<KubernetesContextWithCluster[]>> {
 		const kubectlConfig = await this.getKubectlConfig();
-		if (!kubectlConfig || !kubectlConfig.contexts) {
-			return;
+
+		if (failed(kubectlConfig)) {
+			return {
+				succeeded: false,
+				error: kubectlConfig.error,
+			};
+		}
+		if (!kubectlConfig.result.contexts) {
+			return {
+				succeeded: false,
+				error: ['Config fetched, but contexts not found.'],
+			};
 		}
 
-		return kubectlConfig.contexts.map((context: KubernetesContextWithCluster) => {
-			const clusterInfo = kubectlConfig.clusters?.find(cluster => cluster.name === context.context.cluster);
+		const contexts: KubernetesContextWithCluster[] = kubectlConfig.result.contexts.map((context: KubernetesContextWithCluster) => {
+			const clusterInfo = kubectlConfig.result.clusters?.find(cluster => cluster.name === context.context.cluster);
 			if (clusterInfo) {
 				context.context.clusterInfo = clusterInfo;
 			}
 			return context;
 		});
+
+		return {
+			succeeded: true,
+			result: contexts,
+		};
 	}
 
 	/**

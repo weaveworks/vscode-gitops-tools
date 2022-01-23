@@ -20,15 +20,19 @@ export class ClusterDataProvider extends DataProvider {
    */
 	async buildTree(): Promise<ClusterContextNode[]> {
 
+		setVSCodeContext(ContextTypes.FailedToLoadClusterContexts, false);
 		setVSCodeContext(ContextTypes.NoClusters, false);
-		statusBar.startLoadingTree();
 		setVSCodeContext(ContextTypes.LoadingClusters, true);
+		statusBar.startLoadingTree();
 
-		// TODO: show error when it happens
-		const contexts = await kubernetesTools.getContexts();
+		const contextsResult = await kubernetesTools.getContexts();
 
-		if (!contexts) {
-			setVSCodeContext(ContextTypes.NoClusters, true);
+		if (failed(contextsResult)) {
+			setVSCodeContext(ContextTypes.NoClusters, false);
+			setVSCodeContext(ContextTypes.FailedToLoadClusterContexts, true);
+			setVSCodeContext(ContextTypes.LoadingClusters, false);
+			statusBar.stopLoadingTree();
+			window.showErrorMessage(`Failed to get contexts: ${contextsResult.error[0]}`);
 			return [];
 		}
 
@@ -43,7 +47,12 @@ export class ClusterDataProvider extends DataProvider {
 			currentContext = currentContextResult.result;
 		}
 
-		for (const cluster of contexts) {
+		if (contextsResult.result.length === 0) {
+			setVSCodeContext(ContextTypes.NoClusters, true);
+			return [];
+		}
+
+		for (const cluster of contextsResult.result) {
 			const clusterNode = new ClusterContextNode(cluster);
 			if (cluster.name === currentContext) {
 				clusterNode.isCurrent = true;
