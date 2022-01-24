@@ -230,6 +230,8 @@ window.addEventListener('message', event => {
 			webviewTempState.contextName = message.value.contextName;
 			webviewTempState.clusterName = message.value.clusterName;
 
+			// TODO: passed kustomizationName & kustomizationPath should fill corresponding inputs
+
 			if (webviewTempState.isAzure) {
 				showAzureForm();
 			} else {
