@@ -90,8 +90,12 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 		refreshWorkloadsTreeView();
 	} else {
 		// generic cluster
-		const createGitRepoResult = await fluxTools.createSourceGit(newGitRepositorySourceName, gitUrl, gitBranch, isSSH);
-		deployKey = createGitRepoResult?.deployKey;
+		const createGitRepoShellResult = await fluxTools.createSourceGit({
+			sourceName: newGitRepositorySourceName,
+			url: gitUrl,
+			branch: gitBranch,
+		});
+		deployKey = createGitRepoShellResult?.deployKey;
 	}
 
 	showDeployKeyNotificationIfNeeded(gitUrl, deployKey);

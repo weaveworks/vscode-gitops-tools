@@ -107,15 +107,15 @@ export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterI
 		};
 	}
 	const currentContextName = currentContextResult.result;
-	const contexts = await kubernetesTools.getContexts();
-	if (!contexts) {
+	const contextsResult = await kubernetesTools.getContexts();
+	if (failed(contextsResult)) {
 		window.showErrorMessage('Failed to get contexts');
 		return {
 			succeeded: false,
 			error: ['Failed to get contexts'],
 		};
 	}
-	const currentClusterName = contexts.find(context => context.name === currentContextName)?.context.clusterInfo?.name;
+	const currentClusterName = contextsResult.result.find(context => context.name === currentContextName)?.context.clusterInfo?.name;
 	if (!currentClusterName) {
 		window.showErrorMessage('Failed to find current context.');
 		return {

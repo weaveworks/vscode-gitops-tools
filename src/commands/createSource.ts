@@ -8,7 +8,7 @@ import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
-export async function createGitRepositoryGenericCluster(args: Parameters<typeof fluxTools['createSourceGit2']>[0]) {
+export async function createGitRepositoryGenericCluster(args: Parameters<typeof fluxTools['createSourceGit']>[0]) {
 
 	const parsedGitUrl = gitUrlParse(args.url);
 	if (isUrlSourceAzureDevops(parsedGitUrl.source)) {
@@ -22,7 +22,7 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 		kind: KubernetesObjectKinds.GitRepository,
 	});
 
-	const deployKey = await fluxTools.createSourceGit2({
+	const deployKey = await fluxTools.createSourceGit({
 		sourceName: args.sourceName,
 		url: args.url,
 		branch: args.branch,

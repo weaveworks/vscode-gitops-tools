@@ -235,61 +235,26 @@ class FluxTools {
 	/**
 	 * Run `flux create source git`. If the protocol of the url is SSH -
 	 * try to parse the deploy key from the flux output.
-	 * @see https://fluxcd.io/docs/cmd/flux_create_source_git/
-	 *
-	 * TODO: delete this method, use createSourceGit2() instead
-	 *
-	 * @param name resource name
-	 * @param url git url
-	 * @param branch git branch
-	 */
-	async createSourceGit(name: string, url: string, branch: string, isSSH: boolean): Promise<{ deployKey: string; } | undefined> {
-		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${name} --url ${url} --branch ${branch} --silent`);
-
-		if (!isSSH) {
-			return;
-		}
-
-		const output = createSourceShellResult.stdout || createSourceShellResult.stderr;
-
-		// parse deploy key if the repository url is using SSH protocol
-		let deployKey: string | undefined;
-		const lines = this.splitLines(output);
-		const deployKeyPrefix = `${FluxOutputSymbols.Plus} deploy key:`;
-		for (const line of lines) {
-			if (line.startsWith(deployKeyPrefix)) {
-				deployKey = line.slice(deployKeyPrefix.length).trim();
-			}
-		}
-
-		if (deployKey) {
-			return {
-				deployKey,
-			};
-		}
-	}
-
-	/**
 	 * @see https://fluxcd.io/docs/cmd/flux_create_source/
 	 */
-	async createSourceGit2(args: {
+	async createSourceGit(args: {
 		sourceName: string;
 		url: string;
-		branch: string;
-		tag: string;
-		semver: string;
-		interval: string;
-		timeout: string;
-		caFile: string;
-		privateKeyFile: string;
-		username: string;
-		password: string;
-		secretRef: string;
-		gitImplementation: string;
-		recurseSubmodules: boolean;
-		sshKeyAlgorithm: string;
-		sshEcdsaCurve: string;
-		sshRsaBits: string;
+		branch?: string;
+		tag?: string;
+		semver?: string;
+		interval?: string;
+		timeout?: string;
+		caFile?: string;
+		privateKeyFile?: string;
+		username?: string;
+		password?: string;
+		secretRef?: string;
+		gitImplementation?: string;
+		recurseSubmodules?: boolean;
+		sshKeyAlgorithm?: string;
+		sshEcdsaCurve?: string;
+		sshRsaBits?: string;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
@@ -309,6 +274,10 @@ class FluxTools {
 		const sshRsaBits = args.sshRsaBits ? ` --ssh-rsa-bits "${args.sshRsaBits}"` : '';
 
 		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits} --silent`);
+
+		if (createSourceShellResult.code !== 0) {
+			// shell always fails in SSH case (without specifying any key) (as reconciliation error)
+		}
 
 		const output = createSourceShellResult.stdout || createSourceShellResult.stderr;
 
