@@ -1,5 +1,5 @@
 import { env, ExtensionContext, ExtensionMode } from 'vscode';
-import TelemetryReporter from 'vscode-extension-telemetry';
+import TelemetryReporter from '@vscode/extension-telemetry';
 
 
 export const enum SpecificErrorEvent {
