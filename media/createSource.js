@@ -272,3 +272,7 @@ function showAzureForm() {
 	$azureForm.hidden = false;
 }
 
+postVSCodeMessage({
+	type: 'webviewLoaded',
+	value: true,
+});

@@ -5,6 +5,7 @@ import { createGitRepositoryAzureCluster, createGitRepositoryGenericCluster } fr
 import { failed } from '../errorable';
 import { asAbsolutePath } from '../extensionContext';
 import { GitInfo } from '../git/getOpenedFolderGitInfo';
+import { delay } from '../utils/utils';
 import { getCurrentClusterInfo } from '../views/treeViews';
 import { getNonce, getWebviewOptions } from './webviewUtils';
 
@@ -95,9 +96,13 @@ export interface ShowNotification {
 		isModal: boolean;
 	};
 }
+export interface WebviewLoaded {
+	type: 'webviewLoaded';
+	value: true;
+}
 
 export type MessageToWebview = CreateSourceUpdateWebviewContent;
-export type MessageFromWebview = CreateSourceGenericCluster | CreateSourceAzureCluster | ShowNotification;
+export type MessageFromWebview = CreateSourceGenericCluster | CreateSourceAzureCluster | ShowNotification | WebviewLoaded;
 
 /**
  * Manages create source webview panel.
@@ -113,6 +118,7 @@ export class CreateSourcePanel {
 	private readonly _panel: WebviewPanel;
 	private readonly _extensionUri: Uri;
 	private _disposables: Disposable[] = [];
+	private _isWebviewFinishedLoading = false;
 
 	public static createOrShow(extensionUri: Uri, gitInfo: GitInfo | undefined) {
 		const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
@@ -173,6 +179,10 @@ export class CreateSourcePanel {
 					});
 					break;
 				}
+				case 'webviewLoaded': {
+					this._isWebviewFinishedLoading = true;
+					break;
+				}
 			}
 		},
 		null,
@@ -221,12 +231,22 @@ export class CreateSourcePanel {
 	/**
 	 * Set webview html and send a message to update the contents.
 	 */
-	private _update(gitInfo: GitInfo | undefined) {
+	private async _update(gitInfo: GitInfo | undefined) {
+		this._isWebviewFinishedLoading = false;
 		this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
-		setTimeout(() => {
+		// wait until the html is parsed and "message" event listener is set in the
+		// webview script
+		await delay(500);
+		if (this._isWebviewFinishedLoading) {
 			this._updateWebviewContent(gitInfo);
-		}, 500);// wait until the html is parsed and event listener for `message` is set
-		// TODO: it's still not loaded 100% of the time, send only when it's loaded (after message back)
+			return;
+		}
+		await delay(1000);
+		if (this._isWebviewFinishedLoading) {
+			this._updateWebviewContent(gitInfo);
+			return;
+		}
+		this._updateWebviewContent(gitInfo);
 	}
 
 	private _getHtmlForWebview(webview: Webview) {
@@ -269,7 +289,7 @@ export class CreateSourcePanel {
 			</head>
 			<body>
 				<main class="app">
-					<h2>Create Source on the <code id="cluster-name">Unknown</code> cluster</h2>
+					<h2>Create Source on the <code id="cluster-name">""</code> cluster</h2>
 					<h3 id="cluster-provider"></h3>
 					<hr>
 					<div>
