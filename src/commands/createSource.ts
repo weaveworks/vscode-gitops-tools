@@ -49,13 +49,13 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 	showDeployKeyNotificationIfNeeded(args.url, deployKey?.deployKey);
 }
 
-export async function createGitRepositoryAzureCluster(args: Parameters<typeof azureTools['createSourceGit2']>[0]) {
+export async function createGitRepositoryAzureCluster(args: Parameters<typeof azureTools['createSourceGit']>[0]) {
 
 	telemetry.send(TelemetryEventNames.CreateSource, {
 		kind: KubernetesObjectKinds.GitRepository,
 	});
 
-	const deployKey = await azureTools.createSourceGit2({
+	const deployKey = await azureTools.createSourceGit({
 		clusterProvider: args.clusterProvider as AzureClusterProvider,
 		contextName: args.contextName,
 		sourceName: args.sourceName,

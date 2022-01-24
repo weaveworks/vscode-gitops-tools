@@ -170,55 +170,6 @@ class AzureTools {
 	}
 
 	/**
-	 * Create git repository source (optionally, with a Kustomization).
-	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_create
-	 *
-	 * @param newGitRepositorySourceName kubernetes resource name
-	 * @param gitUrl git repository url
-	 * @param gitBranch git repository active branch
-	 * @param isSSH true when the git url protocol is SSH
-	 * @param contextName target context name
-	 * @param clusterProvider target cluster provider
-	 * @param kustomizationName new kustomization name
-	 * @param kustomizationPath new kustozmiation path
-	 */
-	async createGitRepository(
-		newGitRepositorySourceName: string,
-		gitUrl: string,
-		gitBranch: string,
-		isSSH: boolean,
-		contextName: string,
-		clusterProvider: AzureClusterProvider,
-		kustomizationName?: string,
-		kustomizationPath?: string,
-	): Promise<{ deployKey: string; } | undefined> {
-
-		let kustomizationQueryPart = '';
-		if (kustomizationName !== undefined && kustomizationPath !== undefined) {
-			kustomizationQueryPart = `--kustomization name=${kustomizationName} path=${kustomizationPath} prune=true`;
-		}
-
-		const gitCreateShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux create -n ${newGitRepositorySourceName} --scope cluster -u ${gitUrl} --branch ${gitBranch} ${kustomizationQueryPart}`,
-			contextName,
-			clusterProvider,
-		);
-
-		if (!isSSH || gitCreateShellResult?.code !== 0) {
-			return;
-		}
-
-		const output = parseJson(gitCreateShellResult.stdout);
-		if (!output) {
-			return;
-		}
-
-		return {
-			deployKey: output.repositoryPublicKey,
-		};
-	}
-
-	/**
 	 * Create Kustomization.
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux/kustomization?view=azure-cli-latest#az_k8s_configuration_flux_kustomization_create
 	 *
@@ -246,37 +197,38 @@ class AzureTools {
 	}
 
 	/**
+	 * Create git repository source (optionally, with a Kustomization).
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_create
 	 */
-	async createSourceGit2(args: {
+	async createSourceGit(args: {
 		sourceName: string;
 		sourceKind: 'git';
 		contextName: string;
 		clusterProvider: AzureClusterProvider;
 		url: string;
-		branch: string;
-		tag: string;
-		semver: string;
-		commit: string;
-		interval: string;
-		timeout: string;
-		caCert: string;
-		caCertFile: string;
-		httpsKey: string;
-		httpsUser: string;
-		knownHosts: string;
-		knownHostsFile: string;
-		localAuthRef: string;
-		sshPrivateKey: string;
-		sshPrivateKeyFile: string;
-		kustomizationName: string;
-		kustomizationPath: string;
-		kustomizationDependsOn: string;
-		kustomizationTimeout: string;
-		kustomizationSyncInterval: string;
-		kustomizationRetryInterval: string;
-		kustomizationPrune: boolean;
-		kustomizationForce: boolean;
+		branch?: string;
+		tag?: string;
+		semver?: string;
+		commit?: string;
+		interval?: string;
+		timeout?: string;
+		caCert?: string;
+		caCertFile?: string;
+		httpsKey?: string;
+		httpsUser?: string;
+		knownHosts?: string;
+		knownHostsFile?: string;
+		localAuthRef?: string;
+		sshPrivateKey?: string;
+		sshPrivateKeyFile?: string;
+		kustomizationName?: string;
+		kustomizationPath?: string;
+		kustomizationDependsOn?: string;
+		kustomizationTimeout?: string;
+		kustomizationSyncInterval?: string;
+		kustomizationRetryInterval?: string;
+		kustomizationPrune?: boolean;
+		kustomizationForce?: boolean;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';

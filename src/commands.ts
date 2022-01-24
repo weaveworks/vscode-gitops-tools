@@ -1,4 +1,4 @@
-import { commands, Disposable, ExtensionContext, window } from 'vscode';
+import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
 import { copyResourceName } from './commands/copyResourceName';
 import { createGitRepository } from './commands/createGitRepository';
 import { createKustomization } from './commands/createKustomization';
@@ -118,7 +118,10 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourcesTreeView);
 	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadsTreeView);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
-	registerCommand(CommandId.CreateGitRepository, createGitRepository);
+	registerCommand(CommandId.CreateGitRepository, (fileExplorerUri?: Uri) => {
+		// only pass one argument when running from File Explorer context menu
+		createGitRepository(fileExplorerUri);
+	});
 	registerCommand(CommandId.ShowWorkloadsHelpMessage, showWorkloadsHelpMessage);
 	registerCommand(CommandId.DeleteSource, deleteSource);
 	registerCommand(CommandId.CopyResourceName, copyResourceName);
