@@ -145,7 +145,7 @@ export async function checkFluxPrerequisites() {
  * on whether or not git was found on the user machine.
  */
 export async function getGitVersion(): Promise<Errorable<string>> {
-	const gitVersionShellResult = await shell.execWithOutput('git --version', { revealOutputView: false });
+	const gitVersionShellResult = await shell.exec('git --version');
 
 	if (gitVersionShellResult?.code === 0) {
 		const gitVersion = gitVersionShellResult.stdout.slice('git version '.length).trim();

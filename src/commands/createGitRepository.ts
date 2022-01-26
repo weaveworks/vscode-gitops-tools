@@ -145,10 +145,8 @@ export function nameGitRepositorySource(url: string, branch: string) {
  */
 async function checkIfInsideGitRepository(cwd: string, showErrorNotifications: boolean): Promise<boolean> {
 
-	const isInsideGitRepositoryShellResult = await shell.execWithOutput('git rev-parse --is-inside-work-tree', {
+	const isInsideGitRepositoryShellResult = await shell.exec('git rev-parse --is-inside-work-tree', {
 		cwd,
-		revealOutputView: false,
-		showProgress: false,
 	});
 
 	const isInsideGitRepository = isInsideGitRepositoryShellResult.code === 0;
@@ -168,10 +166,8 @@ async function checkIfInsideGitRepository(cwd: string, showErrorNotifications: b
  */
 export async function getGitOriginUrl(cwd: string): Promise<undefined | string> {
 
-	const gitRemoteUrlShellResult = await shell.execWithOutput('git ls-remote --get-url origin', {
+	const gitRemoteUrlShellResult = await shell.exec('git ls-remote --get-url origin', {
 		cwd,
-		revealOutputView: false,
-		showProgress: false,
 	});
 
 	if (gitRemoteUrlShellResult.code !== 0) {
@@ -189,10 +185,8 @@ export async function getGitOriginUrl(cwd: string): Promise<undefined | string> 
  */
 export async function getGitBranch(cwd: string): Promise<undefined | string> {
 
-	const gitCurrentBranchShellResult = await shell.execWithOutput('git rev-parse --abbrev-ref HEAD', {
+	const gitCurrentBranchShellResult = await shell.exec('git rev-parse --abbrev-ref HEAD', {
 		cwd,
-		revealOutputView: false,
-		showProgress: false,
 	});
 
 	if (gitCurrentBranchShellResult.code !== 0) {
