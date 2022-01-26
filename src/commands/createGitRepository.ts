@@ -1,13 +1,14 @@
 import gitUrlParse from 'git-url-parse';
 import { Uri, window, workspace } from 'vscode';
+import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
 import { failed } from '../errorable';
-import { getExtensionContext } from '../extensionContext';
+import { fluxTools } from '../flux/fluxTools';
+import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { checkGitVersion } from '../install';
 import { shell } from '../shell';
 import { sanitizeRFC1123 } from '../utils/stringUtils';
-import { getCurrentClusterInfo } from '../views/treeViews';
-import { CreateSourcePanel } from '../webviews/createSourceWebview';
-import { makeSSHUrlFromGitUrl } from './createSource';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+import { makeSSHUrlFromGitUrl, showDeployKeyNotificationIfNeeded } from './createSource';
 
 /**
  * Add git repository source whether from an opened folder
@@ -80,14 +81,39 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 		gitUrl = makeSSHUrlFromGitUrl(gitUrl);
 	}
 
-	CreateSourcePanel.createOrShow(getExtensionContext().extensionUri, {
-		branch: gitBranch,
-		newRepoName: newGitRepositorySourceName,
-		url: gitUrl,
-		kustomizationName,
-		kustomizationPath,
-	});
+	let deployKey: string | undefined;
 
+	if (currentClusterInfo.result.isAzure) {
+		const createGitRepoShellResult = await azureTools.createSourceGit({
+			contextName: currentClusterInfo.result.contextName,
+			sourceKind: 'git',
+			sourceName: newGitRepositorySourceName,
+			url: gitUrl,
+			clusterProvider: currentClusterInfo.result.clusterProvider as AzureClusterProvider,
+			branch: gitBranch,
+			kustomizationName,
+			kustomizationPath,
+		});
+		deployKey = createGitRepoShellResult?.deployKey;
+		// az automatically creates a Kustomization
+		refreshWorkloadsTreeView();
+	} else {
+		// generic cluster
+		const createGitRepoShellResult = await fluxTools.createSourceGit({
+			sourceName: newGitRepositorySourceName,
+			url: gitUrl,
+			branch: gitBranch,
+		});
+		deployKey = createGitRepoShellResult?.deployKey;
+	}
+
+	showDeployKeyNotificationIfNeeded(gitUrl, deployKey);
+
+	checkIfOpenedFolderGitRepositorySourceExists();
+	setTimeout(async() => {
+		// Wait a bit for the repository to have a failed state in case of SSH url
+		refreshSourcesTreeView();
+	}, 1000);
 	return newGitRepositorySourceName;
 }
 

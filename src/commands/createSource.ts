@@ -47,7 +47,6 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 		refreshSourcesTreeView();
 	}, 1000);
 	showDeployKeyNotificationIfNeeded(args.url, deployKey?.deployKey);
-	// checkIfOpenedFolderGitRepositorySourceExists();
 }
 
 export async function createGitRepositoryAzureCluster(args: Parameters<typeof azureTools['createSourceGit']>[0]) {
@@ -93,7 +92,6 @@ export async function createGitRepositoryAzureCluster(args: Parameters<typeof az
 		refreshWorkloadsTreeView();
 	}, 1000);
 	showDeployKeyNotificationIfNeeded(args.url, deployKey?.deployKey);
-	// checkIfOpenedFolderGitRepositorySourceExists();
 }
 
 /**

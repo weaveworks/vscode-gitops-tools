@@ -4,13 +4,10 @@ import { getGitRepositoryState, nameGitRepositorySource } from '../commands/crea
 import { makeSSHUrlFromGitUrl } from '../commands/createSource';
 import { checkGitVersion } from '../install';
 
-// TODO: rename, move
 export interface GitInfo {
 	newRepoName: string;
 	url: string;
 	branch: string;
-	kustomizationName?: string;
-	kustomizationPath?: string;
 }
 
 /**
