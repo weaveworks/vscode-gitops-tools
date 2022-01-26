@@ -118,7 +118,8 @@ export class CreateSourcePanel {
 	private readonly _panel: WebviewPanel;
 	private readonly _extensionUri: Uri;
 	private _disposables: Disposable[] = [];
-	private _isWebviewFinishedLoading = false;
+	/** Only send message to webview when it's ready (html parsed, "message" event listener set) */
+	private _onWebviewFinishedLoading = () => {};
 
 	public static createOrShow(extensionUri: Uri, gitInfo: GitInfo | undefined) {
 		const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
@@ -180,7 +181,7 @@ export class CreateSourcePanel {
 					break;
 				}
 				case 'webviewLoaded': {
-					this._isWebviewFinishedLoading = true;
+					this._onWebviewFinishedLoading();
 					break;
 				}
 			}
@@ -232,21 +233,11 @@ export class CreateSourcePanel {
 	 * Set webview html and send a message to update the contents.
 	 */
 	private async _update(gitInfo: GitInfo | undefined) {
-		this._isWebviewFinishedLoading = false;
+		this._onWebviewFinishedLoading = () => {
+			this._updateWebviewContent(gitInfo);
+			this._onWebviewFinishedLoading = () => {};
+		};
 		this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
-		// wait until the html is parsed and "message" event listener is set in the
-		// webview script
-		await delay(500);
-		if (this._isWebviewFinishedLoading) {
-			this._updateWebviewContent(gitInfo);
-			return;
-		}
-		await delay(1000);
-		if (this._isWebviewFinishedLoading) {
-			this._updateWebviewContent(gitInfo);
-			return;
-		}
-		this._updateWebviewContent(gitInfo);
 	}
 
 	private _getHtmlForWebview(webview: Webview) {
