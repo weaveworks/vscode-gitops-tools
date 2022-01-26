@@ -2,6 +2,10 @@
 
 const vscode = acquireVsCodeApi();
 
+const createActionSource = 'source';
+const createActionKustomization = 'kustomization';
+const createActionSourceAndKustomization = 'sourceAndKustomization';
+
 /**
  * When creating the source - it will use the context/cluster that
  * was active when the webview was opened (and the one that shows in
@@ -12,6 +16,7 @@ const webviewTempState = {
 	clusterName: '',
 	contextName: '',
 	clusterProvider: '',
+	createAction: createActionSource,
 };
 
 const sourceNameId = 'source-name';
@@ -36,6 +41,14 @@ const fluxPrivateKeyFileId = 'private-key-file';
 const fluxUsernameId = 'username';
 const fluxPasswordId = 'password';
 const fluxSecretRefId = 'secret-ref';
+// Generic kustomization input ids
+const fluxKustomizationNameId = 'kustomization-name';
+const fluxKustomizationSourceId = 'kustomization-source';
+const fluxKustomizationPathId = 'kustomization-path';
+const fluxKustomizationIntervalId = 'kustomization-interval';
+const fluxKustomizationDependsOnId = 'kustomization-depends-on';
+const fluxKustomizationDecryptionSecretId = 'kustomization-decryption-secret';
+const fluxKustomizationPruneId = 'kustomization-prune';
 // Azure cluster input ids
 const azureUrlId = 'az-url';
 const azureBranchId = 'az-branch';
@@ -67,6 +80,7 @@ const azureKustomizationForceId = 'az-kustomization-force';
 const $clusterName = /** @type HTMLDivElement */ (document.getElementById('cluster-name'));
 const $clusteProviderHeader = /** @type HTMLDivElement */ (document.getElementById('cluster-provider'));
 const $genericForm = /** @type HTMLDivElement */ (document.getElementById('generic-form'));
+const $genericKustomizationForm = /** @type HTMLDivElement */ (document.getElementById('generic-kustomization-form'));
 const $azureForm = /** @type HTMLDivElement */ (document.getElementById('azure-form'));
 const $submitButton = /** @type HTMLButtonElement */ (document.getElementById('create-source'));
 const $recurseSubmodulesSection = /** @type HTMLDivElement */ (document.getElementById('recurse-submodules-section'));
@@ -223,19 +237,31 @@ window.addEventListener('message', event => {
 	/** @type {import('../src/webviews/createSourceWebview').MessageToWebview} */
 	const message = event.data;
 
-	switch(message.type) {
+	switch (message.type) {
 		case 'updateWebviewContent': {
 
+			webviewTempState.createAction = message.value.createAction;
 			webviewTempState.isAzure = message.value.isAzure;
 			webviewTempState.contextName = message.value.contextName;
 			webviewTempState.clusterName = message.value.clusterName;
 
-			// TODO: passed kustomizationName & kustomizationPath should fill corresponding inputs
+			hideAllForms();
 
 			if (webviewTempState.isAzure) {
 				showAzureForm();
 			} else {
-				showGenericForm();
+				if (webviewTempState.createAction === createActionSource) {
+					showGenericForm();
+				} else if (webviewTempState.createAction === createActionKustomization) {
+					showGenericKustomizationForm();
+				} else if (webviewTempState.createAction === createActionSourceAndKustomization) {
+					showGenericForm();
+					showGenericKustomizationForm();
+				}
+			}
+
+			if (!webviewTempState.isAzure && message.value.kustomizationPath) {
+				showGenericKustomizationForm();
 			}
 
 			// Update headers
@@ -257,18 +283,33 @@ window.addEventListener('message', event => {
 			if ($url) {
 				$url.value = message.value.newSourceUrl || '';
 			}
+			const $kustomizationPath = /** @type null | HTMLInputElement */ (document.getElementById(webviewTempState.isAzure ? azureKustomizationPathId : fluxKustomizationPathId));
+			if ($kustomizationPath) {
+				$kustomizationPath.value = message.value.kustomizationPath || '';
+			}
+			const $kustomizationName = /** @type null | HTMLInputElement */ (document.getElementById(webviewTempState.isAzure ? azureKustomizationNameId : fluxKustomizationNameId));
+			if ($kustomizationName) {
+				$kustomizationName.value = message.value.kustomizationName || '';
+			}
 
 			break;
 		}
 	}
 });
 
-function showGenericForm() {
+function hideAllForms() {
+	$genericForm.hidden = true;
+	$genericKustomizationForm.hidden = true;
 	$azureForm.hidden = true;
+}
+
+function showGenericForm() {
 	$genericForm.hidden = false;
 }
+function showGenericKustomizationForm() {
+	$genericKustomizationForm.hidden = false;
+}
 function showAzureForm() {
-	$genericForm.hidden = true;
 	$azureForm.hidden = false;
 }
 

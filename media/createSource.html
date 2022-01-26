@@ -57,6 +57,33 @@
 	</div>
 </div>
 
+<div id="generic-kustomization-form" hidden>
+	<h2>Kustomization</h2>
+	<div>
+		<label class="header-label" for="kustomization-name">Kustomization name</label><input type="text" id="kustomization-name" />
+	</div>
+	<div>
+		<label class="header-label" for="kustomization-source">Source that contains the Kubernetes manifests in the format <code>[&lt;kind&gt;/]&lt;name&gt;.&lt;namespace&gt;</code>, where kind must be one of: (GitRepository, Bucket), if kind is not specified it defaults to GitRepository <code>--source</code></label><input type="text" id="kustomization-source" />
+	</div>
+	<div>
+		<label class="header-label" for="kustomization-path">Path to the directory containing a kustomization.yaml file (default "./") <code>--path</code></label><input type="text" id="kustomization-path" />
+	</div>
+	<div>
+		<label class="header-label" for="kustomization-interval">source sync interval (default 1m0s) <code>--interval</code></label><input type="text" id="kustomization-interval" />
+	</div>
+	<div>
+		<label class="header-label" for="kustomization-depends-on">Kustomization that must be ready before this Kustomization can be applied, supported formats <code>'&lt;name&gt;' and '&lt;namespace&gt;/&lt;name&gt;'</code>, also accepts comma-separated values <code>--depends-on</code></label><input type="text" id="kustomization-depends-on" />
+	</div>
+	<div>
+		<label class="header-label" for="kustomization-decryption-secret">set the Kubernetes secret name that contains the OpenPGP private keys used for sops decryption <code>--decryption-secret</code></label><input type="text" id="kustomization-decryption-secret" />
+	</div>
+	<div>
+		<label class="header-label" for="kustomization-prune">Enable garbage collection <code>--prune</code></label><input type="checkbox" id="kustomization-prune"><label for="kustomization-prune">Prune</label>
+	</div>
+
+	<!-- TODO: --health-check can be multiple of them? -->
+</div>
+
 
 <div id="azure-form" hidden>
 	<div>

@@ -1,11 +1,11 @@
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { AzureClusterProvider, azureTools } from '../azure/azureTools';
 import { failed } from '../errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { validateKustomizationName } from '../flux/fluxUtils';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
-import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeViews';
+import { getCurrentClusterInfo } from '../views/treeViews';
 import { createGitRepository } from './createGitRepository';
 
 /**
@@ -65,13 +65,11 @@ export async function createKustomization(fileExplorerUri?: Uri): Promise<void> 
 	let gitSourceExists = await checkIfOpenedFolderGitRepositorySourceExists();
 	let gitRepositoryName = gitSourceExists?.gitRepositoryName;
 
-	if (currentClusterInfo.result.isAzure) {
-		await createKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
-	} else {
-		await createKustomizationGenericCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri);
+	if (!gitRepositoryName) {
+		createGitRepository(workspaceFolderUri, relativeKustomizationPath);
+		return;
 	}
-
-	refreshWorkloadsTreeView();
+	// TODO: only create Kustomization here
 }
 
 /**
@@ -156,7 +154,7 @@ async function createKustomizationAzureCluster(
 			return;
 		}
 
-		await createGitRepository(workspaceFolderUri, newKustomizationName, relativeKustomizationPath);
+		await createGitRepository(workspaceFolderUri, relativeKustomizationPath);
 	} else {
 		await azureTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath, contextName, clusterProvider);
 	}
