@@ -126,7 +126,7 @@ export class ClusterContextNode extends TreeNode {
 
 		if (this.clusterProvider !== ClusterProvider.Generic || this.clusterProviderManuallyOverridden) {
 			createMarkdownHr(markdown);
-			markdown.appendMarkdown(`Cluster Provider: ${this.clusterProvider || ClusterProvider.Unknown}`);
+			markdown.appendMarkdown(`Cluster Provider: ${this.clusterProvider}`);
 			if (this.clusterProviderManuallyOverridden) {
 				markdown.appendMarkdown(' <span title="Use context menu on the cluster `Set Cluster Provider` to change.">(User override)</span>');
 			}

@@ -33,6 +33,10 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 
 	const clusterProvider = await kubernetesTools.detectClusterProvider(contextName);
 	if (clusterProvider === ClusterProvider.Unknown) {
+		window.showErrorMessage('Cluster provider not detected yet.');
+		return;
+	} else if (clusterProvider === ClusterProvider.DetectionFailed) {
+		window.showErrorMessage('Cluster provider detection failed.');
 		return;
 	}
 

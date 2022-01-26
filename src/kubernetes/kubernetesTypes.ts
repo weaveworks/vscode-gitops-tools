@@ -511,12 +511,16 @@ export const enum ClusterProvider {
 	 */
 	Generic = 'Generic',
 	/**
-	 * Error occurred when trying to determine the cluster provider or it's just not loaded yet.
+	 * Not loaded yet.
 	 */
 	Unknown = 'Unknown',
+	/**
+	 * Error occurred when trying to determine the cluster provider
+	 */
+	DetectionFailed = 'DetectionFailed',
 }
 
-export type KnownClusterProviders = Exclude<ClusterProvider, ClusterProvider.Unknown>;
+export type KnownClusterProviders = Exclude<Exclude<ClusterProvider, ClusterProvider.Unknown>, ClusterProvider.DetectionFailed>;
 export const knownClusterProviders: KnownClusterProviders[] = [
 	ClusterProvider.AKS,
 	ClusterProvider.AzureARC,

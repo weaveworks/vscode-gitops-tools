@@ -404,24 +404,24 @@ class KubernetesTools {
 	/**
 	 * Try to detect known cluster providers.
 	 * @param context target context to get resources from.
+	 * TODO: maybe use Errorable?
 	 */
 	async detectClusterProvider(context: string): Promise<ClusterProvider> {
 		const tryProviderAzureARC = await this.isClusterAzureARC(context);
 		if (tryProviderAzureARC === ClusterProvider.AzureARC) {
 			return ClusterProvider.AzureARC;
+		} else if (tryProviderAzureARC === ClusterProvider.DetectionFailed) {
+			return ClusterProvider.DetectionFailed;
 		}
 
 		const tryProviderAKS = await this.isClusterAKS(context);
 		if (tryProviderAKS === ClusterProvider.AKS) {
 			return ClusterProvider.AKS;
+		} else if (tryProviderAKS === ClusterProvider.DetectionFailed) {
+			return ClusterProvider.DetectionFailed;
 		}
 
-		if (tryProviderAKS === ClusterProvider.Unknown || tryProviderAzureARC === ClusterProvider.Unknown) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_DETECT_CLUSTER_PROVIDER);
-			return ClusterProvider.Unknown;
-		} else {
-			return ClusterProvider.Generic;
-		}
+		return ClusterProvider.Generic;
 	}
 
 	/**
@@ -434,21 +434,21 @@ class KubernetesTools {
 		if (nodesShellResult?.code !== 0) {
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER);
 			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type.`);
-			return ClusterProvider.Unknown;
+			return ClusterProvider.DetectionFailed;
 		}
 
 		const nodes: NodeResult | undefined = parseJson(nodesShellResult.stdout);
 		if (!nodes) {
-			return ClusterProvider.Unknown;
+			return ClusterProvider.DetectionFailed;
 		}
 		const firstNode = nodes.items[0];
 
 		if (!firstNode) {
 			console.warn(`No nodes in the "${context}" context to determine the cluster type.`);
-			return ClusterProvider.Unknown;
+			return ClusterProvider.DetectionFailed;
 		}
 
-		const providerID = firstNode.spec.providerID;
+		const providerID = firstNode.spec?.providerID;
 
 		if (providerID?.startsWith('azure:///')) {
 			return ClusterProvider.AKS;
@@ -467,14 +467,14 @@ class KubernetesTools {
 		if (configmapShellResult?.code !== 0) {
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER);
 			console.warn(`Failed to get configmaps from "${context}" context to determine the cluster type.`);
-			return ClusterProvider.Unknown;
+			return ClusterProvider.DetectionFailed;
 		}
 
 		const stdout = configmapShellResult.stdout;
 		if (stdout.length) {
 			const azureClusterconfigConfigMap: ConfigMap | undefined = parseJson(stdout);
 			if (azureClusterconfigConfigMap === undefined) {
-				return ClusterProvider.Unknown;
+				return ClusterProvider.DetectionFailed;
 			} else {
 				return ClusterProvider.AzureARC;
 			}
