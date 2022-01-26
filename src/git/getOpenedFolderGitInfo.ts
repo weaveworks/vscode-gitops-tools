@@ -6,10 +6,10 @@ import { checkGitVersion } from '../install';
 
 // TODO: rename, move
 export interface GitInfo {
-	createAction: 'source' | 'kustomization' | 'sourceAndKustomization';
 	newRepoName: string;
 	url: string;
 	branch: string;
+	kustomizationName?: string;
 	kustomizationPath?: string;
 }
 
@@ -39,7 +39,6 @@ export async function getOpenedFolderGitInfo(targetFolderUri: Uri): Promise<GitI
 	}
 
 	return {
-		createAction: 'source',
 		newRepoName: newGitRepositorySourceName,
 		url: gitUrl,
 		branch: gitBranch,

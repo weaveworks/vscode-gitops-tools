@@ -15,7 +15,7 @@ import { makeSSHUrlFromGitUrl } from './createSource';
  * of the new git repository source.
  * @param fileExplorerUri uri of the file in the file explorer
  */
-export async function createGitRepository(fileExplorerUri?: Uri, kustomizationPath?: string) {
+export async function createGitRepository(fileExplorerUri?: Uri, kustomizationName?: string, kustomizationPath?: string) {
 
 	const gitInstalled = await checkGitVersion();
 	if (!gitInstalled) {
@@ -81,10 +81,10 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationPa
 	}
 
 	CreateSourcePanel.createOrShow(getExtensionContext().extensionUri, {
-		createAction: kustomizationPath ? 'sourceAndKustomization' : 'source',
 		branch: gitBranch,
 		newRepoName: newGitRepositorySourceName,
 		url: gitUrl,
+		kustomizationName,
 		kustomizationPath,
 	});
 

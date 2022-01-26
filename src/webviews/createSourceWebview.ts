@@ -15,7 +15,6 @@ import { getNonce, getWebviewOptions } from './webviewUtils';
 interface CreateSourceUpdateWebviewContent {
 	type: 'updateWebviewContent';
 	value: {
-		createAction: GitInfo['createAction'];
 		clusterName: string;
 		contextName: string;
 		clusterProvider: string;
@@ -23,8 +22,6 @@ interface CreateSourceUpdateWebviewContent {
 		newSourceName: string;
 		newSourceUrl: string;
 		newSourceBranch: string;
-		kustomizationPath?: string;
-		kustomizationName?: string;
 	};
 }
 /**
@@ -220,7 +217,6 @@ export class CreateSourcePanel {
 		this._postMessage({
 			type: 'updateWebviewContent',
 			value: {
-				createAction: gitInfo?.createAction,
 				clusterName: clusterInfo.result.clusterName,
 				contextName: clusterInfo.result.contextName,
 				clusterProvider: clusterInfo.result.clusterProvider,
@@ -228,7 +224,6 @@ export class CreateSourcePanel {
 				newSourceName: gitInfo?.newRepoName || '',
 				newSourceUrl: gitInfo?.url || '',
 				newSourceBranch: gitInfo?.branch || '',
-				kustomizationPath: gitInfo?.kustomizationPath,
 			},
 		});
 	}
