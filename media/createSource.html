@@ -1,140 +1,140 @@
 <div id="generic-form" hidden>
 	<div>
-		<label class="header-label" for="url">Git repository url <code>--url</code></label><input type="text" id="url" />
+		<label class="header-label" for="url">Git repository url <code class="cli-argument">--url</code></label><input type="text" id="url" />
 	</div>
 	<div>
-		<label class="header-label" for="branch">Git branch <code>--branch</code></label><input type="text" id="branch" />
+		<label class="header-label" for="branch">Git branch <code class="cli-argument">--branch</code></label><input type="text" id="branch" />
 	</div>
 	<div>
-		<label class="header-label" for="tag">Git tag <code>--tag</code></label><input type="text" id="tag" />
+		<label class="header-label" for="tag">Git tag <code class="cli-argument">--tag</code></label><input type="text" id="tag" />
 	</div>
 	<div>
-		<label class="header-label" for="tag-semver">Git tag semver range <code>--tag-semver</code></label><input type="text" id="tag-semver" />
+		<label class="header-label" for="tag-semver">Git tag semver range <code class="cli-argument">--tag-semver</code></label><input type="text" id="tag-semver" />
 	</div>
 	<div>
-		<label class="header-label" for="interval">Source sync interval (in minutes) <code>--interval</code></label><input type="text" id="interval" />
+		<label class="header-label" for="interval">Source sync interval (in minutes) <code class="cli-argument">--interval</code></label><input type="text" id="interval" />
 	</div>
 	<div>
-		<label class="header-label" for="timeout">Source sync timeout (in minutes) <code>--timeout</code></label><input type="text" id="timeout" />
+		<label class="header-label" for="timeout">Source sync timeout (in minutes) <code class="cli-argument">--timeout</code></label><input type="text" id="timeout" />
 	</div>
 	<div>
-		<label class="header-label" for="go-git">Git implementation <code>--git-implementation</code></label>
+		<label class="header-label" for="go-git">Git implementation <code class="cli-argument">--git-implementation</code></label>
 		<input type="radio" id="go-git" name="git-implementation" value="go-git" checked> <label for="go-git">go-git</label>
 		<input type="radio" id="libgit2" name="git-implementation" value="libgit2"> <label for="libgit2">libgit2</label>
 	</div>
 	<div id="recurse-submodules-section">
-		<label class="header-label" for="recurse-submodules">When enabled, configures the GitRepository source to initialize and include Git submodules in the artifact it produces <code>--recurse-submodules</code></label><input type="checkbox" id="recurse-submodules"><label for="recurse-submodules">Recurse submodules</label>
+		<label class="header-label" for="recurse-submodules">When enabled, configures the GitRepository source to initialize and include Git submodules in the artifact it produces <code class="cli-argument">--recurse-submodules</code></label><input type="checkbox" id="recurse-submodules"><label for="recurse-submodules">Recurse submodules</label>
 	</div>
 	<div>
-		<label class="header-label" for="ca-file">Path to TLS CA file used for validating self-signed certificates <code>--ca-file</code></label><input type="text" id="ca-file" />
+		<label class="header-label" for="ca-file">Path to TLS CA file used for validating self-signed certificates <code class="cli-argument">--ca-file</code></label><input type="text" id="ca-file" />
 	</div>
 	<div>
-		<label class="header-label" for="private-key-file">Path to a passwordless private key file used for authenticating to the Git SSH server <code>--private-key-file</code></label><input type="text" id="private-key-file" />
+		<label class="header-label" for="private-key-file">Path to a passwordless private key file used for authenticating to the Git SSH server <code class="cli-argument">--private-key-file</code></label><input type="text" id="private-key-file" />
 	</div>
 	<div>
-		<label class="header-label" for="username">Basic authentication username <code>--username</code></label><input type="text" id="username" />
+		<label class="header-label" for="username">Basic authentication username <code class="cli-argument">--username</code></label><input type="text" id="username" />
 	</div>
 	<div>
-		<label class="header-label" for="password">Basic authentication password <code>--password</code></label><input type="text" id="password" />
+		<label class="header-label" for="password">Basic authentication password <code class="cli-argument">--password</code></label><input type="text" id="password" />
 	</div>
 	<div>
-		<label class="header-label" for="secret-ref">The name of an existing secret containing SSH or basic credentials <code>--secret-ref</code></label><input type="text" id="secret-ref" />
+		<label class="header-label" for="secret-ref">The name of an existing secret containing SSH or basic credentials <code class="cli-argument">--secret-ref</code></label><input type="text" id="secret-ref" />
 	</div>
 	<div>
-		<label class="header-label" for="ecdsa">SSH public key algorithm <code>--ssh-key-algorithm</code></label>
+		<label class="header-label" for="ecdsa">SSH public key algorithm <code class="cli-argument">--ssh-key-algorithm</code></label>
 		<input type="radio" id="rsa" name="ssh-key-algorithm" value="rsa"> <label for="rsa">rsa</label>
 		<input type="radio" id="ecdsa" name="ssh-key-algorithm" value="ecdsa" checked> <label for="ecdsa">ecdsa</label>
 		<input type="radio" id="ed25519" name="ssh-key-algorithm" value="ed25519"> <label for="ed25519">ed25519</label>
 	</div>
 	<div id="ssh-ecdsa-curve-section">
-		<label class="header-label" for="p384">SSH ECDSA public key curve <code>--ssh-ecdsa-curve</code></label>
+		<label class="header-label" for="p384">SSH ECDSA public key curve <code class="cli-argument">--ssh-ecdsa-curve</code></label>
 		<input type="radio" id="p256" name="ssh-ecdsa-curve" value="p256"> <label for="p256">p256</label>
 		<input type="radio" id="p384" name="ssh-ecdsa-curve" value="p384" checked> <label for="p384">p384</label>
 		<input type="radio" id="p521" name="ssh-ecdsa-curve" value="p521"> <label for="p521">p521</label>
 	</div>
 	<div id="ssh-rsa-bits-section" hidden>
-		<label class="header-label" for="ssh-rsa-bits">SSH RSA public key bit size (multiplies of 8) <code>--ssh-rsa-bits</code></label><input type="number" step="8" id="ssh-rsa-bits" value="2048" />
+		<label class="header-label" for="ssh-rsa-bits">SSH RSA public key bit size (multiplies of 8) <code class="cli-argument">--ssh-rsa-bits</code></label><input type="number" step="8" id="ssh-rsa-bits" value="2048" />
 	</div>
 </div>
 
 
 <div id="azure-form" hidden>
 	<div>
-		<label class="header-label" for="az-url">URL of the git repo source to reconcile <code>--url</code></label><input type="text" id="az-url" />
+		<label class="header-label" for="az-url">URL of the git repo source to reconcile <code class="cli-argument">--url</code></label><input type="text" id="az-url" />
 	</div>
 	<div>
-		<label class="header-label" for="az-branch">Branch within the git source to reconcile with the cluster <code>--branch</code></label><input type="text" id="az-branch" />
+		<label class="header-label" for="az-branch">Branch within the git source to reconcile with the cluster <code class="cli-argument">--branch</code></label><input type="text" id="az-branch" />
 	</div>
 	<div>
-			<label class="header-label" for="az-tag">Tag within the git source to reconcile with the cluster <code>--tag</code></label><input type="text" id="az-tag" />
+			<label class="header-label" for="az-tag">Tag within the git source to reconcile with the cluster <code class="cli-argument">--tag</code></label><input type="text" id="az-tag" />
 	</div>
 	<div>
-		<label class="header-label" for="az-tag-semver">Git tag semver range <code>--semver</code></label><input type="text" id="az-tag-semver" />
+		<label class="header-label" for="az-tag-semver">Git tag semver range <code class="cli-argument">--semver</code></label><input type="text" id="az-tag-semver" />
 	</div>
 	<div>
-		<label class="header-label" for="az-commit">Commit within the git source to reconcile with the cluster <code>--commit</code></label><input type="text" id="az-commit" />
+		<label class="header-label" for="az-commit">Commit within the git source to reconcile with the cluster <code class="cli-argument">--commit</code></label><input type="text" id="az-commit" />
 	</div>
 	<div>
-		<label class="header-label" for="az-interval">Source sync interval (in minutes) <code>--interval</code></label><input type="text" id="az-interval" />
+		<label class="header-label" for="az-interval">Source sync interval (in minutes) <code class="cli-argument">--interval</code></label><input type="text" id="az-interval" />
 	</div>
 	<div>
-			<label class="header-label" for="az-timeout">Source sync timeout (in minutes) <code>--timeout</code></label><input type="text" id="az-timeout" />
+			<label class="header-label" for="az-timeout">Source sync timeout (in minutes) <code class="cli-argument">--timeout</code></label><input type="text" id="az-timeout" />
 	</div>
 	<div>
-		<label class="header-label" for="az-https-ca-cert">Base64-encoded HTTPS CA certificate for TLS communication with private repository sync <code>--https-ca-cert</code></label><input type="text" id="az-https-ca-cert" />
+		<label class="header-label" for="az-https-ca-cert">Base64-encoded HTTPS CA certificate for TLS communication with private repository sync <code class="cli-argument">--https-ca-cert</code></label><input type="text" id="az-https-ca-cert" />
 	</div>
 	<div>
-		<label class="header-label" for="az-https-ca-cert-file">File path to HTTPS CA certificate file for TLS communication with private repository sync <code>--https-ca-cert-file</code></label>
+		<label class="header-label" for="az-https-ca-cert-file">File path to HTTPS CA certificate file for TLS communication with private repository sync <code class="cli-argument">--https-ca-cert-file</code></label>
 			<input type="text" id="az-https-ca-cert-file" />
 	</div>
 	<div>
-		<label class="header-label" for="az-https-key">HTTPS token/password for private repository sync <code>--https-key</code></label><input type="text" id="az-https-key" />
+		<label class="header-label" for="az-https-key">HTTPS token/password for private repository sync <code class="cli-argument">--https-key</code></label><input type="text" id="az-https-key" />
 	</div>
 	<div>
-		<label class="header-label" for="az-https-user">HTTPS username for private repository sync <code>--https-user</code></label><input type="text" id="az-https-user" />
+		<label class="header-label" for="az-https-user">HTTPS username for private repository sync <code class="cli-argument">--https-user</code></label><input type="text" id="az-https-user" />
 	</div>
 	<div>
-		<label class="header-label" for="az-known-hosts">Base64-encoded known_hosts data containing public SSH keys required to access private Git instances <code>--known-hosts</code></label><input type="text" id="az-known-hosts" />
+		<label class="header-label" for="az-known-hosts">Base64-encoded known_hosts data containing public SSH keys required to access private Git instances <code class="cli-argument">--known-hosts</code></label><input type="text" id="az-known-hosts" />
 	</div>
 	<div>
-		<label class="header-label" for="az-known-hosts-file">File path to known_hosts contents containing public SSH keys required to access private Git instances <code>--known-hosts-file</code></label>
+		<label class="header-label" for="az-known-hosts-file">File path to known_hosts contents containing public SSH keys required to access private Git instances <code class="cli-argument">--known-hosts-file</code></label>
 			<input type="text" id="az-known-hosts-file" />
 	</div>
 	<div>
-		<label class="header-label" for="az-local-auth-ref">Local reference to a kubernetes secret in the configuration namespace to use for communication to the source <code>--local-auth-ref</code></label>
+		<label class="header-label" for="az-local-auth-ref">Local reference to a kubernetes secret in the configuration namespace to use for communication to the source <code class="cli-argument">--local-auth-ref</code></label>
 			<input type="text" id="az-local-auth-ref" />
 	</div>
 	<div>
-		<label class="header-label" for="az-ssh-private-key">Base64-encoded private ssh key for private repository sync <code>--ssh-private-key</code></label><input type="text" id="az-ssh-private-key" />
+		<label class="header-label" for="az-ssh-private-key">Base64-encoded private ssh key for private repository sync <code class="cli-argument">--ssh-private-key</code></label><input type="text" id="az-ssh-private-key" />
 	</div>
 	<div>
-		<label class="header-label" for="az-ssh-private-key-file">File path to private ssh key for private repository sync <code>--ssh-private-key-file</code></label><input type="text" id="az-ssh-private-key-file" />
+		<label class="header-label" for="az-ssh-private-key-file">File path to private ssh key for private repository sync <code class="cli-argument">--ssh-private-key-file</code></label><input type="text" id="az-ssh-private-key-file" />
 	</div>
 
-	<h2>Kustomization <code>--kustomization</code></h2>
+	<h2>Kustomization <code class="cli-argument">--kustomization</code></h2>
 	<hr />
 	<div>
-		<label class="header-label" for="az-kustomization-name">Name of the flux configuration <code>name</code></label><input type="text" id="az-kustomization-name" />
+		<label class="header-label" for="az-kustomization-name">Name of the flux configuration</label><input type="text" id="az-kustomization-name" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-path">Specify the path in the source that the kustomization should apply <code>path</code></label><input type="text" id="az-kustomization-path" />
+		<label class="header-label" for="az-kustomization-path">Specify the path in the source that the kustomization should apply <code class="cli-argument">path</code></label><input type="text" id="az-kustomization-path" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-depends-on">Comma-separated list of kustomization dependencies <code>depends_on</code></label><input type="text" id="az-kustomization-depends-on" />
+		<label class="header-label" for="az-kustomization-depends-on">Comma-separated list of kustomization dependencies <code class="cli-argument">depends_on</code></label><input type="text" id="az-kustomization-depends-on" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-timeout">Maximum time to reconcile the kustomization before timing out <code>timeout</code></label><input type="text" id="az-kustomization-timeout" />
+		<label class="header-label" for="az-kustomization-timeout">Maximum time to reconcile the kustomization before timing out <code class="cli-argument">timeout</code></label><input type="text" id="az-kustomization-timeout" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-sync-interval">Time between reconciliations of the kustomization on the cluster <code>sync_interval</code></label><input type="text" id="az-kustomization-sync-interval" />
+		<label class="header-label" for="az-kustomization-sync-interval">Time between reconciliations of the kustomization on the cluster <code class="cli-argument">sync_interval</code></label><input type="text" id="az-kustomization-sync-interval" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-retry-interval">Time between reconciliations of the kustomization on the cluster on failures, defaults to --sync-interval <code>retry_interval</code></label><input type="text" id="az-kustomization-retry-interval" />
+		<label class="header-label" for="az-kustomization-retry-interval">Time between reconciliations of the kustomization on the cluster on failures, defaults to --sync-interval <code class="cli-argument">retry_interval</code></label><input type="text" id="az-kustomization-retry-interval" />
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-prune">Garbage collect resources deployed by the kustomization on the cluster <code>prune</code></label><input type="checkbox" id="az-kustomization-prune"><label for="az-kustomization-prune">Prune</label>
+		<label class="header-label" for="az-kustomization-prune">Garbage collect resources deployed by the kustomization on the cluster <code class="cli-argument">prune</code></label><input type="checkbox" id="az-kustomization-prune"><label for="az-kustomization-prune">Prune</label>
 	</div>
 	<div>
-		<label class="header-label" for="az-kustomization-force">Re-create resources that cannot be updated on the cluster (i.e. jobs) <code>force</code></label><input type="checkbox" id="az-kustomization-force"><label for="az-kustomization-force">Force</label>
+		<label class="header-label" for="az-kustomization-force">Re-create resources that cannot be updated on the cluster (i.e. jobs) <code class="cli-argument">force</code></label><input type="checkbox" id="az-kustomization-force"><label for="az-kustomization-force">Force</label>
 	</div>
 </div>

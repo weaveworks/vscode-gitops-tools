@@ -43,7 +43,7 @@ input[type="checkbox"] + label {
 
 .header-label {
 	display: block;
-	margin-bottom: 0.1em;
+	margin-bottom: 0.2em;
 	margin-top: 0.6em;
 }
 
@@ -54,4 +54,14 @@ input[type="checkbox"] + label {
 	text-overflow: ellipsis;
 	margin: 10px 0;
 	float: right;
+}
+
+.cli-argument {
+	background-color: rgba(255, 255, 255, 0.08);
+	border-radius: 0.2em;
+	padding: 0 0.3em;
+}
+
+.vscode-light .cli-argument {
+	background-color: rgba(0, 0, 0, 0.05);
 }
