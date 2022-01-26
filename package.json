@@ -171,7 +171,7 @@
 				"command": "gitops.createKustomization",
 				"title": "Create Kustomization",
 				"icon": "$(add)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:loadingClusters && !gitops:loadingWorkloads && gitops:isStartupFinished",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
 				"category": "GitOps"
 			},
 			{
@@ -194,7 +194,7 @@
 				"command": "gitops.editor.createSource",
 				"title": "Create Source",
 				"category": "GitOps",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:loadingClusters && !gitops:loadingSources && gitops:isStartupFinished",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
 				"icon": "$(add)"
 			},
 			{

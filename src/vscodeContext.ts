@@ -21,11 +21,6 @@ export const enum ContextTypes {
 	OpenFolderGitRepositoryExist = 'gitops:openFolderGitRepositoryExist',
 
 	IsDev = 'gitops:isDev',
-	/**
-	 * For button enablement - don't let user press the buttons
-	 * that have "enablement" set at the moment when extension is just starting up.
-	 */
-	IsStartupFinished = 'gitops:isStartupFinished',
 }
 
 /**
@@ -48,7 +43,6 @@ interface ContextValues {
 	[ContextTypes.OpenFolderGitRepositoryExistDetermined]: boolean;
 
 	[ContextTypes.IsDev]: boolean;
-	[ContextTypes.IsStartupFinished]: boolean;
 }
 
 /**
