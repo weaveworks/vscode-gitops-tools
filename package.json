@@ -512,17 +512,17 @@
 		"@types/shelljs": "^0.8.11",
 		"@types/vscode": "^1.59.0",
 		"@types/vscode-webview": "^1.57.0",
-		"@typescript-eslint/eslint-plugin": "^5.10.0",
-		"@typescript-eslint/parser": "^5.10.0",
+		"@typescript-eslint/eslint-plugin": "^5.10.1",
+		"@typescript-eslint/parser": "^5.10.1",
 		"eslint": "^8.7.0",
 		"ts-loader": "^9.2.6",
 		"typescript": "^4.5.5",
 		"webpack": "^5.67.0",
-		"webpack-cli": "^4.9.1"
+		"webpack-cli": "^4.9.2"
 	},
 	"dependencies": {
 		"@kubernetes/client-node": "^0.16.2",
-		"@vscode/extension-telemetry": "^0.4.6",
+		"@vscode/extension-telemetry": "^0.4.7",
 		"extract-zip": "^2.0.1",
 		"git-url-parse": "^11.6.0",
 		"semver": "^7.3.5",
