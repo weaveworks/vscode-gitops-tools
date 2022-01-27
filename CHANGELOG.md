@@ -2,6 +2,35 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.17.0 - [2022-01-27]
+
+- [#179](https://github.com/weaveworks/vscode-gitops-tools/issues/179)
+Dowload, compute & compare checksum when downloading Flux on Windows, delete temporary files later. Also try to use `gofish` to install Flux if it's found
+- [#188](https://github.com/weaveworks/vscode-gitops-tools/issues/188)
+Allow for the creation of arbitrary GitRepository Sources
+- [#198](https://github.com/weaveworks/vscode-gitops-tools/issues/198)
+Telemetry events - error handling data
+- [#200](https://github.com/weaveworks/vscode-gitops-tools/issues/200)
+Telemetry events - workload data
+- [#208](https://github.com/weaveworks/vscode-gitops-tools/issues/208)
+Use logo icons in the Documentation tree view
+- [#209](https://github.com/weaveworks/vscode-gitops-tools/issues/209)
+Update dependencies
+- [#211](https://github.com/weaveworks/vscode-gitops-tools/issues/211)
+Package Sprint 18 release
+- [#207](https://github.com/weaveworks/vscode-gitops-tools/issues/207)
+Refactor:
+> - don't depend on the code from Clusters Tree View
+> - use json output where possible
+> - separate "Unknown" & "DetectionFailed" cluster provider
+> - prevent opening of webview when cluster provider detection fails
+> - wait until the webview is ready before sending a message to it
+> - when creating source from webview - don't send default values
+> - don't show git output in the default Output channel
+> - show error welcome view instead of "No Clusters" (in case fetching cluster contexts fails)
+> - do not let user press "Create Source" & "Create Workload" when GitOps is not enabled
+> - run "flux check --pre" only when `flux` is installed
+
 # v0.17.0 - [2022-01-13]
 
 - [#179](https://github.com/weaveworks/vscode-gitops-tools/issues/179)
