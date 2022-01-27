@@ -2,7 +2,7 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
-# v0.17.0 - [2022-01-27]
+# v0.18.0 - [2022-01-27]
 
 - [#179](https://github.com/weaveworks/vscode-gitops-tools/issues/179)
 Dowload, compute & compare checksum when downloading Flux on Windows, delete temporary files later. Also try to use `gofish` to install Flux if it's found
