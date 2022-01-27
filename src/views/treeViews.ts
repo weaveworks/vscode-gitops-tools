@@ -86,7 +86,7 @@ export function refreshWorkloadsTreeView(node?: TreeNode) {
 	workloadTreeViewProvider.refresh(node);
 }
 
-interface CurrentClusterInfo {
+export interface CurrentClusterInfo {
 	contextName: string;
 	clusterName: string;
 	clusterProvider: ClusterProvider;
@@ -117,10 +117,10 @@ export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterI
 	}
 	const currentClusterName = contextsResult.result.find(context => context.name === currentContextName)?.context.clusterInfo?.name;
 	if (!currentClusterName) {
-		window.showErrorMessage('Failed to find current context.');
+		window.showErrorMessage('Failed to find current cluster name.');
 		return {
 			succeeded: false,
-			error: ['Failed to get currentClusterName'],
+			error: ['Failed to find current cluster name.'],
 		};
 	}
 	const currentClusterProvider = await kubernetesTools.detectClusterProvider(currentContextName);

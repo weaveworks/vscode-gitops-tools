@@ -2,11 +2,9 @@ import { readFileSync } from 'fs';
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { AzureClusterProvider, isAzureProvider } from '../azure/azureTools';
 import { createGitRepositoryAzureCluster, createGitRepositoryGenericCluster } from '../commands/createSource';
-import { failed } from '../errorable';
 import { asAbsolutePath } from '../extensionContext';
 import { GitInfo } from '../git/getOpenedFolderGitInfo';
-import { delay } from '../utils/utils';
-import { getCurrentClusterInfo } from '../views/treeViews';
+import { CurrentClusterInfo } from '../views/treeViews';
 import { getNonce, getWebviewOptions } from './webviewUtils';
 
 /**
@@ -101,7 +99,9 @@ export interface WebviewLoaded {
 	value: true;
 }
 
+/** Message sent from Extension to Webview */
 export type MessageToWebview = CreateSourceUpdateWebviewContent;
+/** Message sent from Webview to Extension */
 export type MessageFromWebview = CreateSourceGenericCluster | CreateSourceAzureCluster | ShowNotification | WebviewLoaded;
 
 /**
@@ -121,7 +121,7 @@ export class CreateSourcePanel {
 	/** Only send message to webview when it's ready (html parsed, "message" event listener set) */
 	private _onWebviewFinishedLoading = () => {};
 
-	public static createOrShow(extensionUri: Uri, gitInfo: GitInfo | undefined) {
+	public static createOrShow(extensionUri: Uri, clusterInfo: CurrentClusterInfo, gitInfo: GitInfo | undefined) {
 		const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
 
 		// If we already have a panel, show it.
@@ -138,19 +138,19 @@ export class CreateSourcePanel {
 			getWebviewOptions(extensionUri),
 		);
 
-		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri, gitInfo);
+		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri, clusterInfo, gitInfo);
 	}
 
-	public static revive(panel: WebviewPanel, extensionUri: Uri, gitInfo: GitInfo | undefined) {
-		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri, gitInfo);
+	public static revive(panel: WebviewPanel, extensionUri: Uri, clusterInfo: CurrentClusterInfo, gitInfo: GitInfo | undefined) {
+		CreateSourcePanel.currentPanel = new CreateSourcePanel(panel, extensionUri, clusterInfo, gitInfo);
 	}
 
-	private constructor(panel: WebviewPanel, extensionUri: Uri, gitInfo: GitInfo | undefined) {
+	private constructor(panel: WebviewPanel, extensionUri: Uri, clusterInfo: CurrentClusterInfo, gitInfo: GitInfo | undefined) {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
 
 		// Set the webview's initial html content
-		this._update(gitInfo);
+		this._update(clusterInfo, gitInfo);
 
 		// Listen for when the panel is disposed
 		// This happens when the user closes the panel or when the panel is closed programmatically
@@ -159,7 +159,7 @@ export class CreateSourcePanel {
 		// Update the content based on view changes
 		this._panel.onDidChangeViewState(e => {
 			if (this._panel.visible) {
-				this._update(gitInfo);
+				this._update(clusterInfo, gitInfo);
 			}
 		}, null, this._disposables );
 
@@ -209,19 +209,15 @@ export class CreateSourcePanel {
 		this._panel.webview.postMessage(message);
 	}
 
-	private async _updateWebviewContent(gitInfo: GitInfo | undefined) {
-		const clusterInfo = await getCurrentClusterInfo();
-		if (failed(clusterInfo)) {
-			return;
-		}
+	private async _updateWebviewContent(clusterInfo: CurrentClusterInfo, gitInfo: GitInfo | undefined) {
 
 		this._postMessage({
 			type: 'updateWebviewContent',
 			value: {
-				clusterName: clusterInfo.result.clusterName,
-				contextName: clusterInfo.result.contextName,
-				clusterProvider: clusterInfo.result.clusterProvider,
-				isAzure: isAzureProvider(clusterInfo.result.clusterProvider),
+				clusterName: clusterInfo.clusterName,
+				contextName: clusterInfo.contextName,
+				clusterProvider: clusterInfo.clusterProvider,
+				isAzure: isAzureProvider(clusterInfo.clusterProvider),
 				newSourceName: gitInfo?.newRepoName || '',
 				newSourceUrl: gitInfo?.url || '',
 				newSourceBranch: gitInfo?.branch || '',
@@ -232,9 +228,9 @@ export class CreateSourcePanel {
 	/**
 	 * Set webview html and send a message to update the contents.
 	 */
-	private async _update(gitInfo: GitInfo | undefined) {
+	private async _update(clusterInfo: CurrentClusterInfo, gitInfo: GitInfo | undefined) {
 		this._onWebviewFinishedLoading = () => {
-			this._updateWebviewContent(gitInfo);
+			this._updateWebviewContent(clusterInfo, gitInfo);
 			this._onWebviewFinishedLoading = () => {};
 		};
 		this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);

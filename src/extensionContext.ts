@@ -3,14 +3,14 @@ import { ExtensionContext, Uri } from 'vscode';
 let extensionContext: ExtensionContext;
 
 /**
- * Save a referece for this extension's context
+ * Save a referece for this (GitOps) extension's context
  */
 export function setExtensionContext(context: ExtensionContext) {
 	extensionContext = context;
 }
 
 /**
- * Return a reference for this extension's context
+ * Return a reference for this (GitOps) extension's context
  */
 export function getExtensionContext(): ExtensionContext {
 	return extensionContext;
