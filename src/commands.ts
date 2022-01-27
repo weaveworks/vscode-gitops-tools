@@ -24,7 +24,7 @@ import { suspend } from './commands/suspend';
 import { trace } from './commands/trace';
 import { telemetry } from './extension';
 import { showOutputChannel } from './output';
-import { SpecificErrorEvent } from './telemetry';
+import { TelemetryErrorEventNames } from './telemetry';
 import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
 
 /**
@@ -157,7 +157,7 @@ function registerCommand(commandId: string, callback: (...args: any[])=> any, th
 		try {
 			await callback(...args);
 		} catch(e: unknown) {
-			telemetry.sendError(SpecificErrorEvent.UNCAUGHT_EXCEPTION, e as Error);
+			telemetry.sendError(TelemetryErrorEventNames.UNCAUGHT_EXCEPTION, e as Error);
 			window.showErrorMessage(String(e));
 			console.error(e);
 		}

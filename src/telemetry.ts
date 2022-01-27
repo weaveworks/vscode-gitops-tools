@@ -1,8 +1,8 @@
-import { env, ExtensionContext, ExtensionMode } from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
+import { env, ExtensionContext, ExtensionMode } from 'vscode';
 
 
-export const enum SpecificErrorEvent {
+export const enum TelemetryErrorEventNames {
 	/**
 	 * Uncaught exception. Doesn't tell much. Need to see stack trace attached.
 	 */
@@ -50,7 +50,7 @@ export const enum SpecificErrorEvent {
 	FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT = 'FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT',
 }
 
-export type TelemetryErrorEvent = SpecificErrorEvent | string;
+export type TelemetryErrorEvent = TelemetryErrorEventNames | string;
 
 export const enum TelemetryEventNames {
 	/**
@@ -81,6 +81,10 @@ export const enum TelemetryEventNames {
 	 * Delete Flux Source event.
 	 */
 	DeleteSource = 'DELETE_SOURCE',
+	/**
+	 * Create Flux Workload (Kustomization, HelmRelease) event.
+	 */
+	CreateWorkload = 'CREATE_WORKLOAD',
 }
 
 /**
@@ -101,6 +105,9 @@ interface TelemetryEventNamePropertyMapping {
 		kind: string;
 	};
 	[TelemetryEventNames.DeleteSource]: {
+		kind: string;
+	};
+	[TelemetryEventNames.CreateWorkload]: {
 		kind: string;
 	};
 }

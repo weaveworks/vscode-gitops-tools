@@ -1,10 +1,13 @@
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { AzureClusterProvider, azureTools } from '../azure/azureTools';
 import { failed } from '../errorable';
+import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { validateKustomizationName } from '../flux/fluxUtils';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
+import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { TelemetryEventNames } from '../telemetry';
 import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeViews';
 import { createGitRepository } from './createGitRepository';
 
@@ -64,6 +67,10 @@ export async function createKustomization(fileExplorerUri?: Uri): Promise<void> 
 
 	let gitSourceExists = await checkIfOpenedFolderGitRepositorySourceExists();
 	let gitRepositoryName = gitSourceExists?.gitRepositoryName;
+
+	telemetry.send(TelemetryEventNames.CreateWorkload, {
+		kind: KubernetesObjectKinds.Kustomization,
+	});
 
 	if (currentClusterInfo.result.isAzure) {
 		await createKustomizationAzureCluster(gitRepositoryName, relativeKustomizationPath, workspaceFolderUri, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);

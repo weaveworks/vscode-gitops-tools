@@ -5,7 +5,7 @@ import { Errorable, failed } from './errorable';
 import { telemetry } from './extension';
 import { extensionState } from './extensionState';
 import { shell, shellCodeError } from './shell';
-import { SpecificErrorEvent } from './telemetry';
+import { TelemetryErrorEventNames } from './telemetry';
 import { parseJson } from './utils/jsonUtils';
 
 interface KubectlVersion {
@@ -168,7 +168,7 @@ export async function checkGitVersion(): Promise<string | undefined> {
 	const gitVersionShellResult = await getGitVersion();
 
 	if (failed(gitVersionShellResult)) {
-		telemetry.sendError(SpecificErrorEvent.GIT_NOT_INSTALLED);
+		telemetry.sendError(TelemetryErrorEventNames.GIT_NOT_INSTALLED);
 		const installButton = 'Install';
 		const confirm = await window.showErrorMessage('Please install Git.', installButton);
 		if (confirm === installButton) {

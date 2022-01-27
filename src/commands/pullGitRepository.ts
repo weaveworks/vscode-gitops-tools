@@ -5,7 +5,7 @@ import { commands, Uri, window } from 'vscode';
 import { telemetry } from '../extension';
 import { checkGitVersion } from '../install';
 import { shell } from '../shell';
-import { SpecificErrorEvent } from '../telemetry';
+import { TelemetryErrorEventNames } from '../telemetry';
 import { quoteFsPath } from '../utils/fsUtils';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 
@@ -59,7 +59,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 	const gitCloneShellResult = await shell.execWithOutput(query);
 
 	if (gitCloneShellResult.code !== 0) {
-		telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_GIT_CLONE);
+		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_GIT_CLONE);
 		window.showErrorMessage(gitCloneShellResult?.stderr || '');
 		return;
 	}
@@ -88,7 +88,7 @@ async function getLatestTagFromSemver(url: string, semver: string): Promise<stri
 	const tagsShellResult = await shell.exec(`git ls-remote --tags ${url}`);
 
 	if (tagsShellResult.code !== 0) {
-		telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_GIT_TAGS_FROM_REMOTE);
+		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_GIT_TAGS_FROM_REMOTE);
 		window.showErrorMessage(`Failed to get tags from ${url}`);
 		return;
 	}
@@ -98,7 +98,7 @@ async function getLatestTagFromSemver(url: string, semver: string): Promise<stri
 		.filter(tag => tag.length);
 
 	if (!tags.length) {
-		telemetry.sendError(SpecificErrorEvent.FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT);
+		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT);
 		window.showErrorMessage(`No tags found in ${url}`);
 		return;
 	}

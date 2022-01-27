@@ -7,7 +7,7 @@ import { telemetry } from '../extension';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
 import { shellCodeError } from '../shell';
-import { SpecificErrorEvent } from '../telemetry';
+import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { ContextTypes, setVSCodeContext } from '../vscodeContext';
 import { BucketResult } from './bucket';
@@ -49,7 +49,7 @@ class KubernetesTools {
 		const kubectl = await kubernetes.extension.kubectl.v1;
 		if (!kubectl.available) {
 			window.showErrorMessage(`Kubernetes Tools Kubectl API is unavailable: ${kubectl.reason}`);
-			telemetry.sendError(SpecificErrorEvent.KUBERNETES_TOOLS_API_UNAVAILABLE, new Error(kubectl.reason));
+			telemetry.sendError(TelemetryErrorEventNames.KUBERNETES_TOOLS_API_UNAVAILABLE, new Error(kubectl.reason));
 			return;
 		}
 		this.kubectlApi = kubectl.api;
@@ -98,7 +98,7 @@ class KubernetesTools {
 		const configShellResult = await this.invokeKubectlCommand('config view -o json');
 
 		if (configShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_KUBECTL_CONFIG);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_KUBECTL_CONFIG);
 			return {
 				succeeded: false,
 				error: [shellCodeError(configShellResult)],
@@ -119,7 +119,7 @@ class KubernetesTools {
 
 		const currentContextShellResult = await this.invokeKubectlCommand('config current-context');
 		if (currentContextShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT);
 			console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
 			setVSCodeContext(ContextTypes.NoClusterSelected, true);
 			return {
@@ -153,7 +153,7 @@ class KubernetesTools {
 
 		const setContextShellResult = await this.invokeKubectlCommand(`config use-context ${contextName}`);
 		if (setContextShellResult?.stderr) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT);
 			window.showErrorMessage(`Failed to set kubectl context to ${contextName}: ${setContextShellResult?.stderr}`);
 			return;
 		}
@@ -231,7 +231,7 @@ class KubernetesTools {
 		const podResult = await this.invokeKubectlCommand(`get pod ${nameArg} ${namespaceArg} -o json`);
 
 		if (podResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_PODS_OF_A_DEPLOYMENT);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_PODS_OF_A_DEPLOYMENT);
 			console.warn(`Failed to get pods: ${podResult?.stderr}`);
 			return;
 		}
@@ -245,7 +245,7 @@ class KubernetesTools {
 	async getKustomizations(): Promise<undefined | KustomizeResult> {
 		const kustomizationShellResult = await this.invokeKubectlCommand('get Kustomization -A -o json');
 		if (kustomizationShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_KUSTOMIZATIONS);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_KUSTOMIZATIONS);
 			console.warn(`Failed to get kubectl kustomizations: ${kustomizationShellResult?.stderr}`);
 			return;
 		}
@@ -258,7 +258,7 @@ class KubernetesTools {
 	async getHelmReleases(): Promise<undefined | HelmReleaseResult> {
 		const helmReleaseShellResult = await this.invokeKubectlCommand('get HelmRelease -A -o json');
 		if (helmReleaseShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_HELM_RELEASES);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_HELM_RELEASES);
 			console.warn(`Failed to get kubectl helm releases: ${helmReleaseShellResult?.stderr}`);
 			return;
 		}
@@ -271,7 +271,7 @@ class KubernetesTools {
 	async getGitRepositories(): Promise<undefined | GitRepositoryResult> {
 		const gitRepositoryShellResult = await this.invokeKubectlCommand('get GitRepository -A -o json');
 		if (gitRepositoryShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_GIT_REPOSITORIES);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_GIT_REPOSITORIES);
 			console.warn(`Failed to get kubectl git repositories: ${gitRepositoryShellResult?.stderr}`);
 			return;
 		}
@@ -284,7 +284,7 @@ class KubernetesTools {
 	async getHelmRepositories(): Promise<undefined | HelmRepositoryResult> {
 		const helmRepositoryShellResult = await this.invokeKubectlCommand('get HelmRepository -A -o json');
 		if (helmRepositoryShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_HELM_REPOSITORIES);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_HELM_REPOSITORIES);
 			console.warn(`Failed to get kubectl helm repositories: ${helmRepositoryShellResult?.stderr}`);
 			return;
 		}
@@ -297,7 +297,7 @@ class KubernetesTools {
 	async getBuckets(): Promise<undefined | BucketResult> {
 		const bucketShellResult = await this.invokeKubectlCommand('get Bucket -A -o json');
 		if (bucketShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_BUCKETS);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_BUCKETS);
 			console.warn(`Failed to get kubectl buckets: ${bucketShellResult?.stderr}`);
 			return;
 		}
@@ -313,7 +313,7 @@ class KubernetesTools {
 		const fluxDeploymentShellResult = await this.invokeKubectlCommand(`get deployment --namespace=flux-system ${contextArg} -o json`);
 
 		if (fluxDeploymentShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_FLUX_CONTROLLERS);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_FLUX_CONTROLLERS);
 			console.warn(`Failed to get flux controllers: ${fluxDeploymentShellResult?.stderr}`);
 			return;
 		}
@@ -347,7 +347,7 @@ class KubernetesTools {
 		const kindsShellResult = await this.invokeKubectlCommand('api-resources --verbs=list -o name');
 		if (kindsShellResult?.code !== 0) {
 			this.clusterSupportedResourceKinds = undefined;
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
 			console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
 			return;
 		}
@@ -379,7 +379,7 @@ class KubernetesTools {
 		const resourcesShellResult = await this.invokeKubectlCommand(query);
 
 		if (!resourcesShellResult || resourcesShellResult.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
 			window.showErrorMessage(`Failed to get ${workload} created resources: ${resourcesShellResult?.stderr}`);
 			return undefined;
 		}
@@ -394,7 +394,7 @@ class KubernetesTools {
 		const namespacesShellResult = await this.invokeKubectlCommand('get ns -o json');
 
 		if (namespacesShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_NAMESPACES);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_NAMESPACES);
 			window.showErrorMessage(`Failed to get namespaces ${namespacesShellResult?.stderr}`);
 			return;
 		}
@@ -433,7 +433,7 @@ class KubernetesTools {
 		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
 
 		if (nodesShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER);
 			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type.`);
 			return ClusterProvider.DetectionFailed;
 		}
@@ -466,7 +466,7 @@ class KubernetesTools {
 		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${context} --ignore-not-found -o json`);
 
 		if (configmapShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER);
 			console.warn(`Failed to get configmaps from "${context}" context to determine the cluster type.`);
 			return ClusterProvider.DetectionFailed;
 		}
@@ -546,7 +546,7 @@ class KubernetesTools {
 	async getResource(name: string, namespace: string, kind: string): Promise<undefined | KubernetesObject> {
 		const resourceShellResult = await this.invokeKubectlCommand(`get ${kind}/${name} --namespace=${namespace} -o json`);
 		if (resourceShellResult?.code !== 0) {
-			telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_RESOURCE);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_RESOURCE);
 			return;
 		}
 
