@@ -1,7 +1,9 @@
 import { window } from 'vscode';
+import { telemetry } from '../extension';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap } from '../kubernetes/kubernetesTypes';
 import { shell, shellCodeError, ShellResult } from '../shell';
+import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { askUserForAzureMetadata } from './getAzureMetadata';
 
@@ -71,6 +73,7 @@ class AzureTools {
 		}
 
 		if (configMapShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_AZ_METADATA_FROM_CONFIGMAPS);
 			window.showErrorMessage(`Failed to get Azure resource name or resource group or subscription ID. ${shellCodeError(configMapShellResult)}`);
 			return;
 		}
@@ -104,11 +107,14 @@ class AzureTools {
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
-		await this.invokeAzCommand(
+		const enableGitOpsShellResult = await this.invokeAzCommand(
 			`az k8s-extension create --name ${AzureConstants.FluxExtensionName} --extension-type microsoft.flux --scope cluster`,
 			contextName,
 			clusterProvider,
 		);
+		if (enableGitOpsShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
+		}
 	}
 
 	/**
@@ -138,11 +144,14 @@ class AzureTools {
 		)));
 
 		// delete flux extension
-		await this.invokeAzCommand(
+		const disableGitOpsShellResult = await this.invokeAzCommand(
 			`az k8s-extension delete --name ${AzureConstants.FluxExtensionName} --yes`,
 			contextName,
 			clusterProvider,
 		);
+		if (disableGitOpsShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DISABLE_GITOPS);
+		}
 	}
 
 	/**
@@ -163,6 +172,7 @@ class AzureTools {
 		);
 
 		if (configurationShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_LIST_FLUX_CONFIGURATIONS);
 			return;
 		}
 
@@ -191,7 +201,8 @@ class AzureTools {
 		);
 
 		if (createKustomizationShellResult?.code !== 0) {
-			window.showErrorMessage(createKustomizationShellResult?.stderr || '');
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_CREATE_WORKLOAD);
+			window.showErrorMessage(shellCodeError(createKustomizationShellResult));
 			return;
 		}
 	}
@@ -267,6 +278,10 @@ class AzureTools {
 			args.clusterProvider,
 		);
 
+		if (createSourceShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_CREATE_SOURCE);
+		}
+
 		if (createSourceShellResult?.code !== 0 || args.sourceKind !== 'git') {
 			return;
 		}
@@ -299,11 +314,14 @@ class AzureTools {
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
-		await this.invokeAzCommand(
+		const deleteSourceShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux delete -n ${sourceName} --yes`,
 			contextName,
 			clusterProvider,
 		);
+		if (deleteSourceShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DELETE_SOURCE);
+		}
 	}
 
 	/**
@@ -319,11 +337,14 @@ class AzureTools {
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
-		await this.invokeAzCommand(
+		const suspendShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux update -n ${sourceName} --suspend true`,
 			contextName,
 			clusterProvider,
 		);
+		if (suspendShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_SUSPEND_SOURCE);
+		}
 	}
 
 	/**
@@ -339,11 +360,14 @@ class AzureTools {
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
-		await this.invokeAzCommand(
+		const resumeShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux update -n ${sourceName} --suspend false`,
 			contextName,
 			clusterProvider,
 		);
+		if (resumeShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_RESUME_SOURCE);
+		}
 	}
 }
 
