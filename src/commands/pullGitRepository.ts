@@ -87,7 +87,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 async function getLatestTagFromSemver(url: string, semver: string): Promise<string | undefined> {
 	const tagsShellResult = await shell.exec(`git ls-remote --tags ${url}`);
 
-	if (tagsShellResult?.code !== 0) {
+	if (tagsShellResult.code !== 0) {
 		window.showWarningMessage(`Failed to get tags from ${url}`);
 		return;
 	}

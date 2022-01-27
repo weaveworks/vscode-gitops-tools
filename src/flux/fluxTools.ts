@@ -53,7 +53,7 @@ class FluxTools {
 	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
 		const result = await shell.execWithOutput('flux check', { revealOutputView: false });
 
-		if (result?.code !== 0) {
+		if (result.code !== 0) {
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_CHECK);
 			const stderr = result?.stderr;
 			if (stderr) {
@@ -119,7 +119,7 @@ class FluxTools {
 
 		const treeShellResult = await shell.exec(`flux tree kustomization ${name} -n ${namespace} -o json`);
 
-		if (treeShellResult?.code !== 0) {
+		if (treeShellResult.code !== 0) {
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_TREE);
 			window.showErrorMessage(`Failed to get resources created by the workload ${name}. ERROR: ${treeShellResult?.stderr}`);
 			return;
@@ -303,7 +303,7 @@ class FluxTools {
 	async createKustomization(kustomizationName: string, sourceName: string, kustomizationPath: string) {
 		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${kustomizationPath}" --prune=true`);
 
-		if (createKustomizationShellResult?.code !== 0) {
+		if (createKustomizationShellResult.code !== 0) {
 			window.showErrorMessage(createKustomizationShellResult.stderr);
 			telemetry.sendError(SpecificErrorEvent.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
 			return;

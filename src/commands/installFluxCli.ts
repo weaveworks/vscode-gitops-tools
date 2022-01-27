@@ -9,7 +9,7 @@ import { Errorable, failed, succeeded } from '../errorable';
 import { globalState } from '../extension';
 import { GlobalStateKey } from '../globalState';
 import { output } from '../output';
-import { Platform, shell } from '../shell';
+import { Platform, shell, shellCodeError } from '../shell';
 import { runTerminalCommand } from '../terminal';
 import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from '../utils/fsUtils';
 import { refreshAllTreeViews } from '../views/treeViews';
@@ -117,7 +117,7 @@ function checkChecksum(checksumFileContents: string, targetFileName: string, com
  */
 async function computeChecksumWindows(filePath: string, hashAlgorithm: 'MD5' | 'SHA1' | 'SHA256' | 'SHA384' | 'SHA512'): Promise<Errorable<string>> {
 	const shellResult = await shell.exec(`CertUtil -hashfile "${filePath}" ${hashAlgorithm}`);
-	if (shellResult?.code === 0) {
+	if (shellResult.code === 0) {
 		const checksum = shellResult.stdout.split('\n')[1]?.trim();
 		if (checksum) {
 			return {
@@ -286,7 +286,7 @@ export async function installFluxCli() {
 
 async function isGoFishInstalled(): Promise<Errorable<null>> {
 	const gofishVersionShellResult = await shell.exec('gofish version');
-	if (gofishVersionShellResult?.code === 0) {
+	if (gofishVersionShellResult.code === 0) {
 		return {
 			succeeded: true,
 			result: null,
@@ -294,7 +294,7 @@ async function isGoFishInstalled(): Promise<Errorable<null>> {
 	} else {
 		return {
 			succeeded: false,
-			error: [gofishVersionShellResult?.stderr || String(gofishVersionShellResult?.code)],
+			error: [shellCodeError(gofishVersionShellResult)],
 		};
 	}
 }

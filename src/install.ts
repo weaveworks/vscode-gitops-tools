@@ -29,7 +29,7 @@ export interface KubectlVersionResult {
 export async function getKubectlVersion(): Promise<Errorable<KubectlVersionResult>> {
 	const kubectlVersionShellResult = await shell.exec('kubectl version --short -o json');
 
-	if (kubectlVersionShellResult?.code === 0) {
+	if (kubectlVersionShellResult.code === 0) {
 		const version: KubectlVersionResult = parseJson(kubectlVersionShellResult.stdout);
 		return {
 			succeeded: true,
@@ -57,7 +57,7 @@ interface AzureVersion {
 export async function getAzureVersion(): Promise<Errorable<AzureVersion>> {
 	const azureVersionShellResult = await shell.exec('az version');
 
-	if (azureVersionShellResult?.code === 0) {
+	if (azureVersionShellResult.code === 0) {
 		return {
 			succeeded: true,
 			result: parseJson(azureVersionShellResult.stdout),
@@ -80,7 +80,7 @@ interface FluxVersion {
 export async function getFluxVersion(): Promise<Errorable<string>> {
 	const fluxVersionShellResult = await shell.exec('flux version --client -o json');
 
-	if (fluxVersionShellResult?.code === 0) {
+	if (fluxVersionShellResult.code === 0) {
 		const fluxVersion: FluxVersion = parseJson(fluxVersionShellResult.stdout.trim());
 		extensionState.set('fluxVersion', fluxVersion.flux);
 		return {
@@ -131,7 +131,7 @@ async function showInstallFluxNotification() {
 export async function checkFluxPrerequisites() {
 	const prerequisiteShellResult = await shell.execWithOutput('flux check --pre', { revealOutputView: false });
 
-	if (prerequisiteShellResult?.code !== 0) {
+	if (prerequisiteShellResult.code !== 0) {
 		const showOutput = 'Show Output';
 		const showOutputConfirm = await window.showWarningMessage('Flux prerequisites check failed.', showOutput);
 		if (showOutput === showOutputConfirm) {
@@ -147,7 +147,7 @@ export async function checkFluxPrerequisites() {
 export async function getGitVersion(): Promise<Errorable<string>> {
 	const gitVersionShellResult = await shell.exec('git --version');
 
-	if (gitVersionShellResult?.code === 0) {
+	if (gitVersionShellResult.code === 0) {
 		const gitVersion = gitVersionShellResult.stdout.slice('git version '.length).trim();
 		return {
 			succeeded: true,

@@ -162,6 +162,7 @@ class KubernetesTools {
 		setVSCodeContext(ContextTypes.CurrentClusterGitOpsNotEnabled, false);
 		setVSCodeContext(ContextTypes.NoSources, false);
 		setVSCodeContext(ContextTypes.NoWorkloads, false);
+		setVSCodeContext(ContextTypes.FailedToLoadClusterContexts, false);
 		this.clusterSupportedResourceKinds = undefined;
 
 		// TODO: maybe emit an event?
