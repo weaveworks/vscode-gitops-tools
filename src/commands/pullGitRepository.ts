@@ -88,7 +88,8 @@ async function getLatestTagFromSemver(url: string, semver: string): Promise<stri
 	const tagsShellResult = await shell.exec(`git ls-remote --tags ${url}`);
 
 	if (tagsShellResult.code !== 0) {
-		window.showWarningMessage(`Failed to get tags from ${url}`);
+		telemetry.sendError(SpecificErrorEvent.FAILED_TO_GET_GIT_TAGS_FROM_REMOTE);
+		window.showErrorMessage(`Failed to get tags from ${url}`);
 		return;
 	}
 
@@ -97,7 +98,8 @@ async function getLatestTagFromSemver(url: string, semver: string): Promise<stri
 		.filter(tag => tag.length);
 
 	if (!tags.length) {
-		window.showWarningMessage(`No tags found in ${url}`);
+		telemetry.sendError(SpecificErrorEvent.FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT);
+		window.showErrorMessage(`No tags found in ${url}`);
 		return;
 	}
 
