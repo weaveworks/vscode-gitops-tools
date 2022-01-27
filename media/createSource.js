@@ -12,6 +12,7 @@ const webviewTempState = {
 	clusterName: '',
 	contextName: '',
 	clusterProvider: '',
+	isClusterProviderUserOverride: false,
 };
 
 const sourceNameId = 'source-name';
@@ -229,6 +230,8 @@ window.addEventListener('message', event => {
 			webviewTempState.isAzure = message.value.isAzure;
 			webviewTempState.contextName = message.value.contextName;
 			webviewTempState.clusterName = message.value.clusterName;
+			webviewTempState.clusterProvider = message.value.clusterProvider;
+			webviewTempState.isClusterProviderUserOverride = message.value.isClusterProviderUserOverride;
 
 			if (webviewTempState.isAzure) {
 				showAzureForm();
@@ -239,7 +242,7 @@ window.addEventListener('message', event => {
 			// Update headers
 			$clusterName.textContent = `"${webviewTempState.clusterName}"`;
 			if (message.value.clusterProvider !== 'Generic') {
-				$clusteProviderHeader.textContent = `Cluster Provider: ${message.value.clusterProvider}`;
+				$clusteProviderHeader.textContent = `Cluster Provider: ${message.value.clusterProvider}${message.value.isClusterProviderUserOverride ? ' (User override)' : ''}`;
 			}
 
 			// set default values to source name/url/branch

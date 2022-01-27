@@ -16,6 +16,7 @@ interface CreateSourceUpdateWebviewContent {
 		clusterName: string;
 		contextName: string;
 		clusterProvider: string;
+		isClusterProviderUserOverride: boolean;
 		isAzure: boolean;
 		newSourceName: string;
 		newSourceUrl: string;
@@ -218,6 +219,7 @@ export class CreateSourcePanel {
 				contextName: clusterInfo.contextName,
 				clusterProvider: clusterInfo.clusterProvider,
 				isAzure: isAzureProvider(clusterInfo.clusterProvider),
+				isClusterProviderUserOverride: clusterInfo.isClusterProviderUserOverride,
 				newSourceName: gitInfo?.newRepoName || '',
 				newSourceUrl: gitInfo?.url || '',
 				newSourceBranch: gitInfo?.branch || '',

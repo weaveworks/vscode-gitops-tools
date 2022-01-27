@@ -1,6 +1,7 @@
 import { TreeItem, TreeView, window } from 'vscode';
 import { isAzureProvider } from '../azure/azureTools';
 import { Errorable, failed } from '../errorable';
+import { globalState } from '../extension';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
@@ -90,6 +91,7 @@ export interface CurrentClusterInfo {
 	contextName: string;
 	clusterName: string;
 	clusterProvider: ClusterProvider;
+	isClusterProviderUserOverride: boolean;
 	isAzure: boolean;
 }
 
@@ -123,7 +125,11 @@ export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterI
 			error: ['Failed to find current cluster name.'],
 		};
 	}
-	const currentClusterProvider = await kubernetesTools.detectClusterProvider(currentContextName);
+
+	// Pick user cluster provider override if defined
+	const clusterMetadata = globalState.getClusterMetadata(currentClusterName);
+	const isClusterProviderUserOverride = Boolean(clusterMetadata?.clusterProvider);
+	const currentClusterProvider = clusterMetadata?.clusterProvider || await kubernetesTools.detectClusterProvider(currentContextName);
 
 	return {
 		succeeded: true,
@@ -131,6 +137,7 @@ export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterI
 			clusterName: currentClusterName,
 			contextName: currentContextName,
 			clusterProvider: currentClusterProvider,
+			isClusterProviderUserOverride,
 			isAzure: isAzureProvider(currentClusterProvider),
 		},
 	};
