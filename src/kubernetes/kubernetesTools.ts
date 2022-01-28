@@ -36,7 +36,13 @@ class KubernetesTools {
 	 * Current cluster supported kubernetes resource kinds.
 	 */
 	private clusterSupportedResourceKinds?: string[];
-
+	/**
+	 * RegExp for the Error that should not be sent in telemetry.
+	 * Server doesn't have a resource type = when GitOps not enabled
+	 * No connection could be made... = when cluster not running
+	 */
+	private notAnErrorServerDoesntHaveResourceTypeRegExp = /the server doesn't have a resource type/i;
+	private notAnErrorServerNotRunning = /no connection could be made because the target machine actively refused it/i;
 	/**
 	 * Gets kubernetes tools extension kubectl api reference.
 	 * @see https://github.com/Azure/vscode-kubernetes-tools-api
@@ -245,8 +251,10 @@ class KubernetesTools {
 	async getKustomizations(): Promise<undefined | KustomizeResult> {
 		const kustomizationShellResult = await this.invokeKubectlCommand('get Kustomization -A -o json');
 		if (kustomizationShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_KUSTOMIZATIONS);
 			console.warn(`Failed to get kubectl kustomizations: ${kustomizationShellResult?.stderr}`);
+			if (kustomizationShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(kustomizationShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_KUSTOMIZATIONS);
+			}
 			return;
 		}
 		return parseJson(kustomizationShellResult.stdout);
@@ -258,8 +266,10 @@ class KubernetesTools {
 	async getHelmReleases(): Promise<undefined | HelmReleaseResult> {
 		const helmReleaseShellResult = await this.invokeKubectlCommand('get HelmRelease -A -o json');
 		if (helmReleaseShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_HELM_RELEASES);
 			console.warn(`Failed to get kubectl helm releases: ${helmReleaseShellResult?.stderr}`);
+			if (helmReleaseShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(helmReleaseShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_HELM_RELEASES);
+			}
 			return;
 		}
 		return parseJson(helmReleaseShellResult.stdout);
@@ -271,8 +281,10 @@ class KubernetesTools {
 	async getGitRepositories(): Promise<undefined | GitRepositoryResult> {
 		const gitRepositoryShellResult = await this.invokeKubectlCommand('get GitRepository -A -o json');
 		if (gitRepositoryShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_GIT_REPOSITORIES);
 			console.warn(`Failed to get kubectl git repositories: ${gitRepositoryShellResult?.stderr}`);
+			if (gitRepositoryShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(gitRepositoryShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_GIT_REPOSITORIES);
+			}
 			return;
 		}
 		return parseJson(gitRepositoryShellResult.stdout);
@@ -284,8 +296,10 @@ class KubernetesTools {
 	async getHelmRepositories(): Promise<undefined | HelmRepositoryResult> {
 		const helmRepositoryShellResult = await this.invokeKubectlCommand('get HelmRepository -A -o json');
 		if (helmRepositoryShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_HELM_REPOSITORIES);
 			console.warn(`Failed to get kubectl helm repositories: ${helmRepositoryShellResult?.stderr}`);
+			if (helmRepositoryShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(helmRepositoryShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_HELM_REPOSITORIES);
+			}
 			return;
 		}
 		return parseJson(helmRepositoryShellResult.stdout);
@@ -297,8 +311,10 @@ class KubernetesTools {
 	async getBuckets(): Promise<undefined | BucketResult> {
 		const bucketShellResult = await this.invokeKubectlCommand('get Bucket -A -o json');
 		if (bucketShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_BUCKETS);
 			console.warn(`Failed to get kubectl buckets: ${bucketShellResult?.stderr}`);
+			if (bucketShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(bucketShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_BUCKETS);
+			}
 			return;
 		}
 		return parseJson(bucketShellResult.stdout);
@@ -313,8 +329,10 @@ class KubernetesTools {
 		const fluxDeploymentShellResult = await this.invokeKubectlCommand(`get deployment --namespace=flux-system ${contextArg} -o json`);
 
 		if (fluxDeploymentShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_FLUX_CONTROLLERS);
 			console.warn(`Failed to get flux controllers: ${fluxDeploymentShellResult?.stderr}`);
+			if (fluxDeploymentShellResult?.stderr && !this.notAnErrorServerNotRunning.test(fluxDeploymentShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_FLUX_CONTROLLERS);
+			}
 			return;
 		}
 
@@ -433,8 +451,10 @@ class KubernetesTools {
 		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
 
 		if (nodesShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER);
-			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type.`);
+			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type. ${nodesShellResult?.stderr}`);
+			if (nodesShellResult?.stderr && !this.notAnErrorServerNotRunning.test(nodesShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_NODES_TO_DETECT_AKS_CLUSTER);
+			}
 			return ClusterProvider.DetectionFailed;
 		}
 
@@ -466,8 +486,10 @@ class KubernetesTools {
 		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${context} --ignore-not-found -o json`);
 
 		if (configmapShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER);
-			console.warn(`Failed to get configmaps from "${context}" context to determine the cluster type.`);
+			if (configmapShellResult?.stderr && !this.notAnErrorServerNotRunning.test(configmapShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_CONFIGMAPS_TO_DETECT_ARC_CLUSTER);
+			}
+			console.warn(`Failed to get configmaps from "${context}" context to determine the cluster type. ${configmapShellResult?.stderr}`);
 			return ClusterProvider.DetectionFailed;
 		}
 
