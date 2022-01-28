@@ -70,6 +70,11 @@
 	"contributes": {
 		"commands": [
 			{
+				"command": "gitops.kubectl.setCurrentContext",
+				"title": "Set as Current Context",
+				"category": "GitOps"
+			},
+			{
 				"command": "gitops.showInstalledVersions",
 				"title": "Show Installed Versions",
 				"category": "GitOps"
@@ -338,20 +343,29 @@
 			],
 			"view/item/context": [
 				{
-					"command": "gitops.flux.check",
-					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/"
-				},
-				{
-					"command": "gitops.setClusterProvider",
-					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/"
+					"command": "gitops.kubectl.setCurrentContext",
+					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/",
+					"group": "0@1"
 				},
 				{
 					"command": "gitops.flux.install",
-					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsNotEnabled;/"
+					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsNotEnabled;/",
+					"group": "0@2"
 				},
 				{
 					"command": "gitops.flux.uninstall",
-					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsEnabled;/"
+					"when": "view == gitops.views.clusters && viewItem =~ /clusterGitOpsEnabled;/",
+					"group": "0@2"
+				},
+				{
+					"command": "gitops.flux.check",
+					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/",
+					"group": "0@3"
+				},
+				{
+					"command": "gitops.setClusterProvider",
+					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/",
+					"group": "0@4"
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
@@ -478,6 +492,10 @@
 				},
 				{
 					"command": "gitops.flux.trace",
+					"when": "never"
+				},
+				{
+					"command": "gitops.kubectl.setCurrentContext",
 					"when": "never"
 				},
 				{

@@ -125,7 +125,7 @@ export class TreeNode extends TreeItem {
 	}
 
 	// @ts-ignore
-	get command(): Command {
+	get command(): Command | undefined {
 		// Set click event handler to load kubernetes resource as yaml file in editor.
 		if (this.resource) {
 			const resourceUri = kubernetesTools.getResourceUri(

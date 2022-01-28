@@ -1,12 +1,11 @@
-import { MarkdownString, window } from 'vscode';
-import { CommandId } from '../../commands';
-import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
+import { MarkdownString } from 'vscode';
 import { globalState } from '../../extension';
 import { extensionState } from '../../extensionState';
 import { KubernetesCluster, KubernetesContextWithCluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
+import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 
@@ -73,15 +72,6 @@ export class ClusterContextNode extends TreeNode {
 		this.description = kubernetesContext.context.clusterInfo?.cluster.server;
 
 		this.setIcon('cloud');
-	}
-
-	get command() {
-		// set current context command to change selected context
-		return {
-			command: CommandId.SetCurrentKubernetesContext,
-			arguments: [this.contextName],
-			title: 'Set current context',
-		};
 	}
 
 	/**
