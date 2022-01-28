@@ -134,6 +134,10 @@ export class ClusterContextNode extends TreeNode {
 			);
 		}
 
+		result.push(
+			this.isCurrent ? NodeContext.CurrentCluster : NodeContext.NotCurrentCluster,
+		);
+
 		return result;
 	}
 

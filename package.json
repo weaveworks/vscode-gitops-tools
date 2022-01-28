@@ -344,7 +344,7 @@
 			"view/item/context": [
 				{
 					"command": "gitops.kubectl.setCurrentContext",
-					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/",
+					"when": "view == gitops.views.clusters && viewItem =~ /cluster;/ && viewItem =~ /notCurrentCluster;/",
 					"group": "0@1"
 				},
 				{
