@@ -57,11 +57,13 @@ input[type="checkbox"] + label {
 }
 
 .cli-argument {
-	background-color: rgba(255, 255, 255, 0.08);
+	background-color: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.15);
 	border-radius: 0.2em;
 	padding: 0 0.3em;
 }
 
 .vscode-light .cli-argument {
-	background-color: rgba(0, 0, 0, 0.05);
+	background-color: rgba(0, 0, 0, 0.02);
+	border-color: rgba(0, 0, 0, 0.15);
 }
