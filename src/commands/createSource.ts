@@ -59,6 +59,8 @@ export async function createGitRepositoryAzureCluster(args: Parameters<typeof az
 		clusterProvider: args.clusterProvider as AzureClusterProvider,
 		contextName: args.contextName,
 		sourceName: args.sourceName,
+		sourceScope: args.sourceScope,
+		sourceNamespace: args.sourceNamespace,
 		sourceKind: 'git',
 		url: args.url,
 		branch: args.branch,

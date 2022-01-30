@@ -58,6 +58,8 @@ export interface CreateSourceAzureCluster {
 		contextName: string;
 		clusterProvider: AzureClusterProvider;
 		sourceKind: 'git';
+		sourceScope: string;
+		sourceNamespace: string;
 		sourceName: string;
 		url: string;
 		branch: string;

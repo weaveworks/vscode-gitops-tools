@@ -214,6 +214,8 @@ class AzureTools {
 	async createSourceGit(args: {
 		sourceName: string;
 		sourceKind: 'git';
+		sourceScope?: string;
+		sourceNamespace?: string;
 		contextName: string;
 		clusterProvider: AzureClusterProvider;
 		url: string;
@@ -242,6 +244,8 @@ class AzureTools {
 		kustomizationForce?: boolean;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
+		const scopeArg = args.sourceScope ? ` --scope "${args.sourceScope}"` : '';
+		const namespaceArg = args.sourceNamespace ? ` --namespace "${args.sourceNamespace}"` : '';
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
 		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
 		const semverArg = args.semver ? ` --semver "${args.semver}"` : '';
@@ -273,7 +277,7 @@ class AzureTools {
 		}
 
 		const createSourceShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux create -n ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${kustomizationPart}`,
+			`az k8s-configuration flux create -n ${args.sourceName}${urlArg}${scopeArg}${namespaceArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${kustomizationPart}`,
 			args.contextName,
 			args.clusterProvider,
 		);

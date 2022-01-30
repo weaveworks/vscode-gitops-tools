@@ -60,6 +60,14 @@
 
 <div id="azure-form" hidden>
 	<div>
+		<label class="header-label" for="az-scope-cluster">Specify scope of the operator to be 'namespace' or 'cluster' <code class="cli-argument">--scope</code></label>
+		<input type="radio" id="az-scope-cluster" name="az-scope" value="cluster" checked> <label for="az-scope-cluster">cluster</label>
+		<input type="radio" id="az-scope-namespace" name="az-scope" value="namespace"> <label for="az-scope-namespace">namespace</label>
+	</div>
+	<div>
+		<label class="header-label" for="az-namespace">Namespace to deploy the configuration <code class="cli-argument">--namespace</code></label><input type="text" id="az-namespace" value="default" />
+	</div>
+	<div>
 		<label class="header-label" for="az-url">URL of the git repo source to reconcile <code class="cli-argument">--url</code></label><input type="text" id="az-url" />
 	</div>
 	<div>
@@ -78,7 +86,7 @@
 		<label class="header-label" for="az-interval">Source sync interval (in minutes) <code class="cli-argument">--interval</code></label><input type="text" id="az-interval" />
 	</div>
 	<div>
-			<label class="header-label" for="az-timeout">Source sync timeout (in minutes) <code class="cli-argument">--timeout</code></label><input type="text" id="az-timeout" />
+		<label class="header-label" for="az-timeout">Source sync timeout (in minutes) <code class="cli-argument">--timeout</code></label><input type="text" id="az-timeout" />
 	</div>
 	<div>
 		<label class="header-label" for="az-https-ca-cert">Base64-encoded HTTPS CA certificate for TLS communication with private repository sync <code class="cli-argument">--https-ca-cert</code></label><input type="text" id="az-https-ca-cert" />

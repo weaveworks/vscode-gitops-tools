@@ -40,6 +40,8 @@ const fluxSecretRefId = 'secret-ref';
 // Azure cluster input ids
 const azureUrlId = 'az-url';
 const azureBranchId = 'az-branch';
+const azureScopeId = 'az-scope';
+const azureNamespaceId = 'az-namespace';
 const azureTagId = 'az-tag';
 const azureSemverId = 'az-tag-semver';
 const azureCommitId = 'az-commit';
@@ -89,6 +91,8 @@ $submitButton.addEventListener('click', () => {
 				clusterProvider: webviewTempState.clusterProvider,
 				sourceName: getInputValue(sourceNameId),
 				sourceKind: 'git',
+				sourceScope: sendIfNotDefaultValue('az-scope', getRadioValue(azureScopeId)),
+				sourceNamespace: sendIfNotDefaultValue('az-namespace', getInputValue(azureNamespaceId)),
 				url: getInputValue(azureUrlId),
 				branch: getInputValue(azureBranchId),
 				tag: getInputValue(azureTagId),
@@ -205,7 +209,7 @@ function getCheckboxValue(checkboxId) {
 /**
  * Don't send default input values.
  *
- * @param {'git-implementation' | 'ssh-key-algorithm' | 'ssh-ecdsa-curve' | 'ssh-rsa-bits'} inputName
+ * @param {'git-implementation' | 'ssh-key-algorithm' | 'ssh-ecdsa-curve' | 'ssh-rsa-bits' | 'az-scope' | 'az-namespace'} inputName
  * @param {string} value
  */
 function sendIfNotDefaultValue(inputName, value) {
@@ -213,7 +217,9 @@ function sendIfNotDefaultValue(inputName, value) {
 		(inputName === 'git-implementation' && value === 'go-git') ||
 		(inputName === 'ssh-key-algorithm' && value === 'ecdsa') ||
 		(inputName === 'ssh-ecdsa-curve' && value === 'p384') ||
-		(inputName === 'ssh-rsa-bits' && value === '2048')
+		(inputName === 'ssh-rsa-bits' && value === '2048') ||
+		(inputName === 'az-scope' && value === 'cluster') ||
+		(inputName === 'az-namespace' && value === 'default')
 	) {
 		return '';
 	}
