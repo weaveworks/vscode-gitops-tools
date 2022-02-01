@@ -1,9 +1,11 @@
 import { readFileSync } from 'fs';
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
-import { AzureClusterProvider, isAzureProvider } from '../azure/azureTools';
-import { createGitRepositoryAzureCluster, createGitRepositoryGenericCluster } from '../commands/createSource';
+import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { createBucketAzureCluster, createGitRepositoryAzureCluster, createGitRepositoryGenericCluster } from '../commands/createSource';
 import { asAbsolutePath } from '../extensionContext';
+import { fluxTools } from '../flux/fluxTools';
 import { GitInfo } from '../git/getOpenedFolderGitInfo';
+import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { CurrentClusterInfo } from '../views/treeViews';
 import { getNonce, getWebviewOptions } from './webviewUtils';
 
@@ -15,7 +17,7 @@ interface CreateSourceUpdateWebviewContent {
 	value: {
 		clusterName: string;
 		contextName: string;
-		clusterProvider: string;
+		clusterProvider: `${ClusterProvider}`;
 		isClusterProviderUserOverride: boolean;
 		isAzure: boolean;
 		newSourceName: string;
@@ -24,68 +26,26 @@ interface CreateSourceUpdateWebviewContent {
 	};
 }
 /**
- * Message sent from webview to create a source on a generic cluster
+ * Message sent from webview to create GitRepository source on a generic cluster
  */
-export interface CreateSourceGenericCluster {
-	type: 'createSourceGenericCluster';
-	value: {
-		contextName: string;
-		sourceName: string;
-		url: string;
-		branch: string;
-		tag: string;
-		semver: string;
-		interval: string;
-		timeout: string;
-		caFile: string;
-		privateKeyFile: string;
-		username: string;
-		password: string;
-		secretRef: string;
-		gitImplementation: string;
-		recurseSubmodules: boolean;
-		sshKeyAlgorithm: string;
-		sshEcdsaCurve: string;
-		sshRsaBits: string;
-	};
+export interface CreateSourceGitGenericCluster {
+	type: 'createSourceGitGenericCluster';
+	value: Parameters<typeof fluxTools['createSourceGit']>[0];
+}
+
+/**
+ * Message sent from webview to create GitRepository source on Azure cluster
+ */
+export interface CreateSourceGitAzureCluster {
+	type: 'createSourceGitAzureCluster';
+	value: Parameters<typeof azureTools['createSourceGit']>[0];
 }
 /**
- * Message sent from webview to create source on Azure cluster
+ * Message sent from webview to create Bucket source on Azure cluster
  */
-export interface CreateSourceAzureCluster {
-	type: 'createSourceAzureCluster';
-	value: {
-		contextName: string;
-		clusterProvider: AzureClusterProvider;
-		sourceKind: 'git';
-		sourceScope: string;
-		sourceNamespace: string;
-		sourceName: string;
-		url: string;
-		branch: string;
-		tag: string;
-		semver: string;
-		commit: string;
-		interval: string;
-		timeout: string;
-		caCert: string;
-		caCertFile: string;
-		httpsKey: string;
-		httpsUser: string;
-		knownHosts: string;
-		knownHostsFile: string;
-		localAuthRef: string;
-		sshPrivateKey: string;
-		sshPrivateKeyFile: string;
-		kustomizationName: string;
-		kustomizationPath: string;
-		kustomizationDependsOn: string;
-		kustomizationTimeout: string;
-		kustomizationSyncInterval: string;
-		kustomizationRetryInterval: string;
-		kustomizationPrune: boolean;
-		kustomizationForce: boolean;
-	};
+export interface CreateSourceBucketAzureCluster {
+	type: 'createSourceBucketAzureCluster';
+	value: Parameters<typeof azureTools['createSourceBucket']>[0];
 }
 /**
  * Message sent from webview to show VSCode notificaion
@@ -105,7 +65,7 @@ export interface WebviewLoaded {
 /** Message sent from Extension to Webview */
 export type MessageToWebview = CreateSourceUpdateWebviewContent;
 /** Message sent from Webview to Extension */
-export type MessageFromWebview = CreateSourceGenericCluster | CreateSourceAzureCluster | ShowNotification | WebviewLoaded;
+export type MessageFromWebview = CreateSourceGitGenericCluster | CreateSourceGitAzureCluster | CreateSourceBucketAzureCluster | ShowNotification | WebviewLoaded;
 
 /**
  * Manages create source webview panel.
@@ -169,12 +129,16 @@ export class CreateSourcePanel {
 		// Handle messages from the webview
 		this._panel.webview.onDidReceiveMessage(async (message: MessageFromWebview) => {
 			switch (message.type) {
-				case 'createSourceGenericCluster': {
+				case 'createSourceGitGenericCluster': {
 					await createGitRepositoryGenericCluster(message.value);
 					break;
 				}
-				case 'createSourceAzureCluster': {
+				case 'createSourceGitAzureCluster': {
 					await createGitRepositoryAzureCluster(message.value);
+					break;
+				}
+				case 'createSourceBucketAzureCluster': {
+					await createBucketAzureCluster(message.value);
 					break;
 				}
 				case 'showNotification': {
@@ -280,21 +244,8 @@ export class CreateSourcePanel {
 			</head>
 			<body>
 				<main class="app">
-					<h2>Create Source on the <code id="cluster-name">""</code> cluster</h2>
-					<h3 id="cluster-provider"></h3>
-					<hr>
-					<div>
-						<label class="header-label" for="source-name">Source Name</label>
-						<input type="text" id="source-name">
-					</div>
-					<div>
-						<label class="header-label" for="git">Source Kind <code></code></label>
-						<input type="radio" id="git" name="kind" value="git" checked> <label for="git">Git Repository</label>
-					</div>
 					${readFileSync(asAbsolutePath('./media/createSource.html').fsPath).toString()}
-					<button type="button" id="create-source" class="submit-button">Create</button>
 				</main>
-
 				<script nonce="${nonce}" src="${scriptUri}" defer></script>
 			</body>
 			</html>`;

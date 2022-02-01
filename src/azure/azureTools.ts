@@ -213,7 +213,6 @@ class AzureTools {
 	 */
 	async createSourceGit(args: {
 		sourceName: string;
-		sourceKind: 'git';
 		sourceScope?: string;
 		sourceNamespace?: string;
 		contextName: string;
@@ -262,31 +261,14 @@ class AzureTools {
 		const sshPrivateKeyArg = args.sshPrivateKey ? ` --ssh-private-key "${args.sshPrivateKey}"` : '';
 		const sshPrivateKeyFileArg = args.sshPrivateKeyFile ? ` --ssh-private-key-file "${args.sshPrivateKeyFile}"` : '';
 
-		let kustomizationPart = '';
-		const kustomizationName = args.kustomizationName ? ` name="${args.kustomizationName}"` : '';
-		const kustomizationPath = args.kustomizationPath ? ` path="${args.kustomizationPath}"` : '';
-		const kustomizationDependsOn = args.kustomizationDependsOn ? ` depends_on="${args.kustomizationDependsOn}"` : '';
-		const kustomizationTimeout = args.kustomizationTimeout ? ` timeout="${args.kustomizationTimeout}"` : '';
-		const kustomizationSyncInterval = args.kustomizationSyncInterval ? ` sync_interval="${args.kustomizationSyncInterval}"` : '';
-		const kustomizationRetryInterval = args.kustomizationRetryInterval ? ` retry_interval="${args.kustomizationRetryInterval}"` : '';
-		const kustomizationPrune = args.kustomizationPrune ? ' prune=true' : '';
-		const kustomizationForce = args.kustomizationForce ? ' force=true' : '';
-
-		if (kustomizationName || kustomizationPath || kustomizationDependsOn || kustomizationTimeout || kustomizationSyncInterval || kustomizationRetryInterval || kustomizationPrune || kustomizationForce) {
-			kustomizationPart = ` --kustomization${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
-		}
-
 		const createSourceShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux create -n ${args.sourceName}${urlArg}${scopeArg}${namespaceArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${kustomizationPart}`,
+			`az k8s-configuration flux create --name ${args.sourceName}${urlArg}${scopeArg}${namespaceArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${this.makeKustomizationQueryPiece(args)}`,
 			args.contextName,
 			args.clusterProvider,
 		);
 
 		if (createSourceShellResult?.code !== 0) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_CREATE_SOURCE);
-		}
-
-		if (createSourceShellResult?.code !== 0 || args.sourceKind !== 'git') {
 			return;
 		}
 
@@ -303,6 +285,74 @@ class AzureTools {
 		return {
 			deployKey,
 		};
+	}
+
+	/**
+	 * Create bucket
+	 */
+	async createSourceBucket(args: {
+		url: string;
+		configurationName: string;
+		bucketName: string;
+		contextName: string;
+		clusterProvider: AzureClusterProvider;
+		sourceScope?: string;
+		sourceNamespace?: string;
+		accessKey: string;
+		secretKey: string;
+		insecure: boolean;
+		kustomizationName?: string;
+		kustomizationPath?: string;
+		kustomizationDependsOn?: string;
+		kustomizationTimeout?: string;
+		kustomizationSyncInterval?: string;
+		kustomizationRetryInterval?: string;
+		kustomizationPrune?: boolean;
+		kustomizationForce?: boolean;
+	}) {
+		const bucketNameArg = ` --bucket-name "${args.bucketName}"`;
+		const urlArg = ` --url "${args.url}"`;
+		const scopeArg = args.sourceScope ? ` --scope "${args.sourceScope}"` : '';
+		const namespaceArg = args.sourceNamespace ? ` --namespace "${args.sourceNamespace}"` : '';
+		const accessKeyArg = args.accessKey ? ` --bucket-access-key "${args.accessKey}"` : '';
+		const secretKeyArg = args.secretKey ? ` --bucket-secret-key "${args.secretKey}"` : '';
+		const insecureArg = args.insecure ? ' --bucket-insecure' : '';
+
+		const createBucketShellResult = await this.invokeAzCommand(
+			`az k8s-configuration flux create --kind bucket --name ${args.configurationName}${scopeArg}${namespaceArg}${bucketNameArg}${urlArg}${accessKeyArg}${secretKeyArg}${insecureArg}${this.makeKustomizationQueryPiece(args)}`,
+			args.contextName,
+			args.clusterProvider,
+		);
+	}
+
+	/**
+	 * Compose Kustomization part of the query when creating a source.
+	 */
+	private makeKustomizationQueryPiece(args: {
+		kustomizationName?: string;
+		kustomizationPath?: string;
+		kustomizationDependsOn?: string;
+		kustomizationTimeout?: string;
+		kustomizationSyncInterval?: string;
+		kustomizationRetryInterval?: string;
+		kustomizationPrune?: boolean;
+		kustomizationForce?: boolean;
+	}): string {
+		let kustomizationPart = '';
+		const kustomizationName = args.kustomizationName ? ` name="${args.kustomizationName}"` : '';
+		const kustomizationPath = args.kustomizationPath ? ` path="${args.kustomizationPath}"` : '';
+		const kustomizationDependsOn = args.kustomizationDependsOn ? ` depends_on="${args.kustomizationDependsOn}"` : '';
+		const kustomizationTimeout = args.kustomizationTimeout ? ` timeout="${args.kustomizationTimeout}"` : '';
+		const kustomizationSyncInterval = args.kustomizationSyncInterval ? ` sync_interval="${args.kustomizationSyncInterval}"` : '';
+		const kustomizationRetryInterval = args.kustomizationRetryInterval ? ` retry_interval="${args.kustomizationRetryInterval}"` : '';
+		const kustomizationPrune = args.kustomizationPrune ? ' prune=true' : '';
+		const kustomizationForce = args.kustomizationForce ? ' force=true' : '';
+
+		if (kustomizationName || kustomizationPath || kustomizationDependsOn || kustomizationTimeout || kustomizationSyncInterval || kustomizationRetryInterval || kustomizationPrune || kustomizationForce) {
+			kustomizationPart = ` --kustomization${kustomizationName}${kustomizationPath}${kustomizationDependsOn}${kustomizationTimeout}${kustomizationSyncInterval}${kustomizationRetryInterval}${kustomizationPrune}${kustomizationForce}`;
+		}
+
+		return kustomizationPart;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window } from 'vscode';
-import { AzureClusterProvider, azureTools } from '../azure/azureTools';
+import { azureTools } from '../azure/azureTools';
 import { CommandId } from '../commands';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
@@ -22,25 +22,7 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 		kind: KubernetesObjectKinds.GitRepository,
 	});
 
-	const deployKey = await fluxTools.createSourceGit({
-		sourceName: args.sourceName,
-		url: args.url,
-		branch: args.branch,
-		semver: args.semver,
-		tag: args.tag,
-		interval: args.interval,
-		timeout: args.timeout,
-		caFile: args.caFile,
-		username: args.username,
-		password: args.password,
-		privateKeyFile: args.privateKeyFile,
-		secretRef: args.secretRef,
-		gitImplementation: args.gitImplementation,
-		recurseSubmodules: args.recurseSubmodules,
-		sshKeyAlgorithm: args.sshKeyAlgorithm,
-		sshEcdsaCurve: args.sshEcdsaCurve,
-		sshRsaBits: args.sshRsaBits,
-	});
+	const deployKey = await fluxTools.createSourceGit(args);
 
 	setTimeout(() => {
 		// Wait a bit for the repository to have a failed state in case of SSH url
@@ -55,38 +37,7 @@ export async function createGitRepositoryAzureCluster(args: Parameters<typeof az
 		kind: KubernetesObjectKinds.GitRepository,
 	});
 
-	const deployKey = await azureTools.createSourceGit({
-		clusterProvider: args.clusterProvider as AzureClusterProvider,
-		contextName: args.contextName,
-		sourceName: args.sourceName,
-		sourceScope: args.sourceScope,
-		sourceNamespace: args.sourceNamespace,
-		sourceKind: 'git',
-		url: args.url,
-		branch: args.branch,
-		tag: args.tag,
-		semver: args.semver,
-		commit: args.commit,
-		interval: args.interval,
-		timeout: args.timeout,
-		caCert: args.caCert,
-		caCertFile: args.caCertFile,
-		httpsUser: args.httpsUser,
-		httpsKey: args.httpsKey,
-		knownHosts: args.knownHosts,
-		knownHostsFile: args.knownHostsFile,
-		localAuthRef: args.localAuthRef,
-		sshPrivateKey: args.sshPrivateKey,
-		sshPrivateKeyFile: args.sshPrivateKeyFile,
-		kustomizationName: args.kustomizationName,
-		kustomizationPath: args.kustomizationPath,
-		kustomizationDependsOn: args.kustomizationDependsOn,
-		kustomizationTimeout: args.kustomizationTimeout,
-		kustomizationSyncInterval: args.kustomizationSyncInterval,
-		kustomizationRetryInterval: args.kustomizationRetryInterval,
-		kustomizationPrune: args.kustomizationPrune,
-		kustomizationForce: args.kustomizationForce,
-	});
+	const deployKey = await azureTools.createSourceGit(args);
 
 	setTimeout(() => {
 		// Wait a bit for the repository to have a failed state in case of SSH url
@@ -94,6 +45,20 @@ export async function createGitRepositoryAzureCluster(args: Parameters<typeof az
 		refreshWorkloadsTreeView();
 	}, 1000);
 	showDeployKeyNotificationIfNeeded(args.url, deployKey?.deployKey);
+}
+
+export async function createBucketAzureCluster(args: Parameters<typeof azureTools['createSourceBucket']>[0]) {
+
+	telemetry.send(TelemetryEventNames.CreateSource, {
+		kind: KubernetesObjectKinds.Bucket,
+	});
+
+	await azureTools.createSourceBucket(args);
+
+	setTimeout(() => {
+		refreshSourcesTreeView();
+		refreshWorkloadsTreeView();
+	}, 1000);
 }
 
 /**

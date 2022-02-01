@@ -1,4 +1,12 @@
+<h2>Create Source on the <code id="cluster-name">""</code> cluster</h2>
+<h3 id="cluster-provider"></h3>
+<hr>
+
+
 <div id="generic-form" hidden>
+	<div>
+		<label class="header-label" for="git-source-name">Source Name</label><input type="text" id="git-source-name">
+	</div>
 	<div>
 		<label class="header-label" for="url">Git repository url <code class="cli-argument">--url</code></label><input type="text" id="url" />
 	</div>
@@ -59,6 +67,7 @@
 
 
 <div id="azure-form" hidden>
+
 	<div>
 		<label class="header-label" for="az-scope-cluster">Specify scope of the operator to be 'namespace' or 'cluster' <code class="cli-argument">--scope</code></label>
 		<input type="radio" id="az-scope-cluster" name="az-scope" value="cluster" checked> <label for="az-scope-cluster">cluster</label>
@@ -68,55 +77,83 @@
 		<label class="header-label" for="az-namespace">Namespace to deploy the configuration <code class="cli-argument">--namespace</code></label><input type="text" id="az-namespace" value="default" />
 	</div>
 	<div>
-		<label class="header-label" for="az-url">URL of the git repo source to reconcile <code class="cli-argument">--url</code></label><input type="text" id="az-url" />
+		<label class="header-label" for="az-configuration-name">Name of the flux configuration <code class="cli-argument">--name</code></label><input type="text" id="az-configuration-name" />
 	</div>
 	<div>
-		<label class="header-label" for="az-branch">Branch within the git source to reconcile with the cluster <code class="cli-argument">--branch</code></label><input type="text" id="az-branch" />
+		<label class="header-label" for="az-kind-git">Source Kind <code class="cli-argument">--kind</code></label>
+		<input type="radio" id="az-kind-git" name="az-kind" value="git" checked> <label for="az-kind-git">Git Repository</label>
+		<input type="radio" id="az-kind-bucket" name="az-kind" value="bucket"> <label for="az-kind-bucket">Bucket</label>
 	</div>
-	<div>
-			<label class="header-label" for="az-tag">Tag within the git source to reconcile with the cluster <code class="cli-argument">--tag</code></label><input type="text" id="az-tag" />
+
+
+	<div id="az-source-git-form">
+		<div>
+			<label class="header-label" for="az-url">URL of the git repo source to reconcile <code class="cli-argument">--url</code></label><input type="text" id="az-url" />
+		</div>
+		<div>
+			<label class="header-label" for="az-branch">Branch within the git source to reconcile with the cluster <code class="cli-argument">--branch</code></label><input type="text" id="az-branch" />
+		</div>
+		<div>
+				<label class="header-label" for="az-tag">Tag within the git source to reconcile with the cluster <code class="cli-argument">--tag</code></label><input type="text" id="az-tag" />
+		</div>
+		<div>
+			<label class="header-label" for="az-tag-semver">Git tag semver range <code class="cli-argument">--semver</code></label><input type="text" id="az-tag-semver" />
+		</div>
+		<div>
+			<label class="header-label" for="az-commit">Commit within the git source to reconcile with the cluster <code class="cli-argument">--commit</code></label><input type="text" id="az-commit" />
+		</div>
+		<div>
+			<label class="header-label" for="az-interval">Source sync interval (in minutes) <code class="cli-argument">--interval</code></label><input type="text" id="az-interval" />
+		</div>
+		<div>
+			<label class="header-label" for="az-timeout">Source sync timeout (in minutes) <code class="cli-argument">--timeout</code></label><input type="text" id="az-timeout" />
+		</div>
+		<div>
+			<label class="header-label" for="az-https-ca-cert">Base64-encoded HTTPS CA certificate for TLS communication with private repository sync <code class="cli-argument">--https-ca-cert</code></label><input type="text" id="az-https-ca-cert" />
+		</div>
+		<div>
+			<label class="header-label" for="az-https-ca-cert-file">File path to HTTPS CA certificate file for TLS communication with private repository sync <code class="cli-argument">--https-ca-cert-file</code></label>
+				<input type="text" id="az-https-ca-cert-file" />
+		</div>
+		<div>
+			<label class="header-label" for="az-https-key">HTTPS token/password for private repository sync <code class="cli-argument">--https-key</code></label><input type="text" id="az-https-key" />
+		</div>
+		<div>
+			<label class="header-label" for="az-https-user">HTTPS username for private repository sync <code class="cli-argument">--https-user</code></label><input type="text" id="az-https-user" />
+		</div>
+		<div>
+			<label class="header-label" for="az-known-hosts">Base64-encoded known_hosts data containing public SSH keys required to access private Git instances <code class="cli-argument">--known-hosts</code></label><input type="text" id="az-known-hosts" />
+		</div>
+		<div>
+			<label class="header-label" for="az-known-hosts-file">File path to known_hosts contents containing public SSH keys required to access private Git instances <code class="cli-argument">--known-hosts-file</code></label>
+				<input type="text" id="az-known-hosts-file" />
+		</div>
+		<div>
+			<label class="header-label" for="az-local-auth-ref">Local reference to a kubernetes secret in the configuration namespace to use for communication to the source <code class="cli-argument">--local-auth-ref</code></label>
+				<input type="text" id="az-local-auth-ref" />
+		</div>
+		<div>
+			<label class="header-label" for="az-ssh-private-key">Base64-encoded private ssh key for private repository sync <code class="cli-argument">--ssh-private-key</code></label><input type="text" id="az-ssh-private-key" />
+		</div>
+		<div>
+			<label class="header-label" for="az-ssh-private-key-file">File path to private ssh key for private repository sync <code class="cli-argument">--ssh-private-key-file</code></label><input type="text" id="az-ssh-private-key-file" />
+		</div>
 	</div>
-	<div>
-		<label class="header-label" for="az-tag-semver">Git tag semver range <code class="cli-argument">--semver</code></label><input type="text" id="az-tag-semver" />
-	</div>
-	<div>
-		<label class="header-label" for="az-commit">Commit within the git source to reconcile with the cluster <code class="cli-argument">--commit</code></label><input type="text" id="az-commit" />
-	</div>
-	<div>
-		<label class="header-label" for="az-interval">Source sync interval (in minutes) <code class="cli-argument">--interval</code></label><input type="text" id="az-interval" />
-	</div>
-	<div>
-		<label class="header-label" for="az-timeout">Source sync timeout (in minutes) <code class="cli-argument">--timeout</code></label><input type="text" id="az-timeout" />
-	</div>
-	<div>
-		<label class="header-label" for="az-https-ca-cert">Base64-encoded HTTPS CA certificate for TLS communication with private repository sync <code class="cli-argument">--https-ca-cert</code></label><input type="text" id="az-https-ca-cert" />
-	</div>
-	<div>
-		<label class="header-label" for="az-https-ca-cert-file">File path to HTTPS CA certificate file for TLS communication with private repository sync <code class="cli-argument">--https-ca-cert-file</code></label>
-			<input type="text" id="az-https-ca-cert-file" />
-	</div>
-	<div>
-		<label class="header-label" for="az-https-key">HTTPS token/password for private repository sync <code class="cli-argument">--https-key</code></label><input type="text" id="az-https-key" />
-	</div>
-	<div>
-		<label class="header-label" for="az-https-user">HTTPS username for private repository sync <code class="cli-argument">--https-user</code></label><input type="text" id="az-https-user" />
-	</div>
-	<div>
-		<label class="header-label" for="az-known-hosts">Base64-encoded known_hosts data containing public SSH keys required to access private Git instances <code class="cli-argument">--known-hosts</code></label><input type="text" id="az-known-hosts" />
-	</div>
-	<div>
-		<label class="header-label" for="az-known-hosts-file">File path to known_hosts contents containing public SSH keys required to access private Git instances <code class="cli-argument">--known-hosts-file</code></label>
-			<input type="text" id="az-known-hosts-file" />
-	</div>
-	<div>
-		<label class="header-label" for="az-local-auth-ref">Local reference to a kubernetes secret in the configuration namespace to use for communication to the source <code class="cli-argument">--local-auth-ref</code></label>
-			<input type="text" id="az-local-auth-ref" />
-	</div>
-	<div>
-		<label class="header-label" for="az-ssh-private-key">Base64-encoded private ssh key for private repository sync <code class="cli-argument">--ssh-private-key</code></label><input type="text" id="az-ssh-private-key" />
-	</div>
-	<div>
-		<label class="header-label" for="az-ssh-private-key-file">File path to private ssh key for private repository sync <code class="cli-argument">--ssh-private-key-file</code></label><input type="text" id="az-ssh-private-key-file" />
+
+	<div id="az-source-bucket-form">
+		<div>
+			<label class="header-label" for="az-bucket-url">The URL for the bucket</code>. Formats supported: http://, https://, s3:// <code class="cli-argument">--url</code></label><input type="text" id="az-bucket-url" />
+		</div>
+		<div>
+			<label class="header-label" for="az-bucket-name">Name of the bucket to sync <code class="cli-argument">--bucket-name</code></label><input type="text" id="az-bucket-name" />
+		</div>
+		<div>
+			<label class="header-label" for="az-bucket-access-key">Access Key ID used to authenticate with the bucket <code class="cli-argument">--bucket-access-key</code></label><input type="text" id="az-bucket-access-key" />
+		</div>
+		<div>
+			<label class="header-label" for="az-bucket-secret-key">Secret Key used to authenticate with the bucket <code class="cli-argument">--bucket-secret-key</code></label><input type="text" id="az-bucket-secret-key" />
+		</div>
+		<label class="header-label" for="az-bucket-insecure">Communicate with a bucket without TLS. If not provided, assumed false; if provided, assumed true. <code class="cli-argument">--bucket-insecure</code></label><input type="checkbox" id="az-bucket-insecure"><label for="az-bucket-insecure">Insecure</label>
 	</div>
 
 	<h2>Kustomization <code class="cli-argument">--kustomization</code></h2>
@@ -146,3 +183,6 @@
 		<label class="header-label" for="az-kustomization-force">Re-create resources that cannot be updated on the cluster (i.e. jobs) <code class="cli-argument">force</code></label><input type="checkbox" id="az-kustomization-force"><label for="az-kustomization-force">Force</label>
 	</div>
 </div>
+
+
+<button type="button" id="create-source" class="submit-button">Create</button>

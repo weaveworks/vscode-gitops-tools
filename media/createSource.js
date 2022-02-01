@@ -6,17 +6,27 @@ const vscode = acquireVsCodeApi();
  * When creating the source - it will use the context/cluster that
  * was active when the webview was opened (and the one that shows in
  * the heading tags of the webview).
+ *
+ * @type { {
+ * isAzure: boolean;
+ * clusterName: string;
+ * contextName: string;
+ * clusterProvider: 'AKS' | 'Azure Arc' | 'Generic' | 'Unknown' | 'DetectionFailed';
+ * isClusterProviderUserOverride: boolean;
+ * sourceKind: 'GitRepository' | 'Bucket';
+ * }}
  */
 const webviewTempState = {
 	isAzure: false,
 	clusterName: '',
 	contextName: '',
-	clusterProvider: '',
+	clusterProvider: 'Generic',
 	isClusterProviderUserOverride: false,
+	sourceKind: 'GitRepository',
 };
 
-const sourceNameId = 'source-name';
 // Generic cluster input ids
+const fluxGitSourceNameId = 'git-source-name';
 const fluxUrlId = 'url';
 const fluxBranchId = 'branch';
 const fluxTagId = 'tag';
@@ -38,6 +48,10 @@ const fluxUsernameId = 'username';
 const fluxPasswordId = 'password';
 const fluxSecretRefId = 'secret-ref';
 // Azure cluster input ids
+const azureConfigurationNameId = 'az-configuration-name';
+const azureSourceKindName = 'az-kind';
+const azureSourceKindGitId = 'az-kind-git';
+const azureSourceKindBucketId = 'az-kind-bucket';
 const azureUrlId = 'az-url';
 const azureBranchId = 'az-branch';
 const azureScopeId = 'az-scope';
@@ -56,6 +70,12 @@ const azureKnownHostsFileId = 'az-known-hosts-file';
 const azureLocalAuthRefId = 'az-local-auth-ref';
 const azureSSHPrivateKeyId = 'az-ssh-private-key';
 const azureSSHPrivateKeyFileId = 'az-ssh-private-key-file';
+// Azure bucket form inputs
+const azureBucketUrlId = 'az-bucket-url';
+const azureBucketNameId = 'az-bucket-name';
+const azureBucketAccessKeyId = 'az-bucket-access-key';
+const azureBucketSecretKeyId = 'az-bucket-secret-key';
+const azureBucketInsecureId = 'az-bucket-insecure';
 // Azure cluster Kustomization inputs
 const azureKustomizationNameId = 'az-kustomization-name';
 const azureKustomizationPathId = 'az-kustomization-path';
@@ -71,6 +91,8 @@ const $clusterName = /** @type HTMLDivElement */ (document.getElementById('clust
 const $clusteProviderHeader = /** @type HTMLDivElement */ (document.getElementById('cluster-provider'));
 const $genericForm = /** @type HTMLDivElement */ (document.getElementById('generic-form'));
 const $azureForm = /** @type HTMLDivElement */ (document.getElementById('azure-form'));
+const $azureSourceGitForm = /** @type HTMLDivElement */ (document.getElementById('az-source-git-form'));
+const $azureSourceBucketForm = /** @type HTMLDivElement */ (document.getElementById('az-source-bucket-form'));
 const $submitButton = /** @type HTMLButtonElement */ (document.getElementById('create-source'));
 const $recurseSubmodulesSection = /** @type HTMLDivElement */ (document.getElementById('recurse-submodules-section'));
 const $sshEcdsaCurveSection = /** @type HTMLDivElement */ (document.getElementById('ssh-ecdsa-curve-section'));
@@ -80,72 +102,106 @@ const $goGitImplementation = /** @type HTMLInputElement */ (document.getElementB
 const $libgit2Implementation = /** @type HTMLInputElement */ (document.getElementById(fluxLibgit2ImplementationId));
 const $ecdsa = /** @type HTMLInputElement */ (document.getElementById(fluxSshKeyAlgorithmEcdsa));
 const $rsa = /** @type HTMLInputElement */ (document.getElementById(fluxSshKeyAlgorithmRsa));
+const $azureSourceKindGit = /** @type HTMLInputElement */ (document.getElementById(azureSourceKindGitId));
+const $azureSourceKindBucket = /** @type HTMLInputElement */ (document.getElementById(azureSourceKindBucketId));
 
 $submitButton.addEventListener('click', () => {
-	if (webviewTempState.isAzure) {
-		postVSCodeMessage({
-			type: 'createSourceAzureCluster',
-			value: {
-				contextName: webviewTempState.contextName,
-				// @ts-ignore
-				clusterProvider: webviewTempState.clusterProvider,
-				sourceName: getInputValue(sourceNameId),
-				sourceKind: 'git',
-				sourceScope: sendIfNotDefaultValue('az-scope', getRadioValue(azureScopeId)),
-				sourceNamespace: sendIfNotDefaultValue('az-namespace', getInputValue(azureNamespaceId)),
-				url: getInputValue(azureUrlId),
-				branch: getInputValue(azureBranchId),
-				tag: getInputValue(azureTagId),
-				semver: getInputValue(azureSemverId),
-				commit: getInputValue(azureCommitId),
-				interval: getInputValue(azureIntervalId),
-				timeout: getInputValue(azureTimeoutId),
-				caCert: getInputValue(azureCaCertId),
-				caCertFile: getInputValue(azureCaCertFileId),
-				httpsUser: getInputValue(azureHttpsUserId),
-				httpsKey: getInputValue(azureHttpsKeyId),
-				knownHosts: getInputValue(azureKnownHostsId),
-				knownHostsFile: getInputValue(azureKnownHostsFileId),
-				localAuthRef: getInputValue(azureLocalAuthRefId),
-				sshPrivateKey: getInputValue(azureSSHPrivateKeyId),
-				sshPrivateKeyFile: getInputValue(azureSSHPrivateKeyFileId),
-				kustomizationName: getInputValue(azureKustomizationNameId),
-				kustomizationPath: getInputValue(azureKustomizationPathId),
-				kustomizationDependsOn: getInputValue(azureKustomizationDependsOnId),
-				kustomizationTimeout: getInputValue(azureKustomizationTimeoutId),
-				kustomizationSyncInterval: getInputValue(azureKustomizationSyncIntervalId),
-				kustomizationRetryInterval: getInputValue(azureKustomizationRetryIntervalId),
-				kustomizationPrune: getCheckboxValue(azureKustomizationPruneId),
-				kustomizationForce: getCheckboxValue(azureKustomizationForceId),
-			},
-		});
+	if (webviewTempState.sourceKind === 'Bucket') {
+		if (webviewTempState.isAzure) {
+			postVSCodeMessage({
+				type: 'createSourceBucketAzureCluster',
+				value: {
+					contextName: webviewTempState.contextName,
+					// @ts-ignore
+					clusterProvider: webviewTempState.clusterProvider,
+					configurationName: getInputValue(azureConfigurationNameId),
+					bucketName: getInputValue(azureBucketNameId),
+					sourceScope: sendIfNotDefaultValue('az-scope', getRadioValue(azureScopeId)),
+					sourceNamespace: sendIfNotDefaultValue('az-namespace', getInputValue(azureNamespaceId)),
+					url: getInputValue(azureBucketUrlId),
+					accessKey: getInputValue(azureBucketAccessKeyId),
+					secretKey: getInputValue(azureBucketSecretKeyId),
+					insecure: getCheckboxValue(azureBucketInsecureId),
+					kustomizationName: getInputValue(azureKustomizationNameId),
+					kustomizationPath: getInputValue(azureKustomizationPathId),
+					kustomizationDependsOn: getInputValue(azureKustomizationDependsOnId),
+					kustomizationTimeout: getInputValue(azureKustomizationTimeoutId),
+					kustomizationSyncInterval: getInputValue(azureKustomizationSyncIntervalId),
+					kustomizationRetryInterval: getInputValue(azureKustomizationRetryIntervalId),
+					kustomizationPrune: getCheckboxValue(azureKustomizationPruneId),
+					kustomizationForce: getCheckboxValue(azureKustomizationForceId),
+				},
+			});
+		} else {
+			// TODO: create bucket on generic cluster
+		}
 	} else {
-		postVSCodeMessage({
-			type: 'createSourceGenericCluster',
-			value: {
-				contextName: webviewTempState.contextName,
-				sourceName: getInputValue(sourceNameId),
-				url: getInputValue(fluxUrlId),
-				branch: getInputValue(fluxBranchId),
-				tag: getInputValue(fluxTagId),
-				semver: getInputValue(fluxSemverId),
-				interval: getInputValue(fluxIntervalId),
-				timeout: getInputValue(fluxTimeoutId),
-				caFile: getInputValue(fluxCaFileId),
-				username: getInputValue(fluxUsernameId),
-				password: getInputValue(fluxPasswordId),
-				privateKeyFile: getInputValue(fluxPrivateKeyFileId),
-				secretRef: getInputValue(fluxSecretRefId),
-				gitImplementation: sendIfNotDefaultValue('git-implementation', getRadioValue(fluxGitImplementationId)),
-				sshKeyAlgorithm: sendIfNotDefaultValue('ssh-key-algorithm', getRadioValue(fluxSshKeyAlgorithmId)),
-				sshEcdsaCurve: sendIfNotDefaultValue('ssh-ecdsa-curve', getRadioValue(fluxEcdsaCurveId)),
-				sshRsaBits: sendIfNotDefaultValue('ssh-rsa-bits', getInputValue(fluxSshRsaBitsId)),
-				recurseSubmodules: getCheckboxValue(fluxRecurseSubmodulesId),
-			},
-		});
+		if (webviewTempState.isAzure) {
+			postVSCodeMessage({
+				type: 'createSourceGitAzureCluster',
+				value: {
+					contextName: webviewTempState.contextName,
+					// @ts-ignore
+					clusterProvider: webviewTempState.clusterProvider,
+					sourceKind: webviewTempState.sourceKind,
+					sourceName: getInputValue(fluxGitSourceNameId),
+					sourceScope: sendIfNotDefaultValue('az-scope', getRadioValue(azureScopeId)),
+					sourceNamespace: sendIfNotDefaultValue('az-namespace', getInputValue(azureNamespaceId)),
+					url: getInputValue(azureUrlId),
+					branch: getInputValue(azureBranchId),
+					tag: getInputValue(azureTagId),
+					semver: getInputValue(azureSemverId),
+					commit: getInputValue(azureCommitId),
+					interval: getInputValue(azureIntervalId),
+					timeout: getInputValue(azureTimeoutId),
+					caCert: getInputValue(azureCaCertId),
+					caCertFile: getInputValue(azureCaCertFileId),
+					httpsUser: getInputValue(azureHttpsUserId),
+					httpsKey: getInputValue(azureHttpsKeyId),
+					knownHosts: getInputValue(azureKnownHostsId),
+					knownHostsFile: getInputValue(azureKnownHostsFileId),
+					localAuthRef: getInputValue(azureLocalAuthRefId),
+					sshPrivateKey: getInputValue(azureSSHPrivateKeyId),
+					sshPrivateKeyFile: getInputValue(azureSSHPrivateKeyFileId),
+					kustomizationName: getInputValue(azureKustomizationNameId),
+					kustomizationPath: getInputValue(azureKustomizationPathId),
+					kustomizationDependsOn: getInputValue(azureKustomizationDependsOnId),
+					kustomizationTimeout: getInputValue(azureKustomizationTimeoutId),
+					kustomizationSyncInterval: getInputValue(azureKustomizationSyncIntervalId),
+					kustomizationRetryInterval: getInputValue(azureKustomizationRetryIntervalId),
+					kustomizationPrune: getCheckboxValue(azureKustomizationPruneId),
+					kustomizationForce: getCheckboxValue(azureKustomizationForceId),
+				},
+			});
+		} else {
+			postVSCodeMessage({
+				type: 'createSourceGitGenericCluster',
+				value: {
+					contextName: webviewTempState.contextName,
+					sourceName: getInputValue(fluxGitSourceNameId),
+					url: getInputValue(fluxUrlId),
+					branch: getInputValue(fluxBranchId),
+					tag: getInputValue(fluxTagId),
+					semver: getInputValue(fluxSemverId),
+					interval: getInputValue(fluxIntervalId),
+					timeout: getInputValue(fluxTimeoutId),
+					caFile: getInputValue(fluxCaFileId),
+					username: getInputValue(fluxUsernameId),
+					password: getInputValue(fluxPasswordId),
+					privateKeyFile: getInputValue(fluxPrivateKeyFileId),
+					secretRef: getInputValue(fluxSecretRefId),
+					gitImplementation: sendIfNotDefaultValue('git-implementation', getRadioValue(fluxGitImplementationId)),
+					sshKeyAlgorithm: sendIfNotDefaultValue('ssh-key-algorithm', getRadioValue(fluxSshKeyAlgorithmId)),
+					sshEcdsaCurve: sendIfNotDefaultValue('ssh-ecdsa-curve', getRadioValue(fluxEcdsaCurveId)),
+					sshRsaBits: sendIfNotDefaultValue('ssh-rsa-bits', getInputValue(fluxSshRsaBitsId)),
+					recurseSubmodules: getCheckboxValue(fluxRecurseSubmodulesId),
+				},
+			});
+		}
 	}
 });
 
+// ──── Interactivity ─────────────────────────────────────────
 // Only show --recurse-submodules if the --git-implementation is `go-git`
 for (const $gitImplementation of document.querySelectorAll(`[name="${fluxGitImplementationId}"]`) || []) {
 	$gitImplementation.addEventListener('click', () => {
@@ -160,7 +216,19 @@ for (const $sshAlgorithm of document.querySelectorAll(`[name="${fluxSshKeyAlgori
 		$sshRsaBitsSection.hidden = !$rsa.checked;
 	});
 }
-
+// Change visible Azure form depending on source kind (git or bucket)
+for (const $azureSouceKind of document.querySelectorAll(`[name="${azureSourceKindName}"]`) || []) {
+	$azureSouceKind.addEventListener('click', () => {
+		if ($azureSourceKindGit.checked) {
+			showAzureGitForm();
+			webviewTempState.sourceKind = 'GitRepository';
+		} else if ($azureSourceKindBucket.checked) {
+			showAzureBucketForm();
+			webviewTempState.sourceKind = 'Bucket';
+		}
+	});
+}
+// ────────────────────────────────────────────────────────────
 /**
  * @param message {import('../src/webviews/createSourceWebview').MessageFromWebview}
  */
@@ -252,7 +320,7 @@ window.addEventListener('message', event => {
 			}
 
 			// set default values to source name/url/branch
-			const $sourceName = /** @type null | HTMLInputElement */ (document.getElementById(sourceNameId));
+			const $sourceName = /** @type null | HTMLInputElement */ (document.getElementById(webviewTempState.isAzure ? azureConfigurationNameId : fluxGitSourceNameId));
 			if ($sourceName) {
 				$sourceName.value = message.value.newSourceName || '';
 			}
@@ -277,6 +345,15 @@ function showGenericForm() {
 function showAzureForm() {
 	$genericForm.hidden = true;
 	$azureForm.hidden = false;
+}
+
+function showAzureGitForm() {
+	$azureSourceBucketForm.hidden = true;
+	$azureSourceGitForm.hidden = false;
+}
+function showAzureBucketForm() {
+	$azureSourceGitForm.hidden = true;
+	$azureSourceBucketForm.hidden = false;
 }
 
 postVSCodeMessage({
