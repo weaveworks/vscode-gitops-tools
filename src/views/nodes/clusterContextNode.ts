@@ -1,5 +1,7 @@
-import { MarkdownString } from 'vscode';
+import { ExtensionMode, MarkdownString } from 'vscode';
+import { CommandId } from '../../commands';
 import { globalState } from '../../extension';
+import { getExtensionContext } from '../../extensionContext';
 import { extensionState } from '../../extensionState';
 import { KubernetesCluster, KubernetesContextWithCluster } from '../../kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
@@ -123,6 +125,18 @@ export class ClusterContextNode extends TreeNode {
 		}
 
 		return markdown;
+	}
+
+	// @ts-ignore
+	get command() {
+		// Allow click to swith current kubernetes context only when developing extension
+		if (getExtensionContext().extensionMode === ExtensionMode.Development) {
+			return {
+				command: CommandId.SetCurrentKubernetesContext,
+				arguments: [this],
+				title: 'Set Context',
+			};
+		}
 	}
 
 	get contexts() {
