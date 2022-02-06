@@ -22,7 +22,7 @@ export class ClusterDataProvider extends DataProvider {
 	private clusterNodes: ClusterContextNode[] = [];
 
 	/**
-	 * Check if the cluster node exists or not (also checks nested).
+	 * Check if the cluster node exists or not.
 	 */
 	public includesTreeNode(treeItem: TreeItem, clusterNodes: TreeNode[] = this.clusterNodes) {
 		for (const clusterNode of clusterNodes) {
@@ -48,7 +48,10 @@ export class ClusterDataProvider extends DataProvider {
 		statusBar.startLoadingTree();
 		this.clusterNodes = [];
 
-		const contextsResult = await kubernetesTools.getContexts();
+		const [contextsResult, currentContextResult] = await Promise.all([
+			kubernetesTools.getContexts(),
+			kubernetesTools.getCurrentContext(),
+		]);
 
 		if (failed(contextsResult)) {
 			setVSCodeContext(ContextTypes.NoClusters, false);
@@ -62,7 +65,6 @@ export class ClusterDataProvider extends DataProvider {
 		const clusterNodes: ClusterContextNode[] = [];
 		let currentContextTreeItem: ClusterContextNode | undefined;
 
-		const currentContextResult = await kubernetesTools.getCurrentContext();
 		let currentContext = '';
 		if (failed(currentContextResult)) {
 			window.showErrorMessage(`Failed to get current context: ${currentContextResult.error[0]}`);
@@ -82,13 +84,13 @@ export class ClusterDataProvider extends DataProvider {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 				// load flux system deployments
-				const fluxDeployments = await kubernetesTools.getFluxControllers();
-				if (fluxDeployments) {
+				const fluxControllers = await kubernetesTools.getFluxControllers();
+				if (fluxControllers) {
 					clusterNode.expand();
 					revealClusterNode(clusterNode, {
 						expand: true,
 					});
-					for (const deployment of fluxDeployments.items) {
+					for (const deployment of fluxControllers.items) {
 						clusterNode.addChild(new ClusterDeploymentNode(deployment));
 					}
 				}
