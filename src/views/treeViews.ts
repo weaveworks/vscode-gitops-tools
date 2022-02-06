@@ -70,6 +70,10 @@ export function refreshAllTreeViews() {
  * and its children are updated.
  */
 export function refreshClustersTreeView(node?: TreeNode) {
+	if (node && !clusterTreeViewProvider.includesTreeNode(node)) {
+		// Trying to refresh old (non-existent) cluster context node
+		return;
+	}
 	clusterTreeViewProvider.refresh(node);
 }
 

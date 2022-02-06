@@ -57,11 +57,10 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 			return element.children;
 		}
 
-		if (!element) {
-			if (this.treeItems) {
-				return this.treeItems;
-			}
+		if (!element && this.treeItems) {
+			return this.treeItems;
 		}
+
 		return [];
 	}
 

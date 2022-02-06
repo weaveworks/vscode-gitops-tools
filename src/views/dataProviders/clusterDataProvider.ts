@@ -1,11 +1,12 @@
-import { window } from 'vscode';
-import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
+import { TreeItem, window } from 'vscode';
 import { failed } from '../../errorable';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
+import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { ClusterContextNode } from '../nodes/clusterContextNode';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
+import { TreeNode } from '../nodes/treeNode';
 import { refreshClustersTreeView, revealClusterNode } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
@@ -16,6 +17,27 @@ import { DataProvider } from './dataProvider';
 export class ClusterDataProvider extends DataProvider {
 
 	/**
+	 * Keep a reference to all the nodes in the Clusters Tree View.
+	 */
+	private clusterNodes: ClusterContextNode[] = [];
+
+	/**
+	 * Check if the cluster node exists or not (also checks nested).
+	 */
+	public includesTreeNode(treeItem: TreeItem, clusterNodes: TreeNode[] = this.clusterNodes) {
+		for (const clusterNode of clusterNodes) {
+			if (treeItem === clusterNode) {
+				return true;
+			}
+			const includesInNested = this.includesTreeNode(treeItem, clusterNode.children);
+			if (includesInNested) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async buildTree(): Promise<ClusterContextNode[]> {
@@ -24,6 +46,7 @@ export class ClusterDataProvider extends DataProvider {
 		setVSCodeContext(ContextTypes.NoClusters, false);
 		setVSCodeContext(ContextTypes.LoadingClusters, true);
 		statusBar.startLoadingTree();
+		this.clusterNodes = [];
 
 		const contextsResult = await kubernetesTools.getContexts();
 
@@ -80,6 +103,7 @@ export class ClusterDataProvider extends DataProvider {
 
 		statusBar.stopLoadingTree();
 		setVSCodeContext(ContextTypes.LoadingClusters, false);
+		this.clusterNodes = clusterNodes;
 
 		return clusterNodes;
 	}
