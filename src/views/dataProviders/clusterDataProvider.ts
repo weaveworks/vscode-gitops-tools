@@ -92,7 +92,7 @@ export class ClusterDataProvider extends DataProvider {
 		if (!clusterNode) {
 			return;
 		}
-		const fluxCheckResult = await fluxTools.check();
+		const fluxCheckResult = await fluxTools.check(clusterNode.contextName);
 		if (!fluxCheckResult) {
 			return;
 		}
