@@ -84,7 +84,7 @@ We recommend you install these CLI tools on your system PATH before using GitOps
 - Create Kustomization from opened in vscode folder
 - Preview short Kubernetes Object info in rich markdown table tooltips on hover for the loaded Clusters, Sources, and Workloads
 - Load Kubernetes Object manifest `.yaml` configs in vscode editor via [Kubernetes Tools API](https://github.com/Azure/vscode-kubernetes-tools-api) and virtual Kubernetes file system provider
-- Open [GitOps](https://www.weave.works/technologies/gitops/) Documentation links to [Flux](https://fluxcd.io/) and [Wego](https://www.weave.works/product/gitops-core/) CLI top level topics in your default web browser
+- Open [GitOps](https://www.weave.works/technologies/gitops/) Documentation links to [Flux](https://fluxcd.io/) and [Weave GitOps](https://www.weave.works/product/gitops-core/) CLI top level topics in your default web browser
 
 # GitOps Commands
 

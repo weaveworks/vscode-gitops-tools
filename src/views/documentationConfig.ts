@@ -88,7 +88,7 @@ export const documentationLinks: DocumentationLink[] = [
 		],
 	},
 	{
-		title: 'Wego',
+		title: 'Weave GitOps',
 		url: 'https://docs.gitops.weave.works',
 		icon: 'resources/icons/gitops-logo.png',
 		links: [
