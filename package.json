@@ -514,9 +514,9 @@
 		"compile": "webpack",
 		"watch": "webpack --watch",
 		"package": "webpack --mode production --devtool hidden-source-map",
-		"test-compile": "tsc -p ./",
-		"test-watch": "tsc -watch -p ./",
-		"pretest": "npm run test-compile && npm run lint",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js"
 	},
@@ -525,6 +525,7 @@
 	],
 	"devDependencies": {
 		"@types/git-url-parse": "^9.0.1",
+		"@types/mocha": "^9.1.0",
 		"@types/node": "14.x",
 		"@types/semver": "^7.3.9",
 		"@types/shelljs": "^0.8.11",
@@ -532,10 +533,13 @@
 		"@types/vscode-webview": "^1.57.0",
 		"@typescript-eslint/eslint-plugin": "^5.10.1",
 		"@typescript-eslint/parser": "^5.10.1",
-		"eslint": "^8.7.0",
-		"ts-loader": "^9.2.6",
+		"@vscode/test-electron": "^2.1.3",
+		"eslint": "^8.11.0",
+		"glob": "^7.2.0",
+		"mocha": "^9.2.2",
 		"typescript": "^4.5.5",
-		"webpack": "^5.67.0",
+		"ts-loader": "^9.2.8",
+		"webpack": "^5.70.0",
 		"webpack-cli": "^4.9.2"
 	},
 	"dependencies": {

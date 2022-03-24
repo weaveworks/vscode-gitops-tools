@@ -10,6 +10,7 @@ import { checkFluxPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews } from './views/treeViews';
+import { shell } from './shell';
 
 export const enum GitOpsExtensionConstants {
 	ExtensionId = 'weaveworks.vscode-gitops-tools',
@@ -30,6 +31,7 @@ export async function activate(context: ExtensionContext) {
 	setExtensionContext(context);
 
 	globalState = new GlobalState(context);
+
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
 	// create gitops tree views
@@ -51,7 +53,8 @@ export async function activate(context: ExtensionContext) {
 	}
 
 	// set vscode context: developing extension
-	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development);
+	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
+
 
 	// show error notification if flux is not installed
 	const fluxFoundResult = await promptToInstallFlux();
