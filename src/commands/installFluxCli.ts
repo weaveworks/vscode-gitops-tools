@@ -144,16 +144,6 @@ export async function installFluxCli() {
 		return;
 	}
 
-	// Use system package manager if possible https://gofi.sh
-	const goFishInstalledResult = await isGoFishInstalled();
-	if (succeeded(goFishInstalledResult)) {
-		const installFluxResult = await shell.execWithOutput('gofish install flux');
-		if (installFluxResult.code === 0) {
-			showNotificationToReloadTheEditor();
-		}
-		return;
-	}
-
 	if (platform === Platform.Windows) {
 		const latestFluxVersionResult = await getLatestVersionFromGitHub(fluxGitHubUserProject);
 		if (failed(latestFluxVersionResult)) {
@@ -282,21 +272,6 @@ export async function installFluxCli() {
 			}
 		},
 	);
-}
-
-async function isGoFishInstalled(): Promise<Errorable<null>> {
-	const gofishVersionShellResult = await shell.exec('gofish version');
-	if (gofishVersionShellResult.code === 0) {
-		return {
-			succeeded: true,
-			result: null,
-		};
-	} else {
-		return {
-			succeeded: false,
-			error: [shellCodeError(gofishVersionShellResult)],
-		};
-	}
 }
 
 async function showNotificationToReloadTheEditor() {
