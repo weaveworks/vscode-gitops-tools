@@ -13,7 +13,7 @@ suite('Extension Test Suite', () => {
 		api = await gitopsext?.activate();
 
 		const fluxPreOutput = await api.shell.execWithOutput('flux check --pre');
-		assert.strictEqual(fluxPreOutput, undefined, 'Flux should not be installed (to test flux installation)');
+		// assert.strictEqual(fluxPreOutput, undefined, 'Flux CLI should not be installed (to test Flux CLI installation)');
 	});
 
 	after(() => {
@@ -40,7 +40,16 @@ suite('Extension Test Suite', () => {
 
 	});
 
-	test('GitSource', async function() {
+	test('Flux is installed',  async function () {
+		this.timeout(20000);
+
+		// Right clicking cluster 'Enable Gitops'
+		// TODO: gitops.flux.install
+		// flux check lists controllers
+		// treeview lists controllers
+	});
+
+	test('GitSource is added and listed', async function() {
 		this.timeout(60000);
 
 		await setupGitServer(api.shell);
@@ -49,4 +58,15 @@ suite('Extension Test Suite', () => {
 		// TODO: use treeview or other vscode API to confirm it is listed
 
 	});
+
+	test('Flux is uninstalled installed',  async function () {
+		this.timeout(20000);
+
+		// Right clicking cluster 'Disable Gitops'
+		// Enable 'GitOps' is listed
+		// flux check is blank
+		// no controller in the treeview
+	});
+
+
 });
