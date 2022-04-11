@@ -9,7 +9,7 @@ import { GlobalState, GlobalStateKey } from './globalState';
 import { checkFluxPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
-import { createTreeViews } from './views/treeViews';
+import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
 import { shell } from './shell';
 
 export const enum GitOpsExtensionConstants {
@@ -20,6 +20,9 @@ export const enum GitOpsExtensionConstants {
 export let globalState: GlobalState;
 /** Methods to report telemetry over Application Insights (Exceptions or Custom Events). */
 export let telemetry: Telemetry;
+
+/** Disable interactive modal dialogs, useful for testing */
+export let disableConfirmations = false;
 
 /**
  * Called when GitOps extension is activated.
@@ -52,9 +55,12 @@ export async function activate(context: ExtensionContext) {
 		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}
 
-	// set vscode context: developing extension
+	// set vscode context: developing extension. test is also dev
 	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
 
+	if(context.extensionMode === ExtensionMode.Test) {
+		disableConfirmations = true;
+	}
 
 	// show error notification if flux is not installed
 	const fluxFoundResult = await promptToInstallFlux();
@@ -62,6 +68,16 @@ export async function activate(context: ExtensionContext) {
 		// check flux prerequisites
 		await checkFluxPrerequisites();
 	}
+
+	let api = {
+		shell: shell,
+		data: {
+			clusterTreeViewProvider: clusterTreeViewProvider,
+			sourceTreeViewProvider: sourceTreeViewProvider,
+			workloadTreeViewProvider: workloadTreeViewProvider,
+		}};
+
+	return api;
 }
 
 /**
