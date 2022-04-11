@@ -62,6 +62,10 @@ export async function activate(context: ExtensionContext) {
 		// check flux prerequisites
 		await checkFluxPrerequisites();
 	}
+
+	let api = {shell: shell};
+
+	return api;
 }
 
 /**

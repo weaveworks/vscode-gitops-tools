@@ -1,25 +1,19 @@
 import * as assert from 'assert';
 import { after, before } from 'mocha';
-import { createCluster, setupGitServer, createEnvGitSource } from './e2eEnv';
+import { setupGitServer } from './e2eGitEnv';
 import * as vscode from 'vscode';
 
-
+let api: { shell: { execWithOutput: any; }; };
 
 suite('Extension Test Suite', () => {
 	before(async function() {
-		this.timeout(60000);
-
-		await createCluster();
+		this.timeout(10000);
 
 		const gitopsext = vscode.extensions.getExtension('weaveworks.vscode-gitops-tools');
-		await gitopsext?.activate();
-		const fluxPreOutput = await vscode.commands.executeCommand('gitops.flux.checkPrerequisites');
-		if(fluxPreOutput === undefined) {
-			await vscode.commands.executeCommand('gitops.installFluxCli');
-		}
+		api = await gitopsext?.activate();
 
-		await setupGitServer();
-		await createEnvGitSource();
+		const fluxPreOutput = await api.shell.execWithOutput('flux check --pre');
+		assert.strictEqual(fluxPreOutput, undefined, 'Flux should not be installed (to test flux installation)');
 	});
 
 	after(() => {
@@ -33,12 +27,26 @@ suite('Extension Test Suite', () => {
 		assert.strictEqual(gitopsext?.isActive, true);
 	});
 
-	test('Flux CLI is installed', async () => {
-		const fluxPreOutput = await vscode.commands.executeCommand('gitops.flux.checkPrerequisites');
+	test('Flux CLI is installed', async function () {
+		this.timeout(60000);
+
+		await vscode.commands.executeCommand('gitops.installFluxCli');
+		const fluxPreOutput = await api.shell.execWithOutput('flux check --pre');
 		assert.notStrictEqual(fluxPreOutput, undefined);
 	});
 
-	test('GitSource', async () => {
+	test('Current cluster is listed',  async () => {
+		// TODO: query the treeview to see the current cluster
+
+	});
+
+	test('GitSource', async function() {
+		this.timeout(60000);
+
+		await setupGitServer(api.shell);
+		// TODO: create a GitRepository using 'gitops.editor.createSource'
 		// TODO: use flux CLI to confirm GitSource created with gitops.editor.createSource exists
+		// TODO: use treeview or other vscode API to confirm it is listed
+
 	});
 });
