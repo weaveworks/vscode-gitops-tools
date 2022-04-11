@@ -86,7 +86,6 @@ export async function createGitRepository(fileExplorerUri?: Uri, kustomizationNa
 	if (currentClusterInfo.result.isAzure) {
 		const createGitRepoShellResult = await azureTools.createSourceGit({
 			contextName: currentClusterInfo.result.contextName,
-			sourceKind: 'git',
 			sourceName: newGitRepositorySourceName,
 			url: gitUrl,
 			clusterProvider: currentClusterInfo.result.clusterProvider as AzureClusterProvider,

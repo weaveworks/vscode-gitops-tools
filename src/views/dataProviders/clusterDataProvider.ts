@@ -1,11 +1,12 @@
-import { window } from 'vscode';
-import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
+import { TreeItem, window } from 'vscode';
 import { failed } from '../../errorable';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
+import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { ClusterContextNode } from '../nodes/clusterContextNode';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
+import { TreeNode } from '../nodes/treeNode';
 import { refreshClustersTreeView, revealClusterNode } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
@@ -16,6 +17,27 @@ import { DataProvider } from './dataProvider';
 export class ClusterDataProvider extends DataProvider {
 
 	/**
+	 * Keep a reference to all the nodes in the Clusters Tree View.
+	 */
+	private clusterNodes: ClusterContextNode[] = [];
+
+	/**
+	 * Check if the cluster node exists or not.
+	 */
+	public includesTreeNode(treeItem: TreeItem, clusterNodes: TreeNode[] = this.clusterNodes) {
+		for (const clusterNode of clusterNodes) {
+			if (treeItem === clusterNode) {
+				return true;
+			}
+			const includesInNested = this.includesTreeNode(treeItem, clusterNode.children);
+			if (includesInNested) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async buildTree(): Promise<ClusterContextNode[]> {
@@ -24,8 +46,12 @@ export class ClusterDataProvider extends DataProvider {
 		setVSCodeContext(ContextTypes.NoClusters, false);
 		setVSCodeContext(ContextTypes.LoadingClusters, true);
 		statusBar.startLoadingTree();
+		this.clusterNodes = [];
 
-		const contextsResult = await kubernetesTools.getContexts();
+		const [contextsResult, currentContextResult] = await Promise.all([
+			kubernetesTools.getContexts(),
+			kubernetesTools.getCurrentContext(),
+		]);
 
 		if (failed(contextsResult)) {
 			setVSCodeContext(ContextTypes.NoClusters, false);
@@ -39,7 +65,6 @@ export class ClusterDataProvider extends DataProvider {
 		const clusterNodes: ClusterContextNode[] = [];
 		let currentContextTreeItem: ClusterContextNode | undefined;
 
-		const currentContextResult = await kubernetesTools.getCurrentContext();
 		let currentContext = '';
 		if (failed(currentContextResult)) {
 			window.showErrorMessage(`Failed to get current context: ${currentContextResult.error[0]}`);
@@ -59,13 +84,13 @@ export class ClusterDataProvider extends DataProvider {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 				// load flux system deployments
-				const fluxDeployments = await kubernetesTools.getFluxControllers();
-				if (fluxDeployments) {
+				const fluxControllers = await kubernetesTools.getFluxControllers();
+				if (fluxControllers) {
 					clusterNode.expand();
 					revealClusterNode(clusterNode, {
 						expand: true,
 					});
-					for (const deployment of fluxDeployments.items) {
+					for (const deployment of fluxControllers.items) {
 						clusterNode.addChild(new ClusterDeploymentNode(deployment));
 					}
 				}
@@ -80,6 +105,7 @@ export class ClusterDataProvider extends DataProvider {
 
 		statusBar.stopLoadingTree();
 		setVSCodeContext(ContextTypes.LoadingClusters, false);
+		this.clusterNodes = clusterNodes;
 
 		return clusterNodes;
 	}
@@ -92,7 +118,7 @@ export class ClusterDataProvider extends DataProvider {
 		if (!clusterNode) {
 			return;
 		}
-		const fluxCheckResult = await fluxTools.check();
+		const fluxCheckResult = await fluxTools.check(clusterNode.contextName);
 		if (!fluxCheckResult) {
 			return;
 		}

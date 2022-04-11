@@ -50,8 +50,8 @@ class FluxTools {
 	 *
 	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
-	async check(): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
-		const result = await shell.execWithOutput('flux check', { revealOutputView: false });
+	async check(context: string): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
+		const result = await shell.execWithOutput(`flux check --context ${context}`, { revealOutputView: false });
 
 		if (result.code !== 0) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CHECK);
