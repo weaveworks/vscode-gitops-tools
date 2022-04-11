@@ -2,6 +2,19 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.19.1 - [2022-04-11]
+
+- [#215](https://github.com/weaveworks/vscode-gitops-tools/issues/215)
+Clusters list does not refresh
+- [#220](https://github.com/weaveworks/vscode-gitops-tools/issues/220)
+Change references from Wego to Weave GitOps
+- [#237](https://github.com/weaveworks/vscode-gitops-tools/issues/237)
+Remove go-fish
+- [#239](https://github.com/weaveworks/vscode-gitops-tools/issues/239)
+Refresh Clusters - triggers unexpected behavior / does not do what I expected
+- [#243](https://github.com/weaveworks/vscode-gitops-tools/issues/243)
+Release Plan for v0.19.1 patch release
+
 # v0.19.0 - [2022-02-03]
 
 - [#212](https://github.com/weaveworks/vscode-gitops-tools/issues/212)
