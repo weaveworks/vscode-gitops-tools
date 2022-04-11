@@ -2,6 +2,17 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.19.0 - [2022-02-03]
+
+- [#212](https://github.com/weaveworks/vscode-gitops-tools/issues/212)
+Possibly require specific request to change cluster context
+- [#213](https://github.com/weaveworks/vscode-gitops-tools/issues/213)
+Azure GitOps supports Bucket source now
+- [#214](https://github.com/weaveworks/vscode-gitops-tools/issues/214)
+For new Source in Azure GitOps allow user to set Namespace and Scope
+- [#216](https://github.com/weaveworks/vscode-gitops-tools/issues/216)
+Package Sprint 19 release
+
 # v0.18.0 - [2022-01-27]
 
 - [#179](https://github.com/weaveworks/vscode-gitops-tools/issues/179)
