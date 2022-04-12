@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: "actions/checkout@v2"
     - uses: "actions/setup-node@v2"
@@ -20,4 +22,4 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "vscode-gitops-tools-*.vsix"
-        token: ${{ secrets.DEPLOY_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
