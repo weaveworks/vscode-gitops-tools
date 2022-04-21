@@ -12,6 +12,10 @@ import { Telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
 import { shell } from './shell';
 
+/** Disable interactive modal dialogs, useful for testing */
+export let disableConfirmations = false;
+
+
 export const enum GitOpsExtensionConstants {
 	ExtensionId = 'weaveworks.vscode-gitops-tools',
 }
@@ -20,9 +24,6 @@ export const enum GitOpsExtensionConstants {
 export let globalState: GlobalState;
 /** Methods to report telemetry over Application Insights (Exceptions or Custom Events). */
 export let telemetry: Telemetry;
-
-/** Disable interactive modal dialogs, useful for testing */
-export let disableConfirmations = false;
 
 /**
  * Called when GitOps extension is activated.
@@ -57,7 +58,6 @@ export async function activate(context: ExtensionContext) {
 
 	// set vscode context: developing extension. test is also dev
 	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
-
 	if(context.extensionMode === ExtensionMode.Test) {
 		disableConfirmations = true;
 	}

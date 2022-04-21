@@ -22,9 +22,24 @@ async function getTreeItem(treeDataProvider: DataProvider, label: string): Promi
 	return childItems.find(i => i.label === label);
 }
 
+async function installKubernetesToolsDependency() {
+	const name = 'ms-kubernetes-tools.vscode-kubernetes-tools';
+	let extension = vscode.extensions.getExtension(name);
+
+	if(!extension) {
+		await vscode.commands.executeCommand('workbench.extensions.installExtension', name); // install the extension.
+		await vscode.commands.executeCommand('workbench.action.reloadWindow');
+	}
+
+	extension = vscode.extensions.getExtension(name);
+	extension?.activate();
+}
+
 suite('Extension Test Suite', () => {
 	before(async function() {
-		this.timeout(60000);
+		this.timeout(80000);
+
+		await installKubernetesToolsDependency();
 
 		const gitopsext = vscode.extensions.getExtension('weaveworks.vscode-gitops-tools');
 		api = await gitopsext?.activate();
@@ -35,7 +50,7 @@ suite('Extension Test Suite', () => {
 		currentContext = contextOutput.stdout.slice(0, -1);
 
 		const fluxPreOutput = await api.shell.execWithOutput('flux check --pre');
-		assert.notStrictEqual(fluxPreOutput.code, 0, 'Flux CLI should not be installed (to test Flux CLI installation)');
+		assert.strictEqual(fluxPreOutput.code, 0, 'Flux CLI should be installed');
 
 		const fluxNamespaceOutput = await api.shell.execWithOutput('kubectl get namespace flux-system');
 		assert.notStrictEqual(fluxNamespaceOutput.code, 0, 'Flux must not be installed - the namespace flux-system should not exist');
@@ -46,14 +61,6 @@ suite('Extension Test Suite', () => {
 
 		assert.notStrictEqual(gitopsext, undefined);
 		assert.strictEqual(gitopsext?.isActive, true);
-	});
-
-	test('Flux CLI is installed', async function () {
-		this.timeout(60000);
-
-		await vscode.commands.executeCommand('gitops.installFluxCli');
-		const fluxPreOutput = await api.shell.execWithOutput('flux check --pre');
-		assert.notStrictEqual(fluxPreOutput, undefined);
 	});
 
 	test('Current cluster is listed',  async function()  {
