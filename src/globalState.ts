@@ -1,4 +1,5 @@
 import { ExtensionContext, window, workspace } from 'vscode';
+import { kubernetesTools } from './kubernetes/kubernetesTools';
 import { KnownClusterProviders } from './kubernetes/kubernetesTypes';
 
 export interface ClusterMetadata {
@@ -40,6 +41,11 @@ export class GlobalState {
 
 	getClusterMetadata(clusterName: string): ClusterMetadata | undefined {
 		return this.context.globalState.get(this.prefix(GlobalStatePrefixes.ClusterMetadata, clusterName));
+	}
+
+	async getContextClusterMetadata(contextName: string): Promise<ClusterMetadata | undefined> {
+		const clusterName = await kubernetesTools.getClusterName(contextName);
+		return this.getClusterMetadata(clusterName || contextName);
 	}
 
 	setClusterMetadata(clusterName: string, metadata: ClusterMetadata): void {
