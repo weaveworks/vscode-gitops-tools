@@ -69,7 +69,7 @@ export class ClusterContextNode extends TreeNode {
 
 		this.cluster = kubernetesContext.context.clusterInfo;
 		this.clusterContext = kubernetesContext;
-		this.clusterName = kubernetesContext.name;
+		this.clusterName = kubernetesContext.context.clusterInfo?.name || kubernetesContext.name;
 		this.contextName = kubernetesContext.name;
 		this.description = kubernetesContext.context.clusterInfo?.cluster.server;
 
