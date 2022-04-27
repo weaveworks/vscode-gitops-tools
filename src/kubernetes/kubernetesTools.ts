@@ -213,10 +213,12 @@ class KubernetesTools {
 		};
 	}
 
-	async getClusterName(contextName: string): Promise<undefined | string> {
+	async getClusterName(contextName: string): Promise<string> {
 		const contexts = await this.getContexts();
 		if(contexts.succeeded === true) {
-			return contexts.result.find(context => context.name === contextName)?.context.clusterInfo?.name;
+			return contexts.result.find(context => context.name === contextName)?.context.clusterInfo?.name || contextName;
+		} else {
+			return contextName;
 		}
 	}
 
