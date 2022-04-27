@@ -3,7 +3,7 @@ import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { AzureConstants } from '../azure/azureTools';
 import { Errorable, failed, succeeded } from '../errorable';
-import { globalState, telemetry } from '../extension';
+import { telemetry } from '../extension';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
 import { shellCodeError } from '../shell';
@@ -213,16 +213,6 @@ class KubernetesTools {
 		};
 	}
 
-	async getClusterName(contextName: string): Promise<string> {
-		const contexts = await this.getContexts();
-		if(contexts.succeeded === true) {
-			return contexts.result.find(context => context.name === contextName)?.context.clusterInfo?.name || contextName;
-		} else {
-			return contextName;
-		}
-	}
-
-
 	/**
 	 * Get pods by a deployment name.
 	 * @param name pod target name
@@ -431,16 +421,11 @@ class KubernetesTools {
 	}
 
 	/**
-	 * Try to detect known cluster providers. Returns user selected cluster type if that is set.
+	 * Try to detect known cluster providers.
 	 * @param context target context to get resources from.
 	 * TODO: maybe use Errorable?
 	 */
 	async detectClusterProvider(context: string): Promise<ClusterProvider> {
-		const clusterMetadata = await globalState.getContextClusterMetadata(context);
-		if(clusterMetadata?.clusterProvider) {
-			return clusterMetadata.clusterProvider;
-		}
-
 		const tryProviderAzureARC = await this.isClusterAzureARC(context);
 		if (tryProviderAzureARC === ClusterProvider.AzureARC) {
 			return ClusterProvider.AzureARC;

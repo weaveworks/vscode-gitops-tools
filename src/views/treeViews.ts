@@ -106,7 +106,10 @@ export interface CurrentClusterInfo {
  * 3. Detect cluster provider.
  */
 export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterInfo>> {
-	const currentContextResult = await kubernetesTools.getCurrentContext();
+	const [currentContextResult, contextsResult] = await Promise.all([
+		kubernetesTools.getCurrentContext(),
+		kubernetesTools.getContexts(),
+	]);
 
 	if (failed(currentContextResult)) {
 		const error = `Failed to get current context ${currentContextResult.error[0]}`;
@@ -117,10 +120,17 @@ export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterI
 		};
 	}
 	const currentContextName = currentContextResult.result;
+	if (failed(contextsResult)) {
+		const error = `Failed to get contexts ${contextsResult.error[0]}`;
+		window.showErrorMessage(error);
+		return {
+			succeeded: false,
+			error: [error],
+		};
+	}
 
-
-	let currentClusterName = kubernetesTools.getClusterName(currentContextName);
-	if (typeof currentClusterName !== 'string') {
+	const currentClusterName = contextsResult.result.find(context => context.name === currentContextName)?.context.clusterInfo?.name;
+	if (!currentClusterName) {
 		window.showErrorMessage('Failed to find current cluster name.');
 		return {
 			succeeded: false,
