@@ -2,6 +2,7 @@ import { MarkdownString } from 'vscode';
 import { Bucket } from '../../kubernetes/bucket';
 import { GitRepository } from '../../kubernetes/gitRepository';
 import { HelmRepository } from '../../kubernetes/helmRepository';
+import { DeploymentCondition } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { shortenRevision } from '../../utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
@@ -37,7 +38,7 @@ export class SourceNode extends TreeNode {
 		let revisionOrError = '';
 
 		if (this.isReconcileFailed) {
-			revisionOrError = `${this.resource.status.conditions?.[0].reason}`;
+			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason}`;
 		} else {
 			revisionOrError = shortenRevision(this.resource.status.artifact?.revision);
 		}
@@ -55,25 +56,36 @@ export class SourceNode extends TreeNode {
 
 		// show status in hover when source fetching failed
 		if (this.isReconcileFailed) {
+			const readyCondition = this.findReadyOrFirstCondition(source.status.conditions);
 			createMarkdownHr(markdown);
-			createMarkdownError('Status message', source.status.conditions?.[0].message, markdown);
-			createMarkdownError('Status reason', source.status.conditions?.[0].reason, markdown);
+			createMarkdownError('Status message', readyCondition?.message, markdown);
+			createMarkdownError('Status reason', readyCondition?.reason, markdown);
 		}
 
 		return markdown;
 	}
 
 	/**
+	 * Find condition with the "Ready" type or
+	 * return first one if "Ready" not found.
+	 *
+	 * @param conditions "status.conditions" of the source
+	 */
+	findReadyOrFirstCondition(conditions?: DeploymentCondition[]): DeploymentCondition | undefined {
+		return conditions?.find(condition => condition.type === 'Ready') || conditions?.[0];
+	}
+
+	/**
 	 * Update source status with showing error icon when fetch failed.
 	 * @param source target source
 	 */
-	updateStatus(source: GitRepository | HelmRepository | Bucket) {
-		if (source.status.conditions?.[0].status === 'False') {
-			this.setIcon(TreeNodeIcon.Error);
-			this.isReconcileFailed = true;
-		} else {
+	updateStatus(source: GitRepository | HelmRepository | Bucket): void {
+		if (this.findReadyOrFirstCondition(source.status.conditions)?.status === 'True') {
 			this.setIcon(TreeNodeIcon.Success);
 			this.isReconcileFailed = false;
+		} else {
+			this.setIcon(TreeNodeIcon.Error);
+			this.isReconcileFailed = true;
 		}
 	}
 }
