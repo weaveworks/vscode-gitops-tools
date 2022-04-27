@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import { globalState } from '../extension';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
 
 export interface AzureMetadata {
 	resourceGroup: string;
@@ -15,7 +16,8 @@ export interface AzureMetadata {
  * @param contextName cluster name as in kubernetes config
  */
 export async function askUserForAzureMetadata(contextName: string): Promise<AzureMetadata | undefined> {
-	const azureMetadata = globalState.getClusterMetadata(contextName);
+	const clusterName = await kubernetesTools.getClusterName(contextName);
+	const azureMetadata = globalState.getClusterMetadata(clusterName);
 
 	const resourceGroup = await window.showInputBox({
 		title: 'Enter the Azure Resource Group (where the cluster is)',
