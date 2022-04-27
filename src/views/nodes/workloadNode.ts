@@ -1,5 +1,6 @@
 import { MarkdownString } from 'vscode';
 import { HelmRelease } from '../../kubernetes/helmRelease';
+import { DeploymentCondition } from '../../kubernetes/kubernetesTypes';
 import { Kustomize } from '../../kubernetes/kustomize';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
@@ -25,19 +26,32 @@ export class WorkloadNode extends TreeNode {
 	}
 
 	/**
-	 * Update workload status with showing error icon when reconcile has failed.
-	 * @param resource target resource
+	 * Find condition with the "Ready" type or
+	 * return first one if "Ready" not found.
+	 *
+	 * @param conditions "status.conditions" of the workload
 	 */
-	updateStatus(resource: Kustomize | HelmRelease) {
-		const conditions = resource.status.conditions;
-		const condition = Array.isArray(conditions) ? conditions[0] : conditions;
-
-		if (condition?.status === 'False') {
-			this.isReconcileFailed = true;
-			this.setIcon(TreeNodeIcon.Error);
+	findReadyCondition(conditions?: DeploymentCondition | DeploymentCondition[]): DeploymentCondition | undefined {
+		if (Array.isArray(conditions)) {
+			return conditions.find(condition => condition.type === 'Ready') || conditions[0];
 		} else {
+			return conditions;
+		}
+	}
+
+	/**
+	 * Update workload status with showing error icon when reconcile has failed.
+	 * @param workload target resource
+	 */
+	updateStatus(workload: Kustomize | HelmRelease): void {
+		const condition = this.findReadyCondition(workload.status.conditions);
+
+		if (condition?.status === 'True') {
 			this.isReconcileFailed = false;
 			this.setIcon(TreeNodeIcon.Success);
+		} else {
+			this.isReconcileFailed = true;
+			this.setIcon(TreeNodeIcon.Error);
 		}
 	}
 
@@ -53,19 +67,18 @@ export class WorkloadNode extends TreeNode {
 
 	/**
 	 * Creates markdwon string for Source tree view item tooltip.
-	 * @param resource GitRepository, HelmRepository or Bucket kubernetes object.
+	 * @param workload Kustomize or HelmRelease kubernetes object.
 	 * @returns Markdown string to use for Source tree view item tooltip.
 	 */
-	getMarkdownHover(resource: Kustomize | HelmRelease): MarkdownString {
-		const markdown: MarkdownString = createMarkdownTable(resource);
+	getMarkdownHover(workload: Kustomize | HelmRelease): MarkdownString {
+		const markdown: MarkdownString = createMarkdownTable(workload);
 
 		// show status in hover when source fetching failed
 		if (this.isReconcileFailed) {
-			const conditions = resource.status.conditions;
-			const condition = Array.isArray(conditions) ? conditions[0] : conditions;
+			const readyCondition = this.findReadyCondition(workload.status.conditions);
 			createMarkdownHr(markdown);
-			createMarkdownError('Status message', condition?.message, markdown);
-			createMarkdownError('Status reason', condition?.reason, markdown);
+			createMarkdownError('Status message', readyCondition?.message, markdown);
+			createMarkdownError('Status reason', readyCondition?.reason, markdown);
 		}
 
 		return markdown;
