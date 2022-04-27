@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { failed } from '../errorable';
-import { telemetry } from '../extension';
+import { telemetry, globalState } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
@@ -31,7 +31,8 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 		clusterName = currentClusterInfo.result.clusterName;
 	}
 
-	const clusterProvider = await kubernetesTools.detectClusterProvider(contextName);
+	const clusterMetadata = globalState.getClusterMetadata(clusterName);
+	const clusterProvider = clusterMetadata?.clusterProvider || await kubernetesTools.detectClusterProvider(contextName);
 
 	if (clusterProvider === ClusterProvider.Unknown) {
 		window.showErrorMessage('Cluster provider not detected yet.');
