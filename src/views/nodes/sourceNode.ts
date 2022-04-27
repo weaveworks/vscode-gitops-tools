@@ -38,7 +38,7 @@ export class SourceNode extends TreeNode {
 		let revisionOrError = '';
 
 		if (this.isReconcileFailed) {
-			revisionOrError = `${this.findReadyCondition(this.resource.status.conditions)?.reason}`;
+			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason}`;
 		} else {
 			revisionOrError = shortenRevision(this.resource.status.artifact?.revision);
 		}
@@ -56,7 +56,7 @@ export class SourceNode extends TreeNode {
 
 		// show status in hover when source fetching failed
 		if (this.isReconcileFailed) {
-			const readyCondition = this.findReadyCondition(source.status.conditions);
+			const readyCondition = this.findReadyOrFirstCondition(source.status.conditions);
 			createMarkdownHr(markdown);
 			createMarkdownError('Status message', readyCondition?.message, markdown);
 			createMarkdownError('Status reason', readyCondition?.reason, markdown);
@@ -71,7 +71,7 @@ export class SourceNode extends TreeNode {
 	 *
 	 * @param conditions "status.conditions" of the source
 	 */
-	findReadyCondition(conditions?: DeploymentCondition[]): DeploymentCondition | undefined {
+	findReadyOrFirstCondition(conditions?: DeploymentCondition[]): DeploymentCondition | undefined {
 		return conditions?.find(condition => condition.type === 'Ready') || conditions?.[0];
 	}
 
@@ -80,7 +80,7 @@ export class SourceNode extends TreeNode {
 	 * @param source target source
 	 */
 	updateStatus(source: GitRepository | HelmRepository | Bucket): void {
-		if (this.findReadyCondition(source.status.conditions)?.status === 'True') {
+		if (this.findReadyOrFirstCondition(source.status.conditions)?.status === 'True') {
 			this.setIcon(TreeNodeIcon.Success);
 			this.isReconcileFailed = false;
 		} else {

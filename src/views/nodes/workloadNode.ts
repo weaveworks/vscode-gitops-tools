@@ -31,7 +31,7 @@ export class WorkloadNode extends TreeNode {
 	 *
 	 * @param conditions "status.conditions" of the workload
 	 */
-	findReadyCondition(conditions?: DeploymentCondition | DeploymentCondition[]): DeploymentCondition | undefined {
+	findReadyOrFirstCondition(conditions?: DeploymentCondition | DeploymentCondition[]): DeploymentCondition | undefined {
 		if (Array.isArray(conditions)) {
 			return conditions.find(condition => condition.type === 'Ready') || conditions[0];
 		} else {
@@ -44,7 +44,7 @@ export class WorkloadNode extends TreeNode {
 	 * @param workload target resource
 	 */
 	updateStatus(workload: Kustomize | HelmRelease): void {
-		const condition = this.findReadyCondition(workload.status.conditions);
+		const condition = this.findReadyOrFirstCondition(workload.status.conditions);
 
 		if (condition?.status === 'True') {
 			this.isReconcileFailed = false;
@@ -75,7 +75,7 @@ export class WorkloadNode extends TreeNode {
 
 		// show status in hover when source fetching failed
 		if (this.isReconcileFailed) {
-			const readyCondition = this.findReadyCondition(workload.status.conditions);
+			const readyCondition = this.findReadyOrFirstCondition(workload.status.conditions);
 			createMarkdownHr(markdown);
 			createMarkdownError('Status message', readyCondition?.message, markdown);
 			createMarkdownError('Status reason', readyCondition?.reason, markdown);
