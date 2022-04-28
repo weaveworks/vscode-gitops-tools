@@ -2,6 +2,23 @@
 
 See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for source code and `vscode-gitops-tools.vsix` extension package download.
 
+# v0.19.2 - [2022-04-28]
+
+- [#218](https://github.com/weaveworks/vscode-gitops-tools/issues/218)
+Set AKS cluster as generic
+- [#248](https://github.com/weaveworks/vscode-gitops-tools/issues/248)
+Ensure user-selected cluster type is honored on Azure AKS/Arc for "Enable/Disable GitOps"
+- [#249](https://github.com/weaveworks/vscode-gitops-tools/issues/249)
+Sources which are not ready still show as Green Checks
+- [#250](https://github.com/weaveworks/vscode-gitops-tools/issues/250)
+Fix sources workload status
+- [#241](https://github.com/weaveworks/vscode-gitops-tools/issues/241)
+Fix typo in documentation
+- [#247](https://github.com/weaveworks/vscode-gitops-tools/issues/247)
+Fix release attribution
+- [#251](https://github.com/weaveworks/vscode-gitops-tools/issues/251), [#252](https://github.com/weaveworks/vscode-gitops-tools/issues/252), [#253](https://github.com/weaveworks/vscode-gitops-tools/issues/253)
+Refactoring internals
+
 # v0.19.1 - [2022-04-11]
 
 - [#215](https://github.com/weaveworks/vscode-gitops-tools/issues/215)
