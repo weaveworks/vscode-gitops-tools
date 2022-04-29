@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { azureTools, isAzureProvider } from '../azure/azureTools';
 import { failed } from '../errorable';
-import { telemetry } from '../extension';
+import { telemetry, disableConfirmations } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
@@ -9,6 +9,8 @@ import { ClusterProvider } from '../kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
+
+
 
 /**
  * Install or uninstall flux from the passed or current cluster (if first argument is undefined)
@@ -43,11 +45,13 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 
 	const enableGitOpsButton = enableGitOps ? 'Enable' : 'Disable';
 	const confirmationMessage = `Do you want to ${enableGitOps ? 'enable' : 'disable'} GitOps on the "${clusterName}" cluster?`;
-	const confirm = await window.showWarningMessage(confirmationMessage, {
-		modal: true,
-	}, enableGitOpsButton);
-	if (confirm !== enableGitOpsButton) {
-		return;
+	if(!disableConfirmations) {
+		const confirm = await window.showWarningMessage(confirmationMessage, {
+			modal: true,
+		}, enableGitOpsButton);
+		if (confirm !== enableGitOpsButton) {
+			return;
+		}
 	}
 
 	if (enableGitOps) {

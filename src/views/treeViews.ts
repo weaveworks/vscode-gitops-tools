@@ -12,10 +12,10 @@ import { ClusterContextNode } from './nodes/clusterContextNode';
 import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
 
-let clusterTreeViewProvider: ClusterDataProvider;
-let sourceTreeViewProvider: SourceDataProvider;
-let workloadTreeViewProvider: WorkloadDataProvider;
-let documentationTreeViewProvider: DocumentationDataProvider;
+export let clusterTreeViewProvider: ClusterDataProvider;
+export let sourceTreeViewProvider: SourceDataProvider;
+export let workloadTreeViewProvider: WorkloadDataProvider;
+export let documentationTreeViewProvider: DocumentationDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;

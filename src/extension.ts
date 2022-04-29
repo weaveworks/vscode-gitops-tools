@@ -9,7 +9,12 @@ import { GlobalState, GlobalStateKey } from './globalState';
 import { checkFluxPrerequisites, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
-import { createTreeViews } from './views/treeViews';
+import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
+import { shell } from './shell';
+
+/** Disable interactive modal dialogs, useful for testing */
+export let disableConfirmations = false;
+
 
 export const enum GitOpsExtensionConstants {
 	ExtensionId = 'weaveworks.vscode-gitops-tools',
@@ -30,6 +35,7 @@ export async function activate(context: ExtensionContext) {
 	setExtensionContext(context);
 
 	globalState = new GlobalState(context);
+
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
 	// create gitops tree views
@@ -50,8 +56,11 @@ export async function activate(context: ExtensionContext) {
 		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}
 
-	// set vscode context: developing extension
-	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development);
+	// set vscode context: developing extension. test is also dev
+	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
+	if(context.extensionMode === ExtensionMode.Test) {
+		disableConfirmations = true;
+	}
 
 	// show error notification if flux is not installed
 	const fluxFoundResult = await promptToInstallFlux();
@@ -59,6 +68,16 @@ export async function activate(context: ExtensionContext) {
 		// check flux prerequisites
 		await checkFluxPrerequisites();
 	}
+
+	let api = {
+		shell: shell,
+		data: {
+			clusterTreeViewProvider: clusterTreeViewProvider,
+			sourceTreeViewProvider: sourceTreeViewProvider,
+			workloadTreeViewProvider: workloadTreeViewProvider,
+		}};
+
+	return api;
 }
 
 /**
