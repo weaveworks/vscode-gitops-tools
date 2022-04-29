@@ -82,7 +82,7 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Sources are listed', async function() {
-		this.timeout(10000);
+		this.timeout(15000);
 
 		await api.shell.execWithOutput('flux create source git podinfo --url=https://github.com/stefanprodan/podinfo --branch master');
 		await vscode.commands.executeCommand('gitops.views.refreshSourceTreeView');

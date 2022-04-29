@@ -19,7 +19,7 @@ jobs:
       - name: Setup Kubernetes
         uses: engineerd/setup-kind@v0.5.0
         with:
-          version: v0.11.1
+          version: v0.12.0
           image: kindest/node:v1.20.7
       - run: 'wget https://fluxcd.io/install.sh'
       - run: 'bash install.sh'
@@ -27,8 +27,3 @@ jobs:
         uses: GabrielBB/xvfb-action@v1
         with:
           run: 'npm test'
-
-
-
-
-
