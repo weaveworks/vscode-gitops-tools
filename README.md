@@ -57,7 +57,7 @@ We recommend you install these CLI tools on your system PATH before using GitOps
 # Azure specific recommendations
 
 - Make sure you have [successfully authenticated](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli) on your `az` CLI and have access to the [correct subscription](https://docs.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az_account_set) for your AKS or ARC cluster.
-- The easiest way to get your AKS or ARC cluster visible by the GitOps and Kubernetes Extensions, is by using the `az` CLI to merge the config for accessing your cluster onto the default `kubectl` config. Use `get-credentials` as show in the [official CLI documentation](https://docs.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az_aks_get_credentials). In order to enable GitOps in a clsuter you will likely need the `--admin` credentials.
+- The easiest way to get your AKS or ARC cluster visible by the GitOps and Kubernetes Extensions, is by using the `az` CLI to merge the config for accessing your cluster onto the default `kubectl` config. Use `get-credentials` as shown in the [official CLI documentation](https://docs.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az_aks_get_credentials). In order to enable GitOps in a cluster you will likely need the `--admin` credentials.
 
 # Common issues
 
