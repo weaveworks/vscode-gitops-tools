@@ -7,12 +7,19 @@ export interface DocumentationLink {
 	url: string;
 	icon?: string;
 	links?: DocumentationLink[];
+	webview?: boolean;
 }
 
 /**
  * links config for GitOps Documentation tree view.
  */
 export const documentationLinks: DocumentationLink[] = [
+	{
+		title: 'GitOps VSCode Docs',
+		url: 'https://github.com/weaveworks/vscode-gitops-tools',
+		icon: 'resources/icons/flux-logo.png',
+		webview: true,
+	},
 	{
 		title: 'Flux',
 		url: 'https://fluxcd.io/docs',
