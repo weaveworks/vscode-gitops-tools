@@ -1,5 +1,5 @@
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node';
-import { Uri, window } from 'vscode';
+import { TextDocument, Uri, window, workspace } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { AzureConstants } from '../azure/azureTools';
 import { Errorable, failed, succeeded } from '../errorable';
@@ -574,6 +574,22 @@ class KubernetesTools {
 
 		// create resource uri
 		return Uri.parse(url);
+	}
+
+	/**
+	 * Describe one resource object by kind/name and namespace
+	 * @param name name of the target resource
+	 * @param namespace namespace of the target resource
+	 * @param kind kind of the target resource
+	 */
+	async describeResource(name: string, namespace: string, kind: string): Promise<undefined | TextDocument> {
+		const resourceShellResult = await this.invokeKubectlCommand(`describe ${kind}/${name} --namespace=${namespace}`);
+		if (resourceShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_DESCRIBE_RESOURCE);
+			return;
+		}
+
+		return workspace.openTextDocument({content: resourceShellResult.stdout, language: 'text'});
 	}
 
 	/**
