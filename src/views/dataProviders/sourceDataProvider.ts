@@ -24,24 +24,28 @@ export class SourceDataProvider extends DataProvider {
 
 		setVSCodeContext(ContextTypes.LoadingSources, true);
 
-		// load git repositories for the current cluster
-		const gitRepositories = await kubernetesTools.getGitRepositories();
+		// Fetch all sources asynchronously and at once
+		const [gitRepositories, helmRepositories, buckets] = await Promise.all([
+			kubernetesTools.getGitRepositories(),
+			kubernetesTools.getHelmRepositories(),
+			kubernetesTools.getBuckets(),
+		]);
+
+		// add git repositories to the tree
 		if (gitRepositories) {
 			for (const gitRepository of gitRepositories.items) {
 				treeItems.push(new GitRepositoryNode(gitRepository));
 			}
 		}
 
-		// load helm repositores for the current cluster
-		const helmRepositories = await kubernetesTools.getHelmRepositories();
+		// add helm repositores to the tree
 		if (helmRepositories) {
 			for (const helmRepository of helmRepositories.items) {
 				treeItems.push(new HelmRepositoryNode(helmRepository));
 			}
 		}
 
-		// load buckets for the current cluster
-		const buckets = await kubernetesTools.getBuckets();
+		// add buckets to the tree
 		if (buckets) {
 			for (const bucket of buckets.items) {
 				treeItems.push(new BucketNode(bucket));
