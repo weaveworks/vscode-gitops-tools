@@ -589,7 +589,14 @@ class KubernetesTools {
 			return;
 		}
 
-		return workspace.openTextDocument({content: resourceShellResult.stdout, language: 'text'});
+		// Find "Managed Fields" indented two spaces over, then skip showing
+		// that line, and any lines that follow with four spaces of indentation.
+		const regex = /^  Managed Fields:$([\n]    [\S ]*)*$/m;
+
+		const sanitizedContent =
+		  resourceShellResult.stdout.replace(regex, '... [omitted Managed Fields]');
+
+		return workspace.openTextDocument({content: sanitizedContent, language: 'text'});
 	}
 
 	/**
