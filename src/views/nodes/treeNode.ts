@@ -128,16 +128,19 @@ export class TreeNode extends TreeItem {
 	get command(): Command | undefined {
 		// Set click event handler to load kubernetes resource as yaml file in editor.
 		if (this.resource) {
-			const resourceUri = kubernetesTools.getResourceUri(
-				this.resource.metadata?.namespace,
-				`${this.resource.kind}/${this.resource.metadata?.name}`,
-				FileTypes.Yaml,
-			);
+			// const resourceUri = kubernetesTools.getResourceUri(
+			// 	this.resource.metadata?.namespace,
+			// 	`${this.resource.kind}/${this.resource.metadata?.name}`,
+			// 	FileTypes.Yaml,
+			// );
+			const namespace = this.resource.metadata?.namespace;
+			const kind = this.resource.kind;
+			const name = this.resource.metadata?.name;
 
 			return {
-				command: CommandId.EditorOpenResource,
-				arguments: [resourceUri],
-				title: 'View Resource',
+				command: CommandId.EditorOpenDescribe,
+				arguments: [kind, namespace, name],
+				title: 'Describe Resource',
 			};
 		}
 	}
