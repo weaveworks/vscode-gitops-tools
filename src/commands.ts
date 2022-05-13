@@ -11,6 +11,7 @@ import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { installFluxCli } from './commands/installFluxCli';
 import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
+import { openWebviewDocumentURI } from './commands/openWebviewDocumentURI';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { resume } from './commands/resume';
@@ -77,6 +78,7 @@ export const enum CommandId {
 	// webview
 	ShowLogs = 'gitops.editor.showLogs',
 	OpenCreateSourceWebview = 'gitops.editor.createSource',
+	OpenWebviewDocumentURI = 'gitops.openWebviewDocumentURI',
 
 	// output commands
 	ShowOutputChannel = 'gitops.output.show',
@@ -132,6 +134,7 @@ export function registerCommands(context: ExtensionContext) {
 	// webview
 	registerCommand(CommandId.ShowLogs, showLogs);
 	registerCommand(CommandId.OpenCreateSourceWebview, openCreateSourceWebview);
+	registerCommand(CommandId.OpenWebviewDocumentURI, openWebviewDocumentURI);
 
 	// output
 	registerCommand(CommandId.ShowOutputChannel, showOutputChannel);
