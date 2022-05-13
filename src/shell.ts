@@ -137,7 +137,7 @@ async function execWithOutput(
 		// Show vscode notification loading message
 		return window.withProgress({
 			location: ProgressLocation.Notification,
-			title: 'GitOps Running: ',
+			title: 'GitOps Running',
 		}, innerExec);
 	} else {
 		// No progress
