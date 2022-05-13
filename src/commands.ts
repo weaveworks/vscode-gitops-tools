@@ -13,6 +13,7 @@ import { installFluxCli } from './commands/installFluxCli';
 import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
 import { openWebviewDocumentURI } from './commands/openWebviewDocumentURI';
 import { openResource } from './commands/openResource';
+import { openDescribe } from './commands/openDescribe';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { resume } from './commands/resume';
 import { setClusterProvider } from './commands/setClusterProvider';
@@ -74,6 +75,7 @@ export const enum CommandId {
 
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
+	EditorOpenDescribe = 'gitops.editor.openDescribe',
 
 	// webview
 	ShowLogs = 'gitops.editor.showLogs',
@@ -130,6 +132,7 @@ export function registerCommands(context: ExtensionContext) {
 
 	// editor
 	registerCommand(CommandId.EditorOpenResource, openResource);
+	registerCommand(CommandId.EditorOpenDescribe, openDescribe);
 
 	// webview
 	registerCommand(CommandId.ShowLogs, showLogs);
