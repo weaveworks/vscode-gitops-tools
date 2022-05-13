@@ -12,10 +12,10 @@ export async function openWebviewDocumentURI(uri: Uri, title?: string) {
 
 	const panel = window.createWebviewPanel(
 		'gitopsWebview', // Identifies the type of the webview. Used internally
-		title || 'Documentation',
+		title || 'Documentation', // Fallback to this string if no title provided
 		ViewColumn.One, // Editor column to show the new webview panel in.
-		{ // Enable scripts in the webview
-			enableScripts: true, //Set this to true if you want to enable Javascript.
+		{
+			enableScripts: false, // (Note: scripts did not seem to be working when enabled)
 		},
 	);
 
