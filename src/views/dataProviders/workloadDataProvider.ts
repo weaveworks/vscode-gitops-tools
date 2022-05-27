@@ -12,6 +12,8 @@ import { TreeNode } from '../nodes/treeNode';
 import { WorkloadNode } from '../nodes/workloadNode';
 import { refreshWorkloadsTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
+import { HelmReleaseResult } from '../../kubernetes/helmRelease';
+import { KustomizeResult } from '../../kubernetes/kustomize';
 
 /**
  * Defines data provider for loading Kustomizations
@@ -45,13 +47,13 @@ export class WorkloadDataProvider extends DataProvider {
 		this.namespaceResult = namespaces;
 
 		if (kustomizations) {
-			for (const kustomizeWorkload of kustomizations.items) {
+			for (const kustomizeWorkload of this.sortKsByMetadataName(kustomizations)) {
 				workloadNodes.push(new KustomizationNode(kustomizeWorkload));
 			}
 		}
 
 		if (helmReleases) {
-			for (const helmRelease of helmReleases.items) {
+			for (const helmRelease of this.sortHrByMetadataName(helmReleases)) {
 				workloadNodes.push(new HelmReleaseNode(helmRelease));
 			}
 		}
@@ -65,6 +67,33 @@ export class WorkloadDataProvider extends DataProvider {
 		statusBar.stopLoadingTree();
 
 		return workloadNodes;
+	}
+
+	sortKsByMetadataName(kss: KustomizeResult): KustomizeResult['items'] {
+		return kss.items.sort((k1, k2) => {
+			if (k1.metadata.name && k2.metadata.name) {
+				if (k1.metadata.name > k2.metadata.name) {
+					return 1;
+				}
+				if (k1.metadata.name < k2.metadata.name) {
+					return -1;
+				}
+			}
+			return 0;
+		});
+	}
+	sortHrByMetadataName(hrr: HelmReleaseResult): HelmReleaseResult['items'] {
+		return hrr.items.sort((h1, h2) => {
+			if (h1.metadata.name && h2.metadata.name) {
+				if (h1.metadata.name > h2.metadata.name) {
+					return 1;
+				}
+				if (h1.metadata.name < h2.metadata.name) {
+					return -1;
+				}
+			}
+			return 0;
+		});
 	}
 
 	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {
