@@ -10,28 +10,28 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: "actions/checkout@v2"
-    - uses: "actions/setup-node@v2"
-      with:
-        node-version: "16"
-    - name: Install dependencies
-      run: npm install
-    - run: npm run compile
-    - run: npm install -g vsce
-    - run: vsce package
+      - uses: "actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e" # pin@v2
+      - uses: "actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561" # pin@v2
+        with:
+          node-version: "16"
+      - name: Install dependencies
+        run: npm install
+      - run: npm run compile
+      - run: npm install -g vsce
+      - run: vsce package
 
-    - name: Get the version
-      id: version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      shell: bash
+      - name: Get the version
+        id: version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        shell: bash
 
-    - uses: apexskier/github-semver-parse@v1
-      id: semver
-      with:
-        version: ${{ steps.version.outputs.VERSION }}
+      - uses: apexskier/github-semver-parse@671ddf80785e4d721e76723ec1e687317f85bfe9 # pin@v1
+        id: semver
+        with:
+          version: ${{ steps.version.outputs.VERSION }}
 
-    - uses: ncipollo/release-action@v1
-      with:
-        artifacts: "vscode-gitops-tools-*.vsix"
-        token: ${{ secrets.GITHUB_TOKEN }}
-        prerelease: ${{ !!steps.semver.outputs.prerelease }}
+      - uses: ncipollo/release-action@58ae73b360456532aafd58ee170c045abbeaee37 # pin@v1
+        with:
+          artifacts: "vscode-gitops-tools-*.vsix"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: ${{ !!steps.semver.outputs.prerelease }}
