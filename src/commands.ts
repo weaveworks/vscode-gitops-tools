@@ -169,4 +169,3 @@ function registerCommand(commandId: string, callback: (...args: any[])=> any, th
 	// When this extension is deactivated the disposables will be disposed.
 	_context.subscriptions.push(command);
 }
-

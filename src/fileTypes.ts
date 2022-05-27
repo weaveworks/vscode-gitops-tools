@@ -3,4 +3,5 @@
  */
 export enum FileTypes {
 	Yaml = 'yaml',
+	Text = 'txt',
 }
