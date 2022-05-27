@@ -15,7 +15,7 @@ export async function openWebviewDocumentURI(uri: Uri, title?: string) {
 		title || 'Documentation', // Fallback to this string if no title provided
 		ViewColumn.One, // Editor column to show the new webview panel in.
 		{
-			enableScripts: false, // (Note: scripts did not seem to be working when enabled)
+			enableScripts: true, // (Note: scripts did not seem to be working when enabled)
 		},
 	);
 
