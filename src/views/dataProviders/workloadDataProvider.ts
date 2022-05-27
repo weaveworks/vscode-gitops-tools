@@ -45,13 +45,33 @@ export class WorkloadDataProvider extends DataProvider {
 		this.namespaceResult = namespaces;
 
 		if (kustomizations) {
-			for (const kustomizeWorkload of kustomizations.items) {
+			for (const kustomizeWorkload of kustomizations.items.sort((k1, k2) => {
+				if (k1.metadata.name && k2.metadata.name) {
+					if (k1.metadata.name > k2.metadata.name) {
+						return 1;
+					}
+					if (k1.metadata.name < k2.metadata.name) {
+						return -1;
+					}
+				}
+				return 0;
+			})) {
 				workloadNodes.push(new KustomizationNode(kustomizeWorkload));
 			}
 		}
 
 		if (helmReleases) {
-			for (const helmRelease of helmReleases.items) {
+			for (const helmRelease of helmReleases.items.sort((h1, h2) => {
+				if (h1.metadata.name && h2.metadata.name) {
+					if (h1.metadata.name > h2.metadata.name) {
+						return 1;
+					}
+					if (h1.metadata.name < h2.metadata.name) {
+						return -1;
+					}
+				}
+				return 0;
+			})) {
 				workloadNodes.push(new HelmReleaseNode(helmRelease));
 			}
 		}
