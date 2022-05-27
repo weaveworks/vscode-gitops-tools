@@ -274,7 +274,7 @@ class KubernetesTools {
 	 * Gets all helm releases from the current kubectl context.
 	 */
 	async getHelmReleases(): Promise<undefined | HelmReleaseResult> {
-		const helmReleaseShellResult = await this.invokeKubectlCommand('get HelmRelease -A -o json');
+		const helmReleaseShellResult = await this.invokeKubectlCommand('get helmreleases.helm.toolkit.fluxcd.io -A -o json');
 		if (helmReleaseShellResult?.code !== 0) {
 			console.warn(`Failed to get kubectl helm releases: ${helmReleaseShellResult?.stderr}`);
 			if (helmReleaseShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(helmReleaseShellResult.stderr)) {
