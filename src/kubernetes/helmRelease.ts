@@ -3,7 +3,7 @@ import { DependsOn, KubeConfig, Kustomize, NamespacedObjectKindReference } from 
 
 /**
  * Helm releases result from running
- * `kubectl get HelmRelease -A` command.
+ * `kubectl get helmreleases.helm.toolkit.fluxcd.io -A` command.
  */
 export interface HelmReleaseResult {
 	readonly apiVersion: string;
