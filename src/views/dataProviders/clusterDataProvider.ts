@@ -48,10 +48,16 @@ export class ClusterDataProvider extends DataProvider {
 		statusBar.startLoadingTree();
 		this.clusterNodes = [];
 
-		const [contextsResult, currentContextResult] = await Promise.all([
-			kubernetesTools.getContexts(),
-			kubernetesTools.getCurrentContext(),
-		]);
+
+		const currentContextResult = await kubernetesTools.getCurrentContext();
+		const contextsResult = await kubernetesTools.getContexts();
+
+		let currentContext = '';
+		if (failed(currentContextResult)) {
+			window.showErrorMessage(`Failed to get current context: ${currentContextResult.error[0]}`);
+		} else {
+			currentContext = currentContextResult.result;
+		}
 
 		if (failed(contextsResult)) {
 			setVSCodeContext(ContextTypes.NoClusters, false);
@@ -62,20 +68,13 @@ export class ClusterDataProvider extends DataProvider {
 			return [];
 		}
 
-		const clusterNodes: ClusterContextNode[] = [];
-		let currentContextTreeItem: ClusterContextNode | undefined;
-
-		let currentContext = '';
-		if (failed(currentContextResult)) {
-			window.showErrorMessage(`Failed to get current context: ${currentContextResult.error[0]}`);
-		} else {
-			currentContext = currentContextResult.result;
-		}
-
 		if (contextsResult.result.length === 0) {
 			setVSCodeContext(ContextTypes.NoClusters, true);
 			return [];
 		}
+
+		const clusterNodes: ClusterContextNode[] = [];
+		let currentContextTreeItem: ClusterContextNode | undefined;
 
 		for (const cluster of contextsResult.result) {
 			const clusterNode = new ClusterContextNode(cluster);

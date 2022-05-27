@@ -2,7 +2,7 @@
 	"name": "vscode-gitops-tools",
 	"displayName": "GitOps Tools",
 	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
-	"version": "0.19.2",
+	"version": "0.20.0-alpha.1",
 	"publisher": "weaveworks",
 	"engines": {
 		"vscode": "^1.59.0",
@@ -56,6 +56,7 @@
 		"onCommand:gitops.views.showWorkloadsHelpMessage",
 		"onCommand:gitops.copyResourceName",
 		"onCommand:gitops.editor.openResource",
+		"onCommand:gitops.editor.openDescribe",
 		"onCommand:gitops.editor.showLogs",
 		"onCommand:gitops.editor.createSource",
 		"onCommand:gitops.output.show",
@@ -193,6 +194,11 @@
 			{
 				"command": "gitops.editor.openResource",
 				"title": "View Config",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.editor.openDescribe",
+				"title": "View Resource Description",
 				"category": "GitOps"
 			},
 			{

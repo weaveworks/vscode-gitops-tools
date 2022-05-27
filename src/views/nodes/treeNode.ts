@@ -131,14 +131,44 @@ export class TreeNode extends TreeItem {
 			const resourceUri = kubernetesTools.getResourceUri(
 				this.resource.metadata?.namespace,
 				`${this.resource.kind}/${this.resource.metadata?.name}`,
-				FileTypes.Yaml,
+				FileTypes.Yaml, 'describe',
 			);
+			// const namespace = this.resource.metadata?.namespace;
+			// const kind = this.resource.kind;
+			// const name = this.resource.metadata?.name;
 
 			return {
 				command: CommandId.EditorOpenResource,
 				arguments: [resourceUri],
-				title: 'View Resource',
+				title: 'Describe Resource',
 			};
+			// const resourceUri = kubernetesTools.getResourceUri(
+			// 	this.resource.metadata?.namespace,
+			// 	`${this.resource.kind}/${this.resource.metadata?.name}`,
+			// 	FileTypes.Text, 'describe',
+			// );
+			const name = this.resource.metadata?.name;
+			const namespace = this.resource.metadata?.name;
+			const kind = this.resource.kind;
+
+			if(name && namespace && kind) {
+				let retDoc = kubernetesTools.describeResource(name, namespace, kind);
+				return {
+					command: CommandId.EditorOpenDescribe,
+					arguments: [retDoc],
+					title: 'Describe Resource',
+				};
+			}
+			// const namespace = this.resource.metadata?.namespace;
+			// const kind = this.resource.kind;
+			// const name = this.resource.metadata?.name;
+
+
+			// return {
+			// 	command: CommandId.EditorOpenDescribe,
+			// 	arguments: [kind, namespace, name],
+			// 	title: 'Describe Resource',
+			// };
 		}
 	}
 
