@@ -19,7 +19,19 @@ jobs:
     - run: npm run compile
     - run: npm install -g vsce
     - run: vsce package
+
+    - name: Get the version
+      id: version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      shell: bash
+
+    - uses: apexskier/github-semver-parse@v1
+      id: semver
+      with:
+        version: ${{ steps.version.outputs.VERSION }}
+
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "vscode-gitops-tools-*.vsix"
         token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: ${{ !!steps.semver.outputs.prerelease }}
