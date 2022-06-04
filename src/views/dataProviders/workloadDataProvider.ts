@@ -99,10 +99,11 @@ export class WorkloadDataProvider extends DataProvider {
 	async updateWorkloadChildren(workloadNode: WorkloadNode) {
 		const name = workloadNode.resource.metadata.name || '';
 		const namespace = workloadNode.resource.metadata.namespace || '';
+		const targetNamespace = workloadNode.resource.spec.targetNamespace || namespace;
 
 		let workloadChildren;
 		if (workloadNode instanceof KustomizationNode) {
-			const resourceTree = await fluxTools.tree(name, namespace);
+			const resourceTree = await fluxTools.tree(name, targetNamespace);
 
 			if (!resourceTree || !resourceTree.resources) {
 				workloadNode.children = [new TreeNode('No Resources')];
@@ -116,7 +117,7 @@ export class WorkloadDataProvider extends DataProvider {
 			return;
 		} else if (workloadNode instanceof HelmReleaseNode) {
 			// TODO: use `flux tree` to fetch the resources
-			workloadChildren = await kubernetesTools.getChildrenOfWorkload('helm', name, namespace);
+			workloadChildren = await kubernetesTools.getChildrenOfWorkload('helm', name, targetNamespace);
 		}
 
 		if (!workloadChildren) {
@@ -156,7 +157,13 @@ export class WorkloadDataProvider extends DataProvider {
 		}
 
 		// only show namespaces that are not empty
-		workloadNode.children = namespaceNodes.filter(namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata.name) && namespaceNode.children.length);
+		workloadNode.children = namespaceNodes.filter(
+			namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata.name)
+		&& namespaceNode.children.length);
+
+		if(workloadNode.children.length === 0) {
+			workloadNode.children = [new TreeNode('No Resources')];
+		}
 
 		refreshWorkloadsTreeView(workloadNode);
 	}
