@@ -6,61 +6,55 @@ The current release notes are always published on the Releases page, by automati
 
 # v0.19.6 - [2022-06-08]
 
-54b9dbd Merge pull request #289 from juozasg/remove-logo-from-readme
-d226b35 remove redundant README logo for the vscode marketplace
-fc718a2 Merge pull request #288 from kingdonb/update-changelog
-c980c0e Update CHANGELOG
-85382ff Merge pull request #287 from weaveworks/release-pr
+* #289 from juozasg/remove-logo-from-readme
+* #288 from kingdonb/update-changelog
 
 # v0.19.5 - [2022-06-08]
 
-08eb1f0 Merge pull request #286 from kingdonb/releases-in-pr
-1f428e1 Let's test release by PR one more time
+* #286 from kingdonb/releases-in-pr
 
 # v0.19.4 - [2022-06-08]
 
-5233791 Merge pull request #285 from kingdonb/fixup-release-metadata
-039125a Fix release metadata
+* #285 from kingdonb/fixup-release-metadata
 
 # v0.19.3 - [2022-06-08]
 
-48a02fd Merge pull request #283 from kingdonb/gh-actions-auto-pr
-2ac5017 Set the GITHUB_TOKEN environment variable
-a8b67b4 Merge pull request #282 from kingdonb/no-exceptions-robot
-8086e5a No exceptions, robot
-8843287 Merge pull request #281 from kingdonb/upgrade-vscode-engine
-23ad59f pre-release versions are not supported until
-a080629 Merge pull request #280 from kingdonb/test-edge-script
-66177b1 Add edge version supporting release machinery
-63ec602 Merge pull request #279 from kingdonb/test-requirements
-2e9781a Run test with requirements
-3305767 Merge pull request #278 from kingdonb/release-marketplace
-98a947d preserve a bit of history
-48798c5 Delete some of old workflow
-d32518d Fixup misused github actions workflow input
-9cf3adc disable Open VSX publishing
-4642f45 set screen resolution for larger display
-d13e55c Borrow release workflow from
-e088c80 Merge pull request #277 from juozasg/fix-229-loading-dotdotdot
-80f1b37 query workload children in targetNamespace
-2db5757 Merge pull request #275 from kingdonb/prereleases-automatically-marked
-e280407 pin-github-actions
-daaaf26 alpha.6 - automatically mark prereleases
-3144445 Merge pull request #274 from kingdonb/fix-flux-v1-bug
-4af2e1e Fix bug querying too broadly HelmReleases
-a5db710 Merge pull request #272 from weaveworks/remove-double-colon
-4dd6072 Fix "GitOps Running: :"
-3928975 Merge pull request #270 from weaveworks/parallelize-source-data
-41f08f3 parallel awaits for Sources in sourceDataProvider
-79df334 README.md:clsuter→cluster (#268)
-d5054a3 Merge pull request #263 from weaveworks/integration-tests
-a4f5de0 Increase slightly Timeout for this test
-1e7f72d use kind 0.12.0
-bd05aef Merge pull request #262 from weaveworks/integration-tests
-cc24174 npm test github action
-408fd50 GitOps enable/disable and treeviews tests
-75c2227 test env setup and e2e test outline
-b34fdb5 Merge pull request #261 from weaveworks/release/0.19.x
+* #283 from kingdonb/gh-actions-auto-pr
+* Set the `GITHUB_TOKEN` environment variable
+* #282 from kingdonb/no-exceptions-robot
+* No exceptions, robot
+* #281 from kingdonb/upgrade-vscode-engine
+* pre-release versions are not supported until a certain vscode engine version
+* #280 from kingdonb/test-edge-script
+* Add edge version supporting release machinery
+* #279 from kingdonb/test-requirements
+* Run test with requirements
+* #278 from kingdonb/release-marketplace
+* Preserve a bit of history
+* Delete some of old workflow
+* Fixup misused github actions workflow input
+* Disable Open VSX publishing
+* Set screen resolution for larger display
+* Borrow release workflow from
+* #277 from juozasg/fix-229-loading-dotdotdot
+* query workload children in targetNamespace
+* #275 from kingdonb/prereleases-automatically-marked
+* pin-github-actions
+* `alpha.6` - automatically mark prereleases
+* #274 from kingdonb/fix-flux-v1-bug
+* Fix bug querying too broadly HelmReleases
+* #272 from weaveworks/remove-double-colon
+* Fix "GitOps Running: :"
+* #270 from weaveworks/parallelize-source-data
+* parallel awaits for Sources in sourceDataProvider
+* README.md:clsuter→cluster (#268)
+* #263 from weaveworks/integration-tests
+* Increase slightly Timeout for this test
+* use kind 0.12.0
+* #262 from weaveworks/integration-tests
+* npm test github action
+* GitOps enable/disable and treeviews tests
+* test env setup and e2e test outline
 
 # v0.19.2 - [2022-04-28]
 
