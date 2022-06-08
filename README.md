@@ -1,13 +1,4 @@
-# vscode-gitops-tools
-
-<h1 align="center">
-  <br />
-    <img src="resources/icons/gitops-logo.png" alt="GitOps" width="200" />
-  <br />
-  GitOps Tools for Visual Studio Code
-  <br />
-  <br />
-</h1>
+# GitOps Tools for Visual Studio Code
 
 Weaveworks GitOps Extension provides an intuitive way to manage, troubleshoot and operate your Kubernetes environment following the GitOps operating model, accelerating your development lifecycle and simplifying your continuous delivery pipelines.
 
