@@ -4,6 +4,14 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.19.6 - [2022-06-08]
+
+54b9dbd Merge pull request #289 from juozasg/remove-logo-from-readme
+d226b35 remove redundant README logo for the vscode marketplace
+fc718a2 Merge pull request #288 from kingdonb/update-changelog
+c980c0e Update CHANGELOG
+85382ff Merge pull request #287 from weaveworks/release-pr
+
 # v0.19.5 - [2022-06-08]
 
 08eb1f0 Merge pull request #286 from kingdonb/releases-in-pr
