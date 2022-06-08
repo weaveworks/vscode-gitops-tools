@@ -4,6 +4,12 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.19.7 - [2022-06-08]
+
+* Resolve this diff (#294)
+* add some debugging helpers (#293)
+* Clean up CHANGELOG (#292)
+
 # v0.19.6 - [2022-06-08]
 
 * #289 from juozasg/remove-logo-from-readme
