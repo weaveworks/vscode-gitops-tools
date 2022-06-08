@@ -5,7 +5,7 @@
 	"version": "0.19.2",
 	"publisher": "weaveworks",
 	"engines": {
-		"vscode": "^1.59.0",
+		"vscode": "^1.63.0",
 		"npm": ">=7.0.0"
 	},
 	"categories": [
