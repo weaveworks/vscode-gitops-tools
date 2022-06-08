@@ -1,10 +1,4 @@
 name: Publish
-# ---
-# name: Build and Publish VSIX GitOps Extension Release
-# on:
-#   push:
-#     tags:
-#       - '**'
 
 on:
   workflow_dispatch:
@@ -88,6 +82,8 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: npm install
+      - name: Install vsce globally
+        run: npm install -g vsce
       - name: Build Package
         run: npm run compile
 
