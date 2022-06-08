@@ -134,7 +134,7 @@ jobs:
       - name: Push Tags
         run: |
           git log -1 --stat
-          git push origin main:release-pr --tags
+          git push origin --force-with-lease main:release-pr --tags
       - run: |
           export GIT_TAG=$(git describe --tags --abbrev=0)
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
@@ -150,8 +150,9 @@ jobs:
           # our main branch "no push without a pull request" even for some robot. So just merge this PR.
       - uses: repo-sync/pull-request@v2
         name: pull-request
-        if: ${{ github.event.inputs.releaseChannel == 'edge' }}
+        if: ${{ github.event.inputs.releaseChannel != 'edge' }}
         with:
+          source_branch: "release-pr"
           destination_branch: "main"
           pr_title: "Release ${{ env.GIT_TAG }}"
           pr_body: "A release has been tagged as ${{ env.GIT_TAG }}. Merge this PR to main to complete it."
