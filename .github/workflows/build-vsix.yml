@@ -157,6 +157,7 @@ jobs:
           pr_body: "A release has been tagged as ${{ env.GIT_TAG }}. Merge this PR to main to complete it."
           pr_reviewer: "kingdonb"
           pr_draft: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
 #       - name: Get the version
 #         id: version
