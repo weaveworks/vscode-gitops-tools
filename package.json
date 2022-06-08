@@ -2,8 +2,17 @@
 	"name": "vscode-gitops-tools",
 	"displayName": "GitOps Tools",
 	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
-	"version": "0.19.2",
+	"version": "0.19.3",
+	"author": "Kingdon Barrett <kingdon@weave.works>",
+	"contributors": [
+		"Kingdon Barrett <kingdon@weave.works>",
+		"Juozas Gaigalas <juozasgaigalas@gmail.com>",
+		"Alexander <usernamehw@gmail.com>",
+		"Taras Novak <taras.novak@randomfractals.com>",
+		"Leonardo Murillo <leonardo@weave.works>"
+	],
 	"publisher": "weaveworks",
+	"icon": "resources/icons/gitops-logo.png",
 	"engines": {
 		"vscode": "^1.63.0",
 		"npm": ">=7.0.0"
