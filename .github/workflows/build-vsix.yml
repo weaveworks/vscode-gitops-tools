@@ -38,7 +38,7 @@ on:
         description: "Publish on Open VSX Registry?"
         required: true
         type: choice
-        default: "yes"
+        default: "no"
         options:
           - "yes"
           - "no"
