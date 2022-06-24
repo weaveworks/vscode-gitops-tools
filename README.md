@@ -3,7 +3,7 @@
 ![VSCode Marketplace Link](https://vsmarketplacebadge.apphb.com/version-short/weaveworks.vscode-gitops-tools.svg)
 ![Install Counter](https://vsmarketplacebadge.apphb.com/installs/weaveworks.vscode-gitops-tools.svg)
 
-Weaveworks GitOps Extension provides an intuitive way to manage, troubleshoot and operate your Kubernetes environment following the GitOps operating model, accelerating your development lifecycle and simplifying your continuous delivery pipelines.
+Weaveworks GitOps Extension provides an intuitive way to manage, troubleshoot and operate your Kubernetes environment following the GitOps operating model, accelerating your development lifecycle and simplifying your continuous delivery pipelines. The extension is built on Flux; to learn more about the GitOps toolkit, visit [FluxCD.io]
 
 Your feedback is very important to us, please help us by [submitting issues](https://github.com/weaveworks/vscode-gitops-tools/issues) for bugs, enhancements and share with us how you are using the extension.
 
@@ -126,3 +126,5 @@ Install from `.vsix` file step is only required for testing the latest version o
 # Data and telemetry
 
 The GitOps Tools Extension for Visual Studio Code collects usage data and sends it to Weaveworks to help improve our products and services. Read our [privacy statement](https://www.weave.works/weaveworks-privacy-policy/) to learn more. This extension respects the `telemetry.enableTelemetry` setting.
+
+[FluxCD.io]: https://fluxcd.io/
