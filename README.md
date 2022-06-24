@@ -7,9 +7,9 @@ Weaveworks GitOps Extension provides an intuitive way to manage, troubleshoot an
 
 Your feedback is very important to us, please help us by [submitting issues](https://github.com/weaveworks/vscode-gitops-tools/issues) for bugs, enhancements and share with us how you are using the extension.
 
-Weaveworks GitOps Extension integrates with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools), [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) and [`flux`](https://fluxcd.io/) for a consolidated and tightly integrated user experience.
+Weaveworks GitOps Extension integrates with [Kubernetes Tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools), [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) and [`flux` (FluxCD)](https://fluxcd.io/) for a consolidated and tightly integrated user experience.
 
-> This extension is under active development and currently available as an alpha product.
+> This extension is under active development and is in a rolling beta release cycle with stable releases. Breaking changes remain a possibility.
 
 # Getting started
 
