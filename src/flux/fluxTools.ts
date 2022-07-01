@@ -72,7 +72,7 @@ class FluxTools {
 				stage = 'prerequisites';
 			} else if (line === '► checking controllers') {
 				stage = 'controllers';
-			} else if (line === '✔ all checks passed') {
+			} else if (line === '✔ all checks passed' || line === '► checking crds') {
 				stage = '';
 			} else {
 				if (stage === 'prerequisites') {
