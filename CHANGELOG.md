@@ -4,6 +4,23 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.19.10 - [2022-07-01]
+
+* Add CHANGELOG (#307)
+* Add DEVELOPMENT.md, move this content out of README (#306)
+* Search for FluxCD should now return the extension in the VSCode Marketplace (#305)
+
+# v0.19.9 - [2022-07-01]
+
+* Fix #302, parsing flux CLI output correctly from changes in Flux 0.31.2 (#303)
+* Make image badges in README link to marketplace entry (#301)
+
+# v0.19.8 - [2022-06-24]
+
+* Try to raise our SEO profile (#298)
+* add VSCode Marketplace link/badge to README (#296)
+* Bump got from 11.8.2 to 11.8.5 (#297)
+
 # v0.19.7 - [2022-06-08]
 
 * Resolve this diff (#294)
