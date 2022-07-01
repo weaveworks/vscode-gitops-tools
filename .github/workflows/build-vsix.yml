@@ -137,6 +137,12 @@ jobs:
         run: |
           git log -1 --stat
           git push origin --force-with-lease main:release-pr --tags
+        if: ${{ github.event.inputs.releaseChannel != 'edge' }}
+      - name: Push Tags (Edge)
+        run: |
+          git log -1 --stat
+          git push origin --tags
+        if: ${{ github.event.inputs.releaseChannel == 'edge' }}
       - run: |
           export GIT_TAG=$(git describe --tags --abbrev=0)
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
