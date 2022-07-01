@@ -25,6 +25,7 @@
 		"GitOps",
 		"kubernetes",
 		"flux",
+		"fluxcd",
 		"helm",
 		"Weave GitOps",
 		"Azure",
