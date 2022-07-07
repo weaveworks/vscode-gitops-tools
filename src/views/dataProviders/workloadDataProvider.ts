@@ -103,7 +103,7 @@ export class WorkloadDataProvider extends DataProvider {
 
 		let workloadChildren;
 		if (workloadNode instanceof KustomizationNode) {
-			const resourceTree = await fluxTools.tree(name, targetNamespace);
+			const resourceTree = await fluxTools.tree(name, namespace);
 
 			if (!resourceTree || !resourceTree.resources) {
 				workloadNode.children = [new TreeNode('No Resources')];
