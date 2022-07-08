@@ -1,6 +1,7 @@
-import { ExtensionContext, ExtensionMode } from 'vscode';
+import { CodeAction, ExtensionContext, ExtensionMode } from 'vscode';
 import { registerCommands } from './commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
+import { showNewUserGuide } from './commands/showNewUserGuide';
 import { ContextTypes, setVSCodeContext } from './vscodeContext';
 import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
@@ -34,6 +35,8 @@ export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
 	setExtensionContext(context);
 
+
+
 	globalState = new GlobalState(context);
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
@@ -48,6 +51,12 @@ export async function activate(context: ExtensionContext) {
 	// depending if the current opened folder is a git repository and already added
 	// to the cluster
 	checkIfOpenedFolderGitRepositorySourceExists();
+
+	// show new user guide
+	// TODO: only once, then save global statte
+	// TODO: add help gif showing to click HELP icon for the cluster to get the guide
+	showNewUserGuide();
+
 
 	telemetry.send(TelemetryEventNames.Startup);
 

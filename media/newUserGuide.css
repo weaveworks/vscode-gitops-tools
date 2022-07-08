@@ -1,0 +1,20 @@
+/* h1 {
+	color: aquamarine;
+} */
+
+img.screencap {
+	width: 480px;
+	height: 320px;
+}
+
+p {
+	margin: 1rem 0;
+}
+
+ul {
+	margin-bottom: 1.5rem;
+}
+
+.bottom-padding {
+	margin-top: 40rem;
+}

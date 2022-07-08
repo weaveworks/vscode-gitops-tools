@@ -200,6 +200,11 @@
 				"icon": "$(question)"
 			},
 			{
+				"command": "gitops.views.showNewUserGuide",
+				"title": "New User Guide",
+				"category": "GitOps"
+			},
+			{
 				"command": "gitops.editor.openResource",
 				"title": "View Config",
 				"category": "GitOps"
@@ -559,6 +564,7 @@
 		"git-url-parse": "^11.6.0",
 		"semver": "^7.3.5",
 		"shelljs": "^0.8.5",
+		"tinytim": "^0.1.1",
 		"vscode-kubernetes-tools-api": "^1.3.0"
 	},
 	"__metadata": {
