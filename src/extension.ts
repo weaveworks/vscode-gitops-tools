@@ -31,11 +31,8 @@ export let telemetry: Telemetry;
  * @param context VSCode extension context.
  */
 export async function activate(context: ExtensionContext) {
-
 	// Keep a reference to the extension context
 	setExtensionContext(context);
-
-
 
 	globalState = new GlobalState(context);
 
@@ -51,10 +48,6 @@ export async function activate(context: ExtensionContext) {
 	// depending if the current opened folder is a git repository and already added
 	// to the cluster
 	checkIfOpenedFolderGitRepositorySourceExists();
-
-	// show new user guide
-	// TODO: only once, then save global statte
-	// TODO: add help gif showing to click HELP icon for the cluster to get the guide
 	showNewUserGuide();
 
 
@@ -62,6 +55,7 @@ export async function activate(context: ExtensionContext) {
 
 	if (globalState.get(GlobalStateKey.FirstEverActivationStorageKey) === undefined) {
 		telemetry.send(TelemetryEventNames.NewInstall);
+		showNewUserGuide();
 		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}
 

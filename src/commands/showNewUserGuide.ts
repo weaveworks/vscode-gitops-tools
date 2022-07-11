@@ -34,6 +34,7 @@ function getWebviewContent(webview: vscode.Webview) {
 		webview.asWebviewUri(asAbsolutePath('resources/images/newUserGuide/06-reconcile.gif')),
 		webview.asWebviewUri(asAbsolutePath('resources/images/newUserGuide/07-logs.png')),
 		webview.asWebviewUri(asAbsolutePath('resources/images/newUserGuide/08-trace.png')),
+		webview.asWebviewUri(asAbsolutePath('resources/images/newUserGuide/09-docs.png')),
 	];
 
 

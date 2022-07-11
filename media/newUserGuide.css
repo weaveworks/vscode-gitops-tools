@@ -7,12 +7,36 @@ img.screencap {
 	height: 320px;
 }
 
+img.screencap-docs {
+	width: 50%;
+}
+
 p {
 	margin: 1rem 0;
 }
 
 ul {
 	margin-bottom: 1.5rem;
+}
+
+
+
+h2, h3 {
+	font-weight: 700;
+	margin: 1.5rem 0 0.25rem 0;
+
+}
+
+h2 + h3 {
+	margin-top: 0.5rem;
+}
+
+p {
+	margin: 0.75rem 0;
+}
+
+p.ul-text {
+	margin: 1rem 0 0 0;
 }
 
 .bottom-padding {

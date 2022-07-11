@@ -8,16 +8,20 @@
 
 <p>We would appreciate it very much. Thanks!! ❤️🧸</p>
 
+<p>This guide and other GitOps and Flux documentation is available in the <strong>DOCUMENTATION</strong> view:</p>
+
+<img class="screencap-docs" src='{{images.8}}' alt='Documentation'/>
+
 
 <h2>What is GitOps, Flux, and GitOps Tools?</h2>
 
-GitOps is a process framework for working with applications and their infrastructure as code. Although GitOps does not require Git or Kubernetes, most people today practice GitOps with the two technologies and that is what we cover here. Git is an increasingly popular version controlling software and Kubernetes is a container orchestration system - both are open source. Flux is an open source project in the Cloud Native Computing Foundation (CNCF) that makes the GitOps magic happen with these technologies. This extension for VS Code will help you do this!
+<p>GitOps is a process framework for working with applications and their infrastructure as code. Although GitOps does not require Git or Kubernetes, most people today practice GitOps with the two technologies and that is what we cover here. Git is an increasingly popular version controlling software and Kubernetes is a container orchestration system - both are open source. Flux is an open source project in the Cloud Native Computing Foundation (CNCF) that makes the GitOps magic happen with these technologies. This extension for VS Code will help you do this!</p>
 
-High level: With GitOps, you have a manifest in a repo (usually a yaml file), and that manifest is the single source of truth for the state of your cluster. It defines how your cluster should look. Flux and Kubernetes work together to check on that manifest and to reconcile the cluster to match the indications automatically. That means that if anyone hacks into the system and makes a change to the cluster, Flux will “reset” it to what's in the yaml file. This adds security to your operations. Similarly, if you want to make a change to your cluster, you make changes to the yaml file and Flux and Kubernetes will reconcile the changes. Since the YAML files are in a Git repository there's an audit trail.
+<p>High level: With GitOps, you have a manifest in a repo (usually a yaml file), and that manifest is the single source of truth for the state of your cluster. It defines how your cluster should look. Flux and Kubernetes work together to check on that manifest and to reconcile the cluster to match the indications automatically. That means that if anyone hacks into the system and makes a change to the cluster, Flux will “reset” it to what's in the yaml file. This adds security to your operations. Similarly, if you want to make a change to your cluster, you make changes to the yaml file and Flux and Kubernetes will reconcile the changes. Since the YAML files are in a Git repository there's an audit trail.</>
 
-With GitOps, developers commit their Kubernetes infrastructure definitions into the Git source control system so that the whole system is version controlled. Changes to the application infrastructure are accomplished by changing manifests and pushing that to a git repository. Changes are continuously reconciled from the git repository to the cluster.
+<p>With GitOps, developers commit their Kubernetes infrastructure definitions into the Git source control system so that the whole system is version controlled. Changes to the application infrastructure are accomplished by changing manifests and pushing that to a git repository. Changes are continuously reconciled from the git repository to the cluster.</p>
 
-<p>Flux is software that enables GitOps. The core of Flux is GitOps Tools - a set of Kubernetes controllers and resources that work together to:</>
+<p class="ul-text">Flux is software that enables GitOps. The core of Flux is GitOps Tools - a set of Kubernetes controllers and resources that work together to:</p>
 <ul>
 	<li>synchronize git (and other) repository state</li>
 	<li>apply manifests to the cluster</li>
@@ -80,9 +84,9 @@ With GitOps, developers commit their Kubernetes infrastructure definitions into 
 <img class="screencap" src='{{images.4}}' alt='View Workloads'/>
 
 
-<p>Now any changes you commit to the repository podinfo ./kustomize folder will be reflected in the cluster. By default Flux reconciles the cluster every minute. If you don’t want to wait, you can trigger it manually or configure a <a href="https://fluxcd.io/docs/guides/webhook-receivers/">webhook receiver</a></p>
+<p>Now any changes you commit to the repository <code>podinfo</code> <code>./kustomize</code> folder will be reflected in the cluster. By default Flux reconciles the cluster every minute. If you don’t want to wait, you can trigger it manually or configure a <a href="https://fluxcd.io/docs/guides/webhook-receivers/">webhook receiver</a>.</p>
 
-<p>Both the GitRepository and Kustomization are reconciled to apply your changes from the github repository. Reconciling GitRepository tells Flux to fetch the latest commit from github while reconciling the Kustomization will apply manifests from the latest commit.</p>
+<p>Both the <code><strong>GitRepository</strong></code> and <code><strong>Kustomization</strong></code> are reconciled to apply your changes from the github repository. Reconciling <code><strong>GitRepository</strong></code> tells Flux to fetch the latest commit from github while reconciling the <code><strong>Kustomization</strong></code> will apply manifests from the latest commit.</p>
 
 <img class="screencap" src='{{images.5}}' alt='Reconcile Sources and Workloads'/>
 
