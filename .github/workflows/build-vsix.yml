@@ -159,6 +159,7 @@ jobs:
           git log -1 --stat
           git push origin --force-with-lease edge:release-pr --tags
       - name: Push Tags (Stable)
+        if: ${{ github.event.inputs.releaseChannel == 'stable' }}
         run: |
           git log -1 --stat
           git push origin --force-with-lease main:release-pr --tags
