@@ -18,6 +18,7 @@ import { setClusterProvider } from './commands/setClusterProvider';
 import { setCurrentKubernetesContext } from './commands/setCurrentKubernetesContext';
 import { showGlobalState } from './commands/showGlobalState';
 import { showInstalledVersions } from './commands/showInstalledVersions';
+import { showNewUserGuide } from './commands/showNewUserGuide';
 import { showLogs } from './commands/showLogs';
 import { showWorkloadsHelpMessage } from './commands/showWorkloadsHelpMessage';
 import { suspend } from './commands/suspend';
@@ -77,6 +78,7 @@ export const enum CommandId {
 	// webview
 	ShowLogs = 'gitops.editor.showLogs',
 	OpenCreateSourceWebview = 'gitops.editor.createSource',
+	ShowNewUserGuide = 'gitops.views.showNewUserGuide',
 
 	// output commands
 	ShowOutputChannel = 'gitops.output.show',
@@ -132,6 +134,7 @@ export function registerCommands(context: ExtensionContext) {
 	// webview
 	registerCommand(CommandId.ShowLogs, showLogs);
 	registerCommand(CommandId.OpenCreateSourceWebview, openCreateSourceWebview);
+	registerCommand(CommandId.ShowNewUserGuide, showNewUserGuide);
 
 	// output
 	registerCommand(CommandId.ShowOutputChannel, showOutputChannel);

@@ -1,6 +1,7 @@
-import { ExtensionContext, ExtensionMode } from 'vscode';
+import { CodeAction, ExtensionContext, ExtensionMode } from 'vscode';
 import { registerCommands } from './commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
+import { showNewUserGuide } from './commands/showNewUserGuide';
 import { ContextTypes, setVSCodeContext } from './vscodeContext';
 import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
@@ -30,7 +31,6 @@ export let telemetry: Telemetry;
  * @param context VSCode extension context.
  */
 export async function activate(context: ExtensionContext) {
-
 	// Keep a reference to the extension context
 	setExtensionContext(context);
 
@@ -48,11 +48,14 @@ export async function activate(context: ExtensionContext) {
 	// depending if the current opened folder is a git repository and already added
 	// to the cluster
 	checkIfOpenedFolderGitRepositorySourceExists();
+	showNewUserGuide();
+
 
 	telemetry.send(TelemetryEventNames.Startup);
 
 	if (globalState.get(GlobalStateKey.FirstEverActivationStorageKey) === undefined) {
 		telemetry.send(TelemetryEventNames.NewInstall);
+		showNewUserGuide();
 		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}
 

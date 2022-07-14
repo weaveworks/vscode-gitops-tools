@@ -1,0 +1,109 @@
+<h1>Welcome to GitOps Tools Extension!</h1>
+
+<p>
+	This extension is for Kubernetes application developers and operators. It provides a simple way to get started with GitOps and the CNCF project, Flux.
+</p>
+
+<p><strong>IMPORTANT!:</strong> this extension is at an early alpha stage of development! Please hold off on rating us and first submit bugs, issues and feature requests at <a href="https://github.com/weaveworks/vscode-gitops-tools">github.com/weaveworks/vscode-gitops-tools</a></p>
+
+<p>We would appreciate it very much. Thanks!! ❤️🧸</p>
+
+<p>This guide and other GitOps and Flux documentation is always accesible via the <strong>DOCUMENTATION</strong> view:</p>
+
+<img class="screencap-docs" src='{{images.8}}' alt='Documentation'/>
+
+
+<h2>What is GitOps, Flux, and GitOps Tools?</h2>
+
+<p>GitOps is a process framework for working with applications and their infrastructure as code. Although GitOps does not require Git or Kubernetes, most people today practice GitOps with the two technologies and that is what we cover here. Git is an increasingly popular version controlling software and Kubernetes is a container orchestration system - both are open source. Flux is an open source project in the Cloud Native Computing Foundation (CNCF) that makes the GitOps magic happen with these technologies. This extension for VS Code will help you do this!</p>
+
+<p>High level: With GitOps, you have a manifest in a repo (usually a yaml file), and that manifest is the single source of truth for the state of your cluster. It defines how your cluster should look. Flux and Kubernetes work together to check on that manifest and to reconcile the cluster to match the indications automatically. That means that if anyone hacks into the system and makes a change to the cluster, Flux will “reset” it to what's in the yaml file. This adds security to your operations. Similarly, if you want to make a change to your cluster, you make changes to the yaml file and Flux and Kubernetes will reconcile the changes. Since the YAML files are in a Git repository there's an audit trail.</>
+
+<p>With GitOps, developers commit their Kubernetes infrastructure definitions into the Git source control system so that the whole system is version controlled. Changes to the application infrastructure are accomplished by changing manifests and pushing that to a git repository. Changes are continuously reconciled from the git repository to the cluster.</p>
+
+<p class="ul-text">Flux is software that enables GitOps. The core of Flux is GitOps Tools - a set of Kubernetes controllers and resources that work together to:</p>
+<ul>
+	<li>synchronize git (and other) repository state</li>
+	<li>apply manifests to the cluster</li>
+	<li>automate Helm operations</li>
+	<li>generate notifications</li>
+</ul>
+
+<h2>What can this extension do?</h2>
+
+<p>This GitOps Extension will allow you to set up a simple GitOps process with Flux and to observe it in action. (If this is your first time experiencing GitOps, we hope that your mind will be blown a little and rest assured that this journey can be taken slowly, and with great benefits along the way!)</p>
+
+<p>This extension also helps to quickly inspect and debug existing Flux installations in your clusters. If you’re an application developer, this will enable you to version, reproduce, revert and share your cluster infrastructure changes through git - which improves collaboration and makes it easier to track infrastructure problems.</p>
+
+<h2>How to get started?</h2>
+
+<h3>Enable GitOps (Install Flux)</h3>
+
+<p>First, select a cluster and Enable GitOps</p>
+
+<img class="screencap" src='{{images.0}}' alt='Enable GitOps'/>
+
+<p>Next, you need a git repository for your infrastructure. If you don’t have one, you can fork the demo repository <code>stefanprodan/podinfo</code> [<code><a href="https://github.com/stefanprodan/podinfo">https://github.com/stefanprodan/podinfo</a></code>]</p>
+
+
+<h3>Configure <code><strong>GitRepository</strong></code> (Create Source)</h3>
+
+<p>Tell Flux about your infrastructure git repository. In this example a forked repo <code>juozasg/podinfo</code> is used:</p>
+
+<img class="screencap" src='{{images.1}}' alt='Create Source'/>
+
+
+<p>Once the <code><strong>GitRepository</strong></code> is created, Flux will fetch the latest commit (“reconcile”) from the git server:</p>
+
+<img class="screencap" src='{{images.2}}' alt='Describe Source'/>
+
+
+<h3>Tell Flux to observe a folder in the <code><strong>GitRepository</strong></code></h3>
+
+<p>Now that Flux knows about the repo, let’s tell it how the repo defines our infrastructure. We must provide a folder path from where the cluster manifests will be continuously synced. Since Flux uses Kustomize configuration management system, this configuration is stored in a resource type <code><strong>Kustomization</strong></code></p>
+
+<p>For now, we will use the command line to create a Kustomization for our <code><strong>GitRepository</strong></code> <code>podinfo-repo</code>:</p>
+
+<code>
+<pre>
+	flux create kustomization podinfo \
+			--source=podinfo-repo \
+			--path="./kustomize" \
+			--target-namespace=default \
+			--prune=true  \
+			--interval=1m
+</pre>
+</code>
+
+<img class="screencap" src='{{images.3}}' alt='Create Kustomization'/>
+
+<h3>Observe GitOps in action</h3>
+
+<p>The setup is done! We can see the <code><strong>Kustomization</strong></code> <code>podinfo</code> and all the resources that were created:</p>
+
+<img class="screencap" src='{{images.4}}' alt='View Workloads'/>
+
+
+<p>Now any changes you commit to the repository <code>podinfo</code> <code>./kustomize</code> folder will be reflected in the cluster. By default Flux reconciles the cluster every minute. If you don’t want to wait, you can trigger it manually or configure a <a href="https://fluxcd.io/docs/guides/webhook-receivers/">webhook receiver</a>.</p>
+
+<p>Both the <code><strong>GitRepository</strong></code> and <code><strong>Kustomization</strong></code> are reconciled to apply your changes from the github repository. Reconciling <code><strong>GitRepository</strong></code> tells Flux to fetch the latest commit from github while reconciling the <code><strong>Kustomization</strong></code> will apply manifests from the latest commit.</p>
+
+<img class="screencap" src='{{images.5}}' alt='Reconcile Sources and Workloads'/>
+
+<h3>Solving Problems</h3>
+
+<p>You can troubleshoot problems by right-clicking on a controller in Clusters view and selecting <strong>‘Show Logs’</strong></p>
+
+<img class="screencap" src='{{images.6}}' alt='Show Logs'/>
+
+<p>You can also right-click Workloads and select ‘Trace’ to understand the origin of resources managed by Flux</p>
+
+<img class="screencap" src='{{images.7}}' alt='Trace Workloads'/>
+
+
+<h2>Community and Support</h2>
+
+<p><strong>Congrats!</strong> Hopefully, this helps you to get a sense of GitOps if this is your first time. If you have any questions about GitOps, Flux, or this extension, please post an issue: <a href="https://github.com/weaveworks/vscode-gitops-tools/issues">github.com/weaveworks/vscode-gitops-tools/issues</a> You can chat with us in <strong>Slack</strong> as well. To invite yourself visit <a href="https://slack.weave.works">slack.weave.works</a> and join <code>#vscode-gitops</code></p>
+
+
+<div class="bottom-padding"/>

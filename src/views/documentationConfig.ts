@@ -4,15 +4,21 @@
  */
 export interface DocumentationLink {
 	title: string;
-	url: string;
+	url?: string;
 	icon?: string;
 	links?: DocumentationLink[];
+	newUserGuide?: boolean;
 }
 
 /**
  * links config for GitOps Documentation tree view.
  */
 export const documentationLinks: DocumentationLink[] = [
+	{
+		title: 'Welcome to GitOps',
+		icon: 'resources/icons/gitops-logo.png',
+		newUserGuide: true,
+	},
 	{
 		title: 'Flux',
 		url: 'https://fluxcd.io/docs',
