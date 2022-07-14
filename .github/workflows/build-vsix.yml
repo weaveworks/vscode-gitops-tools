@@ -41,6 +41,26 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Check for correct branch (Edge)
+        if: github.event.inputs.releaseChannel == 'edge'
+        run: |
+          if [ "$GITHUB_REF_NAME" = "edge" ]; then
+            echo "Correct branch was used, proceeding with edge release"
+          else
+            echo "The 'edge' release must come from a branch called 'edge'"
+            echo "(it was: '${GITHUB_REF_NAME}')"
+          exit 1
+          fi;
+      - name: Check for correct branch (Stable)
+        if: github.event.inputs.releaseChannel == 'stable'
+        run: |
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            echo "Correct branch was used, proceeding with stable release"
+          else
+            echo "The 'stable' release must come from a branch called 'main'"
+            echo "(it was: '${GITHUB_REF_NAME}')"
+          exit 1
+          fi;
       - name: Clone Repository
         uses: actions/checkout@v2
         with:
@@ -133,7 +153,13 @@ jobs:
           preRelease: false
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           extensionFile: ./gitops-tools-${{ env.RELEASE_VERSION }}.vsix
-      - name: Push Tags
+      - name: Push Tags (Edge)
+        if: ${{ github.event.inputs.releaseChannel == 'edge' }}
+        run: |
+          git log -1 --stat
+          git push origin --force-with-lease edge:release-pr --tags
+      - name: Push Tags (Stable)
+        if: ${{ github.event.inputs.releaseChannel == 'stable' }}
         run: |
           git log -1 --stat
           git push origin --force-with-lease main:release-pr --tags
