@@ -48,8 +48,6 @@ export async function activate(context: ExtensionContext) {
 	// depending if the current opened folder is a git repository and already added
 	// to the cluster
 	checkIfOpenedFolderGitRepositorySourceExists();
-	showNewUserGuide();
-
 
 	telemetry.send(TelemetryEventNames.Startup);
 
