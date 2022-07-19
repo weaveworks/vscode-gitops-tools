@@ -36,21 +36,21 @@ export class SourceDataProvider extends DataProvider {
 
 		// add git repositories to the tree
 		if (gitRepositories) {
-			for (const gitRepository of gitRepositories.items) {
+			for (const gitRepository of this.sortGitsByMetadataName(gitRepositories)) {
 				treeItems.push(new GitRepositoryNode(gitRepository));
 			}
 		}
 
 		// add helm repositores to the tree
 		if (helmRepositories) {
-			for (const helmRepository of helmRepositories.items) {
+			for (const helmRepository of this.sortHelmsByMetadataName(helmRepositories)) {
 				treeItems.push(new HelmRepositoryNode(helmRepository));
 			}
 		}
 
 		// add buckets to the tree
 		if (buckets) {
-			for (const bucket of buckets.items) {
+			for (const bucket of this.sortBucketsByMetadataName(buckets)) {
 				treeItems.push(new BucketNode(bucket));
 			}
 		}
