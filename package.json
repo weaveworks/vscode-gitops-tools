@@ -387,6 +387,11 @@
 					"group": "navigation@0"
 				},
 				{
+					"command": "gitops.flux.reconcileWorkload",
+					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
+					"group": "navigation@0"
+				},
+				{
 					"command": "gitops.suspend",
 					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
@@ -405,11 +410,6 @@
 					"command": "gitops.views.pullGitRepository",
 					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/",
 					"group": "navigation@3"
-				},
-				{
-					"command": "gitops.flux.reconcileWorkload",
-					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
-					"group": "navigation@2"
 				},
 				{
 					"command": "gitops.editor.showLogs",
