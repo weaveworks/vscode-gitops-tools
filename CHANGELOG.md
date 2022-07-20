@@ -4,6 +4,18 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.20.0 - [2022-07-19]
+
+* Sort order for Workloads and Sources (#326), (#327)
+* Move Reconcile ahead of Suspend in menu (#325)
+* Improve docs around prerelease workflow (#323), (#321), (#310)
+* Upgrade dependencies (#322)
+* New user guide (#319), (#320)
+
+# v0.19.11 - [2022-07-07]
+
+* Fix: use selected namespace for the flux tree kustomization command (#316)
+
 # v0.19.10 - [2022-07-01]
 
 * Add CHANGELOG (#307)
