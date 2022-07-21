@@ -4,6 +4,10 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.20.1 - [2022-07-20]
+
+* Dependabot: Bump terser from 5.7.1 to 5.14.2 (#331)
+
 # v0.20.0 - [2022-07-19]
 
 * Sort order for Workloads and Sources (#326), (#327)
