@@ -60,23 +60,22 @@ export function createTreeViews() {
 	detectK8sConfigPathChange();
 }
 
-async function detectK8sConfigPathChange() {
-	const configuration = await k8s.extension.configuration.v1_1;
-	if (!configuration.available) {
-		return;
-	}
-	configuration.api.onDidChangeKubeconfigPath(_path => {
-		clusterTreeViewProvider.refresh();
-	});
-}
-
 async function refreshWhenK8sContextChange() {
 	const configuration = await k8s.extension.configuration.v1_1;
 	if (!configuration.available) {
 		return;
 	}
 	configuration.api.onDidChangeContext(_context => {
-		clusterTreeViewProvider.refresh();
+		refreshAllTreeViews();
+	});
+}
+async function detectK8sConfigPathChange() {
+	const configuration = await k8s.extension.configuration.v1_1;
+	if (!configuration.available) {
+		return;
+	}
+	configuration.api.onDidChangeKubeconfigPath(_path => {
+		refreshAllTreeViews();
 	});
 }
 
