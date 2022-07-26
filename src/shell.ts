@@ -1,6 +1,6 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
-import { Progress, ProgressLocation, window } from 'vscode';
+import { workspace, Progress, ProgressLocation, window } from 'vscode';
 import { globalState } from './extension';
 import { GlobalStateKey } from './globalState';
 import { output } from './output';
@@ -86,12 +86,21 @@ function platform(): Platform {
 }
 
 function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
-	let env = undefined;
-	if (isWindows()) {
-		const fluxPath = globalState.get(GlobalStateKey.FluxPath);
-		if (fluxPath) {
-			env = process.env;
-			env.Path += `;${fluxPath}`;
+	let env = process.env;
+
+	if (isWindows() || isUnix()) {
+		let kubeconfigPath = workspace.
+			getConfiguration('vs-kubernetes')['vs-kubernetes.kubeconfig'];
+
+		if(typeof kubeconfigPath === 'string' && kubeconfigPath !== '') {
+			env['KUBECONFIG'] = kubeconfigPath;
+		}
+
+		if (isWindows()) {
+			const fluxPath = globalState.get(GlobalStateKey.FluxPath);
+			if (fluxPath) {
+				env.Path += `;${fluxPath}`;
+			}
 		}
 	}
 
