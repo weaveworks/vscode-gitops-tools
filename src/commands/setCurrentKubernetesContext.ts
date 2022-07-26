@@ -7,8 +7,7 @@ import { refreshAllTreeViews } from '../views/treeViews';
  */
 export async function setCurrentKubernetesContext(clusterContext: ClusterContextNode): Promise<void> {
 	const setContextResult = await kubernetesTools.setCurrentContext(clusterContext.contextName);
-	// This is no longer needed here, with the subscriber in treeViews.ts
-	// if (setContextResult?.isChanged) {
-	// 	refreshAllTreeViews();
-	// }
+	if (setContextResult?.isChanged) {
+		refreshAllTreeViews();
+	}
 }
