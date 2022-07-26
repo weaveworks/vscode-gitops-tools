@@ -12,6 +12,8 @@ import { ClusterContextNode } from './nodes/clusterContextNode';
 import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
 
+import * as k8s from 'vscode-kubernetes-tools-api';
+
 export let clusterTreeViewProvider: ClusterDataProvider;
 export let sourceTreeViewProvider: SourceDataProvider;
 export let workloadTreeViewProvider: WorkloadDataProvider;
@@ -52,6 +54,28 @@ export function createTreeViews() {
 	documentationTreeView = window.createTreeView(Views.DocumentationView, {
 		treeDataProvider: documentationTreeViewProvider,
 		showCollapseAll: true,
+	});
+
+	refreshWhenK8sContextChange();
+	detectK8sConfigPathChange();
+}
+
+async function refreshWhenK8sContextChange() {
+	const configuration = await k8s.extension.configuration.v1_1;
+	if (!configuration.available) {
+		return;
+	}
+	configuration.api.onDidChangeContext(_context => {
+		refreshAllTreeViews();
+	});
+}
+async function detectK8sConfigPathChange() {
+	const configuration = await k8s.extension.configuration.v1_1;
+	if (!configuration.available) {
+		return;
+	}
+	configuration.api.onDidChangeKubeconfigPath(_path => {
+		refreshAllTreeViews();
 	});
 }
 
