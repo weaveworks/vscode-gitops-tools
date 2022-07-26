@@ -330,6 +330,11 @@
 					"when": "view == gitops.views.clusters"
 				},
 				{
+					"command": "extension.vsKubernetesUseKubeconfig",
+					"group": "1",
+					"when": "view == gitops.views.clusters"
+				},
+				{
 					"command": "gitops.editor.createSource",
 					"group": "navigation@0",
 					"when": "view == gitops.views.sources"
