@@ -2,9 +2,9 @@ name: ci
 
 on:
   push:
-    branches: [ main, integration-tests ]
+    branches: [ main, integration-tests, edge ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, edge ]
 
 jobs:
   e2e-testing:
