@@ -6,9 +6,7 @@ import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
 import { SourceNode } from '../nodes/sourceNode';
 import { DataProvider } from './dataProvider';
-import { GitRepositoryResult } from '../../kubernetes/gitRepository';
-import { HelmRepositoryResult } from '../../kubernetes/helmRepository';
-import { BucketResult } from '../../kubernetes/bucket';
+import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
@@ -36,21 +34,21 @@ export class SourceDataProvider extends DataProvider {
 
 		// add git repositories to the tree
 		if (gitRepositories) {
-			for (const gitRepository of this.sortGitsByMetadataName(gitRepositories)) {
+			for (const gitRepository of sortByMetadataName(gitRepositories.items)) {
 				treeItems.push(new GitRepositoryNode(gitRepository));
 			}
 		}
 
 		// add helm repositores to the tree
 		if (helmRepositories) {
-			for (const helmRepository of this.sortHelmsByMetadataName(helmRepositories)) {
+			for (const helmRepository of sortByMetadataName(helmRepositories.items)) {
 				treeItems.push(new HelmRepositoryNode(helmRepository));
 			}
 		}
 
 		// add buckets to the tree
 		if (buckets) {
-			for (const bucket of this.sortBucketsByMetadataName(buckets)) {
+			for (const bucket of sortByMetadataName(buckets.items)) {
 				treeItems.push(new BucketNode(bucket));
 			}
 		}
@@ -62,45 +60,7 @@ export class SourceDataProvider extends DataProvider {
 		return treeItems;
 	}
 
-	sortGitsByMetadataName(gits: GitRepositoryResult): GitRepositoryResult['items'] {
-		return gits.items.sort((g1, g2) => {
-			if (g1.metadata.name && g2.metadata.name) {
-				if (g1.metadata.name > g2.metadata.name) {
-					return 1;
-				}
-				if (g1.metadata.name < g2.metadata.name) {
-					return -1;
-				}
-			}
-			return 0;
-		});
-	}
 
-	sortHelmsByMetadataName(helms: HelmRepositoryResult): HelmRepositoryResult['items'] {
-		return helms.items.sort((h1, h2) => {
-			if (h1.metadata.name && h2.metadata.name) {
-				if (h1.metadata.name > h2.metadata.name) {
-					return 1;
-				}
-				if (h1.metadata.name < h2.metadata.name) {
-					return -1;
-				}
-			}
-			return 0;
-		});
-	}
 
-	sortBucketsByMetadataName(buckets: BucketResult): BucketResult['items'] {
-		return buckets.items.sort((b1, b2) => {
-			if (b1.metadata.name && b2.metadata.name) {
-				if (b1.metadata.name > b2.metadata.name) {
-					return 1;
-				}
-				if (b1.metadata.name < b2.metadata.name) {
-					return -1;
-				}
-			}
-			return 0;
-		});
-	}
+
 }
