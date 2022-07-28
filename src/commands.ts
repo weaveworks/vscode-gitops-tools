@@ -2,6 +2,7 @@ import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
 import { copyResourceName } from './commands/copyResourceName';
 import { createGitRepository } from './commands/createGitRepository';
 import { createKustomization } from './commands/createKustomization';
+import { deleteWorkload } from './commands/deleteWorkload';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxCheck } from './commands/fluxCheck';
@@ -69,6 +70,7 @@ export const enum CommandId {
 	CreateGitRepository = 'gitops.views.createGitRepository',
 	CreateKustomization = 'gitops.createKustomization',
 	ShowWorkloadsHelpMessage = 'gitops.views.showWorkloadsHelpMessage',
+	DeleteWorkload = 'gitops.views.deleteWorkload',
 	DeleteSource = 'gitops.views.deleteSource',
 	CopyResourceName = 'gitops.copyResourceName',
 
@@ -125,6 +127,7 @@ export function registerCommands(context: ExtensionContext) {
 		createGitRepository(fileExplorerUri);
 	});
 	registerCommand(CommandId.ShowWorkloadsHelpMessage, showWorkloadsHelpMessage);
+	registerCommand(CommandId.DeleteWorkload, deleteWorkload);
 	registerCommand(CommandId.DeleteSource, deleteSource);
 	registerCommand(CommandId.CopyResourceName, copyResourceName);
 

@@ -97,6 +97,7 @@ export const enum TelemetryEventNames {
 	 * Create Flux Workload (Kustomization, HelmRelease) event.
 	 */
 	CreateWorkload = 'CREATE_WORKLOAD',
+	DeleteWorkload = 'DELETE_WORKLOAD',
 }
 
 /**
@@ -120,6 +121,9 @@ interface TelemetryEventNamePropertyMapping {
 		kind: string;
 	};
 	[TelemetryEventNames.CreateWorkload]: {
+		kind: string;
+	};
+	[TelemetryEventNames.DeleteWorkload]: {
 		kind: string;
 	};
 }
