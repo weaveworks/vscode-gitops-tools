@@ -173,7 +173,7 @@
 			},
 			{
 				"command": "gitops.views.pullGitRepository",
-				"title": "Pull Git Repository",
+				"title": "Clone Git Repository...",
 				"category": "GitOps"
 			},
 			{
@@ -570,6 +570,7 @@
 		"parse-path": ">=5.0.0",
 		"parse-url": ">=6.0.1",
 		"semver": "^7.3.5",
+		"shell-escape-tag": "^2.0.2",
 		"shelljs": "^0.8.5",
 		"tinytim": "^0.1.1",
 		"vscode-kubernetes-tools-api": "^1.3.0"

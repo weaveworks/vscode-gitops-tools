@@ -1,6 +1,7 @@
 import path from 'path';
 import semverGt from 'semver/functions/gt';
 import semverSatisfies from 'semver/functions/satisfies';
+import safesh from 'shell-escape-tag';
 import { commands, Uri, window } from 'vscode';
 import { telemetry } from '../extension';
 import { checkGitVersion } from '../install';
@@ -35,7 +36,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 	const pickedFolderFsPath = path.join(pickedFolder[0].fsPath, sourceNode.resource.metadata.name || 'gitRepository');
 
 	// precedence - commit > semver > tag > branch
-	const url = sourceNode.resource.spec.url;
+	const url = safesh.escape(sourceNode.resource.spec.url);
 	const commit = sourceNode.resource.spec.ref?.commit;
 	const semver = sourceNode.resource.spec.ref?.semver;
 	const branchOrTag = sourceNode.resource.spec.ref?.tag || sourceNode.resource.spec.ref?.branch;
@@ -47,11 +48,11 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 		// get latest tag that satisfies the semver range of versions
 		const latestTag = await getLatestTagFromSemver(url, semver);
 		if (latestTag) {
-			branchArg = `--branch ${latestTag}`;
+			branchArg = safesh`--branch ${latestTag}`;
 		}
 	} else if (branchOrTag) {
 		// use branch or tag from the spec
-		branchArg = `--branch ${branchOrTag}`;
+		branchArg = safesh`--branch ${branchOrTag}`;
 	}
 
 	// https://git-scm.com/docs/git-clone
@@ -66,13 +67,13 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 
 	// can only do checkout after the repository was cloned
 	if (commit) {
-		await shell.exec(`git checkout ${commit}`, {
+		await shell.exec(safesh`git checkout ${commit}`, {
 			cwd: pickedFolderFsPath,
 		});
 	}
 
 	const openFolderButton = 'Open Folder';
-	const openFolderConfirm = await window.showInformationMessage('Repository pulled successfully.', openFolderButton);
+	const openFolderConfirm = await window.showInformationMessage('Repository cloned successfully.', openFolderButton);
 	if (openFolderConfirm === openFolderButton) {
 		commands.executeCommand('vscode.openFolder', Uri.file(pickedFolderFsPath));
 	}
@@ -85,7 +86,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
  * @returns Latest tag that satisfies the semver range or `undefined`
  */
 async function getLatestTagFromSemver(url: string, semver: string): Promise<string | undefined> {
-	const tagsShellResult = await shell.exec(`git ls-remote --tags ${url}`);
+	const tagsShellResult = await shell.exec(safesh`git ls-remote --tags ${url}`);
 
 	if (tagsShellResult.code !== 0) {
 		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_GIT_TAGS_FROM_REMOTE);
