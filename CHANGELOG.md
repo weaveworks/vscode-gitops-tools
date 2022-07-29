@@ -4,6 +4,11 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.20.3 - [2022-07-29]
+
+* rename Pull Git Repository (#340)
+* generic sortByMetadataName (#338)
+
 # v0.20.2 - [2022-07-26]
 
 * Borrow set kubeconfig command from Kubernetes Tools (#334)
