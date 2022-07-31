@@ -56,7 +56,7 @@ All PRs are expected to be "squashed when merged" except for the release-pr. You
 * If you are merging the release-pr branch, "Create a merge commit"
 
 
-It is not necessary to list this Housekeeping PR in the CHANGELOG (or the PR which updates the CHANGELOG if it is a separate PR.) The goal of the CHANGELOG is to communicate only substantive changes. If PRs are merges with the Squash Merge strategy on GitHub, then the automatic CHANGELOG generation is very neat and orderly by default.
+It is not necessary to list this Housekeeping PR in the CHANGELOG (or the PR which updates the CHANGELOG if it is a separate PR.) The goal of the CHANGELOG is to communicate only substantive changes. If PRs are merged with the Squash Merge strategy on GitHub, then the automatic CHANGELOG generation is very neat and orderly by default.
 
 If regular merges have been used instead, please neaten the CHANGELOG when it is updated as it will have an entry for each and every commit, and this may look very messy. (This is why we squash feature branches.)
 
