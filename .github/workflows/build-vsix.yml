@@ -190,17 +190,14 @@ jobs:
             A release has been tagged and published, `${{ env.GIT_TAG }}`! 🎉
             Ensure the CHANGELOG is updated by pushing it to this branch, (or skip this step and save it for MINOR releases.)
             A CHANGELOG has been generated here,
-            [`${{ env.GIT_TAG }}`](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }})
+            \[`${{ env.GIT_TAG }}`\](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }})
             you can copy directly from it, or edit the messages for uniformity and clarity.
             
-            When you are done, merge this PR with the tag (**Do Not Squash** or rebase!
-            Push new commits and **merge only**) in order to complete the release.
+            When you are done, merge this PR with the tag (**Do Not Squash** or rebase! Push new commits and **merge only**) in order to complete the release.
             
-            Feature branches should normally be squashed, but this one must be merged to include the tag in the main branch's history.
+            Feature branches should normally be squashed, but `release-pr` must be merged to include the tag in the main branch's history.
             
-            The tag must be in the default branch, so the release machine can know what patch version
-            to use next, and for auto CHANGELOG generation to know when to stop reading in changes, as
-            the CHANGELOG generator will scan gathering history, all the way up until the previous tag.
+            See the \[DEVELOPMENT.md\](/DEVELOPMENT.md#releasing) for more information about this Pull Request.
           pr_reviewer: ${{ github.actor }}
           pr_draft: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
