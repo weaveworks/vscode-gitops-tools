@@ -187,15 +187,14 @@ jobs:
           destination_branch: "main"
           pr_title: "Release ${{ env.GIT_TAG }}"
           pr_body: |-
-            A release has been tagged and published, `${{ env.GIT_TAG }}`! 🎉
-            Ensure the CHANGELOG is updated by pushing it to this branch, (or skip this step and save it for MINOR releases.)
-            A CHANGELOG has been generated here,
-            \[`${{ env.GIT_TAG }}`\](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }})
-            you can copy directly from it, or edit the messages for uniformity and clarity.
+            A release has been tagged and published, ${{ env.GIT_TAG }}! 🎉
             
-            When you are done, merge this PR with the tag (**Do Not Squash** or rebase! Push new commits and **merge only**) in order to complete the release.
+            Please ensure that `CHANGELOG.md` remains current by pushing any needed updates as a commit to this branch.
+            A CHANGELOG has been generated for this release here, \[v`${{ env.GIT_TAG }}`\](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }}) – you can copy directly from it, or edit for uniformity and clarity.
             
-            Feature branches should normally be squashed, but `release-pr` must be merged to include the tag in the main branch's history.
+            When you are done, merge this PR with the tag intact (**Do Not Squash** or rebase! Push new commits and **merge only**) to complete the release.
+            
+            Feature branches should still be squashed, but `release-pr` must always be merged.
             
             See the \[DEVELOPMENT.md\](/DEVELOPMENT.md#releasing) for more information about this Pull Request.
           pr_reviewer: ${{ github.actor }}
