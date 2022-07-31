@@ -190,13 +190,13 @@ jobs:
             A release has been tagged and published, ${{ env.GIT_TAG }}! 🎉
             
             Please ensure that \`CHANGELOG.md\` remains current by pushing any needed updates as a commit to this branch.
-            A CHANGELOG has been generated for this release here, [v\`${{ env.GIT_TAG }}\`](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }}) – you can copy directly from it, or edit for uniformity and clarity.
+            A CHANGELOG has been generated for this release here, [\`v${{ env.GIT_TAG }}\`](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }}) – you can copy directly from it, or edit for uniformity and clarity.
             
-            When you are done, merge this PR with the tag intact (**Do Not Squash** or rebase! Push new commits and **merge only**) to complete the release.
+            When you are done, merge this PR with the tag intact (**Do Not Squash** or rebase! Push new commits and **merge only**).
             
-            Feature branches should still be squashed, but \`release-pr\` must always be merged.
+            Feature branches should still be squashed, but \`release-pr\` must always be merged to complete the release.
             
-            See the [DEVELOPMENT.md](/DEVELOPMENT.md#releasing) for more information about this Pull Request.
+            See the [DEVELOPMENT.md](https://github.com/weaveworks/vscode-gitops-tools/blob/main/DEVELOPMENT.md#releasing) for more information about the release process.
           pr_reviewer: ${{ github.actor }}
           pr_draft: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
