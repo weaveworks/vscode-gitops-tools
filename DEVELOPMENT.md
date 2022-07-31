@@ -43,20 +43,22 @@ Update the CHANGELOG after the release, or earlier for over-achievers. (You can 
 
 It is not ever necessary to increment the version number manually in package.json, the release workflow takes care of this.
 
-**Important:** Upon success, the Publish workflow will have created a new GitHub release, pushed the tag, added the CHANGELOG, and submitted a PR from the branch `release-pr` with the updates to `package.json` and `package-lock.json`. The PR MUST be merged to complete the process. If you triggered the release, then you will be tagged as a `pr_reviewer` based on `${{ github.actor }}`
+**Important:** Upon success, the Publish workflow will have created a new GitHub release, pushed the tag, added the CHANGELOG to the release body, and submitted a PR from the branch `release-pr` with a change containing the version number updates to `package.json` and `package-lock.json`, the tagged commit. The PR MUST be merged to complete the release process.
+
+If you triggered the release, then you will be auto-tagged as a `pr_reviewer` based on `${{ github.actor }}`
 
 Callout:
 * For all future VS Code Exception developers, here is the release workflow "squash merge" exception
 
 All PRs are expected to be "squashed when merged" except for the release-pr. You will only need to know this information if you are a maintainer merging feature contributions, or if you are actually the one physically doing releases.
 
-If you are merging a feature branch, it is a "Squash and merge"
-If you are merging the release-pr branch, "Create a merge commit"
+* If you are merging a feature branch, it is a "Squash and merge"
+* If you are merging the release-pr branch, "Create a merge commit"
 
 
-It is not necessary to list this Housekeeping PR in the CHANGELOG (or the PR which updates the CHANGELOG if it is a separate PR.) The goal of the CHANGELOG is to communicate only substantive changes. If PRs are merges with the Squash Merge strategy on GitHub, then the automatic CHANGELOG generation is very neat.
+It is not necessary to list this Housekeeping PR in the CHANGELOG (or the PR which updates the CHANGELOG if it is a separate PR.) The goal of the CHANGELOG is to communicate only substantive changes. If PRs are merges with the Squash Merge strategy on GitHub, then the automatic CHANGELOG generation is very neat and orderly by default.
 
-If regular merges have been used instead, please neaten the CHANGELOG when it is updated as it will have an entry for each and every commit.
+If regular merges have been used instead, please neaten the CHANGELOG when it is updated as it will have an entry for each and every commit, and this may look very messy. (This is why we squash feature branches.)
 
 The `release-pr` branch is updated after the workflow succeeds for **EVERY** release, including edge and stable releases. It must be merged or pulled into the base branch else the release workflow **will fail** on subsequent attempts to publish further releases. It needs to know the last tag that was used, it does read `package.json` rather than try to find this out by scanning the branch history for a previous tag.
 
