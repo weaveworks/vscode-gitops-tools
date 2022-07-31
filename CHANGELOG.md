@@ -4,13 +4,24 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.20.7 - [2022-07-31]
+
+* Following up (#342)[https://github.com/weaveworks/vscode-gitops-tools/pull/342]
+* Release (#348) - Release Pull Request Formatting 👍
+
+# v0.20.6 - [2022-07-31]
+
+* Following up (#342)[https://github.com/weaveworks/vscode-gitops-tools/pull/342]
+* Release (#347)
+
 # v0.20.5 - [2022-07-31]
 
 * Fixup release-pr body formatting (#345)
+* Release (#346)
 
 # v0.20.4 - [2022-07-31]
 
-* Make release process slightly better documented (#342)
+* Make release process slightly better documented (#342)[https://github.com/weaveworks/vscode-gitops-tools/pull/342]
 
 # v0.20.3 - [2022-07-29]
 
