@@ -174,17 +174,34 @@ jobs:
           tag: ${{ env.GIT_TAG }}
           prerelease: ${{ github.event.inputs.releaseChannel == 'edge' }}
 
-          # We need to use a pull request because we don't want to make an exception for
-          # our main branch "no push without a pull request" even for some robot. So just merge this PR.
+          # We need to use a pull request because we need tags to be included in the history of our main
+          # branch. We don't want to make an exception for our "no pushes without a pull request" security
+          # policy, even for some robot. So just merge this PR manually to complete each release, or do a
+          # fast-forward of the edge branch catching it up to the `release-pr` branch, as it won't get the
+          # PR. (If you have trouble publishing more than one edge release, this mistake is usually why.)
       - uses: repo-sync/pull-request@v2
-        name: pull-request
+        name: Finish Release PR
         if: ${{ github.event.inputs.releaseChannel != 'edge' }}
         with:
           source_branch: "release-pr"
           destination_branch: "main"
           pr_title: "Release ${{ env.GIT_TAG }}"
-          pr_body: "A release has been tagged as ${{ env.GIT_TAG }}. Merge this PR to main to complete it."
-          pr_reviewer: "kingdonb"
+          pr_body: |-
+            A release has been tagged and published, `${{ env.GIT_TAG }}`! 🎉
+            Ensure the CHANGELOG is updated by pushing it to this branch, (or skip this step and save it for MINOR releases.)
+            A CHANGELOG has been generated here,
+            [`${{ env.GIT_TAG }}`](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }})
+            you can copy directly from it, or edit the messages for uniformity and clarity.
+            
+            When you are done, merge this PR with the tag (**Do Not Squash** or rebase!
+            Push new commits and **merge only**) in order to complete the release.
+            
+            Feature branches should normally be squashed, but this one must be merged to include the tag in the main branch's history.
+            
+            The tag must be in the default branch, so the release machine can know what patch version
+            to use next, and for auto CHANGELOG generation to know when to stop reading in changes, as
+            the CHANGELOG generator will scan gathering history, all the way up until the previous tag.
+          pr_reviewer: ${{ github.actor }}
           pr_draft: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
