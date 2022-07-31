@@ -1,6 +1,7 @@
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node';
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
+import safesh from 'shell-escape-tag';
 import { AzureConstants } from '../azure/azureTools';
 import { Errorable, failed, succeeded } from '../errorable';
 import { globalState, telemetry } from '../extension';
@@ -158,7 +159,7 @@ class KubernetesTools {
 			};
 		}
 
-		const setContextShellResult = await this.invokeKubectlCommand(`config use-context ${contextName}`);
+		const setContextShellResult = await this.invokeKubectlCommand(safesh`config use-context ${contextName}`);
 		if (setContextShellResult?.stderr) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_SET_CURRENT_KUBERNETES_CONTEXT);
 			window.showErrorMessage(`Failed to set kubectl context to ${contextName}: ${setContextShellResult?.stderr}`);
@@ -347,7 +348,7 @@ class KubernetesTools {
 	 * Get all flux system deployments.
 	 */
 	async getFluxControllers(context?: string): Promise<undefined | DeploymentResult> {
-		const contextArg = context ? `--context ${context}` : '';
+		const contextArg = context ? safesh`--context ${context}` : '';
 
 		const fluxDeploymentShellResult = await this.invokeKubectlCommand(`get deployment --namespace=flux-system ${contextArg} -o json`);
 
@@ -478,7 +479,7 @@ class KubernetesTools {
 	 * @param context target context to get resources from.
 	 */
 	private async isClusterAKS(context: string): Promise<ClusterProvider> {
-		const nodesShellResult = await this.invokeKubectlCommand(`get nodes --context=${context} -o json`);
+		const nodesShellResult = await this.invokeKubectlCommand(safesh`get nodes --context=${context} -o json`);
 
 		if (nodesShellResult?.code !== 0) {
 			console.warn(`Failed to get nodes from "${context}" context to determine the cluster type. ${nodesShellResult?.stderr}`);
@@ -513,7 +514,7 @@ class KubernetesTools {
 	 * @param context target context to get resources from.
 	 */
 	private async isClusterAzureARC(context: string): Promise<ClusterProvider> {
-		const configmapShellResult = await this.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${context} --ignore-not-found -o json`);
+		const configmapShellResult = await this.invokeKubectlCommand(safesh`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${context} --ignore-not-found -o json`);
 
 		if (configmapShellResult?.code !== 0) {
 			if (configmapShellResult?.stderr && !this.notAnErrorServerNotRunning.test(configmapShellResult.stderr)) {
