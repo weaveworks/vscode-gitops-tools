@@ -6,7 +6,7 @@ The current release notes are always published on the Releases page, by automati
 
 # v0.20.5 - [2022-07-31]
 
-* Fixup release-pr body formatting (#344)
+* Fixup release-pr body formatting (#345)
 
 # v0.20.4 - [2022-07-31]
 
