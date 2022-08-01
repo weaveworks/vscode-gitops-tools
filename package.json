@@ -1,6 +1,6 @@
 {
 	"name": "vscode-gitops-tools",
-	"displayName": "GitOps Tools",
+	"displayName": "GitOps Tools for Flux",
 	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
 	"version": "0.20.7",
 	"author": "Kingdon Barrett <kingdon@weave.works>",
