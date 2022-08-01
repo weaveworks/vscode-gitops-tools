@@ -4,6 +4,13 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.20.8 - [2022-08-01]
+
+* Proofreading in DEVELOPMENT.md (#349)
+* Highlight VS Code Marketplace link for GitHub visitors (#350)
+* Change the Display Name of the extension to "GitOps Tools for Flux" (#351)
+* Update getting started to refer to Marketplace instead of manual install (#352)
+
 # v0.20.7 - [2022-07-31]
 
 * Following up (#342)[https://github.com/weaveworks/vscode-gitops-tools/pull/342]
