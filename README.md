@@ -18,10 +18,9 @@ In order to use the extension, you must satisfy a few requirements:
 - Make sure you have the various tools listed under [Dependencies](#dependencies) installed in your system and available in your `PATH`.
 - You must have at least one cluster configured in your `kubectl` config. We rely on the Kubernetes extension to discover and connect to clusters. If you are having issues accessing or viewing your cluster, follow the [documentation provided by the Kubernetes extension](https://github.com/Azure/vscode-kubernetes-tools#working-with-kubeconfigs).
 
-Once you have satisfied these requirements, you are ready to install the GitOps Extension:
+Once you have satisfied these requirements, you are ready to install the GitOps Extension!
 
-- Download the latest `vsix` artifact version from our [Releases](https://github.com/weaveworks/vscode-gitops-tools/releases) page.
-- Install it on your local Visual Studio Code following [these instructions](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
+You can find us [in the Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) by searching "FluxCD" or "GitOps", and hopefully even "Flux".
 
 
 # Dependencies
@@ -97,3 +96,14 @@ GitOps extension contributes the following Commands, View Containers, Views, and
 The GitOps Tools Extension for Visual Studio Code collects usage data and sends it to Weaveworks to help improve our products and services. Read our [privacy statement](https://www.weave.works/weaveworks-privacy-policy/) to learn more. This extension respects the `telemetry.enableTelemetry` setting.
 
 [FluxCD.io]: https://fluxcd.io/
+
+# Manual Installation
+
+In case you don't have access to the Marketplace or use VSCodium, or need to for some other reason:
+
+- Download the latest `vsix` artifact version from our [Releases](https://github.com/weaveworks/vscode-gitops-tools/releases) page.
+- Install it on your local Visual Studio Code following [these instructions](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
+
+Note:
+
+If you use VSCodium, please file an issue! We have not added support for the Open-VSX registry at this time due to launch constraints, but we can consider adding it if there is any interest. You can install from the `.vsix` file manually as explained above meanwhile.
