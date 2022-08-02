@@ -1,6 +1,7 @@
 import { MarkdownString } from 'vscode';
 import { Bucket } from '../../kubernetes/bucket';
 import { GitRepository } from '../../kubernetes/gitRepository';
+import { OCIRepository } from '../../kubernetes/ociRepository';
 import { HelmRepository } from '../../kubernetes/helmRepository';
 import { DeploymentCondition } from '../../kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
@@ -12,14 +13,14 @@ import { TreeNode, TreeNodeIcon } from './treeNode';
  */
 export class SourceNode extends TreeNode {
 
-	resource: GitRepository | HelmRepository | Bucket;
+	resource: GitRepository | OCIRepository | HelmRepository | Bucket;
 
 	/**
 	 * Whether or not the source failed to reconcile.
 	 */
 	isReconcileFailed = false;
 
-	constructor(label: string, source: GitRepository | HelmRepository | Bucket) {
+	constructor(label: string, source: GitRepository | OCIRepository | HelmRepository | Bucket) {
 		super(label);
 
 		this.resource = source;
@@ -51,7 +52,7 @@ export class SourceNode extends TreeNode {
 	 * @param source GitRepository, HelmRepository or Bucket kubernetes object.
 	 * @returns Markdown string to use for Source tree view item tooltip.
 	 */
-	getMarkdownHover(source: GitRepository | HelmRepository | Bucket): MarkdownString {
+	getMarkdownHover(source: GitRepository | OCIRepository | HelmRepository | Bucket): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(source);
 
 		// show status in hover when source fetching failed
@@ -79,7 +80,7 @@ export class SourceNode extends TreeNode {
 	 * Update source status with showing error icon when fetch failed.
 	 * @param source target source
 	 */
-	updateStatus(source: GitRepository | HelmRepository | Bucket): void {
+	updateStatus(source: GitRepository | OCIRepository | HelmRepository | Bucket): void {
 		if (this.findReadyOrFirstCondition(source.status.conditions)?.status === 'True') {
 			this.setIcon(TreeNodeIcon.Success);
 			this.isReconcileFailed = false;
