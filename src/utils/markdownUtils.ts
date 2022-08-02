@@ -49,6 +49,9 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.OCIRepository) {
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
+		createMarkdownTableRow('spec.ref.digest', kubernetesObject.spec?.ref?.digest, markdown);
+		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
+		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRepository) {
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 		createMarkdownTableRow('spec.type', kubernetesObject.spec?.type, markdown);
