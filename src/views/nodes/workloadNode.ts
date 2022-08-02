@@ -11,7 +11,7 @@ import { TreeNode, TreeNodeIcon } from './treeNode';
 export class WorkloadNode extends TreeNode {
 
 	/**
-	 * Whether or not the appliication failed to reconcile.
+	 * Whether or not the application failed to reconcile.
 	 */
 	isReconcileFailed = false;
 
