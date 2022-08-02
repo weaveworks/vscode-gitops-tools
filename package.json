@@ -62,6 +62,7 @@
 		"onCommand:gitops.views.pullGitRepository",
 		"onCommand:gitops.views.createGitRepository",
 		"onCommand:gitops.views.deleteSource",
+		"onCommand:gitops.views.deleteWorkload",
 		"onCommand:gitops.views.showWorkloadsHelpMessage",
 		"onCommand:gitops.copyResourceName",
 		"onCommand:gitops.editor.openResource",
@@ -186,6 +187,11 @@
 				"title": "Create Kustomization",
 				"icon": "$(add)",
 				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.deleteWorkload",
+				"title": "Delete",
 				"category": "GitOps"
 			},
 			{
@@ -407,6 +413,11 @@
 					"group": "navigation@1"
 				},
 				{
+					"command": "gitops.views.deleteWorkload",
+					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
+					"group": "navigation@2"
+				},
+				{
 					"command": "gitops.views.deleteSource",
 					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@2"
@@ -483,6 +494,10 @@
 				},
 				{
 					"command": "gitops.views.pullGitRepository",
+					"when": "never"
+				},
+				{
+					"command": "gitops.views.deleteWorkload",
 					"when": "never"
 				},
 				{
