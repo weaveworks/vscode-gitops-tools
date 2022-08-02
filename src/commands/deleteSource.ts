@@ -9,6 +9,7 @@ import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
+import { OCIRepositoryNode } from '../views/nodes/ociRepositoryNode';
 import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
@@ -17,7 +18,7 @@ import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView
  *
  * @param sourceNode Sources tree view node
  */
-export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositoryNode | BucketNode) {
+export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepositoryNode | HelmRepositoryNode | BucketNode) {
 
 	const sourceName = sourceNode.resource.metadata.name || '';
 	const sourceNamespace = sourceNode.resource.metadata.namespace || '';
@@ -25,7 +26,8 @@ export async function deleteSource(sourceNode: GitRepositoryNode | HelmRepositor
 
 	const sourceType: FluxSource | 'unknown' = sourceNode.resource.kind === KubernetesObjectKinds.GitRepository ? 'source git' :
 		sourceNode.resource.kind === KubernetesObjectKinds.HelmRepository ? 'source helm' :
-			sourceNode.resource.kind === KubernetesObjectKinds.Bucket ? 'source bucket' : 'unknown';
+			sourceNode.resource.kind === KubernetesObjectKinds.OCIRepository ? 'source oci' :
+				sourceNode.resource.kind === KubernetesObjectKinds.Bucket ? 'source bucket' : 'unknown';
 
 	if (sourceType === 'unknown') {
 		window.showErrorMessage(`Unknown Source resource kind ${sourceNode.resource.kind}`);
