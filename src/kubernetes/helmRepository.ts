@@ -60,6 +60,12 @@ export interface HelmRepository extends KubernetesObject {
 		readonly timeout?: string;
 
 		/**
+		 * The type of HelmRepository, can be set to `oci` or `default`
+		 * (May be missing from older Flux installs)
+		 */
+		readonly type?: string;
+
+		/**
 		 * This flag tells the controller to suspend the reconciliation of this source
 		 */
 		readonly suspend?: boolean;

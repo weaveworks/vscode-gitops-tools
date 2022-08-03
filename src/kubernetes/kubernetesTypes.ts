@@ -55,6 +55,7 @@ export const enum KubernetesObjectKinds {
 	List = 'List',
 	Bucket = 'Bucket',
 	GitRepository = 'GitRepository',
+	OCIRepository = 'OCIRepository',
 	HelmRepository = 'HelmRepository',
 	HelmRelease = 'HelmRelease',
 	Kustomization = 'Kustomization',

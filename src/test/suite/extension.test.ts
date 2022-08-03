@@ -97,6 +97,22 @@ suite('Extension Test Suite', () => {
 		assert.strictEqual(source, undefined, 'Removing a GitSource and refreshing all views should unlist it');
 	});
 
+	test('OCI Sources are listed', async function() {
+		this.timeout(15000);
+
+		await api.shell.execWithOutput('flux create source oci podinfo --url=oci://ghcr.io/kingdonb/podinfo/deploy --tag-semver 6.1.x');
+		await vscode.commands.executeCommand('gitops.views.refreshSourceTreeView');
+
+		let source = await getTreeItem(api.data.sourceTreeViewProvider, 'OCIRepository: podinfo');
+		assert.notStrictEqual(source, undefined, 'Adding a OCI Source and refreshing the view should list it');
+
+		await api.shell.execWithOutput('flux delete source oci podinfo -s');
+		await vscode.commands.executeCommand('gitops.views.refreshAllTreeViews'); // refresh all'
+
+		source = await getTreeItem(api.data.sourceTreeViewProvider, 'OCIRepository: podinfo');
+		assert.strictEqual(source, undefined, 'Removing an OCI Source and refreshing all views should unlist it');
+	});
+
 	test('Kustomizations are listed', async function() {
 		this.timeout(10000);
 

@@ -3,6 +3,7 @@ import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
 import { BucketNode } from '../nodes/bucketNode';
 import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
+import { OCIRepositoryNode } from '../nodes/ociRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
 import { SourceNode } from '../nodes/sourceNode';
 import { DataProvider } from './dataProvider';
@@ -26,8 +27,9 @@ export class SourceDataProvider extends DataProvider {
 		setVSCodeContext(ContextTypes.LoadingSources, true);
 
 		// Fetch all sources asynchronously and at once
-		const [gitRepositories, helmRepositories, buckets] = await Promise.all([
+		const [gitRepositories, ociRepositories, helmRepositories, buckets] = await Promise.all([
 			kubernetesTools.getGitRepositories(),
+			kubernetesTools.getOciRepositories(),
 			kubernetesTools.getHelmRepositories(),
 			kubernetesTools.getBuckets(),
 		]);
@@ -36,6 +38,13 @@ export class SourceDataProvider extends DataProvider {
 		if (gitRepositories) {
 			for (const gitRepository of sortByMetadataName(gitRepositories.items)) {
 				treeItems.push(new GitRepositoryNode(gitRepository));
+			}
+		}
+
+		// add oci repositories to the tree
+		if (ociRepositories) {
+			for (const ociRepository of sortByMetadataName(ociRepositories.items)) {
+				treeItems.push(new OCIRepositoryNode(ociRepository));
 			}
 		}
 
@@ -59,8 +68,4 @@ export class SourceDataProvider extends DataProvider {
 
 		return treeItems;
 	}
-
-
-
-
 }

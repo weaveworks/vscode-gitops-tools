@@ -14,6 +14,7 @@ import { BucketResult } from './bucket';
 import { GitRepositoryResult } from './gitRepository';
 import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
+import { OCIRepositoryResult } from './ociRepository';
 import { KubernetesConfig, KubernetesContextWithCluster } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
 import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
@@ -298,6 +299,18 @@ class KubernetesTools {
 			return;
 		}
 		return parseJson(gitRepositoryShellResult.stdout);
+	}
+
+	async getOciRepositories(): Promise<undefined | OCIRepositoryResult> {
+		const ociRepositoryShellResult = await this.invokeKubectlCommand('get OciRepository -A -o json');
+		if (ociRepositoryShellResult?.code !== 0) {
+			console.warn(`Failed to get kubectl oci repositories: ${ociRepositoryShellResult?.stderr}`);
+			if (ociRepositoryShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(ociRepositoryShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_OCI_REPOSITORIES);
+			}
+			return;
+		}
+		return parseJson(ociRepositoryShellResult.stdout);
 	}
 
 	/**
