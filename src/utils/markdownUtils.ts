@@ -7,8 +7,9 @@ import { HelmRepository } from '../kubernetes/helmRepository';
 import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/kubernetesConfig';
 import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/kubernetesTypes';
 import { Kustomize } from '../kubernetes/kustomize';
+import { Terraform } from '../kubernetes/terraform';
 
-export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
+export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Terraform | Deployment;
 
 /**
  * Create markdown table for tree view item hovers.
@@ -67,6 +68,13 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.sourceRef.name', kubernetesObject.spec?.sourceRef?.name, markdown);
 		createMarkdownTableRow('spec.force', kubernetesObject.spec?.force, markdown);
 		createMarkdownTableRow('spec.path', kubernetesObject.spec?.path, markdown);
+	} else if (kubernetesObject.kind === KubernetesObjectKinds.Terraform) {
+		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
+		createMarkdownTableRow('spec.sourceRef.kind', kubernetesObject.spec?.sourceRef?.kind, markdown);
+		createMarkdownTableRow('spec.sourceRef.name', kubernetesObject.spec?.sourceRef?.name, markdown);
+		createMarkdownTableRow('spec.force', kubernetesObject.spec?.force, markdown);
+		createMarkdownTableRow('spec.path', kubernetesObject.spec?.path, markdown);
+		createMarkdownTableRow('spec.path', kubernetesObject.spec?.approvePlan, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRelease) {
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);

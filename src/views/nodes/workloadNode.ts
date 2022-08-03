@@ -2,6 +2,7 @@ import { MarkdownString } from 'vscode';
 import { HelmRelease } from '../../kubernetes/helmRelease';
 import { DeploymentCondition } from '../../kubernetes/kubernetesTypes';
 import { Kustomize } from '../../kubernetes/kustomize';
+import { Terraform } from '../../kubernetes/terraform';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
 
@@ -15,14 +16,16 @@ export class WorkloadNode extends TreeNode {
 	 */
 	isReconcileFailed = false;
 
-	resource: Kustomize | HelmRelease;
+	resource: Kustomize | HelmRelease | Terraform;
 
-	constructor(label: string, resource: Kustomize | HelmRelease) {
+	constructor(label: string, resource: Kustomize | HelmRelease | Terraform) {
 		super(label);
 
 		this.resource = resource;
 
-		this.updateStatus(resource);
+		if(resource.kind !== 'Terraform') {
+			this.updateStatus(resource);
+		}
 	}
 
 	/**
@@ -70,15 +73,17 @@ export class WorkloadNode extends TreeNode {
 	 * @param workload Kustomize or HelmRelease kubernetes object.
 	 * @returns Markdown string to use for Source tree view item tooltip.
 	 */
-	getMarkdownHover(workload: Kustomize | HelmRelease): MarkdownString {
+	getMarkdownHover(workload: Kustomize | HelmRelease | Terraform): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(workload);
 
 		// show status in hover when source fetching failed
 		if (this.isReconcileFailed) {
-			const readyCondition = this.findReadyOrFirstCondition(workload.status.conditions);
-			createMarkdownHr(markdown);
-			createMarkdownError('Status message', readyCondition?.message, markdown);
-			createMarkdownError('Status reason', readyCondition?.reason, markdown);
+			if(workload.kind !== 'Terraform') {
+				const readyCondition = this.findReadyOrFirstCondition(workload.status.conditions);
+				createMarkdownHr(markdown);
+				createMarkdownError('Status message', readyCondition?.message, markdown);
+				createMarkdownError('Status reason', readyCondition?.reason, markdown);
+			}
 		}
 
 		return markdown;

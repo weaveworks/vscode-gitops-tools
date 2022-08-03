@@ -11,14 +11,13 @@ import { refreshWorkloadsTreeView } from '../views/treeViews';
  * Invoke flux reconcile of a specific workload.
  * @param workload Target workload tree view item.
  */
-export async function fluxReconcileWorkload(workload: KustomizationNode | HelmReleaseNode | TerraformNode): Promise<void> {
+export async function fluxReconcileWorkload(workload: KustomizationNode | HelmReleaseNode): Promise<void> {
 	/**
 	 * Accepted workload names in flux: `kustomization`, `helmrelease`.
 	 * Can be checked with: `flux reconcile --help`
 	 */
 	const workloadType: FluxWorkload | 'unknown' = workload.resource.kind === KubernetesObjectKinds.Kustomization ? 'kustomization' :
-		workload.resource.kind === KubernetesObjectKinds.HelmRelease ? 'helmrelease' :
-			workload.resource.kind === KubernetesObjectKinds.Terraform ? 'terraform' : 'unknown';
+		workload.resource.kind === KubernetesObjectKinds.HelmRelease ? 'helmrelease' : 'unknown';
 	if (workloadType === 'unknown') {
 		window.showErrorMessage(`Unknown Workload resource kind ${workload.resource.kind}`);
 		return;

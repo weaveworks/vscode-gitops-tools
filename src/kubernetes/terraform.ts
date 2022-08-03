@@ -20,7 +20,7 @@ export interface Terraform extends KubernetesObject {
 
 	// standard kubernetes object fields
 	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.Kustomization;
+	readonly kind: KubernetesObjectKinds.Terraform;
 	readonly metadata: ObjectMeta;
 
 	/**
@@ -105,11 +105,6 @@ export interface Terraform extends KubernetesObject {
 		 * ObservedGeneration is the last reconciled generation
 		 */
 		readonly observedGeneration?: number;
-
-		/**
-		 * DeploymentCondition describes the state of a deployment at a certain point.
-		 */
-		readonly conditions?: DeploymentCondition[];
 
 		/**
 		 * The last successfully applied revision. The revision format for Git sources is

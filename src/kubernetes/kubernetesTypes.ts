@@ -59,6 +59,7 @@ export const enum KubernetesObjectKinds {
 	HelmRepository = 'HelmRepository',
 	HelmRelease = 'HelmRelease',
 	Kustomization = 'Kustomization',
+	Terraform = 'Terraform',
 	Deployment = 'Deployment',
 	Namespace = 'Namespace',
 	Node = 'Node',

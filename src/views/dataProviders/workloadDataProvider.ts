@@ -7,6 +7,7 @@ import { statusBar } from '../../statusBar';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
 import { KustomizationNode } from '../nodes/kustomizationNode';
+import { TerraformNode } from '../nodes/terraformNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 import { WorkloadNode } from '../nodes/workloadNode';
@@ -33,10 +34,11 @@ export class WorkloadDataProvider extends DataProvider {
 
 		setVSCodeContext(ContextTypes.LoadingWorkloads, true);
 
-		const [kustomizations, helmReleases, namespaces] = await Promise.all([
+		const [kustomizations, helmReleases, terraforms, namespaces] = await Promise.all([
 			// Fetch all workloads
 			kubernetesTools.getKustomizations(),
 			kubernetesTools.getHelmReleases(),
+			kubernetesTools.getTerraforms(),
 			// Fetch namespaces to group the nodes
 			kubernetesTools.getNamespaces(),
 			// cache resource kinds
@@ -54,6 +56,12 @@ export class WorkloadDataProvider extends DataProvider {
 		if (helmReleases) {
 			for (const helmRelease of sortByMetadataName(helmReleases.items)) {
 				workloadNodes.push(new HelmReleaseNode(helmRelease));
+			}
+		}
+
+		if (terraforms) {
+			for (const terraform of sortByMetadataName(terraforms.items)) {
+				workloadNodes.push(new TerraformNode(terraform));
 			}
 		}
 
