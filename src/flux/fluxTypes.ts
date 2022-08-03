@@ -1,6 +1,6 @@
 
 export type FluxSource = 'source git' | 'source oci' | 'source helm' | 'source bucket';
-export type FluxWorkload = 'helmrelease' | 'kustomization';
+export type FluxWorkload = 'helmrelease' | 'kustomization' | 'terraform';
 
 /**
  * Object resulting from running `flux tree`.

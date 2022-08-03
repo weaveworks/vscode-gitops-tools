@@ -15,6 +15,7 @@ import { GitRepositoryResult } from './gitRepository';
 import { HelmReleaseResult } from './helmRelease';
 import { HelmRepositoryResult } from './helmRepository';
 import { OCIRepositoryResult } from './ociRepository';
+import { TerraformResult } from './terraform';
 import { KubernetesConfig, KubernetesContextWithCluster } from './kubernetesConfig';
 import { KubernetesFileSchemes } from './kubernetesFileSchemes';
 import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
@@ -269,6 +270,21 @@ class KubernetesTools {
 			return;
 		}
 		return parseJson(kustomizationShellResult.stdout);
+	}
+
+	/**
+	 * Gets all terraforms for the current kubectl context.
+	 */
+	 async getTerraforms(): Promise<undefined | TerraformResult> {
+		const terraformShellResult = await this.invokeKubectlCommand('get Terraforms -A -o json');
+		if (terraformShellResult?.code !== 0) {
+			console.warn(`Failed to get kubectl terraforms: ${terraformShellResult?.stderr}`);
+			if (terraformShellResult?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(terraformShellResult.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_TERRAFORMS);
+			}
+			return;
+		}
+		return parseJson(terraformShellResult.stdout);
 	}
 
 	/**
