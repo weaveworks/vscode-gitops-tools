@@ -103,14 +103,14 @@ suite('Extension Test Suite', () => {
 		await api.shell.execWithOutput('flux create kustomization podinfo --target-namespace=default --source=podinfo --path="./kustomize"');
 		await vscode.commands.executeCommand('gitops.views.refreshWorkloadTreeView');
 
-		let source = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
-		assert.notStrictEqual(source, undefined, 'Adding a Kustomization and refreshing the view should list it');
+		let workload = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
+		assert.notStrictEqual(workload, undefined, 'Adding a Kustomization and refreshing the view should list it');
 
 		await api.shell.execWithOutput('flux delete kustomization podinfo -s');
 		await vscode.commands.executeCommand('gitops.views.refreshAllTreeViews'); // refresh all'
 
-		source = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
-		assert.strictEqual(source, undefined, 'Removing a GitSource and refreshing all views should unlist it');
+		workload = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
+		assert.strictEqual(workload, undefined, 'Removing a Kustomization and refreshing all views should unlist it');
 	});
 
 	test('Disable GitOps uninstalls Flux',  async function () {
