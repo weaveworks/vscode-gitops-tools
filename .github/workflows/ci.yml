@@ -21,8 +21,51 @@ jobs:
         with:
           version: v0.12.0
           image: kindest/node:v1.20.7
-      - run: 'wget https://fluxcd.io/install.sh'
-      - run: 'bash install.sh'
+
+      # - run: 'wget https://fluxcd.io/install.sh'
+      # - run: 'bash install.sh'
+
+      - name: Prepare
+        id: prep
+        run: |
+          GIT_TAG=${GITHUB_REF/refs\/tags\/release\//}
+          FLUX_PATH=${GITHUB_WORKSPACE}/bin
+          # FLUX_OCI_SHA=2b1cc62
+          # mkdir flux2 && pushd flux2
+          # git init
+          # git remote add origin https://github.com/fluxcd/flux2
+          git clone --depth 1 https://github.com/fluxcd/flux2 -b oci
+          # git fetch --depth 1 origin $FLUX_OCI_SHA
+          # git checkout FETCH_HEAD
+          pushd flux2
+          FLUX_OCI_SHA=$(git rev-parse --short HEAD)
+          popd
+          mkdir -p "${FLUX_PATH}"
+          echo "${FLUX_PATH}" >> $GITHUB_PATH
+          
+          echo ::set-output name=GIT_TAG::${GIT_TAG}
+          echo ::set-output name=FLUX_PATH::${FLUX_PATH}
+          echo ::set-output name=FLUX_OCI_SHA::${FLUX_OCI_SHA}
+
+      - name: Cache Flux OCI (prerelease)
+        id: cache-flux
+        uses: actions/cache@v3
+        env:
+          cache-name: flux
+        with:
+          path: ${{ steps.prep.outputs.FLUX_PATH }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.prep.outputs.FLUX_OCI_SHA }}
+
+      # (if cache is not populated at this point we are not ready to run CI and we should fail)
+
+      - name: Download latest OCI Flux
+        if: steps.cache-flux.outputs.cache-hit != 'true'
+        run: |
+          echo "ERROR: Flux CLI binary cannot be restored from cache"
+          echo " (hint: check out the 'Build Flux OCI Binary (Pre-release)' job which should "
+          echo "  have populated the cache, or just try pushing one more commit)"
+          exit 1
+
       - name: extension test
         uses: GabrielBB/xvfb-action@86d97bde4a65fe9b290c0b3fb92c2c4ed0e5302d # pin@v1
         with:
