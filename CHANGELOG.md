@@ -7,7 +7,7 @@ The current release notes are always published on the Releases page, by automati
 # v0.20.9 - [2022-08-04]
 
 * Minor fixes in test body (#361)
-* Add support for Open-VSX registry (sign ECA, add GitHub secret)
+* Release (#363) - Add support for Open-VSX registry and VSCodium
 
 # v0.20.8 - [2022-08-01]
 

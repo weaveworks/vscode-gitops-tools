@@ -104,6 +104,6 @@ In case you don't have access to the Marketplace or use VSCodium, or need to for
 - Download the latest `vsix` artifact version from our [Releases](https://github.com/weaveworks/vscode-gitops-tools/releases) page.
 - Install it on your local Visual Studio Code following [these instructions](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
 
-Note:
+# VS Codium and Open-VSX Registry
 
-If you use VSCodium, please file an issue! We have not added support for the Open-VSX registry at this time due to launch constraints, but we can consider adding it if there is any interest. You can install from the `.vsix` file manually as explained above meanwhile.
+If you use VSCodium, **we have now added the [GitOps Tools on Open-VSX](https://open-vsx.org/extension/weaveworks/vscode-gitops-tools)** 🎉. You can search and install from your VSCodium editor's extension registry.
