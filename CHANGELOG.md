@@ -4,6 +4,11 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.20.9 - [2022-08-04]
+
+* Minor fixes in test body (#361)
+* Release (#363) - Add support for Open-VSX registry and VSCodium
+
 # v0.20.8 - [2022-08-01]
 
 * Proofreading in DEVELOPMENT.md (#349)
