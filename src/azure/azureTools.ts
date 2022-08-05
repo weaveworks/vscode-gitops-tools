@@ -390,7 +390,7 @@ class AzureTools {
 			clusterProvider,
 		);
 		if (deleteSourceShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DELETE_SOURCE);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DELETE_WORKLOAD);
 		}
 	}
 

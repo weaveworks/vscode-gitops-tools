@@ -52,6 +52,7 @@ export const enum TelemetryErrorEventNames {
 	FAILED_TO_RUN_AZ_DELETE_SOURCE = 'FAILED_TO_RUN_AZ_DELETE_SOURCE',
 	FAILED_TO_RUN_AZ_CREATE_SOURCE = 'FAILED_TO_RUN_AZ_CREATE_SOURCE',
 	FAILED_TO_RUN_AZ_CREATE_WORKLOAD = 'FAILED_TO_RUN_AZ_CREATE_WORKLOAD',
+	FAILED_TO_RUN_AZ_DELETE_WORKLOAD = 'FAILED_TO_RUN_AZ_DELETE_WORKLOAD',
 	FAILED_TO_RUN_AZ_ENABLE_GITOPS = 'FAILED_TO_RUN_AZ_ENABLE_GITOPS',
 	FAILED_TO_RUN_AZ_DISABLE_GITOPS = 'FAILED_TO_RUN_AZ_DISABLE_GITOPS',
 	FAILED_TO_GET_AZ_METADATA_FROM_CONFIGMAPS = 'FAILED_TO_GET_AZ_METADATA_FROM_CONFIGMAPS',
@@ -65,9 +66,6 @@ export const enum TelemetryErrorEventNames {
 export type TelemetryErrorEvent = TelemetryErrorEventNames | string;
 
 export const enum TelemetryEventNames {
-	/**
-	 * Extension startup event.
-	 */
 	Startup = 'STARTUP',
 	/**
 	 * First ever extension activation.
@@ -86,15 +84,12 @@ export const enum TelemetryEventNames {
 	 */
 	CreateSourceOpenWebview = 'CREATE_SOURCE_OPEN_WEBVIEW',
 	/**
-	 * Create Flux Source event.
+	 * Create/delete Flux Source event.
 	 */
 	CreateSource = 'CREATE_SOURCE',
-	/**
-	 * Delete Flux Source event.
-	 */
 	DeleteSource = 'DELETE_SOURCE',
 	/**
-	 * Create Flux Workload (Kustomization, HelmRelease) event.
+	 * Create/delete Flux Workload (Kustomization, HelmRelease) event.
 	 */
 	CreateWorkload = 'CREATE_WORKLOAD',
 	DeleteWorkload = 'DELETE_WORKLOAD',
