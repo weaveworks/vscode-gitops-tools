@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+import safesh from 'shell-escape-tag';
 import { telemetry } from '../extension';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap } from '../kubernetes/kubernetesTypes';
@@ -40,6 +41,7 @@ class AzureTools {
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | ShellResult> {
 
+		contextName = safesh.escape(contextName);
 		let azureMetadata = await this.getAzureMetadata(contextName, clusterProvider);
 		if (!azureMetadata) {
 			azureMetadata = await askUserForAzureMetadata(contextName);
