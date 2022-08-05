@@ -34,7 +34,7 @@ export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepository
 		return;
 	}
 
-	const pressedButton = await window.showWarningMessage(`Do you want to delete Source ${sourceNode.resource.kind} "${sourceName}"?`, {
+	const pressedButton = await window.showWarningMessage(`Do you want to delete ${sourceNode.resource.kind} "${sourceName}"?`, {
 		modal: true,
 	}, confirmButton);
 	if (!pressedButton) {
@@ -54,7 +54,7 @@ export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepository
 		await azureTools.deleteSource(sourceName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 		refreshWorkloadsTreeView();
 	} else {
-		await fluxTools.deleteSource(sourceType, sourceName, sourceNamespace);
+		await fluxTools.delete(sourceType, sourceName, sourceNamespace);
 	}
 
 	refreshSourcesTreeView();

@@ -226,7 +226,7 @@ class FluxTools {
 	 * @param name resource name
 	 * @param namespace resource namespace
 	 */
-	async deleteSource(type: FluxSource, name: string, namespace: string) {
+	async delete(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		const deleteSourceShellResult = await shell.execWithOutput(`flux delete ${type} ${name} -n ${namespace} --silent`);
 		if (deleteSourceShellResult.code !== 0) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_DELETE_SOURCE);
