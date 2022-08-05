@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+import safesh from 'shell-escape-tag';
 import { telemetry } from '../extension';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { shell } from '../shell';
@@ -51,7 +52,7 @@ class FluxTools {
 	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
 	async check(context: string): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
-		const result = await shell.execWithOutput(`flux check --context ${context}`, { revealOutputView: false });
+		const result = await shell.execWithOutput(safesh`flux check --context ${context}`, { revealOutputView: false });
 
 		if (result.code !== 0) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CHECK);
@@ -137,7 +138,7 @@ class FluxTools {
 	async install(context: string) {
 		let contextArg = '';
 		if (context) {
-			contextArg = `--context=${context}`;
+			contextArg = safesh`--context=${context}`;
 		}
 		const installShellResult = await shell.execWithOutput(`flux install ${contextArg}`);
 		if (installShellResult.code !== 0) {
@@ -154,7 +155,7 @@ class FluxTools {
 	async uninstall(context = '') {
 		let contextArg = '';
 		if (context) {
-			contextArg = `--context=${context}`;
+			contextArg = safesh`--context=${context}`;
 		}
 		const uninstallShellResult = await shell.execWithOutput(`flux uninstall --silent ${contextArg}`);
 		if (uninstallShellResult.code !== 0) {
