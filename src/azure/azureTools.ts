@@ -378,6 +378,22 @@ class AzureTools {
 		}
 	}
 
+
+	async deleteKustomization(
+		kustomizationName: string,
+		contextName: string,
+		clusterProvider: AzureClusterProvider,
+	) {
+		const deleteSourceShellResult = await this.invokeAzCommand(
+			`az k8s-configuration flux kustomization delete -n ${kustomizationName} --yes`,
+			contextName,
+			clusterProvider,
+		);
+		if (deleteSourceShellResult?.code !== 0) {
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DELETE_WORKLOAD);
+		}
+	}
+
 	/**
 	 * Suspend source reconciliation.
 	 * @see https://docs.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az_k8s_configuration_flux_update
