@@ -4,6 +4,13 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.20.10 - [2022-08-06]
+
+* Create SECURITY.md (#364)
+* Add workflow for deleting Kustomize/HelmRelease workloads (#339)
+* Config parsing fixes (#365)
+* Release (#367) - Add CHANGELOG entry
+
 # v0.20.9 - [2022-08-04]
 
 * Minor fixes in test body (#361)
