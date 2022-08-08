@@ -21,7 +21,6 @@ const newVersion = pkg.version.split('.').slice(0, 2)
 const prereleaseDate = Math.floor(Date.now() / 1000);
 newVersion.push(prereleaseDate);
 pkg.version = `${newVersion.join('.')}`;
-pkg.__metadata.isPreReleaseVersion = true;
 
 console.log(`Update package.json with Edge version:\n\n${JSON.stringify(pkg, null, 2)}`);
 fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
