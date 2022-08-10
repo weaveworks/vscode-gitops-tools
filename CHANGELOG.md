@@ -4,6 +4,8 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.21.0 - TBD
+
 # v0.20.10 - [2022-08-06]
 
 * Create SECURITY.md (#364)
