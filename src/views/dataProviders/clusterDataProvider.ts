@@ -95,13 +95,16 @@ export class ClusterDataProvider extends DataProvider {
 					}
 				}
 			}
+			if(clusterNode.isCurrent) {
+				this.updateClusterContext(clusterNode);
+			}
 			clusterNodes.push(clusterNode);
 		}
 
 		// Update async status of the deployments (flux commands take a while to run)
 		this.updateDeploymentStatus(currentContextTreeItem);
 		// Update async cluster context/icons
-		this.updateClusterContexts(clusterNodes);
+		// this.updateClusterContexts(clusterNodes);
 
 		statusBar.stopLoadingTree();
 		setVSCodeContext(ContextTypes.LoadingClusters, false);
@@ -147,10 +150,20 @@ export class ClusterDataProvider extends DataProvider {
 	 * Update cluster context for all cluster nodes one by one.
 	 * @param clusterNodes all cluster nodes in this tree view.
 	 */
+	// TODO: FIXME: calling this is a bad idea with more than 10-100 contexts
 	async updateClusterContexts(clusterNodes: ClusterContextNode[]) {
 		await Promise.all(clusterNodes.map(async clusterNode => {
 			await clusterNode.updateNodeContext();
 			refreshClustersTreeView(clusterNode);
 		}));
+	}
+
+	/**
+	 * Update cluster context for a single cluster node.
+	 * @param clusterNode Usually the selected clusterNode.
+	 */
+	async updateClusterContext(clusterNode: ClusterContextNode) {
+		await clusterNode.updateNodeContext();
+		refreshClustersTreeView(clusterNode);
 	}
 }
