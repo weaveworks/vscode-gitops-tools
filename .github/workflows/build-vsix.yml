@@ -81,8 +81,10 @@ jobs:
         with:
           version: v0.12.0
           image: kindest/node:v1.20.7
-      - run: 'wget https://fluxcd.io/install.sh'
-      - run: 'bash install.sh'
+
+      - name: Setup Flux CLI
+        uses: fluxcd/flux2/action@main
+
       - name: Run Tests
         uses: GabrielBB/xvfb-action@v1
         with:

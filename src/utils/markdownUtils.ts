@@ -1,13 +1,14 @@
 import { MarkdownString } from 'vscode';
 import { Bucket } from '../kubernetes/bucket';
 import { GitRepository } from '../kubernetes/gitRepository';
+import { OCIRepository } from '../kubernetes/ociRepository';
 import { HelmRelease } from '../kubernetes/helmRelease';
 import { HelmRepository } from '../kubernetes/helmRepository';
 import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/kubernetesConfig';
 import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/kubernetesTypes';
 import { Kustomize } from '../kubernetes/kustomize';
 
-export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
+export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
 
 /**
  * Create markdown table for tree view item hovers.
@@ -46,8 +47,14 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.ref.branch', kubernetesObject.spec?.ref?.branch, markdown);
 		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
 		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
+	} else if (kubernetesObject.kind === KubernetesObjectKinds.OCIRepository) {
+		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
+		createMarkdownTableRow('spec.ref.digest', kubernetesObject.spec?.ref?.digest, markdown);
+		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
+		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRepository) {
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
+		createMarkdownTableRow('spec.type', kubernetesObject.spec?.type, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Bucket) {
 		createMarkdownTableRow('spec.bucketName', kubernetesObject.spec?.bucketName, markdown);
 		createMarkdownTableRow('spec.endpoint', kubernetesObject.spec?.endpoint, markdown);
