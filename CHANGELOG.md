@@ -6,6 +6,11 @@ The current release notes are always published on the Releases page, by automati
 
 # v0.21.0 - TBD
 
+# v0.20.11 - [2022-08-10]
+
+* Update SECURITY.md (#374)
+* Don't ping every context on startup (#363)
+
 # v0.20.10 - [2022-08-06]
 
 * Create SECURITY.md (#364)
