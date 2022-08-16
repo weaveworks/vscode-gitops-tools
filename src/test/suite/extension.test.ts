@@ -100,7 +100,7 @@ suite('Extension Test Suite', () => {
 	test('OCI Sources are listed', async function() {
 		this.timeout(15000);
 
-		await api.shell.execWithOutput('flux create source oci podinfo --url=oci://ghcr.io/kingdonb/podinfo/deploy --tag-semver 6.1.x');
+		await api.shell.execWithOutput('flux create source oci podinfo --url=oci://ghcr.io/stefanprodan/manifests/podinfo --tag-semver 6.1.x');
 		await vscode.commands.executeCommand('gitops.views.refreshSourceTreeView');
 
 		let source = await getTreeItem(api.data.sourceTreeViewProvider, 'OCIRepository: podinfo');
