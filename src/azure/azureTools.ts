@@ -10,6 +10,7 @@ import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
 import { failed } from '../errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { getAzureMetadata } from './getAzureMetadata';
+import { checkAzurePrerequisites } from './azurePrereqs';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 
@@ -86,10 +87,10 @@ class AzureTools {
 		clusterProvider: AzureClusterProvider,
 	) {
 
-		const clusterPreqsReady = await this.checkPrerequisites(clusterProvider);
+		const clusterPreqsReady = await checkAzurePrerequisites(clusterProvider);
 
 		if (!clusterPreqsReady) {
-			const result = await window.showWarningMessage('Required Azure extensions are not installed. Please install the prerequisites or use Flux without Azure integration ("Generic" cluster type)', '"Azure GitOps Prerequisites" Docs', 'Enable as "Generic" cluster');
+			const result = await window.showWarningMessage('Required Azure extensions are not installed. Please install the prerequisites or use Flux without Azure integration ("Generic" cluster type)', {modal: true}, '"Azure GitOps Prerequisites" Docs', 'Enable as "Generic" cluster');
 			if(result === '"Azure GitOps Prerequisites" Docs') {
 				env.openExternal(Uri.parse('https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2#prerequisites'));
 			} else if(result === 'Enable as "Generic" cluster') {
@@ -120,10 +121,12 @@ class AzureTools {
 			return;
 		}
 
-		window.showInformationMessage('Installing AKS microsoft.flux extension. It will take several minutes...', 'OK');
-		const result = await shell.execWithOutput(command);
-		if (result?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
+		const answer = await window.showInformationMessage('Install Azure microsoft.flux extension? It will take several minutes...', {modal: true}, 'Yes');
+		if(answer === 'Yes') {
+			const result = await shell.execWithOutput(command);
+			if (result?.code !== 0) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
+			}
 		}
 	}
 
@@ -450,53 +453,7 @@ class AzureTools {
 		}
 	}
 
-	/**
-	 * Return true if all prerequisites for installing Azure cluster extension 'microsoft.flux' are ready
-	 */
-	async checkPrerequisites(clusterProvider: AzureClusterProvider): Promise<boolean> {
-		const results = await Promise.all([
-			this.checkPrerequistesProviders(),
-			this.checkPrerequistesCliExtensions(),
-			this.checkPrerequistesFeatures(),
-		]);
 
-		if(clusterProvider === ClusterProvider.AKS) {
-			return (results[0] && results[1] && results[2]);
-		} else {
-			return (results[0] && results[1]);
-		}
-	}
-
-	async checkPrerequistesFeatures(): Promise<boolean> {
-		const result = await shell.execWithOutput('az feature show --namespace Microsoft.ContainerService -n AKS-ExtensionManager');
-		return result.stdout.includes('"state": "Registered"');
-	}
-
-	async checkPrerequistesProviders(): Promise<boolean> {
-		const result = await shell.execWithOutput('az provider list -o table');
-		const lines = result.stdout.replace(/\r\n/g,'\n').split('\n');
-
-		let registeredCompontents = 0;
-		for(let line of lines) {
-			if(/^Microsoft.Kubernetes\b.*\bRegistered\b/.test(line)) {
-				registeredCompontents++;
-			}
-			if(/^Microsoft.KubernetesConfiguration\b.*\bRegistered\b/.test(line)) {
-				registeredCompontents++;
-			}
-			if(/^Microsoft.ContainerService\b.*\bRegistered\b/.test(line)) {
-				registeredCompontents++;
-			}
-		}
-
-		return registeredCompontents === 3;
-	}
-
-	async checkPrerequistesCliExtensions(): Promise<boolean> {
-		const result = await shell.execWithOutput('az extension list -o table');
-
-		return result.stdout.includes('k8s-configuration') && result.stdout.includes('k8s-extension');
-	}
 }
 
 /**
