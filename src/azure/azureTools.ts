@@ -90,22 +90,11 @@ class AzureTools {
 		const clusterPreqsReady = await checkAzurePrerequisites(clusterProvider);
 
 		if (!clusterPreqsReady) {
-			const result = await window.showWarningMessage('Required Azure extensions are not installed. Please install the prerequisites or use Flux without Azure integration ("Generic" cluster type)', {modal: true}, '"Azure GitOps Prerequisites" Docs', 'Enable as "Generic" cluster');
+			const result = await window.showWarningMessage('Required Azure extensions are not installed. Please install the prerequisites or use Flux without Azure integration ("Generic" cluster type)', {modal: true}, '"Azure GitOps Prerequisites" Docs', 'Use as "Generic" cluster');
 			if(result === '"Azure GitOps Prerequisites" Docs') {
 				env.openExternal(Uri.parse('https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2#prerequisites'));
-			} else if(result === 'Enable as "Generic" cluster') {
-				const currentClusterInfo = await getCurrentClusterInfo();
-				if (failed(currentClusterInfo)) {
-					return;
-				}
-
-				const clusterName = currentClusterInfo.result.clusterName;
-				const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterName) || {};
-
-				clusterMetadata.clusterProvider = ClusterProvider.Generic;
-				globalState.setClusterMetadata(clusterName, clusterMetadata);
-				refreshAllTreeViews();
-				await fluxTools.install(contextName);
+			} else if(result === 'Use as "Generic" cluster') {
+				await this.enableGitOpsGeneric(contextName);
 			}
 			return;
 		}
@@ -121,13 +110,30 @@ class AzureTools {
 			return;
 		}
 
-		const answer = await window.showInformationMessage('Install Azure microsoft.flux extension? It will take several minutes...', {modal: true}, 'Yes');
+		const answer = await window.showInformationMessage('Install Azure microsoft.flux extension? It will take several minutes...', {modal: true}, 'Yes', 'Use as "Generic" cluster');
 		if(answer === 'Yes') {
 			const result = await shell.execWithOutput(command);
 			if (result?.code !== 0) {
 				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
 			}
+		} else if(answer === 'Use as "Generic" cluster') {
+			await this.enableGitOpsGeneric(contextName);
 		}
+	}
+
+	async enableGitOpsGeneric(contextName: string) {
+		const currentClusterInfo = await getCurrentClusterInfo();
+		if (failed(currentClusterInfo)) {
+			return;
+		}
+
+		const clusterName = currentClusterInfo.result.clusterName;
+		const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterName) || {};
+
+		clusterMetadata.clusterProvider = ClusterProvider.Generic;
+		globalState.setClusterMetadata(clusterName, clusterMetadata);
+		refreshAllTreeViews();
+		await fluxTools.install(contextName);
 	}
 
 	/**
