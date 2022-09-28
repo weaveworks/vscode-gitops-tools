@@ -1,12 +1,16 @@
-import { window } from 'vscode';
-import safesh from 'shell-escape-tag';
-import { telemetry } from '../extension';
+import { window, env, Uri } from 'vscode';
+import { globalState, telemetry } from '../extension';
+import { ClusterMetadata } from '../globalState';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider, ConfigMap } from '../kubernetes/kubernetesTypes';
+import { ClusterProvider, ConfigMap, knownClusterProviders } from '../kubernetes/kubernetesTypes';
 import { shell, shellCodeError, ShellResult } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
-import { askUserForAzureMetadata } from './getAzureMetadata';
+import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
+import { failed } from '../errorable';
+import { fluxTools } from '../flux/fluxTools';
+import { getAzureMetadata } from './getAzureMetadata';
+import { checkAzurePrerequisites } from './azurePrereqs';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 
@@ -17,7 +21,6 @@ export function isAzureProvider(provider: ClusterProvider): provider is AzureClu
 	return provider === ClusterProvider.AKS || provider === ClusterProvider.AzureARC;
 }
 
-
 export const enum AzureConstants {
 	ArcNamespace = 'azure-arc',
 	KubeSystemNamespace = 'kube-system',
@@ -26,77 +29,51 @@ export const enum AzureConstants {
 
 class AzureTools {
 
+	private async buildAzCommand(
+		command: string,
+		contextName: string,
+		clusterProvider: AzureClusterProvider,
+	): Promise<string | undefined> {
+
+		const metadata = await getAzureMetadata(contextName, clusterProvider);
+
+		if (!metadata) {
+			return;
+		}
+
+
+		const clusterType = clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters';
+
+		const metadataOpts = `--cluster-name ${metadata.resourceName} --cluster-type ${clusterType} --resource-group ${metadata.resourceGroup} --subscription ${metadata.subscriptionId}`;
+
+		return `${command} ${metadataOpts}`;
+	}
+
 	/**
 	 * 1. Prompt user for: (cluster name, resource group, subscription)
 	 * 2. Infer cluster type (AKS - managedClusters, Azure Arc - connectedClusters)
-	 * 3. Execute the command and return ShellResult.
+	 * 3. Run the command and return ShellResult. Returns undefined if no metadata is selected.
 	 *
 	 * @param command azure command to execute
 	 * @param clusterNode target cluster node
 	 * @param clusterProvider target cluster provider
 	 */
-	private async invokeAzCommand(
+	public async invokeAzCommand(
 		command: string,
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | ShellResult> {
 
-		contextName = safesh.escape(contextName);
-		let azureMetadata = await this.getAzureMetadata(contextName, clusterProvider);
-		if (!azureMetadata) {
-			azureMetadata = await askUserForAzureMetadata(contextName);
-		}
-		if (!azureMetadata) {
+		const commandWithOps = await this.buildAzCommand(command, contextName, clusterProvider);
+
+		if (!commandWithOps) {
 			return;
 		}
 
-		const clusterType = clusterProvider === ClusterProvider.AKS ? 'managedClusters' : 'connectedClusters';
-
-		const metadata = `--cluster-name ${azureMetadata.resourceName} --cluster-type ${clusterType} --resource-group ${azureMetadata.resourceGroup} --subscription ${azureMetadata.subscriptionId}`;
-
-		return await shell.execWithOutput(`${command} ${metadata}`);
+		return await shell.execWithOutput(commandWithOps);
 	}
 
-	/**
-	 * Get azure data from the configmaps.
-	 * @param clusterNode target cluster node
-	 * @param clusterProvider target cluster provider
-	 */
-	async getAzureMetadata(
-		contextName: string,
-		clusterProvider: AzureClusterProvider,
-	) {
 
-		let configMapShellResult: ShellResult | undefined;
-		if (clusterProvider === ClusterProvider.AKS) {
-			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps extension-manager-config -n ${AzureConstants.KubeSystemNamespace} --context=${contextName} --ignore-not-found -o json`);
-		} else {
-			configMapShellResult = await kubernetesTools.invokeKubectlCommand(`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${contextName} --ignore-not-found -o json`);
-		}
-
-		if (configMapShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_AZ_METADATA_FROM_CONFIGMAPS);
-			window.showErrorMessage(`Failed to get Azure resource name or resource group or subscription ID. ${shellCodeError(configMapShellResult)}`);
-			return;
-		}
-
-		const configMap: ConfigMap | undefined = parseJson(configMapShellResult.stdout);
-		if (configMap === undefined) {
-			return;
-		}
-
-		const result = {
-			resourceGroup: configMap.data['AZURE_RESOURCE_GROUP'],
-			resourceName: configMap.data['AZURE_RESOURCE_NAME'],
-			subscriptionId: configMap.data['AZURE_SUBSCRIPTION_ID'],
-		};
-
-		if (!result.resourceGroup || !result.resourceName || !result.subscriptionId) {
-			return;
-		}
-
-		return result;
-	}
 
 	/**
 	 * Enable GitOps
@@ -109,14 +86,54 @@ class AzureTools {
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
-		const enableGitOpsShellResult = await this.invokeAzCommand(
+
+		const clusterPreqsReady = await checkAzurePrerequisites(clusterProvider);
+
+		if (!clusterPreqsReady) {
+			const result = await window.showWarningMessage('Required Azure extensions are not installed. Please install the prerequisites or use Flux without Azure integration ("Generic" cluster type)', {modal: true}, '"Azure GitOps Prerequisites" Docs', 'Use as "Generic" cluster');
+			if(result === '"Azure GitOps Prerequisites" Docs') {
+				env.openExternal(Uri.parse('https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2#prerequisites'));
+			} else if(result === 'Use as "Generic" cluster') {
+				await this.enableGitOpsGeneric(contextName);
+			}
+			return;
+		}
+
+
+		const command = await this.buildAzCommand(
 			`az k8s-extension create --name ${AzureConstants.FluxExtensionName} --extension-type microsoft.flux --scope cluster`,
 			contextName,
 			clusterProvider,
 		);
-		if (enableGitOpsShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
+
+		if(!command) {
+			return;
 		}
+
+		const answer = await window.showInformationMessage('Install Azure microsoft.flux extension? It will take several minutes...', {modal: true}, 'Yes', 'Use as "Generic" cluster');
+		if(answer === 'Yes') {
+			const result = await shell.execWithOutput(command);
+			if (result?.code !== 0) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
+			}
+		} else if(answer === 'Use as "Generic" cluster') {
+			await this.enableGitOpsGeneric(contextName);
+		}
+	}
+
+	async enableGitOpsGeneric(contextName: string) {
+		const currentClusterInfo = await getCurrentClusterInfo();
+		if (failed(currentClusterInfo)) {
+			return;
+		}
+
+		const clusterName = currentClusterInfo.result.clusterName;
+		const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterName) || {};
+
+		clusterMetadata.clusterProvider = ClusterProvider.Generic;
+		globalState.setClusterMetadata(clusterName, clusterMetadata);
+		refreshAllTreeViews();
+		await fluxTools.install(contextName);
 	}
 
 	/**
@@ -441,6 +458,8 @@ class AzureTools {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_RESUME_SOURCE);
 		}
 	}
+
+
 }
 
 /**

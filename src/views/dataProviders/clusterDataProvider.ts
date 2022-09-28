@@ -118,7 +118,7 @@ export class ClusterDataProvider extends DataProvider {
 	 * Get status from running flux commands instead of kubectl.
 	 */
 	async updateDeploymentStatus(clusterNode?: ClusterContextNode) {
-		if (!clusterNode) {
+		if (!clusterNode || clusterNode.children.length === 0) {
 			return;
 		}
 		const fluxCheckResult = await fluxTools.check(clusterNode.contextName);
