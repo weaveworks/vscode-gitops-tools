@@ -4,6 +4,16 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.22.2
+
+* Release 0.22.1 again as 0.22.2 (#389)
+
+# v0.22.1
+
+* undo optimistic npm upgrade/mitigate git-url-parse (#388)
+* upgrade git-url-parse pin (#387)
+* mitigate CVEs from dependabot (#386)
+
 # v0.22.0 - [2022-08-28]
 
 * AKS UI and support (#384)
