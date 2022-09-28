@@ -4,6 +4,11 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.22.0 - [2022-08-28]
+
+* AKS UI and support (#384)
+* Point at a stable target from tests (#381)
+
 # v0.21.0 - [2022-08-11]
 
 * Add OCIRepository sources support (#377)
