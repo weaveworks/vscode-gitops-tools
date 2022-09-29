@@ -144,7 +144,7 @@ $submitButton.addEventListener('click', () => {
 					// @ts-ignore
 					clusterProvider: webviewTempState.clusterProvider,
 					sourceKind: webviewTempState.sourceKind,
-					sourceName: getInputValue(fluxGitSourceNameId),
+					sourceName: getInputValue(azureConfigurationNameId),
 					sourceScope: sendIfNotDefaultValue('az-scope', getRadioValue(azureScopeId)),
 					sourceNamespace: sendIfNotDefaultValue('az-namespace', getInputValue(azureNamespaceId)),
 					url: getInputValue(azureUrlId),
