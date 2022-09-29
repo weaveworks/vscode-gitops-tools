@@ -4,6 +4,10 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.22.3
+
+* createSource uses correct azure name parameter (#391)
+
 # v0.22.2
 
 * Release 0.22.1 again as 0.22.2 (#389)
