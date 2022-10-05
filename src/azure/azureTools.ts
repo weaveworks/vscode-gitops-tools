@@ -27,6 +27,10 @@ export const enum AzureConstants {
 	FluxExtensionName = 'flux',
 }
 
+
+export type CreateSourceGitAzureArgs = Parameters<typeof azureTools['createSourceGit']>[0];
+
+
 class AzureTools {
 
 	private async buildAzCommand(
@@ -180,7 +184,7 @@ class AzureTools {
 	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
-	private async listFluxConfigurations(
+	public async listFluxConfigurations(
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | any[]> {
@@ -212,9 +216,12 @@ class AzureTools {
 		kustomizationPath: string,
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
+		kustomizationDependsOn?: string,
 	) {
+		const dependsOnArg = kustomizationDependsOn ? ` --depends-on "${kustomizationDependsOn}"` : '';
+
 		const createKustomizationShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}" --prune true`,
+			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}"${dependsOnArg} --prune true`,
 			contextName,
 			clusterProvider,
 		);
@@ -232,8 +239,8 @@ class AzureTools {
 	 */
 	async createSourceGit(args: {
 		sourceName: string;
-		sourceScope?: string;
-		sourceNamespace?: string;
+		azureScope?: string;
+		namespace?: string;
 		contextName: string;
 		clusterProvider: AzureClusterProvider;
 		url: string;
@@ -262,8 +269,8 @@ class AzureTools {
 		kustomizationForce?: boolean;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
-		const scopeArg = args.sourceScope ? ` --scope "${args.sourceScope}"` : '';
-		const namespaceArg = args.sourceNamespace ? ` --namespace "${args.sourceNamespace}"` : '';
+		const scopeArg = args.azureScope ? ` --scope "${args.azureScope}"` : '';
+		const namespaceArg = args.namespace ? ` --namespace "${args.namespace}"` : '';
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
 		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
 		const semverArg = args.semver ? ` --semver "${args.semver}"` : '';
@@ -399,12 +406,13 @@ class AzureTools {
 
 
 	async deleteKustomization(
+		configName: string,
 		kustomizationName: string,
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 		const deleteSourceShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux kustomization delete -n ${kustomizationName} --yes`,
+			`az k8s-configuration flux kustomization delete -n ${configName} -k ${kustomizationName} --yes`,
 			contextName,
 			clusterProvider,
 		);
@@ -457,6 +465,11 @@ class AzureTools {
 		if (resumeShellResult?.code !== 0) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_RESUME_SOURCE);
 		}
+	}
+
+
+	getAzName(fluxConfigName: string, resourceName: string) {
+		return resourceName.replace(RegExp(`^${fluxConfigName}-`), '');
 	}
 
 

@@ -2,6 +2,8 @@ import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
 import { copyResourceName } from './commands/copyResourceName';
 import { createGitRepository } from './commands/createGitRepository';
 import { createKustomization } from './commands/createKustomization';
+import { addSource } from './commands/addSource';
+import { addKustomization } from './commands/addKustomization';
 import { deleteWorkload } from './commands/deleteWorkload';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
@@ -11,7 +13,6 @@ import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { installFluxCli } from './commands/installFluxCli';
-import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { resume } from './commands/resume';
@@ -73,13 +74,14 @@ export const enum CommandId {
 	DeleteWorkload = 'gitops.views.deleteWorkload',
 	DeleteSource = 'gitops.views.deleteSource',
 	CopyResourceName = 'gitops.copyResourceName',
+	AddSource = 'gitops.addSource',
+	AddKustomization = 'gitops.addKustomization',
 
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
 
 	// webview
 	ShowLogs = 'gitops.editor.showLogs',
-	OpenCreateSourceWebview = 'gitops.editor.createSource',
 	ShowNewUserGuide = 'gitops.views.showNewUserGuide',
 
 	// output commands
@@ -130,13 +132,15 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.DeleteWorkload, deleteWorkload);
 	registerCommand(CommandId.DeleteSource, deleteSource);
 	registerCommand(CommandId.CopyResourceName, copyResourceName);
+	registerCommand(CommandId.AddSource, addSource);
+	registerCommand(CommandId.AddKustomization, addKustomization);
+
 
 	// editor
 	registerCommand(CommandId.EditorOpenResource, openResource);
 
 	// webview
 	registerCommand(CommandId.ShowLogs, showLogs);
-	registerCommand(CommandId.OpenCreateSourceWebview, openCreateSourceWebview);
 	registerCommand(CommandId.ShowNewUserGuide, showNewUserGuide);
 
 	// output

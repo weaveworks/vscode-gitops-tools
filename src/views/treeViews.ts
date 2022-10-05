@@ -115,7 +115,7 @@ export function refreshWorkloadsTreeView(node?: TreeNode) {
 	workloadTreeViewProvider.refresh(node);
 }
 
-export interface CurrentClusterInfo {
+export interface ClusterInfo {
 	contextName: string;
 	clusterName: string;
 	clusterProvider: ClusterProvider;
@@ -129,7 +129,7 @@ export interface CurrentClusterInfo {
  * 2. Context name
  * 3. Detect cluster provider.
  */
-export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterInfo>> {
+export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
 	const currentContextResult = await kubernetesTools.getCurrentContext();
 
 	if (failed(currentContextResult)) {

@@ -67,10 +67,8 @@
 		"onCommand:gitops.copyResourceName",
 		"onCommand:gitops.editor.openResource",
 		"onCommand:gitops.editor.showLogs",
-		"onCommand:gitops.editor.createSource",
 		"onCommand:gitops.output.show",
 		"onCommand:gitops.installFluxCli",
-		"onWebviewPanel:createSource",
 		"onView:gitops.views.clusters",
 		"onView:gitops.views.sources",
 		"onView:gitops.views.workloads",
@@ -179,7 +177,7 @@
 			},
 			{
 				"command": "gitops.views.createGitRepository",
-				"title": "Create Git Repository Source",
+				"title": "Create GitRepository Source",
 				"category": "GitOps"
 			},
 			{
@@ -188,6 +186,20 @@
 				"icon": "$(add)",
 				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.addSource",
+				"title": "Add Source",
+				"category": "GitOps",
+				"icon": "$(add)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+			},
+			{
+				"command": "gitops.addKustomization",
+				"title": "Add Kustomization",
+				"category": "GitOps",
+				"icon": "$(add)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.deleteWorkload",
@@ -214,13 +226,6 @@
 				"command": "gitops.editor.openResource",
 				"title": "View Config",
 				"category": "GitOps"
-			},
-			{
-				"command": "gitops.editor.createSource",
-				"title": "Create Source",
-				"category": "GitOps",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
-				"icon": "$(add)"
 			},
 			{
 				"command": "gitops.output.show",
@@ -341,12 +346,12 @@
 					"when": "view == gitops.views.clusters"
 				},
 				{
-					"command": "gitops.editor.createSource",
+					"command": "gitops.addSource",
 					"group": "navigation@0",
 					"when": "view == gitops.views.sources"
 				},
 				{
-					"command": "gitops.createKustomization",
+					"command": "gitops.addKustomization",
 					"group": "navigation@0",
 					"when": "view == gitops.views.workloads"
 				},
@@ -424,6 +429,11 @@
 				},
 				{
 					"command": "gitops.views.pullGitRepository",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/",
+					"group": "navigation@3"
+				},
+				{
+					"command": "gitops.addKustomization",
 					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/",
 					"group": "navigation@3"
 				},
@@ -521,10 +531,6 @@
 					"when": "never"
 				},
 				{
-					"command": "gitops.editor.createSource",
-					"when": "never"
-				},
-				{
 					"command": "gitops.flux.trace",
 					"when": "never"
 				},
@@ -552,7 +558,9 @@
 		"watch-tests": "tsc -p . -w --outDir out",
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"start:webview": "npm --prefix ./webview-ui run start",
+		"build:webview": "npm --prefix ./webview-ui run build"
 	},
 	"extensionDependencies": [
 		"ms-kubernetes-tools.vscode-kubernetes-tools"

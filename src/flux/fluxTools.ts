@@ -34,6 +34,9 @@ export interface FluxPrerequisite {
 	success: boolean;
 }
 
+
+export type CreateSourceGitGenericArgs = Parameters<typeof fluxTools['createSourceGit']>[0];
+
 class FluxTools {
 
 	/**
@@ -233,6 +236,8 @@ class FluxTools {
 		}
 	}
 
+
+
 	/**
 	 * Run `flux create source git`. If the protocol of the url is SSH -
 	 * try to parse the deploy key from the flux output.
@@ -241,6 +246,7 @@ class FluxTools {
 	async createSourceGit(args: {
 		sourceName: string;
 		url: string;
+		namespace?: string;
 		branch?: string;
 		tag?: string;
 		semver?: string;
@@ -258,6 +264,7 @@ class FluxTools {
 		sshRsaBits?: string;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
+		const namespaceArg = args.namespace ? ` --namespace "${args.namespace}"` : '';
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
 		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
 		const semverArg = args.semver ? ` --tag-semver "${args.semver}"` : '';
@@ -274,7 +281,7 @@ class FluxTools {
 		const sshEcdsaCurve = args.sshEcdsaCurve ? ` --ssh-ecdsa-curve "${args.sshEcdsaCurve}"` : '';
 		const sshRsaBits = args.sshRsaBits ? ` --ssh-rsa-bits "${args.sshRsaBits}"` : '';
 
-		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits} --silent`);
+		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${args.sourceName}${urlArg}${branchArg}${namespaceArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits} --silent`);
 
 		if (createSourceShellResult.code !== 0) {
 			// shell always fails in SSH case (without specifying any key) (as reconciliation error)
@@ -301,8 +308,12 @@ class FluxTools {
 		};
 	}
 
-	async createKustomization(kustomizationName: string, sourceName: string, kustomizationPath: string) {
-		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${kustomizationPath}" --prune=true`);
+	async createKustomization(kustomizationName: string, sourceName: string, kustomizationPath: string, namespace?: string, targetNamespace?: string, dependsOn?: string) {
+		const namespaceArg = namespace ? ` --namespace "${namespace}"` : '';
+		const targetNamespaceArg = targetNamespace ? ` --target-namespace "${targetNamespace}"` : '';
+		const dependsOnArg = dependsOn ? ` --depends-on "${dependsOn}"` : '';
+
+		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName}${namespaceArg}${targetNamespaceArg}${dependsOnArg} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${kustomizationPath}" --prune=true`);
 
 		if (createKustomizationShellResult.code !== 0) {
 			window.showErrorMessage(createKustomizationShellResult.stderr);
