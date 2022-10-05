@@ -5,7 +5,7 @@ import { makeSSHUrlFromGitUrl } from '../commands/createSource';
 import { checkGitVersion } from '../install';
 
 export interface GitInfo {
-	newRepoName: string;
+	name: string;
 	url: string;
 	branch: string;
 }
@@ -36,7 +36,7 @@ export async function getOpenedFolderGitInfo(targetFolderUri: Uri): Promise<GitI
 	}
 
 	return {
-		newRepoName: newGitRepositorySourceName,
+		name: newGitRepositorySourceName,
 		url: gitUrl,
 		branch: gitBranch,
 	};

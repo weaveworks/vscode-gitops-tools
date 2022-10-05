@@ -64,7 +64,9 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 
 
 	if (currentClusterInfo.result.isAzure && workloadType === 'kustomization') {
-		await azureTools.deleteKustomization(workloadName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		const fluxConfigName = (workloadNode.resource.spec as any).sourceRef?.name;
+		const azResourceName = azureTools.getAzName(fluxConfigName, workloadName);
+		await azureTools.deleteKustomization(fluxConfigName, azResourceName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
 		await fluxTools.delete(workloadType, workloadName, workloadNamespace);
 	}
