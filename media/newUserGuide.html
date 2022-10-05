@@ -17,7 +17,7 @@
 
 <p>GitOps is a process framework for working with applications and their infrastructure as code. Although GitOps does not require Git or Kubernetes, most people today practice GitOps with the two technologies and that is what we cover here. Git is an increasingly popular version controlling software and Kubernetes is a container orchestration system - both are open source. Flux is an open source project in the Cloud Native Computing Foundation (CNCF) that makes the GitOps magic happen with these technologies. This extension for VS Code will help you do this!</p>
 
-<p>High level: With GitOps, you have a manifest in a repo (usually a yaml file), and that manifest is the single source of truth for the state of your cluster. It defines how your cluster should look. Flux and Kubernetes work together to check on that manifest and to reconcile the cluster to match the indications automatically. That means that if anyone hacks into the system and makes a change to the cluster, Flux will “reset” it to what's in the yaml file. This adds security to your operations. Similarly, if you want to make a change to your cluster, you make changes to the yaml file and Flux and Kubernetes will reconcile the changes. Since the YAML files are in a Git repository there's an audit trail.</>
+<p>High level: With GitOps, you have a manifest in a repo (usually a .yaml file), and that manifest is the single source of truth for the state of your cluster. It defines how your cluster should look. Flux and Kubernetes work together to check on that manifest and to reconcile the cluster to match the indications automatically. That means that if anyone hacks into the system and makes a change to the cluster, Flux will “reset” it to what's in the YAML file. This adds security to your operations. Similarly, if you want to make a change to your cluster, you make changes to the YAML file and Flux and Kubernetes will reconcile the changes. Since the YAML files are in a Git repository there's an audit trail.</>
 
 <p>With GitOps, developers commit their Kubernetes infrastructure definitions into the Git source control system so that the whole system is version controlled. Changes to the application infrastructure are accomplished by changing manifests and pushing that to a git repository. Changes are continuously reconciled from the git repository to the cluster.</p>
 
@@ -48,7 +48,7 @@
 
 <h3>Configure <code><strong>GitRepository</strong></code> (Create Source)</h3>
 
-<p>Tell Flux about your infrastructure git repository. In this example a forked repo <code>juozasg/podinfo</code> is used:</p>
+<p>Tell Flux about your infrastructure git repository. In this example the default repo <code>stefanprodan/podinfo</code> is used:</p>
 
 <img class="screencap" src='{{images.1}}' alt='Create Source'/>
 
@@ -62,18 +62,7 @@
 
 <p>Now that Flux knows about the repo, let’s tell it how the repo defines our infrastructure. We must provide a folder path from where the cluster manifests will be continuously synced. Since Flux uses Kustomize configuration management system, this configuration is stored in a resource type <code><strong>Kustomization</strong></code></p>
 
-<p>For now, we will use the command line to create a Kustomization for our <code><strong>GitRepository</strong></code> <code>podinfo-repo</code>:</p>
-
-<code>
-<pre>
-	flux create kustomization podinfo \
-			--source=podinfo-repo \
-			--path="./kustomize" \
-			--target-namespace=default \
-			--prune=true  \
-			--interval=1m
-</pre>
-</code>
+<p>Next let's add a Kustomization our <code><strong>GitRepository</strong></code> <code>podinfo</code>:</p>
 
 <img class="screencap" src='{{images.3}}' alt='Create Kustomization'/>
 

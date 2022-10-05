@@ -1,17 +1,18 @@
 import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
 import { copyResourceName } from './commands/copyResourceName';
-import { createGitRepository } from './commands/createGitRepository';
-import { createKustomization } from './commands/createKustomization';
+import { createGitRepositoryForPath } from './commands/createGitRepositoryForPath';
+import { createKustomizationForPath } from './commands/createKustomizationForPath';
+import { addSource } from './commands/addSource';
+import { addKustomization } from './commands/addKustomization';
 import { deleteWorkload } from './commands/deleteWorkload';
 import { deleteSource } from './commands/deleteSource';
 import { fluxDisableGitOps, fluxEnableGitOps } from './commands/enableDisableGitOps';
 import { fluxCheck } from './commands/fluxCheck';
 import { checkFluxPrerequisites } from './commands/fluxCheckPrerequisites';
-import { fluxReconcileRepository } from './commands/fluxReconcileRepository';
+import { fluxReconcileRepositoryForPath } from './commands/fluxReconcileGitRepositoryForPath';
 import { fluxReconcileSourceCommand } from './commands/fluxReconcileSource';
 import { fluxReconcileWorkload } from './commands/fluxReconcileWorkload';
 import { installFluxCli } from './commands/installFluxCli';
-import { openCreateSourceWebview } from './commands/openCreateSourceWebview';
 import { openResource } from './commands/openResource';
 import { pullGitRepository } from './commands/pullGitRepository';
 import { resume } from './commands/resume';
@@ -27,7 +28,7 @@ import { trace } from './commands/trace';
 import { telemetry } from './extension';
 import { showOutputChannel } from './output';
 import { TelemetryErrorEventNames } from './telemetry';
-import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
+import { refreshAllTreeViews, refreshResourcesTreeViews } from './views/treeViews';
 
 /**
  * Command ids registered by this extension
@@ -64,8 +65,7 @@ export const enum CommandId {
 	// tree view
 	SetClusterProvider = 'gitops.setClusterProvider',
 	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
-	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
-	RefreshWorkloadsTreeView = 'gitops.views.refreshWorkloadTreeView',
+	RefreshResourcesTreeView = 'gitops.views.refreshResourcesTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
 	CreateGitRepository = 'gitops.views.createGitRepository',
 	CreateKustomization = 'gitops.createKustomization',
@@ -73,13 +73,14 @@ export const enum CommandId {
 	DeleteWorkload = 'gitops.views.deleteWorkload',
 	DeleteSource = 'gitops.views.deleteSource',
 	CopyResourceName = 'gitops.copyResourceName',
+	AddSource = 'gitops.addSource',
+	AddKustomization = 'gitops.addKustomization',
 
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
 
 	// webview
 	ShowLogs = 'gitops.editor.showLogs',
-	OpenCreateSourceWebview = 'gitops.editor.createSource',
 	ShowNewUserGuide = 'gitops.views.showNewUserGuide',
 
 	// output commands
@@ -106,11 +107,11 @@ export function registerCommands(context: ExtensionContext) {
 	// flux
 	registerCommand(CommandId.Suspend, suspend);
 	registerCommand(CommandId.Resume, resume);
-	registerCommand(CommandId.CreateKustomization, createKustomization);
+	registerCommand(CommandId.CreateKustomization, createKustomizationForPath);
 	registerCommand(CommandId.FluxCheck, fluxCheck);
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);
-	registerCommand(CommandId.FluxReconcileRepository, fluxReconcileRepository);
+	registerCommand(CommandId.FluxReconcileRepository, fluxReconcileRepositoryForPath);
 	registerCommand(CommandId.FluxReconcileWorkload, fluxReconcileWorkload);
 	registerCommand(CommandId.FluxEnableGitOps, fluxEnableGitOps);
 	registerCommand(CommandId.FluxDisableGitOps, fluxDisableGitOps);
@@ -119,24 +120,25 @@ export function registerCommands(context: ExtensionContext) {
 	// tree views
 	registerCommand(CommandId.SetClusterProvider, setClusterProvider);
 	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViews);
-	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourcesTreeView);
-	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadsTreeView);
+	registerCommand(CommandId.RefreshResourcesTreeView, refreshResourcesTreeViews);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.CreateGitRepository, (fileExplorerUri?: Uri) => {
 		// only pass one argument when running from File Explorer context menu
-		createGitRepository(fileExplorerUri);
+		createGitRepositoryForPath(fileExplorerUri);
 	});
 	registerCommand(CommandId.ShowWorkloadsHelpMessage, showWorkloadsHelpMessage);
 	registerCommand(CommandId.DeleteWorkload, deleteWorkload);
 	registerCommand(CommandId.DeleteSource, deleteSource);
 	registerCommand(CommandId.CopyResourceName, copyResourceName);
+	registerCommand(CommandId.AddSource, addSource);
+	registerCommand(CommandId.AddKustomization, addKustomization);
+
 
 	// editor
 	registerCommand(CommandId.EditorOpenResource, openResource);
 
 	// webview
 	registerCommand(CommandId.ShowLogs, showLogs);
-	registerCommand(CommandId.OpenCreateSourceWebview, openCreateSourceWebview);
 	registerCommand(CommandId.ShowNewUserGuide, showNewUserGuide);
 
 	// output

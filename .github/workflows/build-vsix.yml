@@ -71,6 +71,10 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: npm install
+      - name: Install webview dependencies
+        run: npm install:webview
+      - name: Build webview
+        run: npm build:webview
       - name: Install vsce globally
         run: npm install -g vsce
       - name: Build Package
@@ -190,14 +194,14 @@ jobs:
           pr_title: "Release ${{ env.GIT_TAG }}"
           pr_body: |-
             A release has been tagged and published, ${{ env.GIT_TAG }}! 🎉
-            
+
             Please ensure that \`CHANGELOG.md\` remains current by pushing any needed updates as a commit to this branch.
             A CHANGELOG has been generated for this release here, [\`v${{ env.GIT_TAG }}\`](https://github.com/weaveworks/vscode-gitops-tools/releases/tag/${{ env.GIT_TAG }}) – you can copy directly from it, or edit for uniformity and clarity.
-            
+
             When you are done, merge this PR with the tag intact (**Do Not Squash** or rebase! Push new commits and **merge only**).
-            
+
             Feature branches should still be squashed, but \`release-pr\` must always be merged to complete the release.
-            
+
             See the [DEVELOPMENT.md](https://github.com/weaveworks/vscode-gitops-tools/blob/main/DEVELOPMENT.md#releasing) for more information about the release process.
           pr_reviewer: ${{ github.actor }}
           pr_draft: false

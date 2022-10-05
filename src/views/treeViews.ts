@@ -3,7 +3,7 @@ import { isAzureProvider } from '../azure/azureTools';
 import { Errorable, failed } from '../errorable';
 import { globalState } from '../extension';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
+import { ClusterInfo, ClusterProvider } from '../kubernetes/types/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
@@ -88,6 +88,12 @@ export function refreshAllTreeViews() {
 	refreshWorkloadsTreeView();
 }
 
+export function refreshResourcesTreeViews() {
+	refreshSourcesTreeView();
+	refreshWorkloadsTreeView();
+}
+
+
 /**
  * Reloads configured clusters tree view via kubectl.
  * When an argument is passed - only that tree item
@@ -115,21 +121,13 @@ export function refreshWorkloadsTreeView(node?: TreeNode) {
 	workloadTreeViewProvider.refresh(node);
 }
 
-export interface CurrentClusterInfo {
-	contextName: string;
-	clusterName: string;
-	clusterProvider: ClusterProvider;
-	isClusterProviderUserOverride: boolean;
-	isAzure: boolean;
-}
-
 /**
  * Get info about current cluster/context:
  * 1. Cluster name
  * 2. Context name
  * 3. Detect cluster provider.
  */
-export async function getCurrentClusterInfo(): Promise<Errorable<CurrentClusterInfo>> {
+export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
 	const currentContextResult = await kubernetesTools.getCurrentContext();
 
 	if (failed(currentContextResult)) {

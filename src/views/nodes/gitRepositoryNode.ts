@@ -1,5 +1,5 @@
-import { GitRepository } from '../../kubernetes/gitRepository';
-import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
+import { GitRepository } from '../../kubernetes/types/flux/gitRepository';
+import { KubernetesObjectKinds } from '../../kubernetes/types/kubernetesTypes';
 import { NodeContext } from './nodeContext';
 import { SourceNode } from './sourceNode';
 

@@ -1,12 +1,13 @@
 import { MarkdownString } from 'vscode';
-import { Bucket } from '../kubernetes/bucket';
-import { GitRepository } from '../kubernetes/gitRepository';
-import { OCIRepository } from '../kubernetes/ociRepository';
-import { HelmRelease } from '../kubernetes/helmRelease';
-import { HelmRepository } from '../kubernetes/helmRepository';
-import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/kubernetesConfig';
-import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/kubernetesTypes';
-import { Kustomize } from '../kubernetes/kustomize';
+import { Bucket } from '../kubernetes/types/flux/bucket';
+import { GitRepository } from '../kubernetes/types/flux/gitRepository';
+import { OCIRepository } from '../kubernetes/types/flux/ociRepository';
+import { HelmRelease } from '../kubernetes/types/flux/helmRelease';
+import { HelmRepository } from '../kubernetes/types/flux/helmRepository';
+import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/types/kubernetesConfig';
+import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/types/kubernetesTypes';
+import { Kustomize } from '../kubernetes/types/flux/kustomize';
+import { shortenRevision } from './stringUtils';
 
 export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
 
@@ -34,7 +35,6 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	}
 
 	// Should exist on every object
-	createMarkdownTableRow('apiVersion', kubernetesObject.apiVersion, markdown);
 	createMarkdownTableRow('kind', kubernetesObject.kind, markdown);
 	createMarkdownTableRow('name', kubernetesObject.metadata?.name, markdown);
 	createMarkdownTableRow('namespace', kubernetesObject.metadata?.namespace, markdown);
@@ -61,17 +61,20 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.provider', kubernetesObject.spec?.provider, markdown);
 		createMarkdownTableRow('spec.insecure', kubernetesObject.spec?.insecure, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Kustomization) {
+		const sourceRef = `${kubernetesObject.spec?.sourceRef?.kind}/${kubernetesObject.spec?.sourceRef?.name}.${kubernetesObject.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
+		createMarkdownTableRow('source', sourceRef, markdown);
+
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.prune', kubernetesObject.spec?.prune, markdown);
-		createMarkdownTableRow('spec.sourceRef.kind', kubernetesObject.spec?.sourceRef?.kind, markdown);
-		createMarkdownTableRow('spec.sourceRef.name', kubernetesObject.spec?.sourceRef?.name, markdown);
 		createMarkdownTableRow('spec.force', kubernetesObject.spec?.force, markdown);
 		createMarkdownTableRow('spec.path', kubernetesObject.spec?.path, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRelease) {
+		const sourceRef = `${kubernetesObject.spec?.chart?.spec?.sourceRef?.kind}/${kubernetesObject.spec?.chart?.spec?.sourceRef?.name}.${kubernetesObject.spec?.chart?.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
+		createMarkdownTableRow('source', sourceRef, markdown);
+
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);
-		createMarkdownTableRow('spec.chart.spec.sourceRef.kind', kubernetesObject.spec?.chart?.spec?.sourceRef?.kind, markdown);
-		createMarkdownTableRow('spec.chart.spec.sourceRef.name', kubernetesObject.spec?.chart?.spec?.sourceRef?.name, markdown);
+
 		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
 	} else if (kubernetesObject.kind === KubernetesObjectKinds.Deployment) {
 		createMarkdownTableRow('spec.paused', kubernetesObject.spec?.paused, markdown);
@@ -80,7 +83,7 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	}
 
 	// Should exist on multiple objects
-	if (kubernetesObject.spec) {
+	if(kubernetesObject.spec) {
 		if ('interval' in kubernetesObject.spec) {
 			createMarkdownTableRow('spec.interval', kubernetesObject.spec?.interval, markdown);
 		}
@@ -89,11 +92,33 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		}
 	}
 
-	// Only show the first 10 lines (2 lines - header)
+	const fluxStatus = kubernetesObject.status as any;
+
+	if(fluxStatus.lastAttemptedRevision) {
+		createMarkdownTableRow('attempted', shortenRevision(fluxStatus.lastAttemptedRevision), markdown);
+	}
+
+	if(fluxStatus.lastAppliedRevision) {
+		createMarkdownTableRow('applied', shortenRevision(fluxStatus.lastAppliedRevision), markdown);
+	}
+
+
+	if(kubernetesObject.status.conditions) {
+		const conditions = kubernetesObject.status.conditions as any[];
+		for (const c of conditions) {
+			if(c.type === 'SourceVerified' && c.status === 'True') {
+				const message = `${c.message.replace('verified signature of revision', 'verified').slice(0, 48)}...`;
+				createMarkdownTableRow('cosign', message, markdown);
+			}
+		}
+	}
+
+
+	// Only show the first 11 lines (2 lines - header)
 	const markdownAsLines = markdown.value.split('\n');
-	if (markdownAsLines.length > 12) {
+	if (markdownAsLines.length > 13) {
 		markdown.value = markdownAsLines
-			.slice(0, 12)
+			.slice(0, 13)
 			.join('\n');
 	}
 

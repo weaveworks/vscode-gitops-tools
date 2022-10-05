@@ -1,5 +1,6 @@
-import { OCIRepository } from '../../kubernetes/ociRepository';
-import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
+import { OCIRepository } from '../../kubernetes/types/flux/ociRepository';
+import { KubernetesObjectKinds } from '../../kubernetes/types/kubernetesTypes';
+import { NodeContext } from './nodeContext';
 import { SourceNode } from './sourceNode';
 
 /**
@@ -23,6 +24,10 @@ export class OCIRepositoryNode extends SourceNode {
 	}
 
 	get contexts() {
-		return [KubernetesObjectKinds.HelmRepository];
+		const contextsArr: string[] = [KubernetesObjectKinds.OCIRepository];
+		contextsArr.push(
+			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
+		);
+		return contextsArr;
 	}
 }

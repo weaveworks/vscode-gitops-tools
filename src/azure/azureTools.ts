@@ -2,7 +2,7 @@ import { window, env, Uri } from 'vscode';
 import { globalState, telemetry } from '../extension';
 import { ClusterMetadata } from '../globalState';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider, ConfigMap, knownClusterProviders } from '../kubernetes/kubernetesTypes';
+import { ClusterProvider, ConfigMap, knownClusterProviders } from '../kubernetes/types/kubernetesTypes';
 import { shell, shellCodeError, ShellResult } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
@@ -26,6 +26,11 @@ export const enum AzureConstants {
 	KubeSystemNamespace = 'kube-system',
 	FluxExtensionName = 'flux',
 }
+
+
+export type CreateSourceGitAzureArgs = Parameters<typeof azureTools['createSourceGit']>[0];
+export type CreateSourceBucketAzureArgs = Parameters<typeof azureTools['createSourceBucket']>[0];
+
 
 class AzureTools {
 
@@ -180,7 +185,7 @@ class AzureTools {
 	 * @param contextName target context name
 	 * @param clusterProvider target cluster provider
 	 */
-	private async listFluxConfigurations(
+	public async listFluxConfigurations(
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	): Promise<undefined | any[]> {
@@ -212,9 +217,13 @@ class AzureTools {
 		kustomizationPath: string,
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
+		kustomizationDependsOn?: string,
+		kustomizationPrune?: boolean,
 	) {
+		const dependsOnArg = kustomizationDependsOn ? ` --depends-on "${kustomizationDependsOn}"` : '';
+
 		const createKustomizationShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}" --prune true`,
+			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}"${dependsOnArg} --prune ${kustomizationPrune}`,
 			contextName,
 			clusterProvider,
 		);
@@ -232,8 +241,8 @@ class AzureTools {
 	 */
 	async createSourceGit(args: {
 		sourceName: string;
-		sourceScope?: string;
-		sourceNamespace?: string;
+		azureScope?: string;
+		namespace?: string;
 		contextName: string;
 		clusterProvider: AzureClusterProvider;
 		url: string;
@@ -244,14 +253,14 @@ class AzureTools {
 		interval?: string;
 		timeout?: string;
 		caCert?: string;
-		caCertFile?: string;
+		caFile?: string;
 		httpsKey?: string;
 		httpsUser?: string;
 		knownHosts?: string;
 		knownHostsFile?: string;
 		localAuthRef?: string;
 		sshPrivateKey?: string;
-		sshPrivateKeyFile?: string;
+		privateKeyFile?: string;
 		kustomizationName?: string;
 		kustomizationPath?: string;
 		kustomizationDependsOn?: string;
@@ -262,8 +271,8 @@ class AzureTools {
 		kustomizationForce?: boolean;
 	}) {
 		const urlArg = ` --url "${args.url}"`;
-		const scopeArg = args.sourceScope ? ` --scope "${args.sourceScope}"` : '';
-		const namespaceArg = args.sourceNamespace ? ` --namespace "${args.sourceNamespace}"` : '';
+		const scopeArg = args.azureScope ? ` --scope "${args.azureScope}"` : '';
+		const namespaceArg = args.namespace ? ` --namespace "${args.namespace}"` : '';
 		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
 		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
 		const semverArg = args.semver ? ` --semver "${args.semver}"` : '';
@@ -271,14 +280,14 @@ class AzureTools {
 		const intervalArg = args.interval ? ` --interval "${args.interval}"` : '';
 		const timeoutArg = args.timeout ? ` --timeout "${args.timeout}"` : '';
 		const caCertArg = args.caCert ? ` --https-ca-cert "${args.caCert}"` : '';
-		const caCertFileArg = args.caCertFile ? ` --https-ca-cert-file "${args.caCertFile}"` : '';
+		const caCertFileArg = args.caFile ? ` --https-ca-cert-file "${args.caFile}"` : '';
 		const httpsKeyArg = args.httpsKey ? ` --https-key "${args.httpsKey}"` : '';
 		const httpsUserArg = args.httpsUser ? ` --https-user "${args.httpsUser}"` : '';
 		const knownHostsArg = args.knownHosts ? ` --known-hosts "${args.knownHosts}"` : '';
 		const knownHostsFileArg = args.knownHostsFile ? ` --known-hosts-file "${args.knownHostsFile}"` : '';
 		const localAuthRefArg = args.localAuthRef ? ` --local-auth-ref "${args.localAuthRef}"` : '';
 		const sshPrivateKeyArg = args.sshPrivateKey ? ` --ssh-private-key "${args.sshPrivateKey}"` : '';
-		const sshPrivateKeyFileArg = args.sshPrivateKeyFile ? ` --ssh-private-key-file "${args.sshPrivateKeyFile}"` : '';
+		const sshPrivateKeyFileArg = args.privateKeyFile ? ` --ssh-private-key-file "${args.privateKeyFile}"` : '';
 
 		const createSourceShellResult = await this.invokeAzCommand(
 			`az k8s-configuration flux create --name ${args.sourceName}${urlArg}${scopeArg}${namespaceArg}${branchArg}${tagArg}${semverArg}${commitArg}${intervalArg}${timeoutArg}${caCertArg}${caCertFileArg}${httpsKeyArg}${httpsUserArg}${knownHostsArg}${knownHostsFileArg}${localAuthRefArg}${sshPrivateKeyArg}${sshPrivateKeyFileArg}${this.makeKustomizationQueryPiece(args)}`,
@@ -297,13 +306,8 @@ class AzureTools {
 		}
 
 		const deployKey: string | undefined = createSourceOutput.repositoryPublicKey;
-		if (!deployKey) {
-			return;
-		}
 
-		return {
-			deployKey,
-		};
+		return deployKey;
 	}
 
 	/**
@@ -320,6 +324,7 @@ class AzureTools {
 		accessKey: string;
 		secretKey: string;
 		insecure: boolean;
+		secretRef: string;
 		kustomizationName?: string;
 		kustomizationPath?: string;
 		kustomizationDependsOn?: string;
@@ -335,10 +340,11 @@ class AzureTools {
 		const namespaceArg = args.sourceNamespace ? ` --namespace "${args.sourceNamespace}"` : '';
 		const accessKeyArg = args.accessKey ? ` --bucket-access-key "${args.accessKey}"` : '';
 		const secretKeyArg = args.secretKey ? ` --bucket-secret-key "${args.secretKey}"` : '';
+		const secretRefArg = args.secretRef ? ` --local-auth-ref "${args.secretRef}"` : '';
 		const insecureArg = args.insecure ? ' --bucket-insecure' : '';
 
 		const createBucketShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux create --kind bucket --name ${args.configurationName}${scopeArg}${namespaceArg}${bucketNameArg}${urlArg}${accessKeyArg}${secretKeyArg}${insecureArg}${this.makeKustomizationQueryPiece(args)}`,
+			`az k8s-configuration flux create --kind bucket --name ${args.configurationName}${scopeArg}${namespaceArg}${bucketNameArg}${urlArg}${accessKeyArg}${secretKeyArg}${secretRefArg}${insecureArg}${this.makeKustomizationQueryPiece(args)}`,
 			args.contextName,
 			args.clusterProvider,
 		);
@@ -399,12 +405,13 @@ class AzureTools {
 
 
 	async deleteKustomization(
+		configName: string,
 		kustomizationName: string,
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 	) {
 		const deleteSourceShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux kustomization delete -n ${kustomizationName} --yes`,
+			`az k8s-configuration flux kustomization delete -n ${configName} -k ${kustomizationName} --yes`,
 			contextName,
 			clusterProvider,
 		);
@@ -457,6 +464,11 @@ class AzureTools {
 		if (resumeShellResult?.code !== 0) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_RESUME_SOURCE);
 		}
+	}
+
+
+	getAzName(fluxConfigName: string, resourceName: string) {
+		return resourceName.replace(RegExp(`^${fluxConfigName}-`), '');
 	}
 
 

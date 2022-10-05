@@ -5,21 +5,20 @@ import safesh from 'shell-escape-tag';
 import { AzureConstants } from '../azure/azureTools';
 import { Errorable, failed, succeeded } from '../errorable';
 import { globalState, telemetry } from '../extension';
-import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { output } from '../output';
 import { shellCodeError } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { ContextTypes, setVSCodeContext } from '../vscodeContext';
-import { BucketResult } from './bucket';
-import { GitRepositoryResult } from './gitRepository';
-import { HelmReleaseResult } from './helmRelease';
-import { HelmRepositoryResult } from './helmRepository';
-import { OCIRepositoryResult } from './ociRepository';
-import { KubernetesConfig, KubernetesContextWithCluster } from './kubernetesConfig';
-import { KubernetesFileSchemes } from './kubernetesFileSchemes';
-import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from './kubernetesTypes';
-import { KustomizeResult } from './kustomize';
+import { BucketResult } from './types/flux/bucket';
+import { GitRepositoryResult } from './types/flux/gitRepository';
+import { HelmReleaseResult } from './types/flux/helmRelease';
+import { HelmRepositoryResult } from './types/flux/helmRepository';
+import { OCIRepositoryResult } from './types/flux/ociRepository';
+import { KubernetesConfig, KubernetesContextWithCluster } from './types/kubernetesConfig';
+import { KubernetesFileSchemes } from './types/kubernetesFileSchemes';
+import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from './types/kubernetesTypes';
+import { KustomizeResult } from './types/flux/kustomize';
 
 /**
  * Defines Kubernetes Tools class for integration
@@ -172,9 +171,6 @@ class KubernetesTools {
 		setVSCodeContext(ContextTypes.NoWorkloads, false);
 		setVSCodeContext(ContextTypes.FailedToLoadClusterContexts, false);
 		this.clusterSupportedResourceKinds = undefined;
-
-		// TODO: maybe emit an event?
-		checkIfOpenedFolderGitRepositorySourceExists();
 
 		return {
 			isChanged: true,

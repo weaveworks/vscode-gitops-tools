@@ -4,8 +4,7 @@ import { failed } from '../errorable';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
-import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
-import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { BucketNode } from '../views/nodes/bucketNode';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
@@ -58,8 +57,4 @@ export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepository
 	}
 
 	refreshSourcesTreeView();
-
-	if (sourceType === 'source git') {
-		checkIfOpenedFolderGitRepositorySourceExists();
-	}
 }
