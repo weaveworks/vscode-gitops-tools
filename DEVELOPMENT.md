@@ -33,6 +33,8 @@ Install from `.vsix` file step is only required for testing the latest version o
 
 In order to release a new version the extension, visit the Publish action from [build-vsix.yaml](https://github.com/weaveworks/vscode-gitops-tools/actions/workflows/build-vsix.yml) and run the workflow as a `workflow_dispatch` trigger.
 
+![Publish workflow action](docs/images/release-workflow-dispatch.png)
+
 Choose a branch: `main` or `edge`, and set the parameters of Release Type (major, minor, patch) then use the Release Channel (stable) or (prerelease). Stable releases correspond to the `main` branch and prereleases should come from `edge`. Note: The release will be blocked if this is incorrect.
 
 Publish on Visual Studio Marketplace (yes), currently the Open VSX Registry is not supported.
