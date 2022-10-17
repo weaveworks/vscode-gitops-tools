@@ -130,7 +130,7 @@ export class Telemetry {
 
 	constructor(context: ExtensionContext, extensionVersion: string, extensionId: string) {
 		this.context = context;
-		const key = 'da19a1446ba2-369b-0484-b857-e706cf38'.split('').reverse().join('');
+		const key = '9a491deb-120a-4a6e-8893-f528d4f6bd9c';
 		this.reporter = new TelemetryReporter(extensionId, extensionVersion, key);
 	}
 
