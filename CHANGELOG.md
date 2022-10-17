@@ -4,6 +4,10 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.22.5
+
+* update telemetry key (#395)
+
 # v0.22.4
 
 * Add visibility to the release process in dev docs (#394)
