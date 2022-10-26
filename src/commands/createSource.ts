@@ -1,15 +1,14 @@
 import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window } from 'vscode';
-import { azureTools } from '../azure/azureTools';
+import { azureTools, CreateSourceGitAzureArgs } from '../azure/azureTools';
 import { CommandId } from '../commands';
 import { telemetry } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
+import { CreateSourceGitGenericArgs, fluxTools } from '../flux/fluxTools';
 import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
-export async function createGitRepositoryGenericCluster(args: Parameters<typeof fluxTools['createSourceGit']>[0]) {
-
+export async function createGitRepositoryGenericCluster(args: CreateSourceGitGenericArgs) {
 	const parsedGitUrl = gitUrlParse(args.url);
 	if (isUrlSourceAzureDevops(parsedGitUrl.source)) {
 		// Azure devops git repo doesn't work with git implementation `go-git` and
@@ -23,6 +22,7 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 	});
 
 	const deployKey = await fluxTools.createSourceGit(args);
+	refreshSourcesTreeView();
 
 	setTimeout(() => {
 		// Wait a bit for the repository to have a failed state in case of SSH url
@@ -31,7 +31,7 @@ export async function createGitRepositoryGenericCluster(args: Parameters<typeof 
 	showDeployKeyNotificationIfNeeded(args.url, deployKey?.deployKey);
 }
 
-export async function createGitRepositoryAzureCluster(args: Parameters<typeof azureTools['createSourceGit']>[0]) {
+export async function createGitRepositoryAzureCluster(args: CreateSourceGitAzureArgs) {
 
 	telemetry.send(TelemetryEventNames.CreateSource, {
 		kind: KubernetesObjectKinds.GitRepository,

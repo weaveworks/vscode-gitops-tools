@@ -12,6 +12,7 @@ import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
 import { shell } from './shell';
+import { openConfigureGitOpsPanel } from './panels/configureGitOps';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
@@ -24,7 +25,7 @@ export const enum GitOpsExtensionConstants {
 /** State that is saved even between editor reloads */
 export let globalState: GlobalState;
 /** Methods to report telemetry over Application Insights (Exceptions or Custom Events). */
-export let telemetry: Telemetry;
+export let telemetry: Telemetry | any;
 
 /**
  * Called when GitOps extension is activated.
@@ -48,6 +49,8 @@ export async function activate(context: ExtensionContext) {
 	// depending if the current opened folder is a git repository and already added
 	// to the cluster
 	checkIfOpenedFolderGitRepositorySourceExists();
+
+	// openConfigureGitOpsPanel(true);
 
 	telemetry.send(TelemetryEventNames.Startup);
 

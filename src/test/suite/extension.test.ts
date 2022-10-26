@@ -116,7 +116,7 @@ suite('Extension Test Suite', () => {
 	test('Kustomizations are listed', async function() {
 		this.timeout(10000);
 
-		await api.shell.execWithOutput('flux create kustomization podinfo --target-namespace=default --source=podinfo --path="./kustomize"');
+		await api.shell.execWithOutput('flux create kustomization podinfo --target-namespace=default --source=podinfo --path="./kustomize" --timeout=5s');
 		await vscode.commands.executeCommand('gitops.views.refreshWorkloadTreeView');
 
 		let workload = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
