@@ -1,10 +1,9 @@
-import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from 'vscode';
-import { asAbsolutePath } from '../extensionContext';
-import { GitInfo } from '../git/getOpenedFolderGitInfo';
-import { getUri } from '../utils/getUri';
-import { ClusterInfo } from '../views/treeViews';
-import { submitConfigureGitOps } from './configureGitOps';
-
+import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
+import { asAbsolutePath } from '../../extensionContext';
+import { GitInfo } from '../../git/getOpenedFolderGitInfo';
+import { ClusterInfo } from '../../kubernetes/types/kubernetesTypes';
+import { getUri } from '../../utils/getUri';
+import { actionCreate, actionYAML } from './actions';
 
 type WebviewParameters = {
 	clusterInfo: ClusterInfo;
@@ -19,7 +18,6 @@ type WebviewParameters = {
 let panel: WebviewPanel | undefined;
 const disposables: Disposable[] = [];
 let webviewParams: WebviewParameters;
-
 
 export function createOrShowConfigureGitOpsPanel(extensionUri: Uri, params: WebviewParameters) {
 	webviewParams = params;
@@ -45,6 +43,7 @@ export function createOrShowConfigureGitOpsPanel(extensionUri: Uri, params: Webv
 		// Extra panel configurations
 		{
 			enableScripts: true,
+			retainContextWhenHidden: true,
 		}) as WebviewPanel;
 
 
@@ -78,16 +77,20 @@ function dispose() {
 function listenDidReceiveMessage(webview: Webview) {
 	webview.onDidReceiveMessage(
 		(message: any) => {
-			switch (message.type) {
+			switch (message.action) {
 				case 'init-view':
 					panel?.webview.postMessage({
 						type: 'set-params',
 						params: webviewParams,
 					});
+
 					return;
-				case 'submit':
-					submitConfigureGitOps(message.data);
+				case 'create':
+					actionCreate(message.data);
 					panel?.dispose();
+					return;
+				case 'show-yaml':
+					actionYAML(message.data);
 					return;
 			}
 		},

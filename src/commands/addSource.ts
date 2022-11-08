@@ -1,4 +1,4 @@
-import { openConfigureGitOpsPanel } from '../panels/configureGitOps';
+import { openConfigureGitOpsPanel } from '../webview-backend/configureGitOps/openPanel';
 
 /**
  * Open ConfigureGitops webview with 'New Source' tab open

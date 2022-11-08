@@ -1,11 +1,11 @@
 import { createSignal, Show } from 'solid-js';
 import { Collapse } from 'solid-collapse';
-import AdvancedIntervals from './AdvancedIntervals';
-import AdvancedConnection from './AdvancedConnection';
-import AdvancedAzure from './AdvancedAzure';
-import { params } from '../../../../lib/params';
+import SettingsIntervals from '../Intervals';
+import Connection from './GitConnection';
+import Azure from './Azure';
+import { params } from '../../../../../lib/params';
 
-function NewGitAdvanced() {
+function Panel() {
 	const [isOpen, setIsOpen] = createSignal(false);
 
 	return (
@@ -15,21 +15,21 @@ function NewGitAdvanced() {
 			<Collapse value={isOpen()} class="collapse-transition">
 				<div>
 					<vscode-panels activeId="git-intervals-tab" aria-label="Advanced GitRepository source settings">
-						<vscode-panel-tab id="git-intervals-tab">Sync Intervals</vscode-panel-tab>
-						<vscode-panel-tab id="git-connection-tab">Git Connection</vscode-panel-tab>
+						<vscode-panel-tab id="git-intervals-tab">Intervals</vscode-panel-tab>
+						<vscode-panel-tab id="git-connection-tab">Connection</vscode-panel-tab>
 						<Show when={params.clusterInfo?.isAzure}>
 							<vscode-panel-tab id="git-azure-tab">Azure</vscode-panel-tab>
 						</Show>
 
 						<vscode-panel-view>
-							<AdvancedIntervals/>
+							<SettingsIntervals/>
 						</vscode-panel-view>
 						<vscode-panel-view >
-							<AdvancedConnection/>
+							<Connection/>
 						</vscode-panel-view>
 						<Show when={params.clusterInfo?.isAzure}>
 							<vscode-panel-view >
-								<AdvancedAzure/>
+								<Azure/>
 							</vscode-panel-view>
 						</Show>
 					</vscode-panels>
@@ -39,4 +39,4 @@ function NewGitAdvanced() {
 	);
 }
 
-export default NewGitAdvanced;
+export default Panel;

@@ -4,7 +4,7 @@ import { failed } from '../errorable';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxWorkload } from '../flux/fluxTypes';
-import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { KustomizationNode } from '../views/nodes/kustomizationNode';
 import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';

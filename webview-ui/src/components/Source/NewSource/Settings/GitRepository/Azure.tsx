@@ -1,13 +1,13 @@
 import { Checkbox } from '@microsoft/fast-foundation';
 import { onMount } from 'solid-js';
-import { bindCheckedValueFunc, bindChangeValueFunc } from '../../../../lib/bindDirectives';  bindCheckedValueFunc; bindChangeValueFunc; // TS will elide 'unused' imports
-import { source, setSource } from '../../../../lib/model';
+import { bindCheckedValueFunc, bindChangeValueFunc } from '../../../../../lib/bindDirectives';  bindCheckedValueFunc; bindChangeValueFunc; // TS will elide 'unused' imports
+import { source, setSource } from '../../../../../lib/model';
 
 let checkbox: Checkbox;
 
 const setAzureScope = (val: string) => setSource('azureScope', val);
 
-function AdvancedAzure() {
+function Azure() {
 	onMount(() => checkbox.checked = source.createFluxConfig);
 
 	return (
@@ -31,4 +31,4 @@ function AdvancedAzure() {
 	);
 }
 
-export default AdvancedAzure;
+export default Azure;

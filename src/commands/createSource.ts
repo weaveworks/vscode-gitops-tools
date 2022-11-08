@@ -4,7 +4,7 @@ import { azureTools, CreateSourceGitAzureArgs } from '../azure/azureTools';
 import { CommandId } from '../commands';
 import { telemetry } from '../extension';
 import { CreateSourceGitGenericArgs, fluxTools } from '../flux/fluxTools';
-import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
@@ -16,10 +16,6 @@ export async function createGitRepositoryGenericCluster(args: CreateSourceGitGen
 		args.sshKeyAlgorithm = 'rsa';
 		args.gitImplementation = 'libgit2';
 	}
-
-	telemetry.send(TelemetryEventNames.CreateSource, {
-		kind: KubernetesObjectKinds.GitRepository,
-	});
 
 	const deployKey = await fluxTools.createSourceGit(args);
 	refreshSourcesTreeView();

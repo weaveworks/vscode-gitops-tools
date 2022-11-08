@@ -356,12 +356,12 @@
 					"when": "view == gitops.views.workloads"
 				},
 				{
-					"command": "gitops.views.refreshSourceTreeView",
+					"command": "gitops.views.refreshAllTreeViews",
 					"group": "navigation@1",
 					"when": "view == gitops.views.sources"
 				},
 				{
-					"command": "gitops.views.refreshWorkloadTreeView",
+					"command": "gitops.views.refreshAllTreeViews",
 					"group": "navigation@1",
 					"when": "view == gitops.views.workloads"
 				},
@@ -399,7 +399,7 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository;|Bucket;)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@0"
 				},
 				{
@@ -409,12 +409,12 @@
 				},
 				{
 					"command": "gitops.suspend",
-					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /notSuspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.resume",
-					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /suspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /suspend;/",
 					"group": "navigation@1"
 				},
 				{
@@ -424,7 +424,7 @@
 				},
 				{
 					"command": "gitops.views.deleteSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository;|Bucket;)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@2"
 				},
 				{
@@ -434,7 +434,7 @@
 				},
 				{
 					"command": "gitops.addKustomization",
-					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;|OCIRepository;/",
 					"group": "navigation@3"
 				},
 				{

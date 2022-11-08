@@ -1,5 +1,5 @@
 import { createEffect, createSignal } from 'solid-js';
-import { createStore, unwrap } from 'solid-js/store';
+import { createStore } from 'solid-js/store';
 import { params, ParamsDictionary } from './params';
 
 export const [createSource, setCreateSource] = createSignal(true);
@@ -7,12 +7,30 @@ export const [createSource, setCreateSource] = createSignal(true);
 export const [selectedSource, setSelectedSource] = createSignal('');
 
 export const [source, setSource] = createStore({
-	name: 'podinfo',
-	url: 'git@github.com:USERNAME/podinfo.git',
-	refType: 'branch',
-	ref: 'master',
-	namespace: 'flux-system',
 	kind: 'GitRepository',
+
+	name: 'podinfo',
+	namespace: 'flux-system',
+
+	gitUrl: 'https://github.com/stefanprodan/podinfo1',
+	helmUrl: 'https://stefanprodan.github.io/podinfo',
+	ociUrl: 'oci://ghcr.io/stefanprodan/manifests/podinfo',
+
+	bucketEndpoint: 'minio.minio.svc.cluster.local:9000',
+	bucketName: 'podinfo',
+	bucketAccessKey: '',
+	bucketSecretKey: '',
+	bucketSecretRef: '',
+
+	gitRef: 'master',
+	gitRefType: 'branch',
+
+
+	helmPassCredentials: false,
+
+	ociRef: 'latest',
+	ociRefType: 'tag',
+	ociProvider: 'generic',
 
 	// sync
 	interval: '1m0s',
@@ -22,14 +40,21 @@ export const [source, setSource] = createStore({
 	createFluxConfig: true,
 	azureScope: 'cluster',
 
-	// connection
-	// gitImplementation: 'go-git',
-	recurseSubmodules: false,
-	caFile: '',
-	privateKeyFile: '',
+	// connection settings
+	insecure: false, // non TLS HTTP for Bucket or OCI
+	passCredentials: false, // HelmRepository
 	username: '',
 	password: '',
 	secretRef: '',
+	serviceAccount: '',
+	caFile: '',
+	certFile: '',
+	certRef: '', // OCI
+	privateKeyFile: '', // for git
+	keyFile: '', // for TLS
+
+	// gitImplementation: 'go-git',
+	recurseSubmodules: false,
 } as ParamsDictionary);
 
 
@@ -41,29 +66,10 @@ export const [kustomization, setKustomization] = createStore({
 	path: '/kustomize',
 	targetNamespace: 'default',
 	dependsOn: '',
+	prune: true,
 });
 
 
-
-export function unwrapModel() {
-	const model: ParamsDictionary = {};
-
-	if(createSource()) {
-		model.source = unwrap(source);
-	} else {
-		model.selectedSource = selectedSource();
-	}
-
-	if(createKustomization()) {
-		model.kustomization = unwrap(kustomization);
-	}
-
-	model.clusterInfo = unwrap(params).clusterInfo;
-
-	// console.log(model);
-
-	return model;
-}
 
 // window['source'] = source;
 
@@ -76,12 +82,11 @@ function safeSetSource(name: any, val: any) {
 }
 createEffect(() => {
 	safeSetSource('name', params.gitInfo?.name);
-	safeSetSource('url', params.gitInfo?.url);
+	safeSetSource('gitUrl', params.gitInfo?.url);
 	safeSetSource('ref', params.gitInfo?.branch);
 
 	if(params.selectedSource && params.selectedSource !== '') {
 		setSelectedSource(params.selectedSource);
 	}
-	// console.log('update source.name');
 });
 

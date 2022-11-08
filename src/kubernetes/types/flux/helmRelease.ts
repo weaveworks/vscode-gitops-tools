@@ -1,4 +1,4 @@
-import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from './kubernetesTypes';
+import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from '../kubernetesTypes';
 import { DependsOn, KubeConfig, Kustomize, NamespacedObjectKindReference } from './kustomize';
 
 /**

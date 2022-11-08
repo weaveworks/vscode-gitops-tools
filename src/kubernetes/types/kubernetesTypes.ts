@@ -66,6 +66,16 @@ export const enum KubernetesObjectKinds {
 	ConfigMap = 'ConfigMap',
 }
 
+
+export const enum SourceObjectKinds {
+	Bucket = 'Bucket',
+	GitRepository = 'GitRepository',
+	OCIRepository = 'OCIRepository',
+	HelmRepository = 'HelmRepository',
+}
+
+
+
 export interface ResultMetadata {
 
 	/**
@@ -527,3 +537,11 @@ export const knownClusterProviders: KnownClusterProviders[] = [
 	ClusterProvider.AzureARC,
 	ClusterProvider.Generic,
 ];
+
+export interface ClusterInfo {
+	contextName: string;
+	clusterName: string;
+	clusterProvider: ClusterProvider;
+	isClusterProviderUserOverride: boolean;
+	isAzure: boolean;
+}

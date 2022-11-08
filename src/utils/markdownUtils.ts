@@ -1,12 +1,12 @@
 import { MarkdownString } from 'vscode';
-import { Bucket } from '../kubernetes/bucket';
-import { GitRepository } from '../kubernetes/gitRepository';
-import { OCIRepository } from '../kubernetes/ociRepository';
-import { HelmRelease } from '../kubernetes/helmRelease';
-import { HelmRepository } from '../kubernetes/helmRepository';
-import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/kubernetesConfig';
-import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/kubernetesTypes';
-import { Kustomize } from '../kubernetes/kustomize';
+import { Bucket } from '../kubernetes/types/flux/bucket';
+import { GitRepository } from '../kubernetes/types/flux/gitRepository';
+import { OCIRepository } from '../kubernetes/types/flux/ociRepository';
+import { HelmRelease } from '../kubernetes/types/flux/helmRelease';
+import { HelmRepository } from '../kubernetes/types/flux/helmRepository';
+import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/types/kubernetesConfig';
+import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/types/kubernetesTypes';
+import { Kustomize } from '../kubernetes/types/flux/kustomize';
 
 export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
 
@@ -86,6 +86,16 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		}
 		if ('timeout' in kubernetesObject.spec) {
 			createMarkdownTableRow('spec.timeout', kubernetesObject.spec?.timeout, markdown);
+		}
+	}
+
+	if(kubernetesObject.status.conditions) {
+		const conditions = kubernetesObject.status.conditions as any[];
+		for (const c of conditions) {
+			if(c.type === 'SourceVerified' && c.status === 'True') {
+				const message = `${c.message.replace('verified signature of revision', 'verified').slice(0, 48)}...`;
+				createMarkdownTableRow('cosign', message, markdown);
+			}
 		}
 	}
 

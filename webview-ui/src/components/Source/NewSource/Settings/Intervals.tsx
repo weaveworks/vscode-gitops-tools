@@ -1,7 +1,7 @@
 import { bindInputStore } from '../../../../lib/bindDirectives';  bindInputStore; // TS will elide 'unused' imports
 import { source, setSource } from '../../../../lib/model';
 
-function AdvancedIntervals() {
+function SettingsIntervals() {
 	return (
 		<div>
 			<div>
@@ -20,4 +20,4 @@ function AdvancedIntervals() {
 	);
 }
 
-export default AdvancedIntervals;
+export default SettingsIntervals;
