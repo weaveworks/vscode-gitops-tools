@@ -1,5 +1,6 @@
 import { HelmRepository } from '../../kubernetes/types/flux/helmRepository';
 import { KubernetesObjectKinds } from '../../kubernetes/types/kubernetesTypes';
+import { NodeContext } from './nodeContext';
 import { SourceNode } from './sourceNode';
 
 /**
@@ -23,6 +24,10 @@ export class HelmRepositoryNode extends SourceNode {
 	}
 
 	get contexts() {
-		return [KubernetesObjectKinds.HelmRepository];
+		const contextsArr: string[] = [KubernetesObjectKinds.HelmRepository];
+		contextsArr.push(
+			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
+		);
+		return contextsArr;
 	}
 }

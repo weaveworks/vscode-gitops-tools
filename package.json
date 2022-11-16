@@ -409,12 +409,12 @@
 				},
 				{
 					"command": "gitops.suspend",
-					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /notSuspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository;)/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.resume",
-					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /suspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository;)/ && viewItem =~ /suspend;/",
 					"group": "navigation@1"
 				},
 				{
