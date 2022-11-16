@@ -1,11 +1,12 @@
 import { window } from 'vscode';
 import safesh from 'shell-escape-tag';
 import { telemetry } from '../extension';
-import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds, SourceObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { shell } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxTypes';
+import { Tracing } from 'trace_events';
 
 /**
  * Special symbols used in flux output.
@@ -36,6 +37,7 @@ export interface FluxPrerequisite {
 
 
 export type CreateSourceGitGenericArgs = Parameters<typeof fluxTools['createSourceGit']>[0];
+export type CreateSourceOCIGenericArgs = Parameters<typeof fluxTools['createSourceOCI']>[0];
 
 class FluxTools {
 
@@ -237,6 +239,56 @@ class FluxTools {
 	}
 
 
+	createSourceGitCommand(args: CreateSourceGitGenericArgs) {
+		const urlArg = ` --url "${args.url}"`;
+		const namespaceArg = args.namespace ? ` --namespace "${args.namespace}"` : '';
+		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
+		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
+		const semverArg = args.semver ? ` --tag-semver "${args.semver}"` : '';
+		const intervalArg = args.interval ? ` --interval "${args.interval}"` : '';
+		const timeoutArg = args.timeout ? ` --timeout "${args.timeout}"` : '';
+		const caFileArg = args.caFile ? ` --ca-file "${args.caFile}"` : '';
+		const privateKeyFileArg = args.privateKeyFile ? ` --private-key-file "${args.privateKeyFile}"` : '';
+		const usernameArg = args.username ? ` --username "${args.username}"` : '';
+		const passwordArg = args.password ? ` --password "${args.password}"` : '';
+		const secretRefArg = args.secretRef ? ` --secret-ref "${args.secretRef}"` : '';
+		const gitImplementation = args.gitImplementation ? ` --git-implementation "${args.gitImplementation}"` : '';
+		const recurseSubmodules = args.recurseSubmodules ? ' --recurse-submodules' : '';
+		const sshKeyAlgorithm = args.sshKeyAlgorithm ? ` --ssh-key-algorithm "${args.sshKeyAlgorithm}"` : '';
+		const sshEcdsaCurve = args.sshEcdsaCurve ? ` --ssh-ecdsa-curve "${args.sshEcdsaCurve}"` : '';
+		const sshRsaBits = args.sshRsaBits ? ` --ssh-rsa-bits "${args.sshRsaBits}"` : '';
+
+		return `flux create source git ${args.sourceName}${urlArg}${branchArg}${namespaceArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits}`;
+	}
+
+	createSourceOCICommand(args: CreateSourceOCIGenericArgs) {
+		const urlArg = ` --url "${args.url}"`;
+		const namespaceArg = args.namespace ? ` --namespace "${args.namespace}"` : '';
+		const digestArg = args.digest ? ` --digest "${args.digest}"` : '';
+		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
+		const semverArg = args.semver ? ` --tag-semver "${args.semver}"` : '';
+		const intervalArg = args.interval ? ` --interval "${args.interval}"` : '';
+		const timeoutArg = args.timeout ? ` --timeout "${args.timeout}"` : '';
+		const certRefArg = args.certRef ? ` --cert-ref "${args.certRef}"` : '';
+		const secretRefArg = args.secretRef ? ` --secret-ref "${args.secretRef}"` : '';
+		const serviceAccountArg = args.serviceAccount ? ` --service-account "${args.serviceAccount}"` : '';
+		const insecureArg = args.insecure ? ' --insecure' : '';
+		const providerArg = args.ociProvider ? ` --provider ${args.ociProvider}` : ' --provider generic';
+
+		return `flux create source oci ${args.sourceName}${urlArg}${digestArg}${namespaceArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${certRefArg}${secretRefArg}${serviceAccountArg}${insecureArg}${providerArg}`;
+	}
+
+
+	createKustomizationCommand(kustomizationName: string, sourceRef: string, kustomizationPath: string, namespace?: string, targetNamespace?: string, dependsOn?: string, prune?: boolean) {
+		const namespaceArg = namespace ? ` --namespace "${namespace}"` : '';
+		const targetNamespaceArg = targetNamespace ? ` --target-namespace "${targetNamespace}"` : '';
+		const dependsOnArg = dependsOn ? ` --depends-on "${dependsOn}"` : '';
+		const pruneArg = prune ? ' --prune=true' : ' --prune=false';
+
+		return `flux create kustomization ${kustomizationName}${namespaceArg}${targetNamespaceArg}${dependsOnArg} --source=${sourceRef} --path="${kustomizationPath}"${pruneArg} --timeout=10s`;
+	}
+
+
 
 	/**
 	 * Run `flux create source git`. If the protocol of the url is SSH -
@@ -263,25 +315,9 @@ class FluxTools {
 		sshEcdsaCurve?: string;
 		sshRsaBits?: string;
 	}) {
-		const urlArg = ` --url "${args.url}"`;
-		const namespaceArg = args.namespace ? ` --namespace "${args.namespace}"` : '';
-		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
-		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
-		const semverArg = args.semver ? ` --tag-semver "${args.semver}"` : '';
-		const intervalArg = args.interval ? ` --interval "${args.interval}"` : '';
-		const timeoutArg = args.timeout ? ` --timeout "${args.timeout}"` : '';
-		const caFileArg = args.caFile ? ` --ca-file "${args.caFile}"` : '';
-		const privateKeyFileArg = args.privateKeyFile ? ` --private-key-file "${args.privateKeyFile}"` : '';
-		const usernameArg = args.username ? ` --username "${args.username}"` : '';
-		const passwordArg = args.password ? ` --password "${args.password}"` : '';
-		const secretRefArg = args.secretRef ? ` --secret-ref "${args.secretRef}"` : '';
-		const gitImplementation = args.gitImplementation ? ` --git-implementation "${args.gitImplementation}"` : '';
-		const recurseSubmodules = args.recurseSubmodules ? ' --recurse-submodules' : '';
-		const sshKeyAlgorithm = args.sshKeyAlgorithm ? ` --ssh-key-algorithm "${args.sshKeyAlgorithm}"` : '';
-		const sshEcdsaCurve = args.sshEcdsaCurve ? ` --ssh-ecdsa-curve "${args.sshEcdsaCurve}"` : '';
-		const sshRsaBits = args.sshRsaBits ? ` --ssh-rsa-bits "${args.sshRsaBits}"` : '';
 
-		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${args.sourceName}${urlArg}${branchArg}${namespaceArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits} --silent`);
+		const command = this.createSourceGitCommand(args);
+		const createSourceShellResult = await shell.execWithOutput(`${command} --silent`);
 
 		if (createSourceShellResult.code !== 0) {
 			// shell always fails in SSH case (without specifying any key) (as reconciliation error)
@@ -308,12 +344,37 @@ class FluxTools {
 		};
 	}
 
-	async createKustomization(kustomizationName: string, sourceName: string, kustomizationPath: string, namespace?: string, targetNamespace?: string, dependsOn?: string) {
-		const namespaceArg = namespace ? ` --namespace "${namespace}"` : '';
-		const targetNamespaceArg = targetNamespace ? ` --target-namespace "${targetNamespace}"` : '';
-		const dependsOnArg = dependsOn ? ` --depends-on "${dependsOn}"` : '';
+	async createSourceOCI(args: {
+		sourceName: string;
+		url: string;
+		namespace?: string;
+		tag?: string;
+		semver?: string;
+		digest?: string;
+		interval?: string;
+		timeout?: string;
+		certRef?: string;
+		insecure?: boolean;
+		ociProvider?: 'generic' | 'aws' | 'azure' | 'gcp';
+		secretRef?: string;
+		serviceAccount?: string;
+	}) {
 
-		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName}${namespaceArg}${targetNamespaceArg}${dependsOnArg} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${kustomizationPath}" --prune=true`);
+
+		const command = this.createSourceOCICommand(args);
+		const createSourceShellResult = await shell.execWithOutput(`${command}`);
+
+		if (createSourceShellResult.code !== 0) {
+			window.showErrorMessage(createSourceShellResult.stderr);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
+			return;
+		}
+	}
+
+	async createKustomization(kustomizationName: string, sourceRef: string, kustomizationPath: string, namespace?: string, targetNamespace?: string, dependsOn?: string, prune?: boolean) {
+		const command = this.createKustomizationCommand(kustomizationName, sourceRef, kustomizationPath, namespace, targetNamespace, dependsOn, prune);
+
+		const createKustomizationShellResult = await shell.execWithOutput(command);
 
 		if (createKustomizationShellResult.code !== 0) {
 			window.showErrorMessage(createKustomizationShellResult.stderr);
@@ -321,7 +382,56 @@ class FluxTools {
 			return;
 		}
 	}
+
+	async exportSourceGit(args: CreateSourceGitGenericArgs) {
+		const command = this.createSourceGitCommand(args);
+		const createSourceShellResult = await shell.execWithOutput(`${command} --export`);
+
+
+		if (createSourceShellResult.code !== 0) {
+			window.showErrorMessage(createSourceShellResult.stderr);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
+
+			return '---';
+		}
+
+		return createSourceShellResult.stdout;
+	}
+
+
+	async exportSourceOCI(args: CreateSourceOCIGenericArgs) {
+		const command = this.createSourceOCICommand(args);
+		const createSourceShellResult = await shell.execWithOutput(`${command} --export`);
+
+
+		if (createSourceShellResult.code !== 0) {
+			window.showErrorMessage(createSourceShellResult.stderr);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
+
+			return '---';
+		}
+
+		return createSourceShellResult.stdout;
+	}
+
+
+	async exportKustomization(kustomizationName: string, sourceRef: string, kustomizationPath: string, namespace?: string, targetNamespace?: string, dependsOn?: string, prune?: boolean) {
+		const command = this.createKustomizationCommand(kustomizationName, sourceRef, kustomizationPath, namespace, targetNamespace, dependsOn, prune);
+
+		const createKustomizationShellResult = await shell.execWithOutput(`${command} --export`);
+
+		if (createKustomizationShellResult.code !== 0) {
+			window.showErrorMessage(createKustomizationShellResult.stderr);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
+			return '---';
+		}
+
+		return createKustomizationShellResult.stdout;
+	}
+
 }
+
+
 
 /**
  * Helper methods for running and parsing flux commands.

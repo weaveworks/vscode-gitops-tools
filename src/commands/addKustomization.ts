@@ -1,4 +1,4 @@
-import { openConfigureGitOpsPanel } from '../panels/configureGitOps';
+import { openConfigureGitOpsPanel } from '../webview-backend/configureGitOps/openPanel';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 
 /**
@@ -6,7 +6,7 @@ import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
  * @param sourceNode user right-clicked this in the Sources treeview
  */
 export async function addKustomization(sourceNode?: GitRepositoryNode) {
-	const selectedSource = sourceNode?.resource?.metadata.name;
+	const selectedSource = `${sourceNode?.resource?.kind}/${sourceNode?.resource?.metadata.name}`;
 
 	openConfigureGitOpsPanel(true, selectedSource);
 }

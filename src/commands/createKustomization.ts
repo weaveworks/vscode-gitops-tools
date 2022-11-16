@@ -6,7 +6,7 @@ import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { validateKustomizationName } from '../flux/fluxUtils';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
-import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeViews';
 import { createGitRepository } from './createGitRepository';
@@ -125,7 +125,7 @@ async function createKustomizationGenericCluster(
 		newKustomizationName = gitRepositoryName;
 	}
 
-	await fluxTools.createKustomization(newKustomizationName, gitRepositoryName, relativeKustomizationPath);
+	await fluxTools.createKustomization(newKustomizationName,  `GitRepository/${gitRepositoryName}`, relativeKustomizationPath);
 }
 
 /**

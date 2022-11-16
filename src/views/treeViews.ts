@@ -3,7 +3,7 @@ import { isAzureProvider } from '../azure/azureTools';
 import { Errorable, failed } from '../errorable';
 import { globalState } from '../extension';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
+import { ClusterInfo, ClusterProvider } from '../kubernetes/types/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
@@ -113,14 +113,6 @@ export function refreshSourcesTreeView(node?: TreeNode) {
  */
 export function refreshWorkloadsTreeView(node?: TreeNode) {
 	workloadTreeViewProvider.refresh(node);
-}
-
-export interface ClusterInfo {
-	contextName: string;
-	clusterName: string;
-	clusterProvider: ClusterProvider;
-	isClusterProviderUserOverride: boolean;
-	isAzure: boolean;
 }
 
 /**

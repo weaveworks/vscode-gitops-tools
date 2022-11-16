@@ -1,4 +1,4 @@
-import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from './kubernetesTypes';
+import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from '../kubernetesTypes';
 
 /**
  * Kustomizations result from running

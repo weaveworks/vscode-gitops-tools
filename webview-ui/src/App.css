@@ -13,6 +13,21 @@ code {
 	color: lavender !important;
 }
 
+a {
+	text-decoration: none;
+	color: var(--vscode-descriptionForeground) !important;
+}
+
+a .codicon-question {
+	vertical-align: middle;
+	opacity: 0.5;
+}
+
+a .codicon-question:hover {
+	opacity: 0.9;
+}
+
+
 /* custom */
 h3.collapse-toggle {
   padding: 0.5rem 4px;
@@ -53,6 +68,10 @@ vscode-panels {
 input, vscode-dropdown {
   margin-top: 0.5rem;
   margin-bottom: 1.5rem;
+}
+
+input {
+	padding-left: 8px !important;
 }
 
 
@@ -104,20 +123,38 @@ vscode-dropdown.medium {
   height: 3rem;
   width: 8rem;
   padding-left: -20px;
+	margin-right: 2rem;
 }
 
-.actions vscode-button .codicon-add {
+.actions vscode-button .codicon {
   position: relative;
-  left: -20px;
+  left: -22px;
   top: 2px;
 }
 
-.actions vscode-button span.create {
+
+.actions vscode-button .codicon-output {
+  position: relative;
+  /* left: -24px; */
+  top: 1px;
+}
+
+
+
+.actions vscode-button.big span{
   font-size: 1.2rem;
   position: relative;
-  left: -18px;
-  top: -3px;
+}
 
+.actions vscode-button span.create {
+  left: -21px;
+  top: -3px;
+}
+
+.actions vscode-button span.yaml {
+	/* margin-left: 2rem; */
+  left: -17px;
+  top: -3px;
 }
 
 vscode-divider {

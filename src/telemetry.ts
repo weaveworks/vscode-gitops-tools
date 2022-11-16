@@ -37,6 +37,7 @@ export const enum TelemetryErrorEventNames {
 	// VSCode
 	FAILED_TO_OPEN_RESOURCE = 'FAILED_TO_OPEN_RESOURCE',
 	// Flux
+	FAILED_TO_RUN_FLUX_CREATE_SOURCE = 'FAILED_TO_RUN_FLUX_CREATE_SOURCE',
 	FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION = 'FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION',
 	FAILED_TO_RUN_FLUX_DELETE_SOURCE = 'FAILED_TO_RUN_FLUX_DELETE_SOURCE',
 	FAILED_TO_RUN_FLUX_CHECK = 'FAILED_TO_RUN_FLUX_CHECK',
@@ -87,6 +88,7 @@ export const enum TelemetryEventNames {
 	 * Create/delete Flux Source event.
 	 */
 	CreateSource = 'CREATE_SOURCE',
+	ExportSource = 'EXPORT_SOURCE',
 	DeleteSource = 'DELETE_SOURCE',
 	/**
 	 * Create/delete Flux Workload (Kustomization, HelmRelease) event.

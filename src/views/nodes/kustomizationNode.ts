@@ -1,5 +1,5 @@
-import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
-import { Kustomize } from '../../kubernetes/kustomize';
+import { KubernetesObjectKinds } from '../../kubernetes/types/kubernetesTypes';
+import { Kustomize } from '../../kubernetes/types/flux/kustomize';
 import { NodeContext } from './nodeContext';
 import { WorkloadNode } from './workloadNode';
 

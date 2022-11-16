@@ -2,7 +2,7 @@ import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { fluxTools } from '../../flux/fluxTools';
 import { FluxTreeResources } from '../../flux/fluxTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { KubernetesObjectKinds, NamespaceResult } from '../../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds, NamespaceResult } from '../../kubernetes/types/kubernetesTypes';
 import { statusBar } from '../../statusBar';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';

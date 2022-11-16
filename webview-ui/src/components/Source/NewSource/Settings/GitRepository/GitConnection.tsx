@@ -1,5 +1,5 @@
-import { bindInputStore, bindCheckedValueFunc } from '../../../../lib/bindDirectives';  bindInputStore; bindCheckedValueFunc; // TS will elide 'unused' imports
-import { source, setSource } from '../../../../lib/model';
+import { bindInputStore, bindCheckedValueFunc } from '../../../../../lib/bindDirectives';  bindInputStore; bindCheckedValueFunc; // TS will elide 'unused' imports
+import { source, setSource } from '../../../../../lib/model';
 
 function setGoGitImplementation(checked: boolean) {
 	if(checked) {
@@ -13,11 +13,11 @@ function setLibGit2Implementation(checked: boolean) {
 	}
 }
 
-function AdvancedConnection() {
+function GitConnection() {
 	return (
 		<div>
 			<div>
-				<label>Git Implementation</label>
+				<label>Git Implementation <a href="https://fluxcd.io/flux/components/source/gitrepositories/#git-implementation"><span class="codicon codicon-question"></span></a></label>
 				<vscode-radio-group>
 					<vscode-radio checked use:bindCheckedValueFunc={setGoGitImplementation}>go-git</vscode-radio>
 					<vscode-radio use:bindCheckedValueFunc={setLibGit2Implementation}>libgit2</vscode-radio>
@@ -55,4 +55,4 @@ function AdvancedConnection() {
 	);
 }
 
-export default AdvancedConnection;
+export default GitConnection;

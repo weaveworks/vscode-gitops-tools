@@ -2,7 +2,7 @@ import { window, env, Uri } from 'vscode';
 import { globalState, telemetry } from '../extension';
 import { ClusterMetadata } from '../globalState';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider, ConfigMap, knownClusterProviders } from '../kubernetes/kubernetesTypes';
+import { ClusterProvider, ConfigMap, knownClusterProviders } from '../kubernetes/types/kubernetesTypes';
 import { shell, shellCodeError, ShellResult } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
@@ -217,11 +217,12 @@ class AzureTools {
 		contextName: string,
 		clusterProvider: AzureClusterProvider,
 		kustomizationDependsOn?: string,
+		kustomizationPrune?: boolean,
 	) {
 		const dependsOnArg = kustomizationDependsOn ? ` --depends-on "${kustomizationDependsOn}"` : '';
 
 		const createKustomizationShellResult = await this.invokeAzCommand(
-			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}"${dependsOnArg} --prune true`,
+			`az k8s-configuration flux kustomization create --kustomization-name ${kustomizationName} --name ${gitRepositoryName} --path "${kustomizationPath}"${dependsOnArg} --prune ${kustomizationPrune}`,
 			contextName,
 			clusterProvider,
 		);

@@ -1,7 +1,7 @@
 import { MarkdownString } from 'vscode';
-import { HelmRelease } from '../../kubernetes/helmRelease';
-import { DeploymentCondition } from '../../kubernetes/kubernetesTypes';
-import { Kustomize } from '../../kubernetes/kustomize';
+import { HelmRelease } from '../../kubernetes/types/flux/helmRelease';
+import { DeploymentCondition } from '../../kubernetes/types/kubernetesTypes';
+import { Kustomize } from '../../kubernetes/types/flux/kustomize';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
 

@@ -1,11 +1,11 @@
-import { bindCheckedValueFunc, bindInputStore, bindChangeValueFunc } from '../lib/bindDirectives';  bindCheckedValueFunc; bindInputStore; bindChangeValueFunc; // TS will elide 'unused' imports
-import { createSource, selectedSource, createKustomization, setCreateKustomization, source, kustomization, setKustomization } from '../lib/model';
+import { bindChangeValueFunc, bindCheckedValueFunc, bindInputStore } from '../lib/bindDirectives';
+import { createKustomization, createSource, kustomization, selectedSource, setCreateKustomization, setKustomization, source } from '../lib/model';
+bindCheckedValueFunc; bindInputStore; bindChangeValueFunc; // TS will elide 'unused' imports
 
 
 import { Checkbox, Select } from '@microsoft/fast-foundation';
-import { createEffect, For, onMount, Show } from 'solid-js';
+import { For, onMount, Show } from 'solid-js';
 import { params } from '../lib/params';
-import { unwrap } from 'solid-js/store';
 
 let nsDropdown: Select;
 let tnsDropdown: Select;
@@ -28,7 +28,7 @@ function Kustomization() {
 	onMount(() => checkbox.checked = createKustomization());
 	onMount(() => nsDropdown.currentValue = source.namespace);
 	onMount(() => {
-		if(!isAzure) {
+		if(!isAzure ) {
 			tnsDropdown.currentValue = 'default';
 		}
 	});
@@ -38,7 +38,7 @@ function Kustomization() {
 
 	return(
 		<div>
-			<h2>Create Kustomization</h2>
+			<h2>Create Kustomization <a href="https://fluxcd.io/flux/components/kustomize/kustomization/"><span class="codicon codicon-question"></span></a></h2>
 			<div style="margin-top: 1rem; margin-bottom: 2rem">
 				<Show when={createSource()}>
 					<vscode-checkbox ref={checkbox} use:bindCheckedValueFunc={setCreateKustomization}>
@@ -86,6 +86,13 @@ function Kustomization() {
 					<label>Depends on <code>Kustomizations</code></label>
 					<input use:bindInputStore={[kustomization, setKustomization, 'dependsOn']} class="long"></input>
 				</div>
+
+				<div >
+					<vscode-checkbox checked use:bindCheckedValueFunc={(checked: boolean) => setKustomization('prune', checked)}>
+            Prune (remove stale resources)
+					</vscode-checkbox>
+				</div>
+
 			</Show>
 		</div>
 	);

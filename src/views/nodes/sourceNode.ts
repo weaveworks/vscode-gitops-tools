@@ -1,9 +1,9 @@
 import { MarkdownString } from 'vscode';
-import { Bucket } from '../../kubernetes/bucket';
-import { GitRepository } from '../../kubernetes/gitRepository';
-import { OCIRepository } from '../../kubernetes/ociRepository';
-import { HelmRepository } from '../../kubernetes/helmRepository';
-import { DeploymentCondition } from '../../kubernetes/kubernetesTypes';
+import { Bucket } from '../../kubernetes/types/flux/bucket';
+import { GitRepository } from '../../kubernetes/types/flux/gitRepository';
+import { OCIRepository } from '../../kubernetes/types/flux/ociRepository';
+import { HelmRepository } from '../../kubernetes/types/flux/helmRepository';
+import { DeploymentCondition } from '../../kubernetes/types/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { shortenRevision } from '../../utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';

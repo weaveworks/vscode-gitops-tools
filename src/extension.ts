@@ -12,7 +12,7 @@ import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
 import { shell } from './shell';
-import { openConfigureGitOpsPanel } from './panels/configureGitOps';
+import { openConfigureGitOpsPanel } from './webview-backend/configureGitOps/openPanel';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;

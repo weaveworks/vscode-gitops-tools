@@ -5,7 +5,7 @@ import { telemetry, disableConfirmations } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { checkIfOpenedFolderGitRepositorySourceExists } from '../git/checkIfOpenedFolderGitRepositorySourceExists';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider } from '../kubernetes/kubernetesTypes';
+import { ClusterProvider } from '../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { ClusterContextNode } from '../views/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';

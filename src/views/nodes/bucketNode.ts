@@ -1,5 +1,5 @@
-import { Bucket } from '../../kubernetes/bucket';
-import { KubernetesObjectKinds } from '../../kubernetes/kubernetesTypes';
+import { Bucket } from '../../kubernetes/types/flux/bucket';
+import { KubernetesObjectKinds } from '../../kubernetes/types/kubernetesTypes';
 import { SourceNode } from './sourceNode';
 
 /**
