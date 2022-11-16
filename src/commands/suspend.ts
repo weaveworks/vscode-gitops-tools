@@ -5,6 +5,7 @@ import { fluxTools } from '../flux/fluxTools';
 import { FluxSource, FluxWorkload } from '../flux/fluxTypes';
 import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
 import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';
+import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
 import { KustomizationNode } from '../views/nodes/kustomizationNode';
 import { OCIRepositoryNode } from '../views/nodes/ociRepositoryNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
@@ -14,7 +15,7 @@ import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView
  *
  * @param node sources tree view node
  */
-export async function suspend(node: GitRepositoryNode | HelmReleaseNode | KustomizationNode) {
+export async function suspend(node: GitRepositoryNode | HelmReleaseNode | KustomizationNode | HelmRepositoryNode) {
 
 	const currentClusterInfo = await getCurrentClusterInfo();
 	if (failed(currentClusterInfo)) {
@@ -22,10 +23,11 @@ export async function suspend(node: GitRepositoryNode | HelmReleaseNode | Kustom
 	}
 
 	const fluxResourceType: FluxSource | FluxWorkload | 'unknown' = node instanceof GitRepositoryNode ?
-		'source git' : node instanceof OCIRepositoryNode ?
-			'source oci' : node instanceof HelmReleaseNode ?
-				'helmrelease' : node instanceof KustomizationNode ?
-					'kustomization' : 'unknown';
+		'source git' : node instanceof HelmRepositoryNode ?
+			'source helm' : node instanceof OCIRepositoryNode ?
+				'source oci' : node instanceof HelmReleaseNode ?
+					'helmrelease' : node instanceof KustomizationNode ?
+						'kustomization' : 'unknown';
 
 	if (fluxResourceType === 'unknown') {
 		window.showErrorMessage(`Unknown object kind ${fluxResourceType}`);
@@ -44,7 +46,7 @@ export async function suspend(node: GitRepositoryNode | HelmReleaseNode | Kustom
 		await fluxTools.suspend(fluxResourceType, node.resource.metadata.name || '', node.resource.metadata.namespace || '');
 	}
 
-	if (node instanceof GitRepositoryNode || node instanceof OCIRepositoryNode) {
+	if (node instanceof GitRepositoryNode || node instanceof OCIRepositoryNode || node instanceof HelmRepositoryNode) {
 		refreshSourcesTreeView();
 		if (currentClusterInfo.result.isAzure) {
 			refreshWorkloadsTreeView();
