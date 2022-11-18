@@ -88,6 +88,12 @@ export function refreshAllTreeViews() {
 	refreshWorkloadsTreeView();
 }
 
+export function refreshResourcesTreeViews() {
+	refreshSourcesTreeView();
+	refreshWorkloadsTreeView();
+}
+
+
 /**
  * Reloads configured clusters tree view via kubectl.
  * When an argument is passed - only that tree item

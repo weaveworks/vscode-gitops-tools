@@ -57,8 +57,7 @@
 		"onCommand:gitops.flux.reconcileWorkload",
 		"onCommand:gitops.flux.trace",
 		"onCommand:gitops.views.refreshAllTreeViews",
-		"onCommand:gitops.views.refreshSourceTreeView",
-		"onCommand:gitops.views.refreshWorkloadTreeView",
+		"onCommand:gitops.views.refreshResourcesTreeView",
 		"onCommand:gitops.views.pullGitRepository",
 		"onCommand:gitops.views.createGitRepository",
 		"onCommand:gitops.views.deleteSource",
@@ -159,14 +158,8 @@
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "gitops.views.refreshSourceTreeView",
+				"command": "gitops.views.refreshResourcesTreeView",
 				"title": "Refresh Sources View",
-				"category": "GitOps",
-				"icon": "$(refresh)"
-			},
-			{
-				"command": "gitops.views.refreshWorkloadTreeView",
-				"title": "Refresh Workloads View",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
@@ -356,12 +349,12 @@
 					"when": "view == gitops.views.workloads"
 				},
 				{
-					"command": "gitops.views.refreshAllTreeViews",
+					"command": "gitops.views.refreshResourcesTreeView",
 					"group": "navigation@1",
 					"when": "view == gitops.views.sources"
 				},
 				{
-					"command": "gitops.views.refreshAllTreeViews",
+					"command": "gitops.views.refreshResourcesTreeView",
 					"group": "navigation@1",
 					"when": "view == gitops.views.workloads"
 				},

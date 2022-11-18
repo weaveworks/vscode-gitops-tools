@@ -28,7 +28,7 @@ import { trace } from './commands/trace';
 import { telemetry } from './extension';
 import { showOutputChannel } from './output';
 import { TelemetryErrorEventNames } from './telemetry';
-import { refreshAllTreeViews, refreshSourcesTreeView, refreshWorkloadsTreeView } from './views/treeViews';
+import { refreshAllTreeViews, refreshResourcesTreeViews } from './views/treeViews';
 
 /**
  * Command ids registered by this extension
@@ -65,8 +65,7 @@ export const enum CommandId {
 	// tree view
 	SetClusterProvider = 'gitops.setClusterProvider',
 	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
-	RefreshSourcesTreeView = 'gitops.views.refreshSourceTreeView',
-	RefreshWorkloadsTreeView = 'gitops.views.refreshWorkloadTreeView',
+	RefreshResourcesTreeView = 'gitops.views.refreshResourcesTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
 	CreateGitRepository = 'gitops.views.createGitRepository',
 	CreateKustomization = 'gitops.createKustomization',
@@ -121,8 +120,7 @@ export function registerCommands(context: ExtensionContext) {
 	// tree views
 	registerCommand(CommandId.SetClusterProvider, setClusterProvider);
 	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViews);
-	registerCommand(CommandId.RefreshSourcesTreeView, refreshSourcesTreeView);
-	registerCommand(CommandId.RefreshWorkloadsTreeView, refreshWorkloadsTreeView);
+	registerCommand(CommandId.RefreshResourcesTreeView, refreshResourcesTreeViews);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.CreateGitRepository, (fileExplorerUri?: Uri) => {
 		// only pass one argument when running from File Explorer context menu
