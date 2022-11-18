@@ -85,7 +85,7 @@ suite('Extension Test Suite', () => {
 		this.timeout(15000);
 
 		await api.shell.execWithOutput('flux create source git podinfo --url=https://github.com/stefanprodan/podinfo --branch master');
-		await vscode.commands.executeCommand('gitops.views.refreshSourceTreeView');
+		await vscode.commands.executeCommand('gitops.views.refreshResourcesTreeView');
 
 		let source = await getTreeItem(api.data.sourceTreeViewProvider, 'GitRepository: podinfo');
 		assert.notStrictEqual(source, undefined, 'Adding a GitSource and refreshing the view should list it');
@@ -101,7 +101,7 @@ suite('Extension Test Suite', () => {
 		this.timeout(15000);
 
 		await api.shell.execWithOutput('flux create source oci podinfo --url=oci://ghcr.io/stefanprodan/manifests/podinfo --tag-semver 6.1.x');
-		await vscode.commands.executeCommand('gitops.views.refreshSourceTreeView');
+		await vscode.commands.executeCommand('gitops.views.refreshResourcesTreeView');
 
 		let source = await getTreeItem(api.data.sourceTreeViewProvider, 'OCIRepository: podinfo');
 		assert.notStrictEqual(source, undefined, 'Adding a OCI Source and refreshing the view should list it');
@@ -117,7 +117,7 @@ suite('Extension Test Suite', () => {
 		this.timeout(10000);
 
 		await api.shell.execWithOutput('flux create kustomization podinfo --target-namespace=default --source=podinfo --path="./kustomize" --timeout=5s');
-		await vscode.commands.executeCommand('gitops.views.refreshWorkloadTreeView');
+		await vscode.commands.executeCommand('gitops.views.refreshResourcesTreeView');
 
 		let workload = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
 		assert.notStrictEqual(workload, undefined, 'Adding a Kustomization and refreshing the view should list it');
