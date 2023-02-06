@@ -1,0 +1,10 @@
+resources:
+- youtube:Bmh7kKYLIhY
+  title: "Flux Security & Scalability using VS Code GitOps Extension- Juozas Gaigalas, Weaveworks"
+  date: 2022-11-16
+  - youtube:QRZTc6hlCjI
+  title: "GitOps Days 2022: Introducing Flux Visual Studio Code Extension in Public Beta by Kingdon Barrett"
+  date: 2022-06-09
+- youtube:p8hTP2pPtqc
+  title: "Weave GitOps - VS Code Plugin, Weaveworks"
+  date: 2022-05-11
