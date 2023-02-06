@@ -59,7 +59,6 @@ export class WorkloadNode extends TreeNode {
 
 	get tooltip() {
 		const md = this.getMarkdownHover(this.resource);
-		console.log(md.value);
 		return md;
 
 	}
@@ -67,7 +66,6 @@ export class WorkloadNode extends TreeNode {
 	// @ts-ignore
 	get description() {
 		const isSuspendIcon = this.resource.spec?.suspend ? '⏸ ' : '';
-		const condition = this.findReadyOrFirstCondition(this.resource.status.conditions);
 		let revisionOrError = '';
 
 		if (this.isReconcileFailed) {

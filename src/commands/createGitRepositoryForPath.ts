@@ -4,7 +4,7 @@ import { failed } from '../errorable';
 import { getFolderGitInfo } from '../git/gitInfo';
 import { checkGitVersion } from '../install';
 import { getCurrentClusterInfo } from '../views/treeViews';
-import { openConfigureGitOpsPanel } from '../webview-backend/configureGitOps/openPanel';
+import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
 
 /**
  * Add git repository source whether from an opened folder
@@ -57,5 +57,5 @@ export async function createGitRepositoryForPath(fileExplorerUri?: Uri) {
 		gitInfo = await getFolderGitInfo(gitFolderFsPath);
 	}
 
-	openConfigureGitOpsPanel(false, '', {createWorkload: false}, gitInfo);
+	openConfigureGitOpsWebview(false, '', {createWorkload: false}, gitInfo);
 }

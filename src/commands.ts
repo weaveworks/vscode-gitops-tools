@@ -29,6 +29,7 @@ import { telemetry } from './extension';
 import { showOutputChannel } from './output';
 import { TelemetryErrorEventNames } from './telemetry';
 import { refreshAllTreeViews, refreshResourcesTreeViews } from './views/treeViews';
+import { createFromTemplate } from './commands/createFromTemplate';
 
 /**
  * Command ids registered by this extension
@@ -41,6 +42,7 @@ export const enum CommandId {
 	 * Opens the provided resource in the editor. Can be a text or binary file, or an http(s) URL.
 	 */
 	VSCodeOpen = 'vscode.open',
+	VSCodeReload = 'workbench.action.reloadWindow',
 	/**
 	 * Set vscode context to use in keybindings/menus/welcome views
 	 * @see https://code.visualstudio.com/api/references/when-clause-contexts
@@ -90,6 +92,7 @@ export const enum CommandId {
 	ShowInstalledVersions = 'gitops.showInstalledVersions',
 	InstallFluxCli = 'gitops.installFluxCli',
 	ShowGlobalState = 'gitops.dev.showGlobalState',
+	CreateFromTemplate = 'gitops.views.createFromTemplate',
 }
 
 let _context: ExtensionContext;
@@ -148,6 +151,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.ShowInstalledVersions, showInstalledVersions);
 	registerCommand(CommandId.InstallFluxCli, installFluxCli);
 	registerCommand(CommandId.ShowGlobalState, showGlobalState);
+	registerCommand(CommandId.CreateFromTemplate, createFromTemplate);
 }
 
 /**

@@ -2,7 +2,7 @@
 /**
  * Shortens revision string for display in GitOps tree views.
  * @param revision Revision string to shorten.
- * @returns Short revision string with max 7 characters.
+ * @returns Short revision string with max 8 characters for hash, all characters for semantic versions like 0.1.1-staging
  */
 export function shortenRevision(revision = ''): string {
 	revision = revision.replace(/^(sha1|sha256|sha384|sha512|blake3):/, '');
@@ -12,8 +12,18 @@ export function shortenRevision(revision = ''): string {
 		const [gitBranch, gitRevision] = revision.split('/');
 		return [gitBranch, ':', gitRevision.slice(0, 7)].join('');
 	} else {
-		return revision.slice(0, 7);
+		return shortenRevisionHash(revision);
 	}
+}
+
+function shortenRevisionHash(revision: string) {
+	// return full semver like 0.1.1-staging
+	if(revision.match(/^\d+\.\d+\.\d+/)) {
+		return revision;
+	}
+
+	// trim hash to 8
+	return revision.slice(0, 7);
 }
 
 /**

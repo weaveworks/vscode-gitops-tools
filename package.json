@@ -52,10 +52,8 @@
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js",
-		"start:webview": "npm --prefix ./webview-ui run start",
-		"install:webview": "npm --prefix ./webview-ui install",
-		"build:webview": "npm --prefix ./webview-ui run build",
-		"watch:webview": "npm --prefix ./webview-ui run watch"
+		"install:webview": "npm --prefix ./webview-ui run install",
+		"build:webview": "npm --prefix ./webview-ui run build"
 	},
 	"contributes": {
 		"commands": [
@@ -142,7 +140,7 @@
 			},
 			{
 				"command": "gitops.views.refreshResourcesTreeView",
-				"title": "Refresh Sources View",
+				"title": "Refresh Resources Views",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
@@ -217,6 +215,11 @@
 				"command": "gitops.dev.showGlobalState",
 				"title": "Show Global State",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.createFromTemplate",
+				"title": "Create from Template",
+				"category": "GitOps"
 			}
 		],
 		"viewsContainers": {
@@ -243,10 +246,25 @@
 					"name": "Workloads"
 				},
 				{
+					"id": "gitops.views.templates",
+					"name": "Templates",
+					"when": "config.gitops.weaveGitopsEnterprise"
+				},
+				{
 					"id": "gitops.views.documentation",
 					"name": "Documentation"
 				}
 			]
+		},
+		"configuration": {
+			"title": "GitOps Tools",
+			"properties": {
+				"gitops.weaveGitopsEnterprise": {
+					"type": "boolean",
+					"default": false,
+					"description": "Enable WGE GitOpsTemplates feature"
+				}
+			}
 		},
 		"viewsWelcome": [
 			{
@@ -342,6 +360,11 @@
 					"when": "view == gitops.views.workloads"
 				},
 				{
+					"command": "gitops.views.refreshResourcesTreeView",
+					"group": "navigation@1",
+					"when": "view == gitops.views.templates"
+				},
+				{
 					"command": "gitops.views.showWorkloadsHelpMessage",
 					"group": "navigation@2",
 					"when": "view == gitops.views.workloads"
@@ -426,6 +449,11 @@
 					"command": "gitops.flux.trace",
 					"when": "view == gitops.views.workloads && viewItem != Namespace;",
 					"group": "navigation@4"
+				},
+				{
+					"command": "gitops.views.createFromTemplate",
+					"group": "1",
+					"when": "view == gitops.views.templates"
 				}
 			],
 			"explorer/context": [
@@ -532,6 +560,7 @@
 		"@types/node": "14.x",
 		"@types/semver": "^7.3.9",
 		"@types/shelljs": "^0.8.11",
+		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.59.0",
 		"@types/vscode-webview": "^1.57.0",
 		"@types/which": "^2.0.1",
@@ -559,6 +588,7 @@
 		"shell-escape-tag": "^2.0.2",
 		"shelljs": "^0.8.5",
 		"tinytim": "^0.1.1",
+		"uuid": "^9.0.0",
 		"vscode-kubernetes-tools-api": "^1.3.0"
 	},
 	"activationEvents": [],

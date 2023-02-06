@@ -16,14 +16,14 @@ node_modules
 **/*.ts
 
 
-webview-ui/.vscode/**
-webview-ui/.vscode-test/**
-webview-ui/out/**
-webview-ui/node_modules/**
-webview-ui/src/**
-webview-ui/test
-webview-ui/node_modules
-webview-ui/**/tsconfig.json
-webview-ui/**/.eslintrc.json
-webview-ui/**/*.map
-webview-ui/**/*.ts
+webview-ui/**/.vscode/**
+webview-ui/**/.vscode-test/**
+webview-ui/**/out/**
+webview-ui/**/node_modules/**
+webview-ui/**/src/**
+webview-ui/**/test
+webview-ui/**/node_modules
+webview-ui/**/**/tsconfig.json
+webview-ui/**/**/.eslintrc.json
+webview-ui/**/**/*.map
+webview-ui/**/**/*.ts

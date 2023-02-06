@@ -8,6 +8,7 @@ import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
 import { SourceNode } from '../nodes/sourceNode';
 import { DataProvider } from './dataProvider';
 import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
+import { NamespaceNode } from '../nodes/namespaceNode';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
@@ -19,7 +20,7 @@ export class SourceDataProvider extends DataProvider {
    * Creates Source tree view items for the currently selected kubernetes cluster.
    * @returns Source tree view items to display.
    */
-	async buildTree(): Promise<SourceNode[]> {
+	async buildTree(): Promise<NamespaceNode[]> {
 		statusBar.startLoadingTree();
 
 		const treeItems: SourceNode[] = [];
@@ -27,11 +28,12 @@ export class SourceDataProvider extends DataProvider {
 		setVSCodeContext(ContextTypes.LoadingSources, true);
 
 		// Fetch all sources asynchronously and at once
-		const [gitRepositories, ociRepositories, helmRepositories, buckets] = await Promise.all([
+		const [gitRepositories, ociRepositories, helmRepositories, buckets, namespaces] = await Promise.all([
 			kubernetesTools.getGitRepositories(),
 			kubernetesTools.getOciRepositories(),
 			kubernetesTools.getHelmRepositories(),
 			kubernetesTools.getBuckets(),
+			kubernetesTools.getNamespaces(),
 		]);
 
 		// add git repositories to the tree
@@ -66,6 +68,6 @@ export class SourceDataProvider extends DataProvider {
 		setVSCodeContext(ContextTypes.NoSources, treeItems.length === 0);
 		statusBar.stopLoadingTree();
 
-		return treeItems;
+		return this.groupByNamespace(namespaces?.items || [], treeItems);
 	}
 }

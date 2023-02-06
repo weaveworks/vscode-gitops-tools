@@ -19,6 +19,7 @@ import { KubernetesConfig, KubernetesContextWithCluster } from './types/kubernet
 import { KubernetesFileSchemes } from './types/kubernetesFileSchemes';
 import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from './types/kubernetesTypes';
 import { KustomizeResult } from './types/flux/kustomize';
+import { GitOpsTemplateResult } from './types/flux/gitOpsTemplate';
 
 /**
  * Defines Kubernetes Tools class for integration
@@ -339,6 +340,23 @@ class KubernetesTools {
 		}
 		return parseJson(bucketShellResult.stdout);
 	}
+
+	/**
+	 * Gets all GitOpsTemplates for the current kubectl context.
+	 */
+	async getGitOpsTemplates(): Promise<undefined | GitOpsTemplateResult> {
+		const result = await this.invokeKubectlCommand('get gitopstemplates -A -o json');
+		if (result?.code !== 0) {
+			console.warn(`Failed to get kubectl gitopstemplates: ${result?.stderr}`);
+			if (result?.stderr && !this.notAnErrorServerDoesntHaveResourceTypeRegExp.test(result.stderr)) {
+				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_GITOPSTEMPLATES);
+			}
+			return;
+		}
+		return parseJson(result.stdout);
+	}
+
+
 
 	/**
 	 * Get all flux system deployments.

@@ -13,16 +13,19 @@ import { TreeNode } from './nodes/treeNode';
 import { Views } from './views';
 
 import * as k8s from 'vscode-kubernetes-tools-api';
+import { TemplateDataProvider } from './dataProviders/templateDataProvider';
 
 export let clusterTreeViewProvider: ClusterDataProvider;
 export let sourceTreeViewProvider: SourceDataProvider;
 export let workloadTreeViewProvider: WorkloadDataProvider;
 export let documentationTreeViewProvider: DocumentationDataProvider;
+export let templateTreeViewProvider: TemplateDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
 let workloadTreeView: TreeView<TreeItem>;
 let documentationTreeView: TreeView<TreeItem>;
+let templateTreeView: TreeView<TreeItem>;
 
 /**
  * Creates tree views for the GitOps sidebar.
@@ -33,6 +36,7 @@ export function createTreeViews() {
 	sourceTreeViewProvider =  new SourceDataProvider();
 	workloadTreeViewProvider = new WorkloadDataProvider();
 	documentationTreeViewProvider = new DocumentationDataProvider();
+	templateTreeViewProvider = new TemplateDataProvider();
 
 	// create gitops sidebar tree views
 	clusterTreeView = window.createTreeView(Views.ClustersView, {
@@ -47,6 +51,13 @@ export function createTreeViews() {
 
 	workloadTreeView = window.createTreeView(Views.WorkloadsView, {
 		treeDataProvider: workloadTreeViewProvider,
+		showCollapseAll: true,
+	});
+
+
+	// WGE templates
+	templateTreeView = window.createTreeView(Views.TemplatesView, {
+		treeDataProvider: templateTreeViewProvider,
 		showCollapseAll: true,
 	});
 
@@ -84,13 +95,13 @@ async function detectK8sConfigPathChange() {
  */
 export function refreshAllTreeViews() {
 	refreshClustersTreeView();
-	refreshSourcesTreeView();
-	refreshWorkloadsTreeView();
+	refreshResourcesTreeViews();
 }
 
 export function refreshResourcesTreeViews() {
 	refreshSourcesTreeView();
 	refreshWorkloadsTreeView();
+	refreshTemplatesTreeView();
 }
 
 
@@ -119,6 +130,13 @@ export function refreshSourcesTreeView(node?: TreeNode) {
  */
 export function refreshWorkloadsTreeView(node?: TreeNode) {
 	workloadTreeViewProvider.refresh(node);
+}
+
+/**
+ * Reloads workloads tree view for the selected cluster.
+ */
+export function refreshTemplatesTreeView(node?: TreeNode) {
+	templateTreeViewProvider.refresh(node);
 }
 
 /**

@@ -6,6 +6,7 @@ import { FileTypes } from '../../fileTypes';
 import { KubernetesContextWithCluster } from '../../kubernetes/types/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';
+import { GitOpsTemplate } from '../../kubernetes/types/flux/gitOpsTemplate';
 
 export const enum TreeNodeIcon {
 	Error = 'error',
@@ -22,7 +23,7 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Kubernetes resource.
 	 */
-	resource?: Exclude<KnownTreeNodeResources, KubernetesContextWithCluster> | KubernetesObject;
+	resource?: Exclude<KnownTreeNodeResources, KubernetesContextWithCluster> | GitOpsTemplate | KubernetesObject;
 
 	/**
 	 * Reference to the parent node (if exists).

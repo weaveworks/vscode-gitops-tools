@@ -65,6 +65,8 @@ export const enum KubernetesObjectKinds {
 	Pod = 'Pod',
 
 	ConfigMap = 'ConfigMap',
+
+	GitOpsTemplate = 'GitOpsTemplate',
 }
 
 
