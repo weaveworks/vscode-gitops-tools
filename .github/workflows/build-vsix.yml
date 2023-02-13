@@ -64,17 +64,17 @@ jobs:
           fi;
 
       - name: Clone Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@dc323e67f16fb5f7663d20ff7941f27f5809e9b6 # pin@v2
         with:
           fetch-depth: 0
 
       - name: Setup Flux CLI
-        uses: fluxcd/flux2/action@main
+        uses: fluxcd/flux2/action@e5c9132d1d3bf1de999a20daa5d61aba34bd8d2b # pin@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node version
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # pin@v1
         with:
           node-version: 16
 
@@ -100,7 +100,7 @@ jobs:
           image: kindest/node:v1.23.16
 
       - name: Run Tests
-        uses: GabrielBB/xvfb-action@v1
+        uses: GabrielBB/xvfb-action@86d97bde4a65fe9b290c0b3fb92c2c4ed0e5302d # pin@v1
         with:
           run: npm test
           options: "-screen 0 1600x1200x24"
@@ -167,7 +167,7 @@ jobs:
         if: ${{ github.event.inputs.publishMarketplace == 'yes' && github.event.inputs.releaseChannel == 'stable' }}
 
       - name: Publish to Open VSX Registry (Edge)
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@c1a0486c5a3eed24e8c21d4e37889a7c4c60c443 # pin@v1
         if: ${{ github.event.inputs.publishOpenVSX == 'yes' && github.event.inputs.releaseChannel == 'edge' }}
         with:
           preRelease: true
@@ -175,7 +175,7 @@ jobs:
           extensionFile: ./gitops-tools-${{ env.RELEASE_VERSION }}.vsix
 
       - name: Publish to Open VSX Registry (Stable)
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@c1a0486c5a3eed24e8c21d4e37889a7c4c60c443 # pin@v1
         if: ${{ github.event.inputs.publishOpenVSX == 'yes' && github.event.inputs.releaseChannel == 'stable' }}
         with:
           preRelease: false
@@ -199,20 +199,19 @@ jobs:
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
 
       - name: GitHub Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e # pin@v1
         with:
           artifacts: "./gitops-tools-*"
           bodyFile: ${{ github.workspace }}-CHANGELOG.txt
           tag: ${{ env.GIT_TAG }}
           prerelease: ${{ github.event.inputs.releaseChannel == 'edge' }}
-
           # We need to use a pull request because we need tags to be included in the history of our main
           # branch. We don't want to make an exception for our "no pushes without a pull request" security
           # policy, even for some robot. So just merge this PR manually to complete each release, or do a
           # fast-forward of the edge branch catching it up to the `release-pr` branch, as it won't get the
           # PR. (If you have trouble publishing more than one edge release, this mistake is usually why.)
 
-      - uses: repo-sync/pull-request@v2
+      - uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5 # pin@v2
         name: Finish Release PR
         if: ${{ github.event.inputs.releaseChannel != 'edge' }}
         with:
