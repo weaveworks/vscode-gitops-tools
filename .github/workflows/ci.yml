@@ -12,10 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
+
       - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # pin@v3
         with:
           node-version: '16'
+
       - run: npm install
+
       - name: Setup Kubernetes
         uses: engineerd/setup-kind@aa272fe2a7309878ffc2a81c56cfe3ef108ae7d0 # pin@v0.5.0
         with:

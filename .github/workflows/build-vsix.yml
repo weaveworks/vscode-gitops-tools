@@ -51,6 +51,7 @@ jobs:
             echo "(it was: '${GITHUB_REF_NAME}')"
           exit 1
           fi;
+
       - name: Check for correct branch (Stable)
         if: github.event.inputs.releaseChannel == 'stable'
         run: |
@@ -61,6 +62,7 @@ jobs:
             echo "(it was: '${GITHUB_REF_NAME}')"
           exit 1
           fi;
+
       - name: Clone Repository
         uses: actions/checkout@v2
         with:
@@ -71,8 +73,10 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: npm install
+
       - name: Install webview dependencies
         run: npm run install:webview
+
       - name: Build webview
         run: npm run build:webview
       - name: Install vsce globally
@@ -99,52 +103,63 @@ jobs:
         run: |
           git log $(git describe --tags --abbrev=0)..HEAD --oneline &> ${{ github.workspace }}-CHANGELOG.txt
           cat ${{ github.workspace }}-CHANGELOG.txt
+
       - name: Setup Git
         run: |
           git config --global user.name "gitops-release-bot"
           git config --global user.email "kingdon+github-bot@weave.works"
+
       - name: Get Current Version Number
         run: |
           CURRENT_VERSION=$(cat package.json | jq .version | cut -d'"' -f 2)
           echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+
       - name: Compile New Version (Edge)
         run: |
           RELEASE_VERSION=$(npx semver $CURRENT_VERSION -i pre${{ github.event.inputs.releaseType }} --preid edge)
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
           echo "Bump to $RELEASE_VERSION"
         if: ${{ github.event.inputs.releaseChannel == 'edge' && !contains(env.CURRENT_VERSION, 'edge') }}
+
       - name: Compile New Version (Edge)
         run: |
           RELEASE_VERSION=$(npx semver $CURRENT_VERSION -i prerelease)
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
           echo "Bump to $RELEASE_VERSION"
         if: ${{ github.event.inputs.releaseChannel == 'edge' && contains(env.CURRENT_VERSION, 'edge') }}
+
       - name: Compile New Version (Stable)
         run: |
           RELEASE_VERSION=$(npx semver $CURRENT_VERSION -i ${{ github.event.inputs.releaseType }})
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
           echo "Bump to $RELEASE_VERSION"
         if: ${{ github.event.inputs.releaseChannel == 'stable' }}
+
       - name: Version Package
         run: |
           git status
           git diff && git diff --cached
           npm version $RELEASE_VERSION
           git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+
       - name: Package Extension (Edge)
         if: ${{ github.event.inputs.releaseChannel == 'edge' }}
         run: |
           node .github/scripts/updateEdgeVersion.js
           vsce package --pre-release --no-git-tag-version --no-update-package-json -o "./gitops-tools-$RELEASE_VERSION.vsix" ${{ github.event.inputs.additionalFlags }}
+
       - name: Package Extension (Stable)
         run: vsce package $RELEASE_VERSION --no-git-tag-version --no-update-package-json -o "./gitops-tools-$RELEASE_VERSION.vsix" ${{ github.event.inputs.additionalFlags }}
         if: ${{ github.event.inputs.releaseChannel == 'stable' }}
+
       - name: Publish to Visual Studio Marketplace (Edge)
         run: vsce publish --packagePath "./gitops-tools-$RELEASE_VERSION.vsix" --pre-release --no-git-tag-version --no-update-package-json -p ${{ secrets.VSC_MKTP_PAT }} ${{ github.event.inputs.additionalFlags }}
         if: ${{ github.event.inputs.publishMarketplace == 'yes' && github.event.inputs.releaseChannel == 'edge' }}
+
       - name: Publish to Visual Studio Marketplace (Stable)
         run: vsce publish --packagePath "./gitops-tools-$RELEASE_VERSION.vsix" --no-git-tag-version --no-update-package-json -p ${{ secrets.VSC_MKTP_PAT }} ${{ github.event.inputs.additionalFlags }}
         if: ${{ github.event.inputs.publishMarketplace == 'yes' && github.event.inputs.releaseChannel == 'stable' }}
+
       - name: Publish to Open VSX Registry (Edge)
         uses: HaaLeo/publish-vscode-extension@v1
         if: ${{ github.event.inputs.publishOpenVSX == 'yes' && github.event.inputs.releaseChannel == 'edge' }}
@@ -152,6 +167,7 @@ jobs:
           preRelease: true
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           extensionFile: ./gitops-tools-${{ env.RELEASE_VERSION }}.vsix
+
       - name: Publish to Open VSX Registry (Stable)
         uses: HaaLeo/publish-vscode-extension@v1
         if: ${{ github.event.inputs.publishOpenVSX == 'yes' && github.event.inputs.releaseChannel == 'stable' }}
@@ -159,19 +175,23 @@ jobs:
           preRelease: false
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           extensionFile: ./gitops-tools-${{ env.RELEASE_VERSION }}.vsix
+
       - name: Push Tags (Edge)
         if: ${{ github.event.inputs.releaseChannel == 'edge' }}
         run: |
           git log -1 --stat
           git push origin --force-with-lease edge:release-pr --tags
+
       - name: Push Tags (Stable)
         if: ${{ github.event.inputs.releaseChannel == 'stable' }}
         run: |
           git log -1 --stat
           git push origin --force-with-lease main:release-pr --tags
+
       - run: |
           export GIT_TAG=$(git describe --tags --abbrev=0)
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
+
       - name: GitHub Release
         uses: ncipollo/release-action@v1
         with:
@@ -185,6 +205,7 @@ jobs:
           # policy, even for some robot. So just merge this PR manually to complete each release, or do a
           # fast-forward of the edge branch catching it up to the `release-pr` branch, as it won't get the
           # PR. (If you have trouble publishing more than one edge release, this mistake is usually why.)
+
       - uses: repo-sync/pull-request@v2
         name: Finish Release PR
         if: ${{ github.event.inputs.releaseChannel != 'edge' }}
