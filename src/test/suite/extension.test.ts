@@ -119,7 +119,7 @@ suite('Extension Test Suite', () => {
 		await api.shell.execWithOutput('flux create kustomization podinfo --target-namespace=default --source=podinfo --path="./kustomize" --timeout=5s');
 		await vscode.commands.executeCommand('gitops.views.refreshResourcesTreeView');
 
-		let workload = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
+		let workload = await getTreeItem(api.data.workloadTreeViewProvider, 'Kustomization: podinfo');
 		assert.notStrictEqual(workload, undefined, 'Adding a Kustomization and refreshing the view should list it');
 
 		await api.shell.execWithOutput('flux delete kustomization podinfo -s');
