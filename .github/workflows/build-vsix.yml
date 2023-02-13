@@ -72,9 +72,9 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Install webview dependencies
-        run: npm install:webview
+        run: npm run install:webview
       - name: Build webview
-        run: npm build:webview
+        run: npm run build:webview
       - name: Install vsce globally
         run: npm install -g vsce
       - name: Build Package

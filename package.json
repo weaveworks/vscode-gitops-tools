@@ -42,6 +42,21 @@
 	"bugs": "https://github.com/weaveworks/vscode-gitops-tools/issues",
 	"homepage": "https://github.com/weaveworks/vscode-gitops-tools",
 	"main": "./dist/extension.js",
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js",
+		"start:webview": "npm --prefix ./webview-ui run start",
+		"install:webview": "npm --prefix ./webview-ui install",
+		"build:webview": "npm --prefix ./webview-ui run build",
+		"watch:webview": "npm --prefix ./webview-ui run watch"
+	},
 	"contributes": {
 		"commands": [
 			{
@@ -507,21 +522,6 @@
 				}
 			]
 		}
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run package",
-		"compile": "webpack",
-		"watch": "webpack --watch",
-		"package": "webpack --mode production --devtool hidden-source-map",
-		"compile-tests": "tsc -p . --outDir out",
-		"watch-tests": "tsc -p . -w --outDir out",
-		"pretest": "npm run compile-tests && npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js",
-		"start:webview": "npm --prefix ./webview-ui run start",
-		"install:webview": "npm --prefix ./webview-ui install",
-		"build:webview": "npm --prefix ./webview-ui run build",
-		"watch:webview": "npm --prefix ./webview-ui run watch"
 	},
 	"extensionDependencies": [
 		"ms-kubernetes-tools.vscode-kubernetes-tools"
