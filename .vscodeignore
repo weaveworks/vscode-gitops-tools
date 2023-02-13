@@ -15,5 +15,15 @@ node_modules
 **/*.map
 **/*.ts
 
-# Remove next line to include docs images for the README.md file (if the package is intended to be shared by `.vsix`), but vsce will still transform the urls in README files
-docs/**
+
+webview-ui/.vscode/**
+webview-ui/.vscode-test/**
+webview-ui/out/**
+webview-ui/node_modules/**
+webview-ui/src/**
+webview-ui/test
+webview-ui/node_modules
+webview-ui/**/tsconfig.json
+webview-ui/**/.eslintrc.json
+webview-ui/**/*.map
+webview-ui/**/*.ts
