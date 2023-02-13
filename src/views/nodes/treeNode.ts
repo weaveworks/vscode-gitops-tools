@@ -3,7 +3,7 @@ import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemColla
 import { CommandId } from '../../commands';
 import { asAbsolutePath } from '../../extensionContext';
 import { FileTypes } from '../../fileTypes';
-import { KubernetesContextWithCluster } from '../../kubernetes/kubernetesConfig';
+import { KubernetesContextWithCluster } from '../../kubernetes/types/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';
 

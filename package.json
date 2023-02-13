@@ -2,7 +2,7 @@
 	"name": "vscode-gitops-tools",
 	"displayName": "GitOps Tools for Flux",
 	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
-	"version": "0.22.5",
+	"version": "0.22.6-edge.1",
 	"author": "Kingdon Barrett <kingdon@weave.works>",
 	"contributors": [
 		"Kingdon Barrett <kingdon@weave.works>",
@@ -41,41 +41,6 @@
 	},
 	"bugs": "https://github.com/weaveworks/vscode-gitops-tools/issues",
 	"homepage": "https://github.com/weaveworks/vscode-gitops-tools",
-	"activationEvents": [
-		"onCommand:gitops.dev.showGlobalState",
-		"onCommand:gitops.showInstalledVersions",
-		"onCommand:gitops.suspend",
-		"onCommand:gitops.resume",
-		"onCommand:gitops.createKustomization",
-		"onCommand:gitops.setClusterProvider",
-		"onCommand:gitops.flux.check",
-		"onCommand:gitops.flux.checkPrerequisites",
-		"onCommand:gitops.flux.install",
-		"onCommand:gitops.flux.uninstall",
-		"onCommand:gitops.flux.reconcileSource",
-		"onCommand:gitops.flux.reconcileRepository",
-		"onCommand:gitops.flux.reconcileWorkload",
-		"onCommand:gitops.flux.trace",
-		"onCommand:gitops.views.refreshAllTreeViews",
-		"onCommand:gitops.views.refreshSourceTreeView",
-		"onCommand:gitops.views.refreshWorkloadTreeView",
-		"onCommand:gitops.views.pullGitRepository",
-		"onCommand:gitops.views.createGitRepository",
-		"onCommand:gitops.views.deleteSource",
-		"onCommand:gitops.views.deleteWorkload",
-		"onCommand:gitops.views.showWorkloadsHelpMessage",
-		"onCommand:gitops.copyResourceName",
-		"onCommand:gitops.editor.openResource",
-		"onCommand:gitops.editor.showLogs",
-		"onCommand:gitops.editor.createSource",
-		"onCommand:gitops.output.show",
-		"onCommand:gitops.installFluxCli",
-		"onWebviewPanel:createSource",
-		"onView:gitops.views.clusters",
-		"onView:gitops.views.sources",
-		"onView:gitops.views.workloads",
-		"onView:gitops.views.documentation"
-	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
@@ -141,7 +106,7 @@
 			},
 			{
 				"command": "gitops.flux.reconcileRepository",
-				"title": "Reconcile Repository",
+				"title": "Reconcile GitRepository for Path",
 				"category": "GitOps"
 			},
 			{
@@ -161,14 +126,8 @@
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "gitops.views.refreshSourceTreeView",
+				"command": "gitops.views.refreshResourcesTreeView",
 				"title": "Refresh Sources View",
-				"category": "GitOps",
-				"icon": "$(refresh)"
-			},
-			{
-				"command": "gitops.views.refreshWorkloadTreeView",
-				"title": "Refresh Workloads View",
 				"category": "GitOps",
 				"icon": "$(refresh)"
 			},
@@ -179,15 +138,29 @@
 			},
 			{
 				"command": "gitops.views.createGitRepository",
-				"title": "Create Git Repository Source",
+				"title": "Create GitRepository from Path",
 				"category": "GitOps"
 			},
 			{
 				"command": "gitops.createKustomization",
-				"title": "Create Kustomization",
+				"title": "Create Kustomization from Path",
 				"icon": "$(add)",
 				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.addSource",
+				"title": "Add Source",
+				"category": "GitOps",
+				"icon": "$(add)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+			},
+			{
+				"command": "gitops.addKustomization",
+				"title": "Add Kustomization",
+				"category": "GitOps",
+				"icon": "$(add)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.deleteWorkload",
@@ -214,13 +187,6 @@
 				"command": "gitops.editor.openResource",
 				"title": "View Config",
 				"category": "GitOps"
-			},
-			{
-				"command": "gitops.editor.createSource",
-				"title": "Create Source",
-				"category": "GitOps",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
-				"icon": "$(add)"
 			},
 			{
 				"command": "gitops.output.show",
@@ -341,22 +307,22 @@
 					"when": "view == gitops.views.clusters"
 				},
 				{
-					"command": "gitops.editor.createSource",
+					"command": "gitops.addSource",
 					"group": "navigation@0",
 					"when": "view == gitops.views.sources"
 				},
 				{
-					"command": "gitops.createKustomization",
+					"command": "gitops.addKustomization",
 					"group": "navigation@0",
 					"when": "view == gitops.views.workloads"
 				},
 				{
-					"command": "gitops.views.refreshSourceTreeView",
+					"command": "gitops.views.refreshResourcesTreeView",
 					"group": "navigation@1",
 					"when": "view == gitops.views.sources"
 				},
 				{
-					"command": "gitops.views.refreshWorkloadTreeView",
+					"command": "gitops.views.refreshResourcesTreeView",
 					"group": "navigation@1",
 					"when": "view == gitops.views.workloads"
 				},
@@ -394,7 +360,7 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository;|Bucket;)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@0"
 				},
 				{
@@ -404,12 +370,12 @@
 				},
 				{
 					"command": "gitops.suspend",
-					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /notSuspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository;)/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.resume",
-					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|Kustomization;|HelmRelease;)/ && viewItem =~ /suspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository;)/ && viewItem =~ /suspend;/",
 					"group": "navigation@1"
 				},
 				{
@@ -419,12 +385,17 @@
 				},
 				{
 					"command": "gitops.views.deleteSource",
-					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|HelmRepository;|Bucket;)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@2"
 				},
 				{
 					"command": "gitops.views.pullGitRepository",
 					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/",
+					"group": "navigation@3"
+				},
+				{
+					"command": "gitops.addKustomization",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;|OCIRepository;|Bucket;/",
 					"group": "navigation@3"
 				},
 				{
@@ -444,12 +415,10 @@
 			],
 			"explorer/context": [
 				{
-					"command": "gitops.views.createGitRepository",
-					"when": "gitops:openFolderGitRepositoryExistDetermined && !gitops:openFolderGitRepositoryExist"
+					"command": "gitops.views.createGitRepository"
 				},
 				{
-					"command": "gitops.flux.reconcileRepository",
-					"when": "gitops:openFolderGitRepositoryExistDetermined && gitops:openFolderGitRepositoryExist"
+					"command": "gitops.flux.reconcileRepository"
 				},
 				{
 					"command": "gitops.createKustomization"
@@ -521,10 +490,6 @@
 					"when": "never"
 				},
 				{
-					"command": "gitops.editor.createSource",
-					"when": "never"
-				},
-				{
 					"command": "gitops.flux.trace",
 					"when": "never"
 				},
@@ -552,7 +517,11 @@
 		"watch-tests": "tsc -p . -w --outDir out",
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"start:webview": "npm --prefix ./webview-ui run start",
+		"install:webview": "npm --prefix ./webview-ui install",
+		"build:webview": "npm --prefix ./webview-ui run build",
+		"watch:webview": "npm --prefix ./webview-ui run watch"
 	},
 	"extensionDependencies": [
 		"ms-kubernetes-tools.vscode-kubernetes-tools"
@@ -580,9 +549,10 @@
 	"dependencies": {
 		"@kubernetes/client-node": "^0.16.2",
 		"@vscode/extension-telemetry": "^0.4.7",
+		"change-case": "^4.1.2",
 		"extract-zip": "^2.0.1",
-		"jose": ">=2.0.6",
 		"git-url-parse": "^13.0.0",
+		"jose": ">=2.0.6",
 		"parse-path": ">=5.0.0",
 		"parse-url": ">=8.1.0",
 		"semver": "^7.3.5",
@@ -591,6 +561,7 @@
 		"tinytim": "^0.1.1",
 		"vscode-kubernetes-tools-api": "^1.3.0"
 	},
+	"activationEvents": [],
 	"__metadata": {
 		"id": "61a914ed-c714-4c42-a201-6008038286a4",
 		"publisherDisplayName": "Weaveworks",

@@ -68,6 +68,7 @@
 			}
 		],
 		"@typescript-eslint/no-shadow": "warn",
+		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/func-call-spacing": "warn",
 		"@typescript-eslint/prefer-for-of": "warn",
 		"@typescript-eslint/no-inferrable-types": "warn",

@@ -17,9 +17,6 @@ export const enum ContextTypes {
 	NoSources = 'gitops:noSources',
 	NoWorkloads = 'gitops:noWorkloads',
 
-	OpenFolderGitRepositoryExistDetermined = 'gitops:openFolderGitRepositoryExistDetermined',
-	OpenFolderGitRepositoryExist = 'gitops:openFolderGitRepositoryExist',
-
 	IsDev = 'gitops:isDev',
 }
 
@@ -38,9 +35,6 @@ interface ContextValues {
 	[ContextTypes.NoClusters]: boolean;
 	[ContextTypes.NoSources]: boolean;
 	[ContextTypes.NoWorkloads]: boolean;
-
-	[ContextTypes.OpenFolderGitRepositoryExist]: boolean;
-	[ContextTypes.OpenFolderGitRepositoryExistDetermined]: boolean;
 
 	[ContextTypes.IsDev]: boolean;
 }

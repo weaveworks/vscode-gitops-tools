@@ -1,11 +1,12 @@
 import { window } from 'vscode';
 import safesh from 'shell-escape-tag';
 import { telemetry } from '../extension';
-import { KubernetesObjectKinds } from '../kubernetes/kubernetesTypes';
+import { KubernetesObjectKinds, SourceObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { shell } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxTypes';
+import { buildCLIArgs, cliKind } from './cliArgs';
 
 /**
  * Special symbols used in flux output.
@@ -42,6 +43,17 @@ class FluxTools {
 	private splitLines(output: string) {
 		return output.split('\n')
 			.filter(str => str.length);
+	}
+
+	private parseDeployKey(output: string): string | undefined {
+		// parse deploy key if the repository url is using SSH protocol
+		const lines = this.splitLines(output);
+		const deployKeyPrefix = `${FluxOutputSymbols.Plus} deploy key:`;
+		for (const line of lines) {
+			if (line.startsWith(deployKeyPrefix)) {
+				return line.slice(deployKeyPrefix.length).trim();
+			}
+		}
 	}
 
 	/**
@@ -233,84 +245,85 @@ class FluxTools {
 		}
 	}
 
-	/**
-	 * Run `flux create source git`. If the protocol of the url is SSH -
-	 * try to parse the deploy key from the flux output.
-	 * @see https://fluxcd.io/docs/cmd/flux_create_source/
-	 */
-	async createSourceGit(args: {
-		sourceName: string;
-		url: string;
-		branch?: string;
-		tag?: string;
-		semver?: string;
-		interval?: string;
-		timeout?: string;
-		caFile?: string;
-		privateKeyFile?: string;
-		username?: string;
-		password?: string;
-		secretRef?: string;
-		gitImplementation?: string;
-		recurseSubmodules?: boolean;
-		sshKeyAlgorithm?: string;
-		sshEcdsaCurve?: string;
-		sshRsaBits?: string;
-	}) {
-		const urlArg = ` --url "${args.url}"`;
-		const branchArg = args.branch ? ` --branch "${args.branch}"` : '';
-		const tagArg = args.tag ? ` --tag "${args.tag}"` : '';
-		const semverArg = args.semver ? ` --tag-semver "${args.semver}"` : '';
-		const intervalArg = args.interval ? ` --interval "${args.interval}"` : '';
-		const timeoutArg = args.timeout ? ` --timeout "${args.timeout}"` : '';
-		const caFileArg = args.caFile ? ` --ca-file "${args.caFile}"` : '';
-		const privateKeyFileArg = args.privateKeyFile ? ` --private-key-file "${args.privateKeyFile}"` : '';
-		const usernameArg = args.username ? ` --username "${args.username}"` : '';
-		const passwordArg = args.password ? ` --password "${args.password}"` : '';
-		const secretRefArg = args.secretRef ? ` --secret-ref "${args.secretRef}"` : '';
-		const gitImplementation = args.gitImplementation ? ` --git-implementation "${args.gitImplementation}"` : '';
-		const recurseSubmodules = args.recurseSubmodules ? ' --recurse-submodules' : '';
-		const sshKeyAlgorithm = args.sshKeyAlgorithm ? ` --ssh-key-algorithm "${args.sshKeyAlgorithm}"` : '';
-		const sshEcdsaCurve = args.sshEcdsaCurve ? ` --ssh-ecdsa-curve "${args.sshEcdsaCurve}"` : '';
-		const sshRsaBits = args.sshRsaBits ? ` --ssh-rsa-bits "${args.sshRsaBits}"` : '';
 
-		const createSourceShellResult = await shell.execWithOutput(`flux create source git ${args.sourceName}${urlArg}${branchArg}${tagArg}${semverArg}${intervalArg}${timeoutArg}${caFileArg}${privateKeyFileArg}${usernameArg}${passwordArg}${secretRefArg}${gitImplementation}${recurseSubmodules}${sshKeyAlgorithm}${sshEcdsaCurve}${sshRsaBits} --silent`);
+	createSourceCommand(source: any): string {
+		const commandKind = cliKind(source.kind);
+		const name = source.name;
 
-		if (createSourceShellResult.code !== 0) {
-			// shell always fails in SSH case (without specifying any key) (as reconciliation error)
-		}
+		delete source.kind;
+		delete source.name;
 
-		const output = createSourceShellResult.stdout || createSourceShellResult.stderr;
+		const args = buildCLIArgs(source);
 
-		// parse deploy key if the repository url is using SSH protocol
-		let deployKey: string | undefined;
-		const lines = this.splitLines(output);
-		const deployKeyPrefix = `${FluxOutputSymbols.Plus} deploy key:`;
-		for (const line of lines) {
-			if (line.startsWith(deployKeyPrefix)) {
-				deployKey = line.slice(deployKeyPrefix.length).trim();
-			}
-		}
-
-		if (!deployKey) {
-			return;
-		}
-
-		return {
-			deployKey,
-		};
+		return `flux create source ${commandKind} ${name} ${args}`;
 	}
 
-	async createKustomization(kustomizationName: string, sourceName: string, kustomizationPath: string) {
-		const createKustomizationShellResult = await shell.execWithOutput(`flux create kustomization ${kustomizationName} --source=${KubernetesObjectKinds.GitRepository}/${sourceName} --path="${kustomizationPath}" --prune=true`);
 
-		if (createKustomizationShellResult.code !== 0) {
-			window.showErrorMessage(createKustomizationShellResult.stderr);
+	createKustomizationCommand(kustomization: any): string {
+		const name = kustomization.name;
+		delete kustomization.name;
+
+		const args = buildCLIArgs(kustomization);
+
+		return `flux create kustomization ${name} ${args}`;
+	}
+
+	async createSource(source: any) {
+		const command = this.createSourceCommand(source);
+		const shellResult = await shell.execWithOutput(command);
+
+		if (shellResult.code !== 0) {
+			window.showErrorMessage(shellResult.stderr);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
+		}
+
+		const output = shellResult.stdout || shellResult.stderr;
+
+		return(this.parseDeployKey(output));
+	}
+
+	async exportSource(source: any) {
+		const command = `${this.createSourceCommand(source)} --export`;
+
+		const shellResult = await shell.execWithOutput(command);
+
+		if(shellResult.code !== 0) {
+			window.showErrorMessage(shellResult.stderr);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
+
+			return '---';
+		}
+
+		return shellResult.stdout;
+	}
+
+	async createKustomization(kustomization: any) {
+		const command = this.createKustomizationCommand(kustomization);
+		const shellResult = await shell.execWithOutput(command);
+
+		if (shellResult.code !== 0) {
+			window.showErrorMessage(shellResult.stderr);
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
-			return;
 		}
 	}
+
+	async exportKustomization(kustomization: any) {
+		const command = `${this.createKustomizationCommand(kustomization)} --export`;
+		const shellResult = await shell.execWithOutput(command);
+
+		if(shellResult.code !== 0) {
+			window.showErrorMessage(shellResult.stderr);
+			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
+
+			return '---';
+		}
+
+		return shellResult.stdout;
+	}
+
 }
+
+
 
 /**
  * Helper methods for running and parsing flux commands.

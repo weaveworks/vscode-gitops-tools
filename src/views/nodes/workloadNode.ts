@@ -1,9 +1,10 @@
 import { MarkdownString } from 'vscode';
-import { HelmRelease } from '../../kubernetes/helmRelease';
-import { DeploymentCondition } from '../../kubernetes/kubernetesTypes';
-import { Kustomize } from '../../kubernetes/kustomize';
+import { HelmRelease } from '../../kubernetes/types/flux/helmRelease';
+import { DeploymentCondition } from '../../kubernetes/types/kubernetesTypes';
+import { Kustomize } from '../../kubernetes/types/flux/kustomize';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
+import { shortenRevision } from '../../utils/stringUtils';
 
 /**
  * Base class for all Workload tree view items.
@@ -18,7 +19,8 @@ export class WorkloadNode extends TreeNode {
 	resource: Kustomize | HelmRelease;
 
 	constructor(label: string, resource: Kustomize | HelmRelease) {
-		super(label);
+
+		super(`${resource.kind}: ${label}`);
 
 		this.resource = resource;
 
@@ -56,13 +58,24 @@ export class WorkloadNode extends TreeNode {
 	}
 
 	get tooltip() {
-		return this.getMarkdownHover(this.resource);
+		const md = this.getMarkdownHover(this.resource);
+		console.log(md.value);
+		return md;
+
 	}
 
 	// @ts-ignore
 	get description() {
 		const isSuspendIcon = this.resource.spec?.suspend ? '⏸ ' : '';
-		return `${isSuspendIcon}${this.resource.kind}`;
+		const condition = this.findReadyOrFirstCondition(this.resource.status.conditions);
+		let revisionOrError = '';
+
+		if (this.isReconcileFailed) {
+			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason}`;
+		} else {
+			revisionOrError = shortenRevision(this.resource.status.lastAppliedRevision);
+		}
+		return `${isSuspendIcon}${revisionOrError}`;
 	}
 
 	/**
