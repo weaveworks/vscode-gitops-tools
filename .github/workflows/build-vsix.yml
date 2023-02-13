@@ -77,6 +77,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
+
+      - name: Install vsce globally
+        run: npm install -g vsce
+
       - name: Install dependencies
         run: npm install
 
@@ -85,8 +89,7 @@ jobs:
 
       - name: Build webview
         run: npm run build:webview
-      - name: Install vsce globally
-        run: npm install -g vsce
+
       - name: Build Package
         run: npm run compile
 
