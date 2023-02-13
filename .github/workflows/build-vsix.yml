@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node version
         uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # pin@v1
         with:
-          node-version: 16
+          node-version: 19
 
       - name: Install vsce globally
         run: npm install -g vsce
