@@ -4,6 +4,26 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.23.0
+
+* Merge pull request #417 from kingdonb/fix-readme-svg-issue
+  * SVGs are restricted in README
+* Merge pull request #416 from kingdonb/node-19
+  * try node 19
+* Merge pull request #415 from weaveworks/edge
+* Merge pull request #414 from kingdonb/fix-flux-cli
+  * switch kind to existing image
+  * pin-github-actions
+  * move "install vcse" to earlier in the workflow
+  * upgrade kind, resolve flux cli occasional failure
+* release build fixes (#412)
+* Rebuild README.md (#411)
+* Configure gitops workflow improvements (#410)
+* update README.md (#409)
+* Adding Video Resources (#404)
+* test: timeout kustomizations that wont reconcile (#402)
+* Merge pull request #397 from weaveworks/release-pr
+
 # v0.22.5
 
 * update telemetry key (#395)
