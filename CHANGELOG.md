@@ -4,6 +4,11 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.23.1
+
+* .vscodeignore webview-ui sources (#420)
+* Merge pull request #418 from weaveworks/release-pr
+
 # v0.23.0
 
 * Merge pull request #417 from kingdonb/fix-readme-svg-issue
