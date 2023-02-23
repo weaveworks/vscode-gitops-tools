@@ -5,10 +5,12 @@
  * @returns Short revision string with max 7 characters.
  */
 export function shortenRevision(revision = ''): string {
+	revision = revision.replace(/^(sha1|sha256|sha384|sha512|blake3):/, '');
+	revision = revision.replace(/@(sha1|sha256|sha384|sha512|blake3):/, '/');
 	if (revision.includes('/')) {
 		// git revision includes branch name
 		const [gitBranch, gitRevision] = revision.split('/');
-		return [gitBranch, '/', gitRevision.slice(0, 7)].join('');
+		return [gitBranch, ':', gitRevision.slice(0, 7)].join('');
 	} else {
 		return revision.slice(0, 7);
 	}
