@@ -79,7 +79,7 @@ jobs:
           node-version: 19
 
       - name: Install vsce globally
-        run: npm install -g vsce
+        run: npm install -g @vscode/vsce
 
       - name: Install dependencies
         run: npm install
