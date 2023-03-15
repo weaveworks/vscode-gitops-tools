@@ -52,8 +52,8 @@
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js",
-		"install:webview": "npm --prefix ./webview-ui run install",
-		"build:webview": "npm --prefix ./webview-ui run build"
+		"install:webview": "make -C ./webview-ui install",
+		"build:webview": "make -C ./webview-ui build"
 	},
 	"contributes": {
 		"commands": [
