@@ -5,6 +5,7 @@ import { DataProvider } from '../../views/dataProviders/dataProvider';
 import { ClusterDataProvider } from '../../views/dataProviders/clusterDataProvider';
 import { SourceDataProvider } from '../../views/dataProviders/sourceDataProvider';
 import { WorkloadDataProvider } from '../../views/dataProviders/workloadDataProvider';
+import { NamespaceNode } from '../../views/nodes/namespaceNode';
 
 let api: {
 	shell: { execWithOutput: any; };
@@ -81,55 +82,61 @@ suite('Extension Test Suite', () => {
 		assert.strictEqual((cluster as any).children.length, 4, 'Enabling GitOps should list installed Flux controllers');
 	});
 
-	/* TODO: fix tests
+
 	test('Sources are listed', async function() {
 		this.timeout(15000);
 
-		await api.shell.execWithOutput('flux create source git podinfo --url=https://github.com/stefanprodan/podinfo --branch master');
+		await api.shell.execWithOutput('flux create source git podinfo --url=https://github.com/stefanprodan/podinfo --branch master --namespace default');
 		await vscode.commands.executeCommand('gitops.views.refreshResourcesTreeView');
 
-		let source = await getTreeItem(api.data.sourceTreeViewProvider, 'GitRepository: podinfo');
-		assert.notStrictEqual(source, undefined, 'Adding a GitSource and refreshing the view should list it');
+		let namespace = await getTreeItem(api.data.sourceTreeViewProvider, 'default') as NamespaceNode;
+		let source = namespace && namespace.children[0];
+		assert.strictEqual(source?.label, 'GitRepository: podinfo', 'Adding a GitSource and refreshing the view should list it');
 
-		await api.shell.execWithOutput('flux delete source git podinfo -s');
+		await api.shell.execWithOutput('flux delete source git podinfo -s --namespace default');
 		await vscode.commands.executeCommand('gitops.views.refreshAllTreeViews'); // refresh all'
 
-		source = await getTreeItem(api.data.sourceTreeViewProvider, 'GitRepository: podinfo');
+		namespace = await getTreeItem(api.data.sourceTreeViewProvider, 'default') as NamespaceNode;
+		source = namespace && namespace.children[0];
 		assert.strictEqual(source, undefined, 'Removing a GitSource and refreshing all views should unlist it');
 	});
 
 	test('OCI Sources are listed', async function() {
-		this.timeout(15000);
+		this.timeout(30000);
 
-		await api.shell.execWithOutput('flux create source oci podinfo --url=oci://ghcr.io/stefanprodan/manifests/podinfo --tag-semver 6.1.x');
+		await api.shell.execWithOutput('flux create source oci podinfo --url=oci://ghcr.io/stefanprodan/manifests/podinfo --tag-semver 6.1.x --namespace default');
 		await vscode.commands.executeCommand('gitops.views.refreshResourcesTreeView');
 
-		let source = await getTreeItem(api.data.sourceTreeViewProvider, 'OCIRepository: podinfo');
-		assert.notStrictEqual(source, undefined, 'Adding a OCI Source and refreshing the view should list it');
+		let namespace = await getTreeItem(api.data.sourceTreeViewProvider, 'default') as NamespaceNode;
+		let source = namespace && namespace.children[0];
+		assert.strictEqual(source?.label, 'OCIRepository: podinfo', 'Adding a OCI Source and refreshing the view should list it');
 
-		await api.shell.execWithOutput('flux delete source oci podinfo -s');
+		await api.shell.execWithOutput('flux delete source oci podinfo -s --namespace default');
 		await vscode.commands.executeCommand('gitops.views.refreshAllTreeViews'); // refresh all'
 
-		source = await getTreeItem(api.data.sourceTreeViewProvider, 'OCIRepository: podinfo');
+		namespace = await getTreeItem(api.data.sourceTreeViewProvider, 'default') as NamespaceNode;
+		source = namespace && namespace.children[0];
 		assert.strictEqual(source, undefined, 'Removing an OCI Source and refreshing all views should unlist it');
 	});
+
 
 	test('Kustomizations are listed', async function() {
 		this.timeout(10000);
 
-		await api.shell.execWithOutput('flux create kustomization podinfo --target-namespace=default --source=podinfo --path="./kustomize" --timeout=5s');
+		await api.shell.execWithOutput('flux create kustomization podinfo --target-namespace=default --source=podinfo --path="./kustomize" --timeout=5s --namespace=default');
 		await vscode.commands.executeCommand('gitops.views.refreshResourcesTreeView');
 
-		let workload = await getTreeItem(api.data.workloadTreeViewProvider, 'Kustomization: podinfo');
-		assert.notStrictEqual(workload, undefined, 'Adding a Kustomization and refreshing the view should list it');
+		let namespace = await getTreeItem(api.data.workloadTreeViewProvider, 'default') as NamespaceNode;
+		let workload = namespace && namespace.children[0];
+		assert.strictEqual(workload?.label, 'Kustomization: podinfo', 'Adding a Kustomization and refreshing the view should list it');
 
-		await api.shell.execWithOutput('flux delete kustomization podinfo -s');
+		await api.shell.execWithOutput('flux delete kustomization podinfo -s --namespace=default');
 		await vscode.commands.executeCommand('gitops.views.refreshAllTreeViews'); // refresh all'
 
-		workload = await getTreeItem(api.data.workloadTreeViewProvider, 'podinfo');
+		namespace = await getTreeItem(api.data.workloadTreeViewProvider, 'default') as NamespaceNode;
+		workload = namespace && namespace.children[0];
 		assert.strictEqual(workload, undefined, 'Removing a Kustomization and refreshing all views should unlist it');
 	});
-	*/
 
 	test('Disable GitOps uninstalls Flux',  async function () {
 		this.timeout(60000);
