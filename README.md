@@ -23,7 +23,7 @@ There are a few requirements before installing and using the extension:
 - Install the `kubectl` [command-line tool](https://kubernetes.io/docs/tasks/tools/)
 - You must have a working cluster selected in the `kubectl` config. A `kind` or Docker Desktop cluster is an easy way to get started. More information about kubeconfigs is available [here](https://github.com/vscode-kubernetes-tools/vscode-kubernetes-tools#working-with-kubeconfigs)
 - The `flux` tool is required and can be installed from this extension
-- Additional [dependencies](#dependencies) for Azure users
+- Additional [dependencies](#dependencies) for Weave GitOps Enterprise and Azure users
 
 Once you have satisfied these requirements you can find and install GitOps Tools in the [Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) by searching for "**fluxcd**" or "**gitops**".
 
@@ -100,6 +100,7 @@ Optional tools:
 
 Tool | Description | Installation
 --- | --- | ---
+[`gitops`](https://docs.gitops.weave.works/docs/installation/weave-gitops-enterprise/#installing-weave-gitops-enterprise) | Weave GitOps Enterprise (WGE) CLI (required for Templates feature) | [Install WGE CLI](https://docs.gitops.weave.works/docs/installation/weave-gitops-enterprise/#7-install-the-cli)
 [`az`](https://docs.microsoft.com/en-us/cli/azure/) | Azure CLI. (only if using the extension to create or register Azure clusters) | [Install az](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 [`docker`](https://www.docker.com) | Docker is an open platform for developing, shipping, and running applications. | [Install Docker](https://docs.docker.com/get-docker/)
 
@@ -112,6 +113,22 @@ The GitOps Tools Extension depends on the [Kubernetes Tools](https://marketplace
 
 - Make sure you have [successfully authenticated](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli) on your `az` CLI and have access to the [correct subscription](https://docs.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az_account_set) for your AKS or ARC cluster.
 - The easiest way to get your AKS or Arc cluster visible by the GitOps and Kubernetes Extensions, is to use the `az` CLI to merge the kubeconfig for accessing your cluster onto the default `kubectl` config. Use `get-credentials` as shown in the [official CLI documentation](https://docs.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az_aks_get_credentials). In order to enable GitOps in a cluster you will likely need the `--admin` credentials.
+
+## Weave GitOps Enterprise (WGE) Templates
+
+WGE users can access GitOpsTemplates directly from this extensions. Templates are provided by cluster administrators (Platform Teams) and can be used to quickly create cluster and configure applications with GitOps.
+
+Templates are an opt-in feature that must be enabled in setting:
+
+![Enable GitOpsTemplates](docs/images/vscode-templates-config.png)
+
+After that they can be seen in a new 'Templates' view. Right-click a template to use it:
+
+![Use GitOpsTemplates](docs/images/vscode-templates-view.png)
+
+
+
+
 
 # Common Issues
 
