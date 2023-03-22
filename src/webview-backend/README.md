@@ -11,7 +11,7 @@ Individual JavaScript / TypeScript files that contain a class which manages the 
 - Other custom logic and behavior related to webview panel management
 
 
-## `configureGitOps` Directort
+## `configureGitOps` Directory
 
 This contains the application used to create Sources and Workloads.
 
@@ -19,3 +19,8 @@ This contains the application used to create Sources and Workloads.
 - `openPanel` creates the Panel and provides it with the current environment information
 - `actions` module is for actions initiated by user in the webapp, for example when user a clicks a button that vscode must handle
 - `lib` is the business logic
+
+
+## `createFromTemplate` Directory
+
+Contains integration for the web app to configure the GitOpsTemplate user selected in the Templates view

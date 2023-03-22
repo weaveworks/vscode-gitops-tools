@@ -4,7 +4,7 @@ import { failed } from '../errorable';
 import { getFolderGitInfo, getGitRepositoryforGitInfo } from '../git/gitInfo';
 import { namespacedObject } from '../kubernetes/types/flux/object';
 import { getCurrentClusterInfo } from '../views/treeViews';
-import { openConfigureGitOpsPanel } from '../webview-backend/configureGitOps/openPanel';
+import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
 
 /**
  * Create kustomization from File Explorer context menu
@@ -55,7 +55,7 @@ export async function createKustomizationForPath(fileExplorerUri?: Uri): Promise
 	const selectSource = !!gr;
 	let sourceName = namespacedObject(gr) || '';
 
-	openConfigureGitOpsPanel(selectSource, sourceName, {
+	openConfigureGitOpsWebview(selectSource, sourceName, {
 		kustomization: {
 			path: relativeKustomizationPath,
 		},

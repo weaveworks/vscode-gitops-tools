@@ -26,7 +26,7 @@ export class WorkloadDataProvider extends DataProvider {
    * Creates Workload tree nodes for the currently selected kubernetes cluster.
    * @returns Workload tree nodes to display.
    */
-	async buildTree(): Promise<WorkloadNode[]> {
+	async buildTree(): Promise<NamespaceNode[]> {
 		statusBar.startLoadingTree();
 
 		const workloadNodes: WorkloadNode[] = [];
@@ -65,7 +65,8 @@ export class WorkloadDataProvider extends DataProvider {
 		setVSCodeContext(ContextTypes.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		return workloadNodes;
+
+		return this.groupByNamespace(namespaces?.items || [], workloadNodes);
 	}
 
 	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {

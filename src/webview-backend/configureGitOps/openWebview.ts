@@ -1,4 +1,4 @@
-import { window, workspace } from 'vscode';
+import { Uri, window, workspace } from 'vscode';
 import { failed } from '../../errorable';
 import { telemetry } from '../../extension';
 import { getExtensionContext } from '../../extensionContext';
@@ -8,13 +8,18 @@ import { FluxSourceObject, namespacedObject } from '../../kubernetes/types/flux/
 import { ClusterProvider, KubernetesObject } from '../../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../../telemetry';
 import { getCurrentClusterInfo } from '../../views/treeViews';
-import { createOrShowConfigureGitOpsPanel } from './Panel';
+import { WebviewBackend } from '../WebviewBackend';
+
+import { ConfigureGitOpsWebviewParams } from '../types';
+import { receiveMessage } from './receiveMessage';
+
+let webview: WebviewBackend | undefined;
 
 /**
  * Open the webview editor with a form to enter all the flags
  * needed to create a source (and possibly Kustomization)
  */
-export async function openConfigureGitOpsPanel(selectSource: boolean, selectedSource?: FluxSourceObject | string, set?: any, gitInfo?: GitInfo) {
+export async function openConfigureGitOpsWebview(selectSource: boolean, selectedSource?: FluxSourceObject | string, set?: any, gitInfo?: GitInfo) {
 	telemetry.send(TelemetryEventNames.CreateSourceOpenWebview);
 
 	const clusterInfo = await getCurrentClusterInfo();
@@ -49,7 +54,7 @@ export async function openConfigureGitOpsPanel(selectSource: boolean, selectedSo
 
 	const selectedSourceName = typeof selectedSource === 'string' ? selectedSource : (namespacedObject(selectedSource) || '');
 
-	const webviewParams = {
+	const webviewParams: ConfigureGitOpsWebviewParams = {
 		clusterInfo: clusterInfo.result,
 		gitInfo,
 		namespaces: namespaces,
@@ -59,5 +64,12 @@ export async function openConfigureGitOpsPanel(selectSource: boolean, selectedSo
 		set,
 	};
 
-	createOrShowConfigureGitOpsPanel(getExtensionContext().extensionUri, webviewParams);
+
+	if(!webview) {
+		const extensionUri = getExtensionContext().extensionUri;
+		const uri = Uri.joinPath(extensionUri, 'webview-ui', 'configureGitOps');
+		webview = new WebviewBackend('Configure GitOps', uri, webviewParams, receiveMessage);
+	} else {
+		webview.update(webviewParams);
+	}
 }

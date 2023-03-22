@@ -18,36 +18,14 @@ export const enum ContextTypes {
 	NoWorkloads = 'gitops:noWorkloads',
 
 	IsDev = 'gitops:isDev',
+	IsWGE = 'gitops:isWGE',
 }
 
-/**
- * Mapping between context name and value.
- */
-interface ContextValues {
-	[ContextTypes.NoClusterSelected]: boolean;
-	[ContextTypes.CurrentClusterGitOpsNotEnabled]: boolean;
-
-	[ContextTypes.LoadingClusters]: boolean;
-	[ContextTypes.LoadingSources]: boolean;
-	[ContextTypes.LoadingWorkloads]: boolean;
-
-	[ContextTypes.FailedToLoadClusterContexts]: boolean;
-	[ContextTypes.NoClusters]: boolean;
-	[ContextTypes.NoSources]: boolean;
-	[ContextTypes.NoWorkloads]: boolean;
-
-	[ContextTypes.IsDev]: boolean;
-}
-
-/**
- * GitOps context key.
- */
-export type ContextKey = keyof ContextValues;
 
 /**
  * Type-safe way to set context for future use in:
  * menus, keybindings, welcomeView...
  */
-export async function setVSCodeContext<T extends ContextKey>(context: T, value: ContextValues[T]) {
+export async function setVSCodeContext(context: ContextTypes, value: boolean) {
 	return await commands.executeCommand(CommandId.VSCodeSetContext, context, value);
 }

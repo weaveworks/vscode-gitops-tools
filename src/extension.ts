@@ -1,12 +1,12 @@
-import { ExtensionContext, ExtensionMode } from 'vscode';
-import { registerCommands } from './commands';
+import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
+import { CommandId, registerCommands } from './commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
 import { ContextTypes, setVSCodeContext } from './vscodeContext';
 import { succeeded } from './errorable';
 import { setExtensionContext } from './extensionContext';
 import { GlobalState, GlobalStateKey } from './globalState';
-import { checkFluxPrerequisites, promptToInstallFlux } from './install';
+import { checkFluxPrerequisites, checkWGEVersion, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
@@ -14,6 +14,7 @@ import { shell } from './shell';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
+export let experimentalFlag = false;
 
 
 export const enum GitOpsExtensionConstants {
@@ -32,6 +33,7 @@ export let telemetry: Telemetry | any;
 export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
 	setExtensionContext(context);
+	listenConfigChanged();
 
 	globalState = new GlobalState(context);
 
@@ -42,8 +44,6 @@ export async function activate(context: ExtensionContext) {
 
 	// register gitops commands
 	registerCommands(context);
-
-	// openConfigureGitOpsPanel(true);
 
 	telemetry.send(TelemetryEventNames.Startup);
 
@@ -59,12 +59,21 @@ export async function activate(context: ExtensionContext) {
 		disableConfirmations = true;
 	}
 
+
+	const version = context.extension.packageJSON.version;
+	if(context.extensionMode === ExtensionMode.Development || version.indexOf('-') !== -1) {
+		experimentalFlag = true;
+	}
+
+
 	// show error notification if flux is not installed
 	const fluxFoundResult = await promptToInstallFlux();
 	if (succeeded(fluxFoundResult)) {
 		// check flux prerequisites
 		await checkFluxPrerequisites();
 	}
+
+	checkWGEVersion();
 
 	let api = {
 		shell: shell,
@@ -76,6 +85,25 @@ export async function activate(context: ExtensionContext) {
 
 	return api;
 }
+
+function listenConfigChanged() {
+	workspace.onDidChangeConfiguration(async e => {
+		if(!e.affectsConfiguration('gitops')) {
+			return;
+		}
+
+		const selected = await window.showInformationMessage('Configuration changed. Reload VS Code to apply?', 'Reload');
+		console.log(e);
+		if(selected === 'Reload') {
+			await commands.executeCommand(CommandId.VSCodeReload);
+		}
+	});
+}
+
+export function enabledWGE(): boolean {
+	return workspace.getConfiguration('gitops').get('weaveGitopsEnterprise') || false;
+}
+
 
 /**
  * Called when extension is deactivated.

@@ -2,7 +2,7 @@ import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands';
 import { installFluxCli } from './commands/installFluxCli';
 import { Errorable, failed } from './errorable';
-import { telemetry } from './extension';
+import { enabledWGE, telemetry } from './extension';
 import { extensionState } from './extensionState';
 import { shell, shellCodeError } from './shell';
 import { TelemetryErrorEventNames } from './telemetry';
@@ -176,5 +176,20 @@ export async function checkGitVersion(): Promise<string | undefined> {
 		}
 	} else {
 		return gitVersionShellResult.result;
+	}
+}
+
+
+export async function checkWGEVersion() {
+	if(!enabledWGE()) {
+		return;
+	}
+
+	const result = await shell.exec('gitops version');
+	if(!result.stdout.includes('Enterprise-Edition')) {
+		const confirm = await window.showWarningMessage('Please install WGE `gitops` CLI to use WGE features', 'Install', 'Skip');
+		if (confirm === 'Install') {
+			commands.executeCommand('vscode.open', Uri.parse('https://docs.gitops.weave.works/docs/next/gitops-templates/cli/#installation'));
+		}
 	}
 }

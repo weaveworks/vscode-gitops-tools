@@ -1,4 +1,4 @@
-import { openConfigureGitOpsPanel } from '../webview-backend/configureGitOps/openPanel';
+import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
 import { SourceNode } from '../views/nodes/sourceNode';
 import { FluxSourceKinds } from '../kubernetes/types/flux/object';
 
@@ -16,5 +16,5 @@ export async function addKustomization(sourceNode?: SourceNode) {
 		sourceObject = undefined;
 	}
 
-	openConfigureGitOpsPanel(true, sourceObject);
+	openConfigureGitOpsWebview(true, sourceObject);
 }

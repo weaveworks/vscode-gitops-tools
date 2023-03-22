@@ -69,7 +69,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Flux CLI
-        uses: fluxcd/flux2/action@e5c9132d1d3bf1de999a20daa5d61aba34bd8d2b # pin@main
+        uses: fluxcd/flux2/action@2c7d650d4472bb7c92fa5fea86589527dfa5abcc # pin@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 

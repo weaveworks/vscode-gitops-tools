@@ -8,8 +8,9 @@ import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/t
 import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/types/kubernetesTypes';
 import { Kustomize } from '../kubernetes/types/flux/kustomize';
 import { shortenRevision } from './stringUtils';
+import { GitOpsTemplate } from '../kubernetes/types/flux/gitOpsTemplate';
 
-export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment;
+export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment | GitOpsTemplate;
 
 /**
  * Create markdown table for tree view item hovers.
@@ -94,16 +95,16 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 
 	const fluxStatus = kubernetesObject.status as any;
 
-	if(fluxStatus.lastAttemptedRevision) {
+	if(fluxStatus?.lastAttemptedRevision) {
 		createMarkdownTableRow('attempted', shortenRevision(fluxStatus.lastAttemptedRevision), markdown);
 	}
 
-	if(fluxStatus.lastAppliedRevision) {
+	if(fluxStatus?.lastAppliedRevision) {
 		createMarkdownTableRow('applied', shortenRevision(fluxStatus.lastAppliedRevision), markdown);
 	}
 
 
-	if(kubernetesObject.status.conditions) {
+	if(kubernetesObject.status?.conditions) {
 		const conditions = kubernetesObject.status.conditions as any[];
 		for (const c of conditions) {
 			if(c.type === 'SourceVerified' && c.status === 'True') {
