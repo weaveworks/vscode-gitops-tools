@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, ExtensionMode, extensions, window, workspace } from 'vscode';
+import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 import { CommandId, registerCommands } from './commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
@@ -87,9 +87,13 @@ export async function activate(context: ExtensionContext) {
 }
 
 function listenConfigChanged() {
-	workspace.onDidChangeConfiguration(async _ => {
+	workspace.onDidChangeConfiguration(async e => {
+		if(!e.affectsConfiguration('gitops')) {
+			return;
+		}
+
 		const selected = await window.showInformationMessage('Configuration changed. Reload VS Code to apply?', 'Reload');
-		console.log(selected);
+		console.log(e);
 		if(selected === 'Reload') {
 			await commands.executeCommand(CommandId.VSCodeReload);
 		}
