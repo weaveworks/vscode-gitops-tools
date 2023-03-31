@@ -4,6 +4,11 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.24.0
+
+* Add support for WGE GitOpsTemplates view and rendering
+* Source and Workload views UI improvements
+
 # v0.23.2
 
 * Fix npm audit warnings (#425)
