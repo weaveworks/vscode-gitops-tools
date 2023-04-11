@@ -4,10 +4,18 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.24.2
+
+* Fix YouTube link in README (#...)
+
+# v0.24.1
+
+* Update README to include VSCode Live Stream (#433)
+
 # v0.24.0
 
-* Add support for WGE GitOpsTemplates view and rendering
-* Source and Workload views UI improvements
+* Add support for WGE GitOpsTemplates view and rendering (#428)
+* Source and Workload views UI improvements (#430)
 
 # v0.23.2
 
