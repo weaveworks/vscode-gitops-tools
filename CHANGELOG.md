@@ -6,7 +6,7 @@ The current release notes are always published on the Releases page, by automati
 
 # v0.24.2
 
-* Fix YouTube link in README (#...)
+* Fix YouTube link in README (#436)
 
 # v0.24.1
 
