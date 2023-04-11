@@ -46,6 +46,13 @@ Once you have satisfied these requirements you can find and install GitOps Tools
 - Watch Flux controller logs and `flux` CLI commands for diagnostics
 - Documentation links for [Flux](https://fluxcd.io/docs) and [Weave GitOps](https://docs.gitops.weave.works/docs/intro/) embedded in the extension
 
+# Video / Demo
+
+[![GitOps Deployments from VS Code with little to no Kubernetes Knowledge](https://img.youtube.com/vi/G7fdFWW1I-0/0.jpg)](//www.youtube.com/watch?v=G7fdFWW1I-0 "VSCode Live Stream, Mar/23/2023")
+
+We presented Flux and the GitOps Tools extension to our widest audience yet,
+the VSCode Live Stream! Follow this video link to learn about a new feature
+integration we built into the extension: Weave GitOps Enterprise Templates.
 
 # GUI
 
