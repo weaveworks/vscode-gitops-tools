@@ -48,7 +48,7 @@ Once you have satisfied these requirements you can find and install GitOps Tools
 
 # Video / Demo
 
-[![GitOps Deployments from VS Code with little to no Kubernetes Knowledge](https://img.youtube.com/vi/G7fdFWW1I-0/0.jpg)](//www.youtube.com/watch?v=G7fdFWW1I-0 "VSCode Live Stream, Mar/23/2023")
+[![GitOps Deployments from VS Code with little to no Kubernetes Knowledge](https://img.youtube.com/vi/G7fdFWW1I-0/0.jpg)](https://www.youtube.com/watch?v=G7fdFWW1I-0 "VSCode Live Stream, Mar/23/2023")
 
 We presented Flux and the GitOps Tools extension to our widest audience yet,
 the VSCode Live Stream! Follow this video link to learn about a new feature
