@@ -26,6 +26,8 @@ function unwrapSource() {
 		s['secretRef'] = '';
 	}
 
+	delete s['createSecret'];
+
 	// merge common and specific type source parameters
 	s = {...s, ...unwrapSourceKind()};
 

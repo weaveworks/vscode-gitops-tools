@@ -65,7 +65,7 @@ export async function openConfigureGitOpsWebview(selectSource: boolean, selected
 	};
 
 
-	if(!webview) {
+	if(!webview || webview.disposed) {
 		const extensionUri = getExtensionContext().extensionUri;
 		const uri = Uri.joinPath(extensionUri, 'webview-ui', 'configureGitOps');
 		webview = new WebviewBackend('Configure GitOps', uri, webviewParams, receiveMessage);
