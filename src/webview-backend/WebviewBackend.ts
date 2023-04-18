@@ -8,12 +8,13 @@ import { WebviewParams } from './types';
 export type MessageReceiver = (message: any, panel: WebviewPanel)=> any;
 
 export class WebviewBackend {
-	private panel: WebviewPanel;
+	public panel: WebviewPanel;
 	private disposables: Disposable[] = [];
 	private webviewParams: WebviewParams;
 	private extensionUri: Uri;
 	private messageReceiver: MessageReceiver;
 	private title: string;
+	public disposed = false;
 
 	constructor(title: string, extensionUri: Uri, params: WebviewParams, messageReceiver: MessageReceiver) {
 		this.title = title;
@@ -44,6 +45,7 @@ export class WebviewBackend {
 				disposable.dispose();
 			}
 		}
+		this.disposed = true;
 	}
 
 	private create(): WebviewPanel {
@@ -63,7 +65,7 @@ export class WebviewBackend {
 		panel.iconPath = asAbsolutePath('resources/icons/gitops-logo.png');
 
 		// user closes the panel or when the panel is closed programmatically
-		panel.onDidDispose(() => this.dispose, null, this.disposables);
+		panel.onDidDispose(() => this.dispose(), null, this.disposables);
 
 		return panel;
 	}
