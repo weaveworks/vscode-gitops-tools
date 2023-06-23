@@ -1,5 +1,5 @@
 import { TreeItem, window } from 'vscode';
-import { failed } from '../../errorable';
+import { failed } from '../../types/errorable';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';

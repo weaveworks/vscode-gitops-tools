@@ -1,7 +1,7 @@
 import { commands, Uri, window } from 'vscode';
 import { CommandId } from './commands/commands';
 import { installFluxCli } from './commands/installFluxCli';
-import { Errorable, failed } from './errorable';
+import { Errorable, failed } from './types/errorable';
 import { enabledWGE, telemetry } from './extension';
 import { extensionState } from './extensionState';
 import { shell, shellCodeError } from './shell';

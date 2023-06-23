@@ -7,7 +7,7 @@ import { shell, shellCodeError, ShellResult } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../treeviews/treeViews';
-import { failed } from '../errorable';
+import { failed } from '../types/errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { getAzureMetadata } from './getAzureMetadata';
 import { checkAzurePrerequisites } from './azurePrereqs';

@@ -2,7 +2,7 @@ import { KubernetesObject } from '@kubernetes/client-node';
 import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { CommandId } from '../../commands/commands';
 import { asAbsolutePath } from '../../extensionContext';
-import { FileTypes } from '../../fileTypes';
+import { FileTypes } from '../../types/fileTypes';
 import { KubernetesContextWithCluster } from '../../types/kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';

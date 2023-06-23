@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import request from 'request';
 import { commands, window } from 'vscode';
-import { Errorable, failed, succeeded } from '../errorable';
+import { Errorable, failed, succeeded } from '../types/errorable';
 import { globalState } from '../extension';
 import { GlobalStateKey } from '../globalState';
 import { output } from '../output';

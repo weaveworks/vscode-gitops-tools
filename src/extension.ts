@@ -3,7 +3,7 @@ import { CommandId, registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
 import { ContextTypes, setVSCodeContext } from './vscodeContext';
-import { succeeded } from './errorable';
+import { succeeded } from './types/errorable';
 import { setExtensionContext } from './extensionContext';
 import { GlobalState, GlobalStateKey } from './globalState';
 import { checkFluxPrerequisites, checkWGEVersion, promptToInstallFlux } from './install';

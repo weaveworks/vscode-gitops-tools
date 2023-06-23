@@ -1,6 +1,6 @@
 import gitUrlParse from 'git-url-parse';
 import { Uri, window, workspace } from 'vscode';
-import { failed } from '../errorable';
+import { failed } from '../types/errorable';
 import { getFolderGitInfo } from '../git/gitInfo';
 import { checkGitVersion } from '../install';
 import { getCurrentClusterInfo } from '../treeviews/treeViews';

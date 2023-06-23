@@ -1,6 +1,6 @@
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
-import { failed } from '../errorable';
+import { failed } from '../types/errorable';
 import { getFolderGitInfo, getGitRepositoryforGitInfo } from '../git/gitInfo';
 import { namespacedObject } from '../types/flux/object';
 import { getCurrentClusterInfo } from '../treeviews/treeViews';

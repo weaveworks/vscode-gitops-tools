@@ -1,5 +1,5 @@
 import { Uri, window, workspace } from 'vscode';
-import { failed } from '../../errorable';
+import { failed } from '../../types/errorable';
 import { telemetry } from '../../extension';
 import { getExtensionContext } from '../../extensionContext';
 import { GitInfo, getFolderGitInfo } from '../../git/gitInfo';

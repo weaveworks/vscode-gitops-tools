@@ -3,7 +3,7 @@ import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import safesh from 'shell-escape-tag';
 import { AzureConstants } from '../azure/azureTools';
-import { Errorable, failed, succeeded } from '../errorable';
+import { Errorable, failed, succeeded } from '../types/errorable';
 import { globalState, telemetry } from '../extension';
 import { output } from '../output';
 import { shellCodeError } from '../shell';

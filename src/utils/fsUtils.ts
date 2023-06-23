@@ -3,7 +3,7 @@ import extractZip from 'extract-zip';
 import fs from 'fs';
 import https from 'https';
 import path from 'path';
-import { Errorable } from '../errorable';
+import { Errorable } from '../types/errorable';
 import { shell } from '../shell';
 
 /**
