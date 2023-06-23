@@ -1,14 +1,15 @@
-import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
+import { setVSCodeContext } from '../../extension';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
 import { statusBar } from '../../statusBar';
+import { ContextId } from '../../types/extensionIds';
 import { BucketNode } from '../nodes/bucketNode';
 import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
-import { OCIRepositoryNode } from '../nodes/ociRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
+import { NamespaceNode } from '../nodes/namespaceNode';
+import { OCIRepositoryNode } from '../nodes/ociRepositoryNode';
 import { SourceNode } from '../nodes/sourceNode';
 import { DataProvider } from './dataProvider';
-import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
-import { NamespaceNode } from '../nodes/namespaceNode';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
@@ -25,7 +26,7 @@ export class SourceDataProvider extends DataProvider {
 
 		const treeItems: SourceNode[] = [];
 
-		setVSCodeContext(ContextTypes.LoadingSources, true);
+		setVSCodeContext(ContextId.LoadingSources, true);
 
 		// Fetch all sources asynchronously and at once
 		const [gitRepositories, ociRepositories, helmRepositories, buckets, namespaces] = await Promise.all([
@@ -64,8 +65,8 @@ export class SourceDataProvider extends DataProvider {
 			}
 		}
 
-		setVSCodeContext(ContextTypes.LoadingSources, false);
-		setVSCodeContext(ContextTypes.NoSources, treeItems.length === 0);
+		setVSCodeContext(ContextId.LoadingSources, false);
+		setVSCodeContext(ContextId.NoSources, treeItems.length === 0);
 		statusBar.stopLoadingTree();
 
 		return this.groupByNamespace(namespaces?.items || [], treeItems);

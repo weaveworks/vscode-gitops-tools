@@ -1,9 +1,11 @@
-import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
+import { setVSCodeContext } from '../../extension';
 import { fluxTools } from '../../flux/fluxTools';
-import { FluxTreeResources } from '../../types/fluxCliTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { KubernetesObjectKinds, NamespaceResult } from '../../types/kubernetes/kubernetesTypes';
+import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
 import { statusBar } from '../../statusBar';
+import { ContextId } from '../../types/extensionIds';
+import { FluxTreeResources } from '../../types/fluxCliTypes';
+import { KubernetesObjectKinds, NamespaceResult } from '../../types/kubernetes/kubernetesTypes';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
 import { KustomizationNode } from '../nodes/kustomizationNode';
@@ -12,7 +14,6 @@ import { TreeNode } from '../nodes/treeNode';
 import { WorkloadNode } from '../nodes/workloadNode';
 import { refreshWorkloadsTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
-import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
 
 /**
  * Defines data provider for loading Kustomizations
@@ -31,7 +32,7 @@ export class WorkloadDataProvider extends DataProvider {
 
 		const workloadNodes: WorkloadNode[] = [];
 
-		setVSCodeContext(ContextTypes.LoadingWorkloads, true);
+		setVSCodeContext(ContextId.LoadingWorkloads, true);
 
 		const [kustomizations, helmReleases, namespaces] = await Promise.all([
 			// Fetch all workloads
@@ -61,8 +62,8 @@ export class WorkloadDataProvider extends DataProvider {
 			this.updateWorkloadChildren(node);
 		}
 
-		setVSCodeContext(ContextTypes.LoadingWorkloads, false);
-		setVSCodeContext(ContextTypes.NoWorkloads, workloadNodes.length === 0);
+		setVSCodeContext(ContextId.LoadingWorkloads, false);
+		setVSCodeContext(ContextId.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
 

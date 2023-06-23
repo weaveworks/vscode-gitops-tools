@@ -1,9 +1,10 @@
 import { TreeItem, window } from 'vscode';
-import { failed } from '../../types/errorable';
+import { setVSCodeContext } from '../../extension';
 import { fluxTools } from '../../flux/fluxTools';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { statusBar } from '../../statusBar';
-import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
+import { failed } from '../../types/errorable';
+import { ContextId } from '../../types/extensionIds';
 import { ClusterContextNode } from '../nodes/clusterContextNode';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { TreeNode } from '../nodes/treeNode';
@@ -42,9 +43,9 @@ export class ClusterDataProvider extends DataProvider {
    */
 	async buildTree(): Promise<ClusterContextNode[]> {
 
-		setVSCodeContext(ContextTypes.FailedToLoadClusterContexts, false);
-		setVSCodeContext(ContextTypes.NoClusters, false);
-		setVSCodeContext(ContextTypes.LoadingClusters, true);
+		setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
+		setVSCodeContext(ContextId.NoClusters, false);
+		setVSCodeContext(ContextId.LoadingClusters, true);
 		statusBar.startLoadingTree();
 		this.clusterNodes = [];
 
@@ -54,9 +55,9 @@ export class ClusterDataProvider extends DataProvider {
 		]);
 
 		if (failed(contextsResult)) {
-			setVSCodeContext(ContextTypes.NoClusters, false);
-			setVSCodeContext(ContextTypes.FailedToLoadClusterContexts, true);
-			setVSCodeContext(ContextTypes.LoadingClusters, false);
+			setVSCodeContext(ContextId.NoClusters, false);
+			setVSCodeContext(ContextId.FailedToLoadClusterContexts, true);
+			setVSCodeContext(ContextId.LoadingClusters, false);
 			statusBar.stopLoadingTree();
 			window.showErrorMessage(`Failed to get contexts: ${contextsResult.error[0]}`);
 			return [];
@@ -73,7 +74,7 @@ export class ClusterDataProvider extends DataProvider {
 		}
 
 		if (contextsResult.result.length === 0) {
-			setVSCodeContext(ContextTypes.NoClusters, true);
+			setVSCodeContext(ContextId.NoClusters, true);
 			return [];
 		}
 
@@ -107,7 +108,7 @@ export class ClusterDataProvider extends DataProvider {
 		// this.updateClusterContexts(clusterNodes);
 
 		statusBar.stopLoadingTree();
-		setVSCodeContext(ContextTypes.LoadingClusters, false);
+		setVSCodeContext(ContextId.LoadingClusters, false);
 		this.clusterNodes = clusterNodes;
 
 		return clusterNodes;

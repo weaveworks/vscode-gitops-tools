@@ -1,11 +1,17 @@
 import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
+import { telemetry } from '../extension';
+import { showOutputChannel } from '../shell/output';
+import { TelemetryErrorEventNames } from '../telemetry';
+import { refreshAllTreeViews, refreshResourcesTreeViews } from '../treeviews/treeViews';
+import { CommandId } from '../types/extensionIds';
+import { addKustomization } from './addKustomization';
+import { addSource } from './addSource';
 import { copyResourceName } from './copyResourceName';
+import { createFromTemplate } from './createFromTemplate';
 import { createGitRepositoryForPath } from './createGitRepositoryForPath';
 import { createKustomizationForPath } from './createKustomizationForPath';
-import { addSource } from './addSource';
-import { addKustomization } from './addKustomization';
-import { deleteWorkload } from './deleteWorkload';
 import { deleteSource } from './deleteSource';
+import { deleteWorkload } from './deleteWorkload';
 import { fluxDisableGitOps, fluxEnableGitOps } from './enableDisableGitOps';
 import { fluxCheck } from './fluxCheck';
 import { checkFluxPrerequisites } from './fluxCheckPrerequisites';
@@ -20,80 +26,12 @@ import { setClusterProvider } from './setClusterProvider';
 import { setCurrentKubernetesContext } from './setCurrentKubernetesContext';
 import { showGlobalState } from './showGlobalState';
 import { showInstalledVersions } from './showInstalledVersions';
-import { showNewUserGuide } from './showNewUserGuide';
 import { showLogs } from './showLogs';
+import { showNewUserGuide } from './showNewUserGuide';
 import { showWorkloadsHelpMessage } from './showWorkloadsHelpMessage';
 import { suspend } from './suspend';
 import { trace } from './trace';
-import { telemetry } from '../extension';
-import { showOutputChannel } from '../shell/output';
-import { TelemetryErrorEventNames } from '../telemetry';
-import { refreshAllTreeViews, refreshResourcesTreeViews } from '../treeviews/treeViews';
-import { createFromTemplate } from './createFromTemplate';
 
-/**
- * Command ids registered by this extension
- * or default vscode commands.
- */
-export const enum CommandId {
-
-	// vscode commands
-	/**
-	 * Opens the provided resource in the editor. Can be a text or binary file, or an http(s) URL.
-	 */
-	VSCodeOpen = 'vscode.open',
-	VSCodeReload = 'workbench.action.reloadWindow',
-	/**
-	 * Set vscode context to use in keybindings/menus/welcome views
-	 * @see https://code.visualstudio.com/api/references/when-clause-contexts
-	 */
-	VSCodeSetContext = 'setContext',
-
-	// kubectl
-	SetCurrentKubernetesContext = 'gitops.kubectl.setCurrentContext',
-
-	// flux
-	Suspend = 'gitops.suspend',
-	Resume = 'gitops.resume',
-	FluxCheck = 'gitops.flux.check',
-	FluxCheckPrerequisites = 'gitops.flux.checkPrerequisites',
-	FluxEnableGitOps = 'gitops.flux.install',
-	FluxDisableGitOps = 'gitops.flux.uninstall',
-	FluxReconcileSource = 'gitops.flux.reconcileSource',
-	FluxReconcileRepository = 'gitops.flux.reconcileRepository',
-	FluxReconcileWorkload = 'gitops.flux.reconcileWorkload',
-	FluxTrace = 'gitops.flux.trace',
-
-	// tree view
-	SetClusterProvider = 'gitops.setClusterProvider',
-	RefreshAllTreeViews = 'gitops.views.refreshAllTreeViews',
-	RefreshResourcesTreeView = 'gitops.views.refreshResourcesTreeView',
-	PullGitRepository = 'gitops.views.pullGitRepository',
-	CreateGitRepository = 'gitops.views.createGitRepository',
-	CreateKustomization = 'gitops.createKustomization',
-	ShowWorkloadsHelpMessage = 'gitops.views.showWorkloadsHelpMessage',
-	DeleteWorkload = 'gitops.views.deleteWorkload',
-	DeleteSource = 'gitops.views.deleteSource',
-	CopyResourceName = 'gitops.copyResourceName',
-	AddSource = 'gitops.addSource',
-	AddKustomization = 'gitops.addKustomization',
-
-	// editor
-	EditorOpenResource = 'gitops.editor.openResource',
-
-	// webview
-	ShowLogs = 'gitops.editor.showLogs',
-	ShowNewUserGuide = 'gitops.views.showNewUserGuide',
-
-	// output commands
-	ShowOutputChannel = 'gitops.output.show',
-
-	// others
-	ShowInstalledVersions = 'gitops.showInstalledVersions',
-	InstallFluxCli = 'gitops.installFluxCli',
-	ShowGlobalState = 'gitops.dev.showGlobalState',
-	CreateFromTemplate = 'gitops.views.createFromTemplate',
-}
 
 let _context: ExtensionContext;
 

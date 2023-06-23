@@ -1,5 +1,5 @@
 import { Disposable, ExtensionContext, Terminal, window } from 'vscode';
-import { getExtensionContext } from '../extensionContext';
+import { extensionContext } from '../extension';
 
 const terminalName = 'gitops';
 
@@ -53,7 +53,7 @@ export function runTerminalCommand(
 		focusTerminal?: boolean;
 	} = {}): void {
 
-	const terminal = getTerminal(getExtensionContext(), cwd);
+	const terminal = getTerminal(extensionContext, cwd);
 	terminal.show(!focusTerminal);
 	terminal.sendText(command, true);
 }

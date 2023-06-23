@@ -1,6 +1,6 @@
 import { Uri } from 'vscode';
-import { CommandId } from '../../commands/commands';
-import { asAbsolutePath } from '../../extensionContext';
+import { asAbsolutePath } from '../../utils/asAbsolutePath';
+import { CommandId } from '../../types/extensionIds';
 import { DocumentationLink } from '../documentationConfig';
 import { TreeNode } from './treeNode';
 

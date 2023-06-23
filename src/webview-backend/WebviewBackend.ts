@@ -1,7 +1,7 @@
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { camelCase } from 'change-case';
 
-import { asAbsolutePath } from '../extensionContext';
+import { asAbsolutePath } from '../utils/asAbsolutePath';
 import { getUri } from '../utils/getUri';
 import { WebviewParams } from './types';
 

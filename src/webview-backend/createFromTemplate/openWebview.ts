@@ -1,5 +1,5 @@
 import { Uri, window } from 'vscode';
-import { getExtensionContext } from '../../extensionContext';
+import { extensionContext } from '../../extension';
 import { GitOpsTemplate } from '../../types/flux/gitOpsTemplate';
 import { WebviewBackend } from '../WebviewBackend';
 import { receiveMessage } from './receiveMessage';
@@ -29,7 +29,7 @@ export async function openCreateFromTemplatePanel(template: GitOpsTemplate) {
 
 	webview?.dispose();
 
-	const extensionUri = getExtensionContext().extensionUri;
+	const extensionUri = extensionContext.extensionUri;
 	const uri = Uri.joinPath(extensionUri, 'webview-ui', 'createFromTemplate');
 	webview = new WebviewBackend('Create from Template', uri, webviewParams, receiveMessage);
 }

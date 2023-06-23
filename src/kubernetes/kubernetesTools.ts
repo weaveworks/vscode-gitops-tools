@@ -1,25 +1,25 @@
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node';
+import safesh from 'shell-escape-tag';
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
-import safesh from 'shell-escape-tag';
 import { AzureConstants } from '../azure/azureTools';
-import { Errorable, failed, succeeded } from '../types/errorable';
-import { globalState, telemetry } from '../extension';
+import { globalState, setVSCodeContext, telemetry } from '../extension';
 import { output } from '../shell/output';
 import { shellCodeError } from '../shell/shell';
 import { TelemetryErrorEventNames } from '../telemetry';
-import { parseJson } from '../utils/jsonUtils';
-import { ContextTypes, setVSCodeContext } from '../vscodeContext';
+import { Errorable, failed, succeeded } from '../types/errorable';
+import { ContextId } from '../types/extensionIds';
 import { BucketResult } from '../types/flux/bucket';
+import { GitOpsTemplateResult } from '../types/flux/gitOpsTemplate';
 import { GitRepositoryResult } from '../types/flux/gitRepository';
 import { HelmReleaseResult } from '../types/flux/helmRelease';
 import { HelmRepositoryResult } from '../types/flux/helmRepository';
+import { KustomizeResult } from '../types/flux/kustomize';
 import { OCIRepositoryResult } from '../types/flux/ociRepository';
 import { KubernetesConfig, KubernetesContextWithCluster } from '../types/kubernetes/kubernetesConfig';
 import { KubernetesFileSchemes } from '../types/kubernetes/kubernetesFileSchemes';
 import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from '../types/kubernetes/kubernetesTypes';
-import { KustomizeResult } from '../types/flux/kustomize';
-import { GitOpsTemplateResult } from '../types/flux/gitOpsTemplate';
+import { parseJson } from '../utils/jsonUtils';
 
 export let currentContextName: string;
 
@@ -131,7 +131,7 @@ class KubernetesTools {
 		if (currentContextShellResult?.code !== 0) {
 			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT);
 			console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
-			setVSCodeContext(ContextTypes.NoClusterSelected, true);
+			setVSCodeContext(ContextId.NoClusterSelected, true);
 			return {
 				succeeded: false,
 				error: [`${currentContextShellResult?.code || ''} ${currentContextShellResult?.stderr}`],
@@ -139,7 +139,7 @@ class KubernetesTools {
 		}
 
 		const currentContext = currentContextShellResult.stdout.trim();
-		setVSCodeContext(ContextTypes.NoClusterSelected, false);
+		setVSCodeContext(ContextId.NoClusterSelected, false);
 
 		currentContextName = currentContext;
 		return {
@@ -169,11 +169,11 @@ class KubernetesTools {
 			return;
 		}
 
-		setVSCodeContext(ContextTypes.NoClusterSelected, false);
-		setVSCodeContext(ContextTypes.CurrentClusterGitOpsNotEnabled, false);
-		setVSCodeContext(ContextTypes.NoSources, false);
-		setVSCodeContext(ContextTypes.NoWorkloads, false);
-		setVSCodeContext(ContextTypes.FailedToLoadClusterContexts, false);
+		setVSCodeContext(ContextId.NoClusterSelected, false);
+		setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
+		setVSCodeContext(ContextId.NoSources, false);
+		setVSCodeContext(ContextId.NoWorkloads, false);
+		setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
 		this.clusterSupportedResourceKinds = undefined;
 
 		return {

@@ -1,11 +1,10 @@
 import { Uri, window, workspace } from 'vscode';
-import { failed } from '../../types/errorable';
-import { telemetry } from '../../extension';
-import { getExtensionContext } from '../../extensionContext';
+import { extensionContext, telemetry } from '../../extension';
 import { GitInfo, getFolderGitInfo } from '../../git/gitInfo';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { TelemetryEventNames } from '../../telemetry';
 import { getCurrentClusterInfo } from '../../treeviews/treeViews';
+import { failed } from '../../types/errorable';
 import { FluxSourceObject, namespacedObject } from '../../types/flux/object';
 import { ClusterProvider, KubernetesObject } from '../../types/kubernetes/kubernetesTypes';
 import { WebviewBackend } from '../WebviewBackend';
@@ -66,7 +65,7 @@ export async function openConfigureGitOpsWebview(selectSource: boolean, selected
 
 
 	if(!webview || webview.disposed) {
-		const extensionUri = getExtensionContext().extensionUri;
+		const extensionUri = extensionContext.extensionUri;
 		const uri = Uri.joinPath(extensionUri, 'webview-ui', 'configureGitOps');
 		webview = new WebviewBackend('Configure GitOps', uri, webviewParams, receiveMessage);
 	} else {

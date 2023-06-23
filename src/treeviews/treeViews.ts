@@ -10,7 +10,7 @@ import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
 import { ClusterContextNode } from './nodes/clusterContextNode';
 import { TreeNode } from './nodes/treeNode';
-import { TreeViews } from '../types/treeViewIds';
+import { TreeViewId } from '../types/extensionIds';
 
 import * as k8s from 'vscode-kubernetes-tools-api';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
@@ -39,30 +39,30 @@ export function createTreeViews() {
 	templateTreeViewProvider = new TemplateDataProvider();
 
 	// create gitops sidebar tree views
-	clusterTreeView = window.createTreeView(TreeViews.ClustersView, {
+	clusterTreeView = window.createTreeView(TreeViewId.ClustersView, {
 		treeDataProvider: clusterTreeViewProvider,
 		showCollapseAll: true,
 	});
 
-	sourceTreeView = window.createTreeView(TreeViews.SourcesView, {
+	sourceTreeView = window.createTreeView(TreeViewId.SourcesView, {
 		treeDataProvider: sourceTreeViewProvider,
 		showCollapseAll: true,
 	});
 
-	workloadTreeView = window.createTreeView(TreeViews.WorkloadsView, {
+	workloadTreeView = window.createTreeView(TreeViewId.WorkloadsView, {
 		treeDataProvider: workloadTreeViewProvider,
 		showCollapseAll: true,
 	});
 
 
 	// WGE templates
-	templateTreeView = window.createTreeView(TreeViews.TemplatesView, {
+	templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
 		treeDataProvider: templateTreeViewProvider,
 		showCollapseAll: true,
 	});
 
 	// create documentation links sidebar tree view
-	documentationTreeView = window.createTreeView(TreeViews.DocumentationView, {
+	documentationTreeView = window.createTreeView(TreeViewId.DocumentationView, {
 		treeDataProvider: documentationTreeViewProvider,
 		showCollapseAll: true,
 	});

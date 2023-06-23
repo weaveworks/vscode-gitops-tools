@@ -1,12 +1,12 @@
 import { KubernetesObject } from '@kubernetes/client-node';
 import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
-import { CommandId } from '../../commands/commands';
-import { asAbsolutePath } from '../../extensionContext';
-import { FileTypes } from '../../types/fileTypes';
-import { KubernetesContextWithCluster } from '../../types/kubernetes/kubernetesConfig';
+import { asAbsolutePath } from '../../utils/asAbsolutePath';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';
+import { CommandId } from '../../types/extensionIds';
+import { FileTypes } from '../../types/fileTypes';
 import { GitOpsTemplate } from '../../types/flux/gitOpsTemplate';
+import { KubernetesContextWithCluster } from '../../types/kubernetes/kubernetesConfig';
+import { KnownTreeNodeResources, createMarkdownTable } from '../../utils/markdownUtils';
 
 export const enum TreeNodeIcon {
 	Error = 'error',

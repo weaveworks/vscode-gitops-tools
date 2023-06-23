@@ -1,15 +1,13 @@
 import { ExtensionMode, MarkdownString } from 'vscode';
-import { CommandId } from '../../commands/commands';
-import { globalState } from '../../extension';
-import { getExtensionContext } from '../../extensionContext';
-import { KubernetesCluster, KubernetesContextWithCluster } from '../../types/kubernetes/kubernetesConfig';
+import { extensionContext, globalState, setVSCodeContext } from '../../extension';
+import { fluxVersion } from '../../install';
 import { currentContextName, kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { CommandId, ContextId } from '../../types/extensionIds';
+import { KubernetesCluster, KubernetesContextWithCluster } from '../../types/kubernetes/kubernetesConfig';
 import { ClusterProvider } from '../../types/kubernetes/kubernetesTypes';
 import { createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
-import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
-import { fluxVersion } from '../../install';
 
 /**
  * Defines Cluster tree view item for displaying
@@ -92,7 +90,7 @@ export class ClusterContextNode extends TreeNode {
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {
-			setVSCodeContext(ContextTypes.CurrentClusterGitOpsNotEnabled, !this.isGitOpsEnabled);
+			setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, !this.isGitOpsEnabled);
 		}
 
 		if (this.isGitOpsEnabled) {
@@ -132,7 +130,7 @@ export class ClusterContextNode extends TreeNode {
 	// @ts-ignore
 	get command() {
 		// Allow click to swith current kubernetes context only when developing extension
-		if (getExtensionContext().extensionMode === ExtensionMode.Development) {
+		if (extensionContext.extensionMode === ExtensionMode.Development) {
 			return {
 				command: CommandId.SetCurrentKubernetesContext,
 				arguments: [this],

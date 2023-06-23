@@ -1,10 +1,10 @@
 import { commands, Uri, window } from 'vscode';
-import { CommandId } from './commands/commands';
 import { installFluxCli } from './commands/installFluxCli';
-import { Errorable, failed } from './types/errorable';
 import { enabledWGE, telemetry } from './extension';
 import { shell, shellCodeError } from './shell/shell';
 import { TelemetryErrorEventNames } from './telemetry';
+import { Errorable, failed } from './types/errorable';
+import { CommandId } from './types/extensionIds';
 import { parseJson } from './utils/jsonUtils';
 
 interface KubectlVersion {

@@ -1,7 +1,6 @@
 import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window } from 'vscode';
-import { azureTools } from '../azure/azureTools';
-import { CommandId } from './commands';
+import { CommandId } from '../types/extensionIds';
 
 
 /**
