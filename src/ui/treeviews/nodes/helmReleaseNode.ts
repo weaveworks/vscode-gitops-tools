@@ -1,5 +1,5 @@
-import { HelmRelease } from '../../../types/flux/helmRelease';
-import { KubernetesObjectKinds } from '../../../types/kubernetes/kubernetesTypes';
+import { HelmRelease } from 'types/flux/helmRelease';
+import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from './nodeContext';
 import { WorkloadNode } from './workloadNode';
 

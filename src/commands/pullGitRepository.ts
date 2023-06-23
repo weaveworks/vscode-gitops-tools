@@ -3,12 +3,12 @@ import semverGt from 'semver/functions/gt';
 import semverSatisfies from 'semver/functions/satisfies';
 import safesh from 'shell-escape-tag';
 import { commands, Uri, window } from 'vscode';
-import { telemetry } from '../extension';
-import { checkGitVersion } from '../cli/checkVersions';
-import { shell } from '../cli/shell/shell';
-import { TelemetryErrorEventNames } from '../types/telemetryEventNames';
-import { quoteFsPath } from '../utils/fsUtils';
-import { GitRepositoryNode } from '../ui/treeviews/nodes/gitRepositoryNode';
+import { telemetry } from 'extension';
+import { checkGitVersion } from 'cli/checkVersions';
+import { shell } from 'cli/shell/exec';
+import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { quoteFsPath } from 'utils/fsUtils';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
 
 /**
  * Clone git source repository to user machine from

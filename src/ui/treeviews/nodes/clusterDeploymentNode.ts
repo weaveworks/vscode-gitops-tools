@@ -1,4 +1,4 @@
-import { Deployment, KubernetesObjectKinds } from '../../../types/kubernetes/kubernetesTypes';
+import { Deployment, KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
 import { TreeNode, TreeNodeIcon } from './treeNode';
 
 /**

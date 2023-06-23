@@ -1,6 +1,6 @@
 import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window } from 'vscode';
-import { CommandId } from '../types/extensionIds';
+import { CommandId } from 'types/extensionIds';
 
 
 /**

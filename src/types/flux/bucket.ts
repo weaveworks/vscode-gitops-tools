@@ -1,4 +1,4 @@
-import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from '../../types/kubernetes/kubernetesTypes';
+import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
 
 /**
  * Buckets result from running

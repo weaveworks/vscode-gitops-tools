@@ -1,10 +1,10 @@
-import { AzureClusterProvider, azureTools, CreateSourceBucketAzureArgs, CreateSourceGitAzureArgs } from '../../../../cli/azure/azureTools';
-import { showDeployKeyNotificationIfNeeded } from '../../../../commands/createSource';
-import { telemetry } from '../../../../extension';
-import { ClusterInfo, KubernetesObjectKinds } from '../../../../types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from '../../../../types/telemetryEventNames';
-import { ParamsDictionary } from '../../../../utils/typeUtils';
-import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../../../treeviews/treeViews';
+import { AzureClusterProvider, azureTools, CreateSourceBucketAzureArgs, CreateSourceGitAzureArgs } from 'cli/azure/azureTools';
+import { showDeployKeyNotificationIfNeeded } from 'commands/createSource';
+import { telemetry } from 'extension';
+import { ClusterInfo, KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { ParamsDictionary } from 'utils/typeUtils';
+import { refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 export async function createConfigurationAzure(data: ParamsDictionary) {
 	const clusterInfo = data.clusterInfo as ClusterInfo;

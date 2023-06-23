@@ -5,7 +5,7 @@ import { showNewUserGuide } from './commands/showNewUserGuide';
 import { GlobalState, GlobalStateKey } from './data/globalState';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
-import { shell } from './cli/shell/shell';
+import { shell } from './cli/shell/exec';
 import { statusBar } from './ui/statusBar';
 import { Telemetry } from './data/telemetry';
 import { TelemetryEventNames } from './types/telemetryEventNames';

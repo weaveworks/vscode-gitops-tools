@@ -1,10 +1,10 @@
 import { MarkdownString } from 'vscode';
-import { HelmRelease } from '../../../types/flux/helmRelease';
-import { DeploymentCondition } from '../../../types/kubernetes/kubernetesTypes';
-import { Kustomize } from '../../../types/flux/kustomize';
-import { createMarkdownError, createMarkdownHr, createMarkdownTable } from '../../../utils/markdownUtils';
+import { HelmRelease } from 'types/flux/helmRelease';
+import { DeploymentCondition } from 'types/kubernetes/kubernetesTypes';
+import { Kustomize } from 'types/flux/kustomize';
+import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
-import { shortenRevision } from '../../../utils/stringUtils';
+import { shortenRevision } from 'utils/stringUtils';
 
 /**
  * Base class for all Workload tree view items.

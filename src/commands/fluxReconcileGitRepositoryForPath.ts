@@ -1,6 +1,6 @@
 import { Uri, window } from 'vscode';
-import { fluxTools } from '../cli/flux/fluxTools';
-import { getFolderGitInfo, getGitRepositoryforGitInfo } from '../cli/git/gitInfo';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { getFolderGitInfo, getGitRepositoryforGitInfo } from 'cli/git/gitInfo';
 
 /**
  * Command to reconcile GitRepository for selected file

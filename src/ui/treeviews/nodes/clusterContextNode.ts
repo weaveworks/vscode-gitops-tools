@@ -1,11 +1,11 @@
 import { ExtensionMode, MarkdownString } from 'vscode';
-import { extensionContext, globalState, setVSCodeContext } from '../../../extension';
-import { fluxVersion } from '../../../cli/checkVersions';
-import { currentContextName, kubernetesTools } from '../../../cli/kubernetes/kubernetesTools';
-import { CommandId, ContextId } from '../../../types/extensionIds';
-import { KubernetesCluster, KubernetesContextWithCluster } from '../../../types/kubernetes/kubernetesConfig';
-import { ClusterProvider } from '../../../types/kubernetes/kubernetesTypes';
-import { createMarkdownHr, createMarkdownTable } from '../../../utils/markdownUtils';
+import { extensionContext, globalState, setVSCodeContext } from 'extension';
+import { fluxVersion } from 'cli/checkVersions';
+import { currentContextName, kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { CommandId, ContextId } from 'types/extensionIds';
+import { KubernetesCluster, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
+import { ClusterProvider } from 'types/kubernetes/kubernetesTypes';
+import { createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
 

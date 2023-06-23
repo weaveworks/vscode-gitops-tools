@@ -1,7 +1,7 @@
 import { Show } from 'solid-js';
 
 import TextInput from 'components/Common/TextInput';
-import { isOCIHelm } from '../../HelmRepository';
+import { isOCIHelm } from 'components/Source/NewSource/HelmRepository';
 import Checkbox from 'components/Common/Checkbox';
 import { source } from 'lib/model';
 import { ToolkitHelpLink } from 'components/Common/HelpLink';

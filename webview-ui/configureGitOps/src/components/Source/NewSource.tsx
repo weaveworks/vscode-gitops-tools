@@ -2,7 +2,7 @@ import { Tabs } from '@microsoft/fast-foundation';
 import { ToolkitHelpLink } from 'components/Common/HelpLink';
 import { params } from 'lib/params';
 import { onMount, Show } from 'solid-js';
-import { setSource, source } from '../../lib/model';
+import { setSource, source } from 'lib/model';
 
 import Bucket from './NewSource/Bucket';
 import GitRepository from './NewSource/GitRepository';

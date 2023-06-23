@@ -1,10 +1,10 @@
 import { TreeItem, window } from 'vscode';
-import { setVSCodeContext } from '../../../extension';
-import { fluxTools } from '../../../cli/flux/fluxTools';
-import { kubernetesTools } from '../../../cli/kubernetes/kubernetesTools';
-import { statusBar } from '../../statusBar';
-import { failed } from '../../../types/errorable';
-import { ContextId } from '../../../types/extensionIds';
+import { setVSCodeContext } from 'extension';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { statusBar } from 'ui/statusBar';
+import { failed } from 'types/errorable';
+import { ContextId } from 'types/extensionIds';
 import { ClusterContextNode } from '../nodes/clusterContextNode';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { TreeNode } from '../nodes/treeNode';

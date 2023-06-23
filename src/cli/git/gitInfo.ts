@@ -2,11 +2,11 @@ import path from 'path';
 
 import gitUrlParse from 'git-url-parse';
 import { workspace, window } from 'vscode';
-import { makeSSHUrlFromGitUrl } from '../../commands/createSource';
-import { checkGitVersion } from '../checkVersions';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { GitRepository } from '../../types/flux/gitRepository';
-import { shell } from '../shell/shell';
+import { makeSSHUrlFromGitUrl } from 'commands/createSource';
+import { checkGitVersion } from 'cli/checkVersions';
+import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { GitRepository } from 'types/flux/gitRepository';
+import { shell } from 'cli/shell/exec';
 
 
 export interface GitInfo {

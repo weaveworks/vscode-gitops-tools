@@ -1,16 +1,15 @@
-import { window, env, Uri } from 'vscode';
-import { globalState, telemetry } from '../../extension';
-import { ClusterMetadata } from '../../data/globalState';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider, ConfigMap, knownClusterProviders } from '../../types/kubernetes/kubernetesTypes';
-import { shell, shellCodeError, ShellResult } from '../shell/shell';
-import { TelemetryErrorEventNames } from '../../types/telemetryEventNames';
-import { parseJson } from '../../utils/jsonUtils';
-import { getCurrentClusterInfo, refreshAllTreeViews } from '../../ui/treeviews/treeViews';
-import { failed } from '../../types/errorable';
-import { fluxTools } from '../flux/fluxTools';
-import { getAzureMetadata } from './getAzureMetadata';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { ShellResult, shell, shellCodeError } from 'cli/shell/exec';
+import { ClusterMetadata } from 'data/globalState';
+import { globalState, telemetry } from 'extension';
+import { failed } from 'types/errorable';
+import { ClusterProvider } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { parseJson } from 'utils/jsonUtils';
+import { Uri, env, window } from 'vscode';
 import { checkAzurePrerequisites } from './azurePrereqs';
+import { getAzureMetadata } from './getAzureMetadata';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 

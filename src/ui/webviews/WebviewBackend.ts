@@ -1,9 +1,9 @@
 import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { camelCase } from 'change-case';
 
-import { asAbsolutePath } from '../../utils/asAbsolutePath';
-import { getUri } from '../../utils/getUri';
-import { WebviewParams } from './types';
+import { asAbsolutePath } from 'utils/asAbsolutePath';
+import { getUri } from 'utils/getUri';
+import { WebviewParams } from 'types/webviewParams';
 
 export type MessageReceiver = (message: any, panel: WebviewPanel)=> any;
 

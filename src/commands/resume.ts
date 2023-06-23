@@ -1,14 +1,14 @@
 import { window } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from '../cli/azure/azureTools';
-import { failed } from '../types/errorable';
-import { fluxTools } from '../cli/flux/fluxTools';
-import { FluxSource, FluxWorkload } from '../types/fluxCliTypes';
-import { GitRepositoryNode } from '../ui/treeviews/nodes/gitRepositoryNode';
-import { HelmReleaseNode } from '../ui/treeviews/nodes/helmReleaseNode';
-import { HelmRepositoryNode } from '../ui/treeviews/nodes/helmRepositoryNode';
-import { KustomizationNode } from '../ui/treeviews/nodes/kustomizationNode';
-import { OCIRepositoryNode } from '../ui/treeviews/nodes/ociRepositoryNode';
-import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../ui/treeviews/treeViews';
+import { AzureClusterProvider, azureTools, isAzureProvider } from 'cli/azure/azureTools';
+import { failed } from 'types/errorable';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { FluxSource, FluxWorkload } from 'types/fluxCliTypes';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
+import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**
  * Resume source or workload reconciliation and refresh its Tree View.

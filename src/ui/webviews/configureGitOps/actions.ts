@@ -1,4 +1,4 @@
-import { ParamsDictionary } from '../../../utils/typeUtils';
+import { ParamsDictionary } from 'utils/typeUtils';
 import { createConfigurationAzure } from './lib/createAzure';
 import { createConfigurationGeneric } from './lib/createGeneric';
 import { exportConfigurationGeneric } from './lib/exportGeneric';

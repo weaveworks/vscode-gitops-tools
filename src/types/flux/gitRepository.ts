@@ -1,4 +1,4 @@
-import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from '../../types/kubernetes/kubernetesTypes';
+import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
 
 /**
  * Git repositories result from running

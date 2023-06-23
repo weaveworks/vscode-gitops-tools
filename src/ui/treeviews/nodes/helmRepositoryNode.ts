@@ -1,5 +1,5 @@
-import { HelmRepository } from '../../../types/flux/helmRepository';
-import { KubernetesObjectKinds } from '../../../types/kubernetes/kubernetesTypes';
+import { HelmRepository } from 'types/flux/helmRepository';
+import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from './nodeContext';
 import { SourceNode } from './sourceNode';
 
