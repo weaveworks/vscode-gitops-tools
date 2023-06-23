@@ -1,5 +1,5 @@
 import safesh from 'shell-escape-tag';
-import { shell } from '../shell/shell';
+import { shell } from '../cli/shell/shell';
 import { ClusterContextNode } from '../ui/treeviews/nodes/clusterContextNode';
 
 /**

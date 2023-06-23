@@ -1,6 +1,6 @@
 import { commands, Uri, window } from 'vscode';
 import { enabledWGE, telemetry } from '../extension';
-import { shell, shellCodeError } from '../shell/shell';
+import { shell, shellCodeError } from './shell/shell';
 import { TelemetryErrorEventNames } from '../types/telemetryEventNames';
 import { Errorable, failed } from '../types/errorable';
 import { CommandId } from '../types/extensionIds';
