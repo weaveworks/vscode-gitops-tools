@@ -6,7 +6,7 @@ import { ClusterProvider, ConfigMap, knownClusterProviders } from '../../types/k
 import { shell, shellCodeError, ShellResult } from '../../shell/shell';
 import { TelemetryErrorEventNames } from '../../types/telemetryEventNames';
 import { parseJson } from '../../utils/jsonUtils';
-import { getCurrentClusterInfo, refreshAllTreeViews } from '../../treeviews/treeViews';
+import { getCurrentClusterInfo, refreshAllTreeViews } from '../../ui/treeviews/treeViews';
 import { failed } from '../../types/errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { getAzureMetadata } from './getAzureMetadata';

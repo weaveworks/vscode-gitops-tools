@@ -1,11 +1,11 @@
 import * as assert from 'assert';
 import { before } from 'mocha';
 import * as vscode from 'vscode';
-import { DataProvider } from '../../treeviews/dataProviders/dataProvider';
-import { ClusterDataProvider } from '../../treeviews/dataProviders/clusterDataProvider';
-import { SourceDataProvider } from '../../treeviews/dataProviders/sourceDataProvider';
-import { WorkloadDataProvider } from '../../treeviews/dataProviders/workloadDataProvider';
-import { NamespaceNode } from '../../treeviews/nodes/namespaceNode';
+import { DataProvider } from '../../ui/treeviews/dataProviders/dataProvider';
+import { ClusterDataProvider } from '../../ui/treeviews/dataProviders/clusterDataProvider';
+import { SourceDataProvider } from '../../ui/treeviews/dataProviders/sourceDataProvider';
+import { WorkloadDataProvider } from '../../ui/treeviews/dataProviders/workloadDataProvider';
+import { NamespaceNode } from '../../ui/treeviews/nodes/namespaceNode';
 
 let api: {
 	shell: { execWithOutput: any; };

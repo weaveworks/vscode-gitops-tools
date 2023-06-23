@@ -1,6 +1,6 @@
 import { kubernetesTools } from '../cli/kubernetes/kubernetesTools';
-import { ClusterContextNode } from '../treeviews/nodes/clusterContextNode';
-import { refreshAllTreeViews } from '../treeviews/treeViews';
+import { ClusterContextNode } from '../ui/treeviews/nodes/clusterContextNode';
+import { refreshAllTreeViews } from '../ui/treeviews/treeViews';
 
 /**
  * Sets Kubernetes context and refreshes tree views if needed.

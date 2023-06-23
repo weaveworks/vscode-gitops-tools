@@ -3,8 +3,8 @@ import { Uri, window, workspace } from 'vscode';
 import { failed } from '../types/errorable';
 import { getFolderGitInfo, getGitRepositoryforGitInfo } from '../cli/git/gitInfo';
 import { namespacedObject } from '../types/flux/object';
-import { getCurrentClusterInfo } from '../treeviews/treeViews';
-import { openConfigureGitOpsWebview } from '../webviews/configureGitOps/openWebview';
+import { getCurrentClusterInfo } from '../ui/treeviews/treeViews';
+import { openConfigureGitOpsWebview } from '../ui/webviews/configureGitOps/openWebview';
 
 /**
  * Create kustomization from File Explorer context menu

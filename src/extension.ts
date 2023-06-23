@@ -9,7 +9,7 @@ import { shell } from './shell/shell';
 import { statusBar } from './ui/statusBar';
 import { Telemetry } from './telemetry';
 import { TelemetryEventNames } from './types/telemetryEventNames';
-import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './treeviews/treeViews';
+import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
 import { succeeded } from './types/errorable';
 import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensionIds';
 

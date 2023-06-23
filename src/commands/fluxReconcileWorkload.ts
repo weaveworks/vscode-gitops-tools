@@ -2,9 +2,9 @@ import { window } from 'vscode';
 import { fluxTools } from '../cli/flux/fluxTools';
 import { FluxWorkload } from '../types/fluxCliTypes';
 import { KubernetesObjectKinds } from '../types/kubernetes/kubernetesTypes';
-import { HelmReleaseNode } from '../treeviews/nodes/helmReleaseNode';
-import { KustomizationNode } from '../treeviews/nodes/kustomizationNode';
-import { refreshWorkloadsTreeView } from '../treeviews/treeViews';
+import { HelmReleaseNode } from '../ui/treeviews/nodes/helmReleaseNode';
+import { KustomizationNode } from '../ui/treeviews/nodes/kustomizationNode';
+import { refreshWorkloadsTreeView } from '../ui/treeviews/treeViews';
 
 /**
  * Invoke flux reconcile of a specific workload.

@@ -8,7 +8,7 @@ import { checkGitVersion } from '../cli/checkVersions';
 import { shell } from '../shell/shell';
 import { TelemetryErrorEventNames } from '../types/telemetryEventNames';
 import { quoteFsPath } from '../utils/fsUtils';
-import { GitRepositoryNode } from '../treeviews/nodes/gitRepositoryNode';
+import { GitRepositoryNode } from '../ui/treeviews/nodes/gitRepositoryNode';
 
 /**
  * Clone git source repository to user machine from

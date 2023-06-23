@@ -6,9 +6,9 @@ import { fluxTools } from '../cli/flux/fluxTools';
 import { FluxWorkload } from '../types/fluxCliTypes';
 import { KubernetesObjectKinds } from '../types/kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../types/telemetryEventNames';
-import { KustomizationNode } from '../treeviews/nodes/kustomizationNode';
-import { HelmReleaseNode } from '../treeviews/nodes/helmReleaseNode';
-import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../treeviews/treeViews';
+import { KustomizationNode } from '../ui/treeviews/nodes/kustomizationNode';
+import { HelmReleaseNode } from '../ui/treeviews/nodes/helmReleaseNode';
+import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../ui/treeviews/treeViews';
 
 
 /**

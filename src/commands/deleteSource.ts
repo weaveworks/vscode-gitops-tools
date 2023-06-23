@@ -6,11 +6,11 @@ import { fluxTools } from '../cli/flux/fluxTools';
 import { FluxSource } from '../types/fluxCliTypes';
 import { KubernetesObjectKinds } from '../types/kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../types/telemetryEventNames';
-import { BucketNode } from '../treeviews/nodes/bucketNode';
-import { GitRepositoryNode } from '../treeviews/nodes/gitRepositoryNode';
-import { OCIRepositoryNode } from '../treeviews/nodes/ociRepositoryNode';
-import { HelmRepositoryNode } from '../treeviews/nodes/helmRepositoryNode';
-import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../treeviews/treeViews';
+import { BucketNode } from '../ui/treeviews/nodes/bucketNode';
+import { GitRepositoryNode } from '../ui/treeviews/nodes/gitRepositoryNode';
+import { OCIRepositoryNode } from '../ui/treeviews/nodes/ociRepositoryNode';
+import { HelmRepositoryNode } from '../ui/treeviews/nodes/helmRepositoryNode';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../ui/treeviews/treeViews';
 
 /**
  * Delete a source

@@ -2,7 +2,7 @@ import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
 import { telemetry } from '../extension';
 import { showOutputChannel } from '../shell/output';
 import { TelemetryErrorEventNames } from '../types/telemetryEventNames';
-import { refreshAllTreeViews, refreshResourcesTreeViews } from '../treeviews/treeViews';
+import { refreshAllTreeViews, refreshResourcesTreeViews } from '../ui/treeviews/treeViews';
 import { CommandId } from '../types/extensionIds';
 import { addKustomization } from './addKustomization';
 import { addSource } from './addSource';
