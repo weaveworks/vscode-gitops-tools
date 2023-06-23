@@ -1,14 +1,15 @@
 import { MarkdownString } from 'vscode';
+
 import { Bucket } from 'types/flux/bucket';
+import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { GitRepository } from 'types/flux/gitRepository';
-import { OCIRepository } from 'types/flux/ociRepository';
 import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
-import { KubernetesCluster, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
-import { Deployment, KubernetesObjectKinds, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { Kustomize } from 'types/flux/kustomize';
+import { OCIRepository } from 'types/flux/ociRepository';
+import { KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
+import { Deployment, KubernetesObjectKinds, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { shortenRevision } from './stringUtils';
-import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 
 export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment | GitOpsTemplate;
 

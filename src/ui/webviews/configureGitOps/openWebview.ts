@@ -1,16 +1,17 @@
 import { Uri, window, workspace } from 'vscode';
-import { extensionContext, telemetry } from 'extension';
+
 import { GitInfo, getFolderGitInfo } from 'cli/git/gitInfo';
 import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
-import { TelemetryEventNames } from 'types/telemetryEventNames';
-import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
+import { extensionContext, telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { FluxSourceObject, namespacedObject } from 'types/flux/object';
 import { ClusterProvider, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
 import { WebviewBackend } from '../WebviewBackend';
 
-import { receiveMessage } from './receiveMessage';
 import { ConfigureGitOpsWebviewParams } from 'types/webviewParams';
+import { receiveMessage } from './receiveMessage';
 
 let webview: WebviewBackend | undefined;
 

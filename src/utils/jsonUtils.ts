@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+
 import { telemetry } from 'extension';
 import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
 

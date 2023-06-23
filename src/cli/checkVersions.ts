@@ -1,10 +1,11 @@
 import { commands, Uri, window } from 'vscode';
+
 import { enabledWGE, telemetry } from 'extension';
-import { shell, shellCodeError } from './shell/exec';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
 import { Errorable, failed } from 'types/errorable';
 import { CommandId } from 'types/extensionIds';
+import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
+import { shell, shellCodeError } from './shell/exec';
 
 interface KubectlVersion {
 	major: string;

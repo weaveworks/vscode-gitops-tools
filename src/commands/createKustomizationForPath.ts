@@ -1,7 +1,8 @@
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
-import { failed } from 'types/errorable';
+
 import { getFolderGitInfo, getGitRepositoryforGitInfo } from 'cli/git/gitInfo';
+import { failed } from 'types/errorable';
 import { namespacedObject } from 'types/flux/object';
 import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
 import { openConfigureGitOpsWebview } from 'ui/webviews/configureGitOps/openWebview';

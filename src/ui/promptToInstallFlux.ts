@@ -1,7 +1,8 @@
 import { window } from 'vscode';
+
+import { getFluxVersion } from 'cli/checkVersions';
 import { installFluxCli } from 'commands/installFluxCli';
 import { Errorable, failed } from 'types/errorable';
-import { getFluxVersion } from 'cli/checkVersions';
 
 /**
  * Show notification with button to install flux

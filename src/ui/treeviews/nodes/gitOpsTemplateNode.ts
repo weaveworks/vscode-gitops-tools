@@ -1,4 +1,5 @@
 import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
+
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownTable } from 'utils/markdownUtils';

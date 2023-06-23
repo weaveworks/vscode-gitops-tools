@@ -1,3 +1,5 @@
+import { Uri, env, window } from 'vscode';
+
 import { fluxTools } from 'cli/flux/fluxTools';
 import { ShellResult, shell, shellCodeError } from 'cli/shell/exec';
 import { ClusterMetadata } from 'data/globalState';
@@ -7,7 +9,6 @@ import { ClusterProvider } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
 import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
 import { parseJson } from 'utils/jsonUtils';
-import { Uri, env, window } from 'vscode';
 import { checkAzurePrerequisites } from './azurePrereqs';
 import { getAzureMetadata } from './getAzureMetadata';
 

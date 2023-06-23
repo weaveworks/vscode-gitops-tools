@@ -1,4 +1,5 @@
 import { QuickPickItem, Uri } from 'vscode';
+
 import { V1ObjectMeta } from '@kubernetes/client-node';
 
 export class ResourceKind implements QuickPickItem {

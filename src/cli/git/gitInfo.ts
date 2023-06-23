@@ -1,12 +1,12 @@
-import path from 'path';
-
 import gitUrlParse from 'git-url-parse';
-import { workspace, window } from 'vscode';
-import { makeSSHUrlFromGitUrl } from 'commands/createSource';
+import path from 'path';
+import { window } from 'vscode';
+
 import { checkGitVersion } from 'cli/checkVersions';
 import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
-import { GitRepository } from 'types/flux/gitRepository';
 import { shell } from 'cli/shell/exec';
+import { makeSSHUrlFromGitUrl } from 'commands/createSource';
+import { GitRepository } from 'types/flux/gitRepository';
 
 
 export interface GitInfo {

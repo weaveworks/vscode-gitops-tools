@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+
 import { AzureClusterProvider, azureTools, isAzureProvider } from 'cli/azure/azureTools';
 import { failed } from 'types/errorable';
 import { fluxTools } from 'cli/flux/fluxTools';

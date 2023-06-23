@@ -1,4 +1,5 @@
 import { Uri, window } from 'vscode';
+
 import { extensionContext } from 'extension';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { WebviewBackend } from '../WebviewBackend';

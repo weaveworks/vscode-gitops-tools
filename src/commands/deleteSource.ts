@@ -1,15 +1,16 @@
 import { window } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from 'cli/azure/azureTools';
-import { failed } from 'types/errorable';
-import { telemetry } from 'extension';
+
+import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { telemetry } from 'extension';
+import { failed } from 'types/errorable';
 import { FluxSource } from 'types/fluxCliTypes';
 import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from 'types/telemetryEventNames';
 import { BucketNode } from 'ui/treeviews/nodes/bucketNode';
 import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
-import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
 import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**

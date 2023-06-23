@@ -1,4 +1,5 @@
 import { Disposable, ExtensionContext, Terminal, window } from 'vscode';
+
 import { extensionContext } from 'extension';
 
 const terminalName = 'gitops';

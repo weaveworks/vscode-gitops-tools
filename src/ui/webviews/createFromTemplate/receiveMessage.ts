@@ -1,7 +1,6 @@
-import { Uri, WebviewPanel, workspace } from 'vscode';
 import { shell } from 'cli/shell/exec';
 import { v4 as uuidv4 } from 'uuid';
-
+import { Uri, WebviewPanel, workspace } from 'vscode';
 
 export async function receiveMessage(message: any, panel: WebviewPanel) {
 	switch (message.action) {

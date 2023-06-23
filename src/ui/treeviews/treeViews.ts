@@ -1,18 +1,19 @@
 import { TreeItem, TreeView, window } from 'vscode';
+import * as k8s from 'vscode-kubernetes-tools-api';
+
 import { isAzureProvider } from 'cli/azure/azureTools';
-import { Errorable, failed } from 'types/errorable';
-import { globalState } from 'extension';
 import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
-import { ClusterInfo, ClusterProvider } from 'types/kubernetes/kubernetesTypes';
+import { globalState } from 'extension';
+import { Errorable, failed } from 'types/errorable';
+import { TreeViewId } from 'types/extensionIds';
+import { ClusterInfo } from 'types/kubernetes/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
 import { ClusterContextNode } from './nodes/clusterContextNode';
 import { TreeNode } from './nodes/treeNode';
-import { TreeViewId } from 'types/extensionIds';
 
-import * as k8s from 'vscode-kubernetes-tools-api';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
 
 export let clusterTreeViewProvider: ClusterDataProvider;

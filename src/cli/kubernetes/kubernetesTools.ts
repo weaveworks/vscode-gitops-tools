@@ -2,11 +2,11 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import safesh from 'shell-escape-tag';
 import { Uri, window } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
+
 import { AzureConstants } from 'cli/azure/azureTools';
-import { globalState, setVSCodeContext, telemetry } from 'extension';
-import { output } from 'cli/shell/output';
 import { shellCodeError } from 'cli/shell/exec';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { output } from 'cli/shell/output';
+import { globalState, setVSCodeContext, telemetry } from 'extension';
 import { Errorable, failed, succeeded } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
 import { BucketResult } from 'types/flux/bucket';
@@ -19,6 +19,7 @@ import { OCIRepositoryResult } from 'types/flux/ociRepository';
 import { KubernetesConfig, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { KubernetesFileSchemes } from 'types/kubernetes/kubernetesFileSchemes';
 import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
 
 export let currentContextName: string;

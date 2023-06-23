@@ -5,14 +5,15 @@ import os from 'os';
 import path from 'path';
 import request from 'request';
 import { commands, window } from 'vscode';
-import { Errorable, failed, succeeded } from 'types/errorable';
-import { globalState } from 'extension';
-import { GlobalStateKey } from 'data/globalState';
+
+import { Platform, shell } from 'cli/shell/exec';
 import { output } from 'cli/shell/output';
-import { Platform, shell, shellCodeError } from 'cli/shell/exec';
 import { runTerminalCommand } from 'cli/shell/terminal';
-import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from 'utils/fsUtils';
+import { GlobalStateKey } from 'data/globalState';
+import { globalState } from 'extension';
+import { Errorable, failed } from 'types/errorable';
 import { refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from 'utils/fsUtils';
 
 const fluxGitHubUserProject = 'fluxcd/flux2';
 

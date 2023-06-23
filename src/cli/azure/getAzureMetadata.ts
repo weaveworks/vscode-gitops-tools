@@ -1,9 +1,9 @@
-import { window } from 'vscode';
 import safesh from 'shell-escape-tag';
-import { QuickPickItem } from 'vscode';
+import { QuickPickItem, window } from 'vscode';
+
 import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { ShellResult, shell } from 'cli/shell/exec';
 import { ClusterProvider, ConfigMap } from 'types/kubernetes/kubernetesTypes';
-import { shell, ShellResult } from 'cli/shell/exec';
 import { parseJson } from 'utils/jsonUtils';
 import { AzureClusterProvider, AzureConstants } from './azureTools';
 

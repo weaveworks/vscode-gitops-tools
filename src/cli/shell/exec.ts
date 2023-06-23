@@ -1,8 +1,9 @@
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
-import { workspace, Progress, ProgressLocation, window } from 'vscode';
-import { globalState } from 'extension';
+import { Progress, ProgressLocation, window, workspace } from 'vscode';
+
 import { GlobalStateKey } from 'data/globalState';
+import { globalState } from 'extension';
 import { output } from './output';
 
 // 🚧 WORK IN PROGRESS.

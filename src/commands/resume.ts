@@ -1,7 +1,8 @@
 import { window } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from 'cli/azure/azureTools';
-import { failed } from 'types/errorable';
+
+import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { failed } from 'types/errorable';
 import { FluxSource, FluxWorkload } from 'types/fluxCliTypes';
 import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
 import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';

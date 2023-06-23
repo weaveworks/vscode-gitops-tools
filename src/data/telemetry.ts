@@ -1,7 +1,7 @@
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { env, ExtensionContext, ExtensionMode } from 'vscode';
-import { TelemetryEventNames, TelemetryErrorEvent } from 'types/telemetryEventNames';
 
+import { TelemetryErrorEvent, TelemetryEventNames } from 'types/telemetryEventNames';
 
 /**
  * Map event names with the data type of payload sent

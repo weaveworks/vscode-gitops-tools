@@ -1,17 +1,18 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
+
+import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
+import { shell } from './cli/shell/exec';
 import { registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
 import { GlobalState, GlobalStateKey } from './data/globalState';
-import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
-import { promptToInstallFlux } from './ui/promptToInstallFlux';
-import { shell } from './cli/shell/exec';
-import { statusBar } from './ui/statusBar';
 import { Telemetry } from './data/telemetry';
-import { TelemetryEventNames } from './types/telemetryEventNames';
-import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
 import { succeeded } from './types/errorable';
 import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensionIds';
+import { TelemetryEventNames } from './types/telemetryEventNames';
+import { promptToInstallFlux } from './ui/promptToInstallFlux';
+import { statusBar } from './ui/statusBar';
+import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
