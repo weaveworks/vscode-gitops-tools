@@ -1,4 +1,4 @@
-import { shell } from '../shell';
+import { shell } from '../shell/shell';
 
 /**
  * Runs `flux check --pre` command in the output view.

@@ -3,7 +3,7 @@ import safesh from 'shell-escape-tag';
 import { QuickPickItem } from 'vscode';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap } from '../types/kubernetes/kubernetesTypes';
-import { shell, ShellResult } from '../shell';
+import { shell, ShellResult } from '../shell/shell';
 import { parseJson } from '../utils/jsonUtils';
 import { AzureClusterProvider, AzureConstants } from './azureTools';
 

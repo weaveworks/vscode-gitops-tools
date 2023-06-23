@@ -10,7 +10,7 @@ import { checkFluxPrerequisites, checkWGEVersion, promptToInstallFlux } from './
 import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
 import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './treeviews/treeViews';
-import { shell } from './shell';
+import { shell } from './shell/shell';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;

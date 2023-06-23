@@ -1,5 +1,5 @@
 import { Uri, WebviewPanel, workspace } from 'vscode';
-import { shell } from '../../shell';
+import { shell } from '../../shell/shell';
 import { v4 as uuidv4 } from 'uuid';
 
 

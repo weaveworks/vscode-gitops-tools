@@ -6,7 +6,7 @@ import { makeSSHUrlFromGitUrl } from '../commands/createSource';
 import { checkGitVersion } from '../install';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { GitRepository } from '../types/flux/gitRepository';
-import { shell } from '../shell';
+import { shell } from '../shell/shell';
 
 
 export interface GitInfo {

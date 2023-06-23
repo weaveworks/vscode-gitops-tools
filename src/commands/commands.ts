@@ -26,7 +26,7 @@ import { showWorkloadsHelpMessage } from './showWorkloadsHelpMessage';
 import { suspend } from './suspend';
 import { trace } from './trace';
 import { telemetry } from '../extension';
-import { showOutputChannel } from '../output';
+import { showOutputChannel } from '../shell/output';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { refreshAllTreeViews, refreshResourcesTreeViews } from '../treeviews/treeViews';
 import { createFromTemplate } from './createFromTemplate';

@@ -3,7 +3,7 @@ import { globalState, telemetry } from '../extension';
 import { ClusterMetadata } from '../globalState';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap, knownClusterProviders } from '../types/kubernetes/kubernetesTypes';
-import { shell, shellCodeError, ShellResult } from '../shell';
+import { shell, shellCodeError, ShellResult } from '../shell/shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../treeviews/treeViews';

@@ -4,7 +4,7 @@ import fs from 'fs';
 import https from 'https';
 import path from 'path';
 import { Errorable } from '../types/errorable';
-import { shell } from '../shell';
+import { shell } from '../shell/shell';
 
 /**
  * Wrap file path in quotes depending on the user os.

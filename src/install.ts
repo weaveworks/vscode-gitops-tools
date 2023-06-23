@@ -4,7 +4,7 @@ import { installFluxCli } from './commands/installFluxCli';
 import { Errorable, failed } from './types/errorable';
 import { enabledWGE, telemetry } from './extension';
 import { extensionState } from './extensionState';
-import { shell, shellCodeError } from './shell';
+import { shell, shellCodeError } from './shell/shell';
 import { TelemetryErrorEventNames } from './telemetry';
 import { parseJson } from './utils/jsonUtils';
 

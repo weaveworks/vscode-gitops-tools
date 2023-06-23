@@ -1,7 +1,7 @@
 import safesh from 'shell-escape-tag';
 import { window } from 'vscode';
 import { telemetry } from '../extension';
-import { shell } from '../shell';
+import { shell } from '../shell/shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { FluxSource, FluxTreeResources, FluxWorkload } from '../types/fluxCliTypes';
 import { parseJson } from '../utils/jsonUtils';

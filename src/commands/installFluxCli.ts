@@ -8,9 +8,9 @@ import { commands, window } from 'vscode';
 import { Errorable, failed, succeeded } from '../types/errorable';
 import { globalState } from '../extension';
 import { GlobalStateKey } from '../globalState';
-import { output } from '../output';
-import { Platform, shell, shellCodeError } from '../shell';
-import { runTerminalCommand } from '../terminal';
+import { output } from '../shell/output';
+import { Platform, shell, shellCodeError } from '../shell/shell';
+import { runTerminalCommand } from '../shell/terminal';
 import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from '../utils/fsUtils';
 import { refreshAllTreeViews } from '../treeviews/treeViews';
 
