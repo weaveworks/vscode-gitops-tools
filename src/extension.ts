@@ -2,12 +2,12 @@ import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vs
 import { registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
-import { GlobalState, GlobalStateKey } from './globalState';
+import { GlobalState, GlobalStateKey } from './data/globalState';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
 import { shell } from './shell/shell';
 import { statusBar } from './ui/statusBar';
-import { Telemetry } from './telemetry';
+import { Telemetry } from './data/telemetry';
 import { TelemetryEventNames } from './types/telemetryEventNames';
 import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
 import { succeeded } from './types/errorable';

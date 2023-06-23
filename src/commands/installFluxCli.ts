@@ -7,7 +7,7 @@ import request from 'request';
 import { commands, window } from 'vscode';
 import { Errorable, failed, succeeded } from '../types/errorable';
 import { globalState } from '../extension';
-import { GlobalStateKey } from '../globalState';
+import { GlobalStateKey } from '../data/globalState';
 import { output } from '../shell/output';
 import { Platform, shell, shellCodeError } from '../shell/shell';
 import { runTerminalCommand } from '../shell/terminal';

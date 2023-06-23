@@ -1,6 +1,6 @@
 import { window, env, Uri } from 'vscode';
 import { globalState, telemetry } from '../../extension';
-import { ClusterMetadata } from '../../globalState';
+import { ClusterMetadata } from '../../data/globalState';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider, ConfigMap, knownClusterProviders } from '../../types/kubernetes/kubernetesTypes';
 import { shell, shellCodeError, ShellResult } from '../../shell/shell';

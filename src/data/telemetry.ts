@@ -1,6 +1,6 @@
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { env, ExtensionContext, ExtensionMode } from 'vscode';
-import { TelemetryEventNames, TelemetryErrorEvent } from './types/telemetryEventNames';
+import { TelemetryEventNames, TelemetryErrorEvent } from '../types/telemetryEventNames';
 
 
 /**
