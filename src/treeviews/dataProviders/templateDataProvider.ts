@@ -1,5 +1,5 @@
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
+import { kubernetesTools } from '../../cli/kubernetes/kubernetesTools';
+import { sortByMetadataName } from '../../cli/kubernetes/kubernetesUtils';
 import { GitOpsTemplate } from '../../types/flux/gitOpsTemplate';
 import { GitOpsTemplateNode } from '../nodes/gitOpsTemplateNode';
 import { DataProvider } from './dataProvider';

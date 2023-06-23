@@ -1,7 +1,7 @@
 import { showDeployKeyNotificationIfNeeded } from '../../../commands/createSource';
 import { telemetry } from '../../../extension';
-import { fluxTools } from '../../../flux/fluxTools';
-import { TelemetryEventNames } from '../../../telemetry';
+import { fluxTools } from '../../../cli/flux/fluxTools';
+import { TelemetryEventNames } from '../../../types/telemetryEventNames';
 import { ParamsDictionary } from '../../../utils/typeUtils';
 import { refreshAllTreeViews, refreshSourcesTreeView } from '../../../treeviews/treeViews';
 

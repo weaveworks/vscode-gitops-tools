@@ -1,10 +1,10 @@
 import safesh from 'shell-escape-tag';
 import { window } from 'vscode';
-import { telemetry } from '../extension';
-import { shell } from '../shell/shell';
-import { TelemetryErrorEventNames } from '../telemetry';
-import { FluxSource, FluxTreeResources, FluxWorkload } from '../types/fluxCliTypes';
-import { parseJson } from '../utils/jsonUtils';
+import { telemetry } from '../../extension';
+import { shell } from '../../shell/shell';
+import { TelemetryErrorEventNames } from '../../types/telemetryEventNames';
+import { FluxSource, FluxTreeResources, FluxWorkload } from '../../types/fluxCliTypes';
+import { parseJson } from '../../utils/jsonUtils';
 import { buildCLIArgs, cliKind } from './cliArgs';
 
 /**

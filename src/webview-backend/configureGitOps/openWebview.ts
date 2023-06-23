@@ -1,8 +1,8 @@
 import { Uri, window, workspace } from 'vscode';
 import { extensionContext, telemetry } from '../../extension';
-import { GitInfo, getFolderGitInfo } from '../../git/gitInfo';
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { TelemetryEventNames } from '../../telemetry';
+import { GitInfo, getFolderGitInfo } from '../../cli/git/gitInfo';
+import { kubernetesTools } from '../../cli/kubernetes/kubernetesTools';
+import { TelemetryEventNames } from '../../types/telemetryEventNames';
 import { getCurrentClusterInfo } from '../../treeviews/treeViews';
 import { failed } from '../../types/errorable';
 import { FluxSourceObject, namespacedObject } from '../../types/flux/object';

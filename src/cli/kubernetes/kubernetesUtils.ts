@@ -1,4 +1,4 @@
-import { KubernetesObject } from '../types/kubernetes/kubernetesTypes';
+import { KubernetesObject } from '../../types/kubernetes/kubernetesTypes';
 
 export function sortByMetadataName<Type extends KubernetesObject>(items: Type[]): Type[] {
 	return items.sort((i1: any, i2: any) => {

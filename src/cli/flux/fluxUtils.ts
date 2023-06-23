@@ -1,4 +1,4 @@
-import { sanitizeRFC1123 } from '../utils/stringUtils';
+import { sanitizeRFC1123 } from '../../utils/stringUtils';
 
 /** RegEx to validate the resource name (except the length of the string) */
 const RFC1123SubdomainRegex = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/;

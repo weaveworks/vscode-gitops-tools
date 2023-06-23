@@ -1,7 +1,7 @@
 import { window, workspace } from 'vscode';
 import { telemetry } from '../../../extension';
-import { fluxTools } from '../../../flux/fluxTools';
-import { TelemetryErrorEventNames, TelemetryEventNames } from '../../../telemetry';
+import { fluxTools } from '../../../cli/flux/fluxTools';
+import { TelemetryErrorEventNames, TelemetryEventNames } from '../../../types/telemetryEventNames';
 import { ParamsDictionary } from '../../../utils/typeUtils';
 
 export async function exportConfigurationGeneric(data: ParamsDictionary) {

@@ -1,8 +1,8 @@
 import { setVSCodeContext } from '../../extension';
-import { fluxTools } from '../../flux/fluxTools';
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
-import { statusBar } from '../../statusBar';
+import { fluxTools } from '../../cli/flux/fluxTools';
+import { kubernetesTools } from '../../cli/kubernetes/kubernetesTools';
+import { sortByMetadataName } from '../../cli/kubernetes/kubernetesUtils';
+import { statusBar } from '../../ui/statusBar';
 import { ContextId } from '../../types/extensionIds';
 import { FluxTreeResources } from '../../types/fluxCliTypes';
 import { KubernetesObjectKinds, NamespaceResult } from '../../types/kubernetes/kubernetesTypes';

@@ -1,6 +1,6 @@
 import { Uri, window, workspace } from 'vscode';
 import { telemetry } from '../extension';
-import { TelemetryErrorEventNames } from '../telemetry';
+import { TelemetryErrorEventNames } from '../types/telemetryEventNames';
 
 /**
  * Open resource in the editor

@@ -1,8 +1,8 @@
 import { TreeItem, TreeView, window } from 'vscode';
-import { isAzureProvider } from '../azure/azureTools';
+import { isAzureProvider } from '../cli/azure/azureTools';
 import { Errorable, failed } from '../types/errorable';
 import { globalState } from '../extension';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../cli/kubernetes/kubernetesTools';
 import { ClusterInfo, ClusterProvider } from '../types/kubernetes/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';

@@ -1,11 +1,11 @@
 import { window } from 'vscode';
-import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { azureTools, isAzureProvider } from '../cli/azure/azureTools';
 import { failed } from '../types/errorable';
 import { telemetry, disableConfirmations } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { fluxTools } from '../cli/flux/fluxTools';
+import { kubernetesTools } from '../cli/kubernetes/kubernetesTools';
 import { ClusterProvider } from '../types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from '../telemetry';
+import { TelemetryEventNames } from '../types/telemetryEventNames';
 import { ClusterContextNode } from '../treeviews/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../treeviews/treeViews';
 

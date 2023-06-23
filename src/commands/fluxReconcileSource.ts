@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { fluxTools } from '../flux/fluxTools';
+import { fluxTools } from '../cli/flux/fluxTools';
 import { FluxSource } from '../types/fluxCliTypes';
 import { KubernetesObjectKinds } from '../types/kubernetes/kubernetesTypes';
 import { BucketNode } from '../treeviews/nodes/bucketNode';

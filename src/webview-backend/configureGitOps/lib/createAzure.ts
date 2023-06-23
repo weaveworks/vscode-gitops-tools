@@ -1,8 +1,8 @@
-import { AzureClusterProvider, azureTools, CreateSourceBucketAzureArgs, CreateSourceGitAzureArgs } from '../../../azure/azureTools';
+import { AzureClusterProvider, azureTools, CreateSourceBucketAzureArgs, CreateSourceGitAzureArgs } from '../../../cli/azure/azureTools';
 import { showDeployKeyNotificationIfNeeded } from '../../../commands/createSource';
 import { telemetry } from '../../../extension';
 import { ClusterInfo, KubernetesObjectKinds } from '../../../types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from '../../../telemetry';
+import { TelemetryEventNames } from '../../../types/telemetryEventNames';
 import { ParamsDictionary } from '../../../utils/typeUtils';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../../../treeviews/treeViews';
 

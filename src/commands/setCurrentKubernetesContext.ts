@@ -1,4 +1,4 @@
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { kubernetesTools } from '../cli/kubernetes/kubernetesTools';
 import { ClusterContextNode } from '../treeviews/nodes/clusterContextNode';
 import { refreshAllTreeViews } from '../treeviews/treeViews';
 

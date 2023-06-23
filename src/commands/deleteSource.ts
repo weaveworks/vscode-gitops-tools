@@ -1,11 +1,11 @@
 import { window } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { AzureClusterProvider, azureTools, isAzureProvider } from '../cli/azure/azureTools';
 import { failed } from '../types/errorable';
 import { telemetry } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
+import { fluxTools } from '../cli/flux/fluxTools';
 import { FluxSource } from '../types/fluxCliTypes';
 import { KubernetesObjectKinds } from '../types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from '../telemetry';
+import { TelemetryEventNames } from '../types/telemetryEventNames';
 import { BucketNode } from '../treeviews/nodes/bucketNode';
 import { GitRepositoryNode } from '../treeviews/nodes/gitRepositoryNode';
 import { OCIRepositoryNode } from '../treeviews/nodes/ociRepositoryNode';

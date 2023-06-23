@@ -1,7 +1,7 @@
 import { setVSCodeContext } from '../../extension';
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { sortByMetadataName } from '../../kubernetes/kubernetesUtils';
-import { statusBar } from '../../statusBar';
+import { kubernetesTools } from '../../cli/kubernetes/kubernetesTools';
+import { sortByMetadataName } from '../../cli/kubernetes/kubernetesUtils';
+import { statusBar } from '../../ui/statusBar';
 import { ContextId } from '../../types/extensionIds';
 import { BucketNode } from '../nodes/bucketNode';
 import { GitRepositoryNode } from '../nodes/gitRepositoryNode';

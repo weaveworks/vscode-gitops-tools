@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { telemetry } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { fluxTools } from '../cli/flux/fluxTools';
+import { kubernetesTools } from '../cli/kubernetes/kubernetesTools';
 import { AnyResourceNode } from '../treeviews/nodes/anyResourceNode';
 import { WorkloadNode } from '../treeviews/nodes/workloadNode';
 
