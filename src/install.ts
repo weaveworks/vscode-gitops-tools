@@ -3,7 +3,6 @@ import { CommandId } from './commands/commands';
 import { installFluxCli } from './commands/installFluxCli';
 import { Errorable, failed } from './types/errorable';
 import { enabledWGE, telemetry } from './extension';
-import { extensionState } from './extensionState';
 import { shell, shellCodeError } from './shell/shell';
 import { TelemetryErrorEventNames } from './telemetry';
 import { parseJson } from './utils/jsonUtils';
@@ -25,6 +24,8 @@ export interface KubectlVersionResult {
 	clientVersion: KubectlVersion;
 	serverVersion: KubectlVersion;
 }
+
+export let fluxVersion: string;
 
 export async function getKubectlVersion(): Promise<Errorable<KubectlVersionResult>> {
 	const kubectlVersionShellResult = await shell.exec('kubectl version --short -o json');
@@ -70,9 +71,7 @@ export async function getAzureVersion(): Promise<Errorable<AzureVersion>> {
 	}
 }
 
-interface FluxVersion {
-	flux: string;
-}
+
 /**
  * Return flux version string.
  * @see https://fluxcd.io/docs/cmd/flux_version/
@@ -81,13 +80,15 @@ export async function getFluxVersion(): Promise<Errorable<string>> {
 	const fluxVersionShellResult = await shell.exec('flux version --client -o json');
 
 	if (fluxVersionShellResult.code === 0) {
-		const fluxVersion: FluxVersion = parseJson(fluxVersionShellResult.stdout.trim());
-		extensionState.set('fluxVersion', fluxVersion.flux);
+		fluxVersion = parseJson(fluxVersionShellResult.stdout.trim()).flux;
+
 		return {
 			succeeded: true,
-			result: fluxVersion.flux,
+			result: fluxVersion,
 		};
 	} else {
+
+		fluxVersion = 'unavailable';
 		return {
 			succeeded: false,
 			error: [shellCodeError(fluxVersionShellResult)],
@@ -100,8 +101,8 @@ export async function getFluxVersion(): Promise<Errorable<string>> {
  * (only when flux was not found).
  */
 export async function promptToInstallFlux(): Promise<Errorable<null>> {
-	const fluxVersion = await getFluxVersion();
-	if (failed(fluxVersion)) {
+	const version = await getFluxVersion();
+	if (failed(version)) {
 		showInstallFluxNotification();
 		return {
 			succeeded: false,

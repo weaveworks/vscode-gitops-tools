@@ -21,6 +21,8 @@ import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResu
 import { KustomizeResult } from '../types/flux/kustomize';
 import { GitOpsTemplateResult } from '../types/flux/gitOpsTemplate';
 
+export let currentContextName: string;
+
 /**
  * Defines Kubernetes Tools class for integration
  * with Microsoft Kubernetes Tools extension API.
@@ -139,6 +141,7 @@ class KubernetesTools {
 		const currentContext = currentContextShellResult.stdout.trim();
 		setVSCodeContext(ContextTypes.NoClusterSelected, false);
 
+		currentContextName = currentContext;
 		return {
 			succeeded: true,
 			result: currentContext,

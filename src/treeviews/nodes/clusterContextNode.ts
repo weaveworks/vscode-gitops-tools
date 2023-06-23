@@ -2,14 +2,14 @@ import { ExtensionMode, MarkdownString } from 'vscode';
 import { CommandId } from '../../commands/commands';
 import { globalState } from '../../extension';
 import { getExtensionContext } from '../../extensionContext';
-import { extensionState } from '../../extensionState';
 import { KubernetesCluster, KubernetesContextWithCluster } from '../../types/kubernetes/kubernetesConfig';
-import { kubernetesTools } from '../../kubernetes/kubernetesTools';
+import { currentContextName, kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../../types/kubernetes/kubernetesTypes';
 import { createMarkdownHr, createMarkdownTable } from '../../utils/markdownUtils';
 import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { NodeContext } from './nodeContext';
 import { TreeNode } from './treeNode';
+import { fluxVersion } from '../../install';
 
 /**
  * Defines Cluster tree view item for displaying
@@ -114,7 +114,9 @@ export class ClusterContextNode extends TreeNode {
 		const markdown: MarkdownString = createMarkdownTable(cluster);
 
 		createMarkdownHr(markdown);
-		markdown.appendMarkdown(`Flux Version: ${extensionState.get('fluxVersion')}`);
+		if(this.contextName === currentContextName) {
+			markdown.appendMarkdown(`Flux Version: ${fluxVersion}`);
+		}
 
 		if (this.clusterProvider !== ClusterProvider.Generic || this.clusterProviderManuallyOverridden) {
 			createMarkdownHr(markdown);
