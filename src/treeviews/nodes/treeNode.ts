@@ -3,10 +3,10 @@ import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemColla
 import { CommandId } from '../../commands/commands';
 import { asAbsolutePath } from '../../extensionContext';
 import { FileTypes } from '../../fileTypes';
-import { KubernetesContextWithCluster } from '../../kubernetes/types/kubernetesConfig';
+import { KubernetesContextWithCluster } from '../../types/kubernetes/kubernetesConfig';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { createMarkdownTable, KnownTreeNodeResources } from '../../utils/markdownUtils';
-import { GitOpsTemplate } from '../../kubernetes/types/flux/gitOpsTemplate';
+import { GitOpsTemplate } from '../../types/flux/gitOpsTemplate';
 
 export const enum TreeNodeIcon {
 	Error = 'error',

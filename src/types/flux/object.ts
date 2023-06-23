@@ -1,5 +1,5 @@
-import { FluxWorkload } from '../../../flux/fluxCliTypes';
-import { KubernetesObjectKinds } from '../kubernetesTypes';
+import { FluxWorkload } from '../fluxCliTypes';
+import { KubernetesObjectKinds } from '../../types/kubernetes/kubernetesTypes';
 import { Bucket } from './bucket';
 import { GitRepository } from './gitRepository';
 import { HelmRelease } from './helmRelease';

@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { globalState } from '../extension';
 import { ClusterMetadata } from '../globalState';
-import { KnownClusterProviders, knownClusterProviders } from '../kubernetes/types/kubernetesTypes';
+import { KnownClusterProviders, knownClusterProviders } from '../types/kubernetes/kubernetesTypes';
 import { ClusterContextNode } from '../treeviews/nodes/clusterContextNode';
 import { refreshAllTreeViews } from '../treeviews/treeViews';
 

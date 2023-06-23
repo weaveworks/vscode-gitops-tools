@@ -4,7 +4,7 @@ import { failed } from '../errorable';
 import { telemetry, disableConfirmations } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider } from '../kubernetes/types/kubernetesTypes';
+import { ClusterProvider } from '../types/kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { ClusterContextNode } from '../treeviews/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from '../treeviews/treeViews';

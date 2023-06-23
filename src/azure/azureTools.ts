@@ -2,7 +2,7 @@ import { window, env, Uri } from 'vscode';
 import { globalState, telemetry } from '../extension';
 import { ClusterMetadata } from '../globalState';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider, ConfigMap, knownClusterProviders } from '../kubernetes/types/kubernetesTypes';
+import { ClusterProvider, ConfigMap, knownClusterProviders } from '../types/kubernetes/kubernetesTypes';
 import { shell, shellCodeError, ShellResult } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';

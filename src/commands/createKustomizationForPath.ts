@@ -2,7 +2,7 @@ import path from 'path';
 import { Uri, window, workspace } from 'vscode';
 import { failed } from '../errorable';
 import { getFolderGitInfo, getGitRepositoryforGitInfo } from '../git/gitInfo';
-import { namespacedObject } from '../kubernetes/types/flux/object';
+import { namespacedObject } from '../types/flux/object';
 import { getCurrentClusterInfo } from '../treeviews/treeViews';
 import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
 

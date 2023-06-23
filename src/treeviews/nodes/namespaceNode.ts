@@ -1,4 +1,4 @@
-import { KubernetesObjectKinds, Namespace } from '../../kubernetes/types/kubernetesTypes';
+import { KubernetesObjectKinds, Namespace } from '../../types/kubernetes/kubernetesTypes';
 import { TreeNode } from './treeNode';
 
 /**

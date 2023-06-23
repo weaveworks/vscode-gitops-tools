@@ -2,12 +2,12 @@ import { Uri, window, workspace } from 'vscode';
 import { failed } from '../../errorable';
 import { telemetry } from '../../extension';
 import { getExtensionContext } from '../../extensionContext';
-import { getFolderGitInfo, GitInfo } from '../../git/gitInfo';
+import { GitInfo, getFolderGitInfo } from '../../git/gitInfo';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
-import { FluxSourceObject, namespacedObject } from '../../kubernetes/types/flux/object';
-import { ClusterProvider, KubernetesObject } from '../../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../../telemetry';
 import { getCurrentClusterInfo } from '../../treeviews/treeViews';
+import { FluxSourceObject, namespacedObject } from '../../types/flux/object';
+import { ClusterProvider, KubernetesObject } from '../../types/kubernetes/kubernetesTypes';
 import { WebviewBackend } from '../WebviewBackend';
 
 import { ConfigureGitOpsWebviewParams } from '../types';

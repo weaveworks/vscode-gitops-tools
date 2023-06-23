@@ -1,5 +1,5 @@
-import { OCIRepository } from '../../kubernetes/types/flux/ociRepository';
-import { KubernetesObjectKinds } from '../../kubernetes/types/kubernetesTypes';
+import { OCIRepository } from '../../types/flux/ociRepository';
+import { KubernetesObjectKinds } from '../../types/kubernetes/kubernetesTypes';
 import { NodeContext } from './nodeContext';
 import { SourceNode } from './sourceNode';
 

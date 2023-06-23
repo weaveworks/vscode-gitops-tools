@@ -1,4 +1,4 @@
-import { KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from '../kubernetesTypes';
+import { KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from '../../types/kubernetes/kubernetesTypes';
 
 /**
  * `kubectl get GitOpsTemplate -A` command.

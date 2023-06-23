@@ -1,6 +1,6 @@
 import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
-import { GitOpsTemplate } from '../../kubernetes/types/flux/gitOpsTemplate';
-import { KubernetesObjectKinds } from '../../kubernetes/types/kubernetesTypes';
+import { GitOpsTemplate } from '../../types/flux/gitOpsTemplate';
+import { KubernetesObjectKinds } from '../../types/kubernetes/kubernetesTypes';
 import { createMarkdownTable } from '../../utils/markdownUtils';
 import { TreeNode } from './treeNode';
 

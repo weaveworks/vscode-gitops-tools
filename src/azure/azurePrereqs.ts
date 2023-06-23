@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { ClusterProvider } from '../kubernetes/types/kubernetesTypes';
+import { ClusterProvider } from '../types/kubernetes/kubernetesTypes';
 import { shell } from '../shell';
 import { AzureClusterProvider } from './azureTools';
 

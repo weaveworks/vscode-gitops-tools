@@ -3,8 +3,8 @@ import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azur
 import { failed } from '../errorable';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
-import { FluxSource } from '../flux/fluxCliTypes';
-import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
+import { FluxSource } from '../types/fluxCliTypes';
+import { KubernetesObjectKinds } from '../types/kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { BucketNode } from '../treeviews/nodes/bucketNode';
 import { GitRepositoryNode } from '../treeviews/nodes/gitRepositoryNode';

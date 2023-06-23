@@ -1,11 +1,10 @@
-import { window } from 'vscode';
 import safesh from 'shell-escape-tag';
+import { window } from 'vscode';
 import { telemetry } from '../extension';
-import { KubernetesObjectKinds, SourceObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { shell } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
+import { FluxSource, FluxTreeResources, FluxWorkload } from '../types/fluxCliTypes';
 import { parseJson } from '../utils/jsonUtils';
-import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxCliTypes';
 import { buildCLIArgs, cliKind } from './cliArgs';
 
 /**

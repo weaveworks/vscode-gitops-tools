@@ -1,6 +1,6 @@
 import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
 import { SourceNode } from '../treeviews/nodes/sourceNode';
-import { FluxSourceKinds } from '../kubernetes/types/flux/object';
+import { FluxSourceKinds } from '../types/flux/object';
 
 /**
  * Open ConfigureGitops webview with a source preselected (if user right-clicked a source node)

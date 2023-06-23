@@ -3,8 +3,8 @@ import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azur
 import { failed } from '../errorable';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
-import { FluxWorkload } from '../flux/fluxCliTypes';
-import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
+import { FluxWorkload } from '../types/fluxCliTypes';
+import { KubernetesObjectKinds } from '../types/kubernetes/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
 import { KustomizationNode } from '../treeviews/nodes/kustomizationNode';
 import { HelmReleaseNode } from '../treeviews/nodes/helmReleaseNode';

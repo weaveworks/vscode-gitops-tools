@@ -1,6 +1,6 @@
 import { Uri, window } from 'vscode';
 import { getExtensionContext } from '../../extensionContext';
-import { GitOpsTemplate } from '../../kubernetes/types/flux/gitOpsTemplate';
+import { GitOpsTemplate } from '../../types/flux/gitOpsTemplate';
 import { WebviewBackend } from '../WebviewBackend';
 import { receiveMessage } from './receiveMessage';
 

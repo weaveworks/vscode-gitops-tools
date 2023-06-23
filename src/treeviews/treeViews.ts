@@ -3,7 +3,7 @@ import { isAzureProvider } from '../azure/azureTools';
 import { Errorable, failed } from '../errorable';
 import { globalState } from '../extension';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterInfo, ClusterProvider } from '../kubernetes/types/kubernetesTypes';
+import { ClusterInfo, ClusterProvider } from '../types/kubernetes/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';

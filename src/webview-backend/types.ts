@@ -1,6 +1,6 @@
 import { GitInfo } from '../git/gitInfo';
-import { GitOpsTemplate, TemplateParam } from '../kubernetes/types/flux/gitOpsTemplate';
-import { ClusterInfo, KubernetesObject } from '../kubernetes/types/kubernetesTypes';
+import { GitOpsTemplate, TemplateParam } from '../types/flux/gitOpsTemplate';
+import { ClusterInfo, KubernetesObject } from '../types/kubernetes/kubernetesTypes';
 
 export type ConfigureGitOpsWebviewParams = {
 	clusterInfo: ClusterInfo;

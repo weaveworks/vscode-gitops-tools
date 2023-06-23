@@ -10,16 +10,16 @@ import { shellCodeError } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
 import { ContextTypes, setVSCodeContext } from '../vscodeContext';
-import { BucketResult } from './types/flux/bucket';
-import { GitRepositoryResult } from './types/flux/gitRepository';
-import { HelmReleaseResult } from './types/flux/helmRelease';
-import { HelmRepositoryResult } from './types/flux/helmRepository';
-import { OCIRepositoryResult } from './types/flux/ociRepository';
-import { KubernetesConfig, KubernetesContextWithCluster } from './types/kubernetesConfig';
-import { KubernetesFileSchemes } from './types/kubernetesFileSchemes';
-import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from './types/kubernetesTypes';
-import { KustomizeResult } from './types/flux/kustomize';
-import { GitOpsTemplateResult } from './types/flux/gitOpsTemplate';
+import { BucketResult } from '../types/flux/bucket';
+import { GitRepositoryResult } from '../types/flux/gitRepository';
+import { HelmReleaseResult } from '../types/flux/helmRelease';
+import { HelmRepositoryResult } from '../types/flux/helmRepository';
+import { OCIRepositoryResult } from '../types/flux/ociRepository';
+import { KubernetesConfig, KubernetesContextWithCluster } from '../types/kubernetes/kubernetesConfig';
+import { KubernetesFileSchemes } from '../types/kubernetes/kubernetesFileSchemes';
+import { ClusterProvider, ConfigMap, DeploymentResult, NamespaceResult, NodeResult, PodResult } from '../types/kubernetes/kubernetesTypes';
+import { KustomizeResult } from '../types/flux/kustomize';
+import { GitOpsTemplateResult } from '../types/flux/gitOpsTemplate';
 
 /**
  * Defines Kubernetes Tools class for integration
