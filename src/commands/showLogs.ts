@@ -1,18 +1,8 @@
-import { V1ObjectMeta } from '@kubernetes/client-node';
-import { commands, Uri, window } from 'vscode';
-import { allKinds, ResourceKind } from '../kuberesources';
+
+import { commands, window } from 'vscode';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterDeploymentNode } from '../views/nodes/clusterDeploymentNode';
-
-interface ResourceNode {
-	readonly nodeType: 'resource';
-	readonly name?: string;
-	readonly namespace?: string;
-	readonly kindName: string;
-	readonly metadata: V1ObjectMeta;
-	readonly kind: ResourceKind;
-	uri(outputFormat: string): Uri;
-}
+import { ResourceNode, podResourceKind } from './showLogsTypes';
 
 /**
  * Show logs in the editor webview (running Kubernetes extension command)
@@ -33,7 +23,7 @@ export async function showLogs(deploymentNode: ClusterDeploymentNode): Promise<v
 		namespace: pod.metadata.namespace,
 		metadata: pod.metadata,
 		kindName: `pod/${pod.metadata.name}`,
-		kind: allKinds.pod,
+		kind: podResourceKind,
 		uri(outputFormat: string) {
 			return kubernetesTools.getResourceUri(this.namespace, this.kindName, outputFormat);
 		},
