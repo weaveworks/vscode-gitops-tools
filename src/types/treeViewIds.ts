@@ -1,7 +1,7 @@
 /**
  * GitOps view ids.
  */
-export const enum Views {
+export const enum TreeViews {
 	ClustersView = 'gitops.views.clusters',
 	SourcesView = 'gitops.views.sources',
 	WorkloadsView = 'gitops.views.workloads',
