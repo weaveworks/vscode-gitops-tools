@@ -2,8 +2,8 @@ import { window } from 'vscode';
 import { telemetry } from '../extension';
 import { fluxTools } from '../flux/fluxTools';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { AnyResourceNode } from '../views/nodes/anyResourceNode';
-import { WorkloadNode } from '../views/nodes/workloadNode';
+import { AnyResourceNode } from '../treeviews/nodes/anyResourceNode';
+import { WorkloadNode } from '../treeviews/nodes/workloadNode';
 
 /**
  * Run flux trace for the Workloads tree view node.

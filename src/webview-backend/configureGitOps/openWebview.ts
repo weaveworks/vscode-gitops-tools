@@ -7,7 +7,7 @@ import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { FluxSourceObject, namespacedObject } from '../../kubernetes/types/flux/object';
 import { ClusterProvider, KubernetesObject } from '../../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../../telemetry';
-import { getCurrentClusterInfo } from '../../views/treeViews';
+import { getCurrentClusterInfo } from '../../treeviews/treeViews';
 import { WebviewBackend } from '../WebviewBackend';
 
 import { ConfigureGitOpsWebviewParams } from '../types';

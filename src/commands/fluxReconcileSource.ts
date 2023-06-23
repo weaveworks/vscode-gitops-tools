@@ -2,11 +2,11 @@ import { window } from 'vscode';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource } from '../flux/fluxTypes';
 import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
-import { BucketNode } from '../views/nodes/bucketNode';
-import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
-import { OCIRepositoryNode } from '../views/nodes/ociRepositoryNode';
-import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
-import { refreshSourcesTreeView } from '../views/treeViews';
+import { BucketNode } from '../treeviews/nodes/bucketNode';
+import { GitRepositoryNode } from '../treeviews/nodes/gitRepositoryNode';
+import { OCIRepositoryNode } from '../treeviews/nodes/ociRepositoryNode';
+import { HelmRepositoryNode } from '../treeviews/nodes/helmRepositoryNode';
+import { refreshSourcesTreeView } from '../treeviews/treeViews';
 
 /**
  * Invoke flux reconcile of a specific source.

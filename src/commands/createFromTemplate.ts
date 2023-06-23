@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { GitOpsTemplateNode } from '../views/nodes/gitOpsTemplateNode';
+import { GitOpsTemplateNode } from '../treeviews/nodes/gitOpsTemplateNode';
 import { openCreateFromTemplatePanel } from '../webview-backend/createFromTemplate/openWebview';
 
 export async function createFromTemplate(templateNode?: GitOpsTemplateNode) {

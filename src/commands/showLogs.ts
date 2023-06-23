@@ -1,7 +1,7 @@
 
 import { commands, window } from 'vscode';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterDeploymentNode } from '../views/nodes/clusterDeploymentNode';
+import { ClusterDeploymentNode } from '../treeviews/nodes/clusterDeploymentNode';
 import { ResourceNode, podResourceKind } from './showLogsTypes';
 
 /**

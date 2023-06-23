@@ -12,7 +12,7 @@ import { output } from '../output';
 import { Platform, shell, shellCodeError } from '../shell';
 import { runTerminalCommand } from '../terminal';
 import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from '../utils/fsUtils';
-import { refreshAllTreeViews } from '../views/treeViews';
+import { refreshAllTreeViews } from '../treeviews/treeViews';
 
 const fluxGitHubUserProject = 'fluxcd/flux2';
 

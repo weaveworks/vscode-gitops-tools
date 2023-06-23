@@ -1,5 +1,5 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
-import { CommandId, registerCommands } from './commands';
+import { CommandId, registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
 import { ContextTypes, setVSCodeContext } from './vscodeContext';
@@ -9,7 +9,7 @@ import { GlobalState, GlobalStateKey } from './globalState';
 import { checkFluxPrerequisites, checkWGEVersion, promptToInstallFlux } from './install';
 import { statusBar } from './statusBar';
 import { Telemetry, TelemetryEventNames } from './telemetry';
-import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
+import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './treeviews/treeViews';
 import { shell } from './shell';
 
 /** Disable interactive modal dialogs, useful for testing */

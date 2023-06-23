@@ -3,7 +3,7 @@ import { Uri, window, workspace } from 'vscode';
 import { failed } from '../errorable';
 import { getFolderGitInfo } from '../git/gitInfo';
 import { checkGitVersion } from '../install';
-import { getCurrentClusterInfo } from '../views/treeViews';
+import { getCurrentClusterInfo } from '../treeviews/treeViews';
 import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
 
 /**

@@ -4,7 +4,7 @@ import { telemetry } from '../../../extension';
 import { ClusterInfo, KubernetesObjectKinds } from '../../../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../../../telemetry';
 import { ParamsDictionary } from '../../../utils/typeUtils';
-import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../../../views/treeViews';
+import { refreshSourcesTreeView, refreshWorkloadsTreeView } from '../../../treeviews/treeViews';
 
 export async function createConfigurationAzure(data: ParamsDictionary) {
 	const clusterInfo = data.clusterInfo as ClusterInfo;

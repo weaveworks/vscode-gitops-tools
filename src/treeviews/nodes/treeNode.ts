@@ -1,6 +1,6 @@
 import { KubernetesObject } from '@kubernetes/client-node';
 import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
-import { CommandId } from '../../commands';
+import { CommandId } from '../../commands/commands';
 import { asAbsolutePath } from '../../extensionContext';
 import { FileTypes } from '../../fileTypes';
 import { KubernetesContextWithCluster } from '../../kubernetes/types/kubernetesConfig';

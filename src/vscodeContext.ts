@@ -1,5 +1,5 @@
 import { commands } from 'vscode';
-import { CommandId } from './commands';
+import { CommandId } from './commands/commands';
 
 /**
  * GitOps context types.

@@ -3,12 +3,12 @@ import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azur
 import { failed } from '../errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { FluxSource, FluxWorkload } from '../flux/fluxTypes';
-import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
-import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';
-import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
-import { KustomizationNode } from '../views/nodes/kustomizationNode';
-import { OCIRepositoryNode } from '../views/nodes/ociRepositoryNode';
-import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+import { GitRepositoryNode } from '../treeviews/nodes/gitRepositoryNode';
+import { HelmReleaseNode } from '../treeviews/nodes/helmReleaseNode';
+import { HelmRepositoryNode } from '../treeviews/nodes/helmRepositoryNode';
+import { KustomizationNode } from '../treeviews/nodes/kustomizationNode';
+import { OCIRepositoryNode } from '../treeviews/nodes/ociRepositoryNode';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../treeviews/treeViews';
 
 /**
  * Resume source or workload reconciliation and refresh its Tree View.

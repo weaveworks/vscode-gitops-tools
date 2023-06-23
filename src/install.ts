@@ -1,5 +1,5 @@
 import { commands, Uri, window } from 'vscode';
-import { CommandId } from './commands';
+import { CommandId } from './commands/commands';
 import { installFluxCli } from './commands/installFluxCli';
 import { Errorable, failed } from './errorable';
 import { enabledWGE, telemetry } from './extension';

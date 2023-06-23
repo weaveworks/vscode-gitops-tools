@@ -3,7 +3,7 @@ import { telemetry } from '../../../extension';
 import { fluxTools } from '../../../flux/fluxTools';
 import { TelemetryEventNames } from '../../../telemetry';
 import { ParamsDictionary } from '../../../utils/typeUtils';
-import { refreshAllTreeViews, refreshSourcesTreeView } from '../../../views/treeViews';
+import { refreshAllTreeViews, refreshSourcesTreeView } from '../../../treeviews/treeViews';
 
 export async function createConfigurationGeneric(data: ParamsDictionary) {
 	telemetry.send(TelemetryEventNames.CreateSource, {

@@ -6,7 +6,7 @@ import { ClusterProvider, ConfigMap, knownClusterProviders } from '../kubernetes
 import { shell, shellCodeError, ShellResult } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
-import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
+import { getCurrentClusterInfo, refreshAllTreeViews } from '../treeviews/treeViews';
 import { failed } from '../errorable';
 import { fluxTools } from '../flux/fluxTools';
 import { getAzureMetadata } from './getAzureMetadata';

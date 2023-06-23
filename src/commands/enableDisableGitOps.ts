@@ -6,8 +6,8 @@ import { fluxTools } from '../flux/fluxTools';
 import { kubernetesTools } from '../kubernetes/kubernetesTools';
 import { ClusterProvider } from '../kubernetes/types/kubernetesTypes';
 import { TelemetryEventNames } from '../telemetry';
-import { ClusterContextNode } from '../views/nodes/clusterContextNode';
-import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
+import { ClusterContextNode } from '../treeviews/nodes/clusterContextNode';
+import { getCurrentClusterInfo, refreshAllTreeViews } from '../treeviews/treeViews';
 
 
 

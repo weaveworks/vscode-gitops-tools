@@ -1,5 +1,5 @@
 import { ExtensionMode, MarkdownString } from 'vscode';
-import { CommandId } from '../../commands';
+import { CommandId } from '../../commands/commands';
 import { globalState } from '../../extension';
 import { getExtensionContext } from '../../extensionContext';
 import { extensionState } from '../../extensionState';
