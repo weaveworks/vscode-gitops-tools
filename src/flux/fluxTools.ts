@@ -5,7 +5,7 @@ import { KubernetesObjectKinds, SourceObjectKinds } from '../kubernetes/types/ku
 import { shell } from '../shell';
 import { TelemetryErrorEventNames } from '../telemetry';
 import { parseJson } from '../utils/jsonUtils';
-import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxTypes';
+import { FluxSource, FluxTreeResources, FluxWorkload } from './fluxCliTypes';
 import { buildCLIArgs, cliKind } from './cliArgs';
 
 /**

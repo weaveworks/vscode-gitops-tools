@@ -1,4 +1,4 @@
-import { FluxWorkload } from '../../../flux/fluxTypes';
+import { FluxWorkload } from '../../../flux/fluxCliTypes';
 import { KubernetesObjectKinds } from '../kubernetesTypes';
 import { Bucket } from './bucket';
 import { GitRepository } from './gitRepository';

@@ -1,6 +1,6 @@
 import { ContextTypes, setVSCodeContext } from '../../vscodeContext';
 import { fluxTools } from '../../flux/fluxTools';
-import { FluxTreeResources } from '../../flux/fluxTypes';
+import { FluxTreeResources } from '../../flux/fluxCliTypes';
 import { kubernetesTools } from '../../kubernetes/kubernetesTools';
 import { KubernetesObjectKinds, NamespaceResult } from '../../kubernetes/types/kubernetesTypes';
 import { statusBar } from '../../statusBar';

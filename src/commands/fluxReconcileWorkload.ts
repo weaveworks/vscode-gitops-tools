@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import { fluxTools } from '../flux/fluxTools';
-import { FluxWorkload } from '../flux/fluxTypes';
+import { FluxWorkload } from '../flux/fluxCliTypes';
 import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
 import { HelmReleaseNode } from '../treeviews/nodes/helmReleaseNode';
 import { KustomizationNode } from '../treeviews/nodes/kustomizationNode';
