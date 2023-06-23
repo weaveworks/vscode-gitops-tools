@@ -4,7 +4,7 @@ import { failed } from '../types/errorable';
 import { getFolderGitInfo } from '../cli/git/gitInfo';
 import { checkGitVersion } from '../cli/checkVersions';
 import { getCurrentClusterInfo } from '../treeviews/treeViews';
-import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
+import { openConfigureGitOpsWebview } from '../webviews/configureGitOps/openWebview';
 
 /**
  * Add git repository source whether from an opened folder
