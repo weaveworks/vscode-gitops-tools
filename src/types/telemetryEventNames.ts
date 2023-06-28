@@ -1,4 +1,4 @@
-export const enum TelemetryErrorEventNames {
+export const enum TelemetryError {
 	/**
 	 * Uncaught exception. Doesn't tell much. Need to see stack trace attached.
 	 */
@@ -61,9 +61,9 @@ export const enum TelemetryErrorEventNames {
 	FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT = 'FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT',
 }
 
-export type TelemetryErrorEvent = TelemetryErrorEventNames | string;
+export type TelemetryErrorEvent = TelemetryError | string;
 
-export const enum TelemetryEventNames {
+export const enum TelemetryEvent {
 	Startup = 'STARTUP',
 	/**
 	 * First ever extension activation.

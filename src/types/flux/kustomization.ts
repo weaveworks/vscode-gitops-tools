@@ -1,27 +1,14 @@
-import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
+import { Condition, Kind, KubernetesJSON, KubernetesObject, LocalObjectReference } from 'types/kubernetes/kubernetesTypes';
 
-/**
- * Kustomizations result from running
- * `kubectl get Kustomization -A` command.
- */
-export interface KustomizeResult {
-	readonly apiVersion: string;
-	readonly kind: 'List';
-	readonly items: Kustomize[];
-	readonly metadata: ResultMetadata;
-}
 
 /**
  * Deployment kustomization info object.
  *
  * @see https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/#Deployment
  */
-export interface Kustomize extends KubernetesObject {
+export interface Kustomization extends KubernetesObject {
+	readonly kind: Kind.Kustomization;
 
-	// standard kubernetes object fields
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.Kustomization;
-	readonly metadata: ObjectMeta;
 
 	/**
 	 * Deployment kustomization spec details.
@@ -156,7 +143,7 @@ export interface Kustomize extends KubernetesObject {
 		/**
 		 * DeploymentCondition describes the state of a deployment at a certain point.
 		 */
-		readonly conditions?: DeploymentCondition[];
+		readonly conditions?: Condition[];
 
 		/**
 		 * The last successfully applied revision. The revision format for Git sources is

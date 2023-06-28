@@ -1,10 +1,11 @@
 import { AzureClusterProvider, azureTools, CreateSourceBucketAzureArgs, CreateSourceGitAzureArgs } from 'cli/azure/azureTools';
 import { showDeployKeyNotificationIfNeeded } from 'commands/createSource';
 import { telemetry } from 'extension';
-import { ClusterInfo, KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ParamsDictionary } from 'utils/typeUtils';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 
 export async function createConfigurationAzure(data: ParamsDictionary) {
 	const clusterInfo = data.clusterInfo as ClusterInfo;
@@ -37,8 +38,8 @@ async function createGitSourceAzure(source: ParamsDictionary, kustomization: Par
 	} as CreateSourceGitAzureArgs;
 
 
-	telemetry.send(TelemetryEventNames.CreateSource, {
-		kind: KubernetesObjectKinds.GitRepository,
+	telemetry.send(TelemetryEvent.CreateSource, {
+		kind: Kind.GitRepository,
 	});
 
 	const deployKey = await azureTools.createSourceGit(args);
@@ -54,8 +55,8 @@ async function createGitSourceAzure(source: ParamsDictionary, kustomization: Par
 
 
 async function createBucketSourceAzure(source: ParamsDictionary, kustomization: ParamsDictionary, clusterInfo: ClusterInfo) {
-	telemetry.send(TelemetryEventNames.CreateSource, {
-		kind: KubernetesObjectKinds.Bucket,
+	telemetry.send(TelemetryEvent.CreateSource, {
+		kind: Kind.Bucket,
 	});
 
 	const args: any = {

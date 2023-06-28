@@ -1,10 +1,11 @@
-import { TreeItem, window } from 'vscode';
-import { setVSCodeContext } from 'extension';
 import { fluxTools } from 'cli/flux/fluxTools';
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
-import { statusBar } from 'ui/statusBar';
+import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
+import { getContexts, getCurrentContext } from 'cli/kubernetes/kubernetesConfig';
+import { setVSCodeContext } from 'extension';
 import { failed } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
+import { statusBar } from 'ui/statusBar';
+import { TreeItem, window } from 'vscode';
 import { ClusterContextNode } from '../nodes/clusterContextNode';
 import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
 import { TreeNode } from '../nodes/treeNode';
@@ -50,8 +51,8 @@ export class ClusterDataProvider extends DataProvider {
 		this.clusterNodes = [];
 
 		const [contextsResult, currentContextResult] = await Promise.all([
-			kubernetesTools.getContexts(),
-			kubernetesTools.getCurrentContext(),
+			getContexts(),
+			getCurrentContext(),
 		]);
 
 		if (failed(contextsResult)) {
@@ -85,13 +86,13 @@ export class ClusterDataProvider extends DataProvider {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 				// load flux system deployments
-				const fluxControllers = await kubernetesTools.getFluxControllers();
+				const fluxControllers = await getFluxControllers();
 				if (fluxControllers) {
 					clusterNode.expand();
 					revealClusterNode(clusterNode, {
 						expand: true,
 					});
-					for (const deployment of fluxControllers.items) {
+					for (const deployment of fluxControllers) {
 						clusterNode.addChild(new ClusterDeploymentNode(deployment));
 					}
 				}

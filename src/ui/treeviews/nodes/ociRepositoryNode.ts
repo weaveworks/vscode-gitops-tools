@@ -1,5 +1,5 @@
 import { OCIRepository } from 'types/flux/ociRepository';
-import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from '../../../types/nodeContext';
 import { SourceNode } from './sourceNode';
 
@@ -18,13 +18,13 @@ export class OCIRepositoryNode extends SourceNode {
 	 * @param ociRepository OCI repository kubernetes object info.
 	 */
 	constructor(ociRepository: OCIRepository) {
-		super(`${KubernetesObjectKinds.OCIRepository}: ${ociRepository.metadata?.name}`, ociRepository);
+		super(`${Kind.OCIRepository}: ${ociRepository.metadata?.name}`, ociRepository);
 
 		this.resource = ociRepository;
 	}
 
 	get contexts() {
-		const contextsArr: string[] = [KubernetesObjectKinds.OCIRepository];
+		const contextsArr: string[] = [Kind.OCIRepository];
 		contextsArr.push(
 			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
 		);

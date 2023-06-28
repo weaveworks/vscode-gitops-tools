@@ -1,11 +1,12 @@
 import { ExtensionMode, MarkdownString } from 'vscode';
 
 import { fluxVersion } from 'cli/checkVersions';
-import { currentContextName, kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { detectClusterProvider, isGitOpsEnabled } from 'cli/kubernetes/clusterProvider';
+import { currentContextName } from 'cli/kubernetes/kubernetesConfig';
 import { extensionContext, globalState, setVSCodeContext } from 'extension';
 import { CommandId, ContextId } from 'types/extensionIds';
+import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { KubernetesCluster, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
-import { ClusterProvider } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { NodeContext } from '../../../types/nodeContext';
 import { TreeNode } from './treeNode';
@@ -81,13 +82,13 @@ export class ClusterContextNode extends TreeNode {
 	 * - Cluster provider.
 	 */
 	async updateNodeContext() {
-		this.isGitOpsEnabled = await kubernetesTools.isGitOpsEnabled(this.contextName);
+		this.isGitOpsEnabled = await isGitOpsEnabled(this.contextName);
 
 		const clusterMetadata = globalState.getClusterMetadata(this.clusterName);
 		if (clusterMetadata?.clusterProvider) {
 			this.clusterProviderManuallyOverridden = true;
 		}
-		this.clusterProvider = clusterMetadata?.clusterProvider || await kubernetesTools.detectClusterProvider(this.contextName);
+		this.clusterProvider = clusterMetadata?.clusterProvider || await detectClusterProvider(this.contextName);
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {

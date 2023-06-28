@@ -2,11 +2,9 @@ import { TreeItem, TreeView, window } from 'vscode';
 import * as k8s from 'vscode-kubernetes-tools-api';
 
 import { isAzureProvider } from 'cli/azure/azureTools';
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
 import { globalState } from 'extension';
 import { Errorable, failed } from 'types/errorable';
 import { TreeViewId } from 'types/extensionIds';
-import { ClusterInfo } from 'types/kubernetes/kubernetesTypes';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
@@ -14,6 +12,9 @@ import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
 import { ClusterContextNode } from './nodes/clusterContextNode';
 import { TreeNode } from './nodes/treeNode';
 
+import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
+import { getClusterName, getCurrentContext } from 'cli/kubernetes/kubernetesConfig';
+import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
 
 export let clusterTreeViewProvider: ClusterDataProvider;
@@ -147,7 +148,7 @@ export function refreshTemplatesTreeView(node?: TreeNode) {
  * 3. Detect cluster provider.
  */
 export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
-	const currentContextResult = await kubernetesTools.getCurrentContext();
+	const currentContextResult = await getCurrentContext();
 
 	if (failed(currentContextResult)) {
 		const error = `Failed to get current context ${currentContextResult.error[0]}`;
@@ -160,12 +161,12 @@ export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
 	const currentContextName = currentContextResult.result;
 
 
-	let currentClusterName = await kubernetesTools.getClusterName(currentContextName);
+	let currentClusterName = await getClusterName(currentContextName);
 
 	// Pick user cluster provider override if defined
 	const clusterMetadata = globalState.getClusterMetadata(currentClusterName);
 	const isClusterProviderUserOverride = Boolean(clusterMetadata?.clusterProvider);
-	const currentClusterProvider = clusterMetadata?.clusterProvider || await kubernetesTools.detectClusterProvider(currentContextName);
+	const currentClusterProvider = clusterMetadata?.clusterProvider || await detectClusterProvider(currentContextName);
 
 	return {
 		succeeded: true,

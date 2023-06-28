@@ -1,4 +1,4 @@
-import { Deployment, KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { Deployment, Kind } from 'types/kubernetes/kubernetesTypes';
 import { TreeNode, TreeNodeIcon } from './treeNode';
 
 /**
@@ -44,7 +44,7 @@ export class ClusterDeploymentNode extends TreeNode {
 	}
 
 	get contexts() {
-		return [KubernetesObjectKinds.Deployment];
+		return [Kind.Deployment];
 	}
 }
 

@@ -7,7 +7,7 @@ import { commands, Uri, window } from 'vscode';
 import { checkGitVersion } from 'cli/checkVersions';
 import { shell } from 'cli/shell/exec';
 import { telemetry } from 'extension';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { TelemetryError } from 'types/telemetryEventNames';
 import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
 import { quoteFsPath } from 'utils/fsUtils';
 
@@ -34,7 +34,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 		return;
 	}
 
-	const pickedFolderFsPath = path.join(pickedFolder[0].fsPath, sourceNode.resource.metadata.name || 'gitRepository');
+	const pickedFolderFsPath = path.join(pickedFolder[0].fsPath, sourceNode.resource.metadata?.name || 'gitRepository');
 
 	// precedence - commit > semver > tag > branch
 	const url = safesh.escape(sourceNode.resource.spec.url);
@@ -61,7 +61,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 	const gitCloneShellResult = await shell.execWithOutput(query);
 
 	if (gitCloneShellResult.code !== 0) {
-		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_GIT_CLONE);
+		telemetry.sendError(TelemetryError.FAILED_TO_RUN_GIT_CLONE);
 		window.showErrorMessage(gitCloneShellResult?.stderr || '');
 		return;
 	}
@@ -90,7 +90,7 @@ async function getLatestTagFromSemver(url: string, semver: string): Promise<stri
 	const tagsShellResult = await shell.exec(safesh`git ls-remote --tags ${url}`);
 
 	if (tagsShellResult.code !== 0) {
-		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_GET_GIT_TAGS_FROM_REMOTE);
+		telemetry.sendError(TelemetryError.FAILED_TO_GET_GIT_TAGS_FROM_REMOTE);
 		window.showErrorMessage(`Failed to get tags from ${url}`);
 		return;
 	}
@@ -100,7 +100,7 @@ async function getLatestTagFromSemver(url: string, semver: string): Promise<stri
 		.filter(tag => tag.length);
 
 	if (!tags.length) {
-		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT);
+		telemetry.sendError(TelemetryError.FAILED_TO_PARSE_GIT_TAGS_FROM_OUTPUT);
 		window.showErrorMessage(`No tags found in ${url}`);
 		return;
 	}

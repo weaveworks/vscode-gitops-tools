@@ -1,5 +1,5 @@
 import { GitRepository } from 'types/flux/gitRepository';
-import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from '../../../types/nodeContext';
 import { SourceNode } from './sourceNode';
 
@@ -18,13 +18,13 @@ export class GitRepositoryNode extends SourceNode {
 	 * @param gitRepository Git repository kubernetes object info.
 	 */
 	constructor(gitRepository: GitRepository) {
-		super(`${KubernetesObjectKinds.GitRepository}: ${gitRepository.metadata?.name}`, gitRepository);
+		super(`${Kind.GitRepository}: ${gitRepository.metadata?.name}`, gitRepository);
 
 		this.resource = gitRepository;
 	}
 
 	get contexts() {
-		const contextsArr: string[] = [KubernetesObjectKinds.GitRepository];
+		const contextsArr: string[] = [Kind.GitRepository];
 		contextsArr.push(
 			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
 		);

@@ -1,6 +1,6 @@
 import { ExtensionContext, window, workspace } from 'vscode';
 
-import { KnownClusterProviders } from 'types/kubernetes/kubernetesTypes';
+import { KnownClusterProviders } from 'types/kubernetes/clusterProvider';
 
 export interface ClusterMetadata {
 	azureResourceGroup?: string;

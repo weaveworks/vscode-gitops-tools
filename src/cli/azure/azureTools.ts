@@ -5,8 +5,8 @@ import { ShellResult, shell, shellCodeError } from 'cli/shell/exec';
 import { ClusterMetadata } from 'data/globalState';
 import { globalState, telemetry } from 'extension';
 import { failed } from 'types/errorable';
-import { ClusterProvider } from 'types/kubernetes/kubernetesTypes';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { ClusterProvider } from 'types/kubernetes/clusterProvider';
+import { TelemetryError } from 'types/telemetryEventNames';
 import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
 import { parseJson } from 'utils/jsonUtils';
 import { checkAzurePrerequisites } from './azurePrereqs';
@@ -119,7 +119,7 @@ class AzureTools {
 		if(answer === 'Yes') {
 			const result = await shell.execWithOutput(command);
 			if (result?.code !== 0) {
-				telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
+				telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_ENABLE_GITOPS);
 			}
 		} else if(answer === 'Use as "Generic" cluster') {
 			await this.enableGitOpsGeneric(contextName);
@@ -174,7 +174,7 @@ class AzureTools {
 			clusterProvider,
 		);
 		if (disableGitOpsShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DISABLE_GITOPS);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_DISABLE_GITOPS);
 		}
 	}
 
@@ -196,7 +196,7 @@ class AzureTools {
 		);
 
 		if (configurationShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_LIST_FLUX_CONFIGURATIONS);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_LIST_FLUX_CONFIGURATIONS);
 			return;
 		}
 
@@ -229,7 +229,7 @@ class AzureTools {
 		);
 
 		if (createKustomizationShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_CREATE_WORKLOAD);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_CREATE_WORKLOAD);
 			window.showErrorMessage(shellCodeError(createKustomizationShellResult));
 			return;
 		}
@@ -296,7 +296,7 @@ class AzureTools {
 		);
 
 		if (createSourceShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_CREATE_SOURCE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_CREATE_SOURCE);
 			return;
 		}
 
@@ -399,7 +399,7 @@ class AzureTools {
 			clusterProvider,
 		);
 		if (deleteSourceShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DELETE_SOURCE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_DELETE_SOURCE);
 		}
 	}
 
@@ -416,7 +416,7 @@ class AzureTools {
 			clusterProvider,
 		);
 		if (deleteSourceShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_DELETE_WORKLOAD);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_DELETE_WORKLOAD);
 		}
 	}
 
@@ -439,7 +439,7 @@ class AzureTools {
 			clusterProvider,
 		);
 		if (suspendShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_SUSPEND_SOURCE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_SUSPEND_SOURCE);
 		}
 	}
 
@@ -462,7 +462,7 @@ class AzureTools {
 			clusterProvider,
 		);
 		if (resumeShellResult?.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_AZ_RESUME_SOURCE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_AZ_RESUME_SOURCE);
 		}
 	}
 

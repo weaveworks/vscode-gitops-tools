@@ -1,5 +1,5 @@
 import { Bucket } from 'types/flux/bucket';
-import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { SourceNode } from './sourceNode';
 
 /**
@@ -17,12 +17,12 @@ export class BucketNode extends SourceNode {
 	 * @param bucket Bucket kubernetes object info.
 	 */
 	constructor(bucket: Bucket) {
-		super(`${KubernetesObjectKinds.Bucket}: ${bucket.metadata?.name}`, bucket);
+		super(`${Kind.Bucket}: ${bucket.metadata?.name}`, bucket);
 
 		this.resource = bucket;
 	}
 
 	get contexts() {
-		return [KubernetesObjectKinds.Bucket];
+		return [Kind.Bucket];
 	}
 }

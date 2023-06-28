@@ -1,24 +1,18 @@
-import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { Bucket } from './bucket';
 import { GitRepository } from './gitRepository';
 import { HelmRelease } from './helmRelease';
 import { HelmRepository } from './helmRepository';
-import { Kustomize } from './kustomize';
+import { Kustomization } from './kustomization';
 import { OCIRepository } from './ociRepository';
 
 export type FluxSourceObject = GitRepository | OCIRepository | HelmRepository | Bucket;
-export type FluxWorkloadObject = Kustomize | HelmRelease;
+export type FluxWorkloadObject = Kustomization | HelmRelease;
 
 export const FluxSourceKinds: string[] = [
-	KubernetesObjectKinds.GitRepository,
-	KubernetesObjectKinds.OCIRepository,
-	KubernetesObjectKinds.HelmRepository,
-	KubernetesObjectKinds.Bucket,
+	Kind.GitRepository,
+	Kind.OCIRepository,
+	Kind.HelmRepository,
+	Kind.Bucket,
 ];
 
-
-export function namespacedObject(resource?: FluxSourceObject | FluxWorkloadObject): string | undefined {
-	if(resource) {
-		return `${resource.kind}/${resource.metadata.name}.${resource.metadata.namespace}`;
-	}
-}
