@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 
 import { telemetry } from 'extension';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { TelemetryError } from 'types/telemetryEventNames';
 
 export function parseJson(jsonString: string): any {
 	let jsonData: any;
@@ -10,9 +10,15 @@ export function parseJson(jsonString: string): any {
 		jsonData = JSON.parse(jsonString.trim());
 	} catch(e: unknown) {
 		window.showErrorMessage(`JSON.parse() failed ${e}`);
-		telemetry.sendError(TelemetryErrorEventNames.UNCAUGHT_EXCEPTION, new Error('parseJson() failed'));
+		telemetry.sendError(TelemetryError.UNCAUGHT_EXCEPTION, new Error('parseJson() failed'));
 		return;
 	}
 
 	return jsonData;
+}
+
+
+export function parseJsonItems<T>(jsonString: string): T[] {
+	const result = parseJson(jsonString);
+	return result?.items || [];
 }

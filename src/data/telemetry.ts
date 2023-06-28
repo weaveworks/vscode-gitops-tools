@@ -1,32 +1,32 @@
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { env, ExtensionContext, ExtensionMode } from 'vscode';
 
-import { TelemetryErrorEvent, TelemetryEventNames } from 'types/telemetryEventNames';
+import { TelemetryErrorEvent, TelemetryEvent } from 'types/telemetryEventNames';
 
 /**
  * Map event names with the data type of payload sent
  * When undefined - send only the event name.
  */
 interface TelemetryEventNamePropertyMapping {
-	[TelemetryEventNames.Startup]: undefined;
-	[TelemetryEventNames.EnableGitOps]: {
+	[TelemetryEvent.Startup]: undefined;
+	[TelemetryEvent.EnableGitOps]: {
 		clusterProvider: string;
 	};
-	[TelemetryEventNames.DisableGitOps]: {
+	[TelemetryEvent.DisableGitOps]: {
 		clusterProvider: string;
 	};
-	[TelemetryEventNames.NewInstall]: undefined;
-	[TelemetryEventNames.CreateSourceOpenWebview]: undefined;
-	[TelemetryEventNames.CreateSource]: {
+	[TelemetryEvent.NewInstall]: undefined;
+	[TelemetryEvent.CreateSourceOpenWebview]: undefined;
+	[TelemetryEvent.CreateSource]: {
 		kind: string;
 	};
-	[TelemetryEventNames.DeleteSource]: {
+	[TelemetryEvent.DeleteSource]: {
 		kind: string;
 	};
-	[TelemetryEventNames.CreateWorkload]: {
+	[TelemetryEvent.CreateWorkload]: {
 		kind: string;
 	};
-	[TelemetryEventNames.DeleteWorkload]: {
+	[TelemetryEvent.DeleteWorkload]: {
 		kind: string;
 	};
 }

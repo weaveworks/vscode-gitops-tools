@@ -1,12 +1,12 @@
 import { showDeployKeyNotificationIfNeeded } from 'commands/createSource';
 import { telemetry } from 'extension';
 import { fluxTools } from 'cli/flux/fluxTools';
-import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ParamsDictionary } from 'utils/typeUtils';
 import { refreshAllTreeViews, refreshSourcesTreeView } from 'ui/treeviews/treeViews';
 
 export async function createConfigurationGeneric(data: ParamsDictionary) {
-	telemetry.send(TelemetryEventNames.CreateSource, {
+	telemetry.send(TelemetryEvent.CreateSource, {
 		kind: data.source?.kind,
 	});
 

@@ -4,7 +4,7 @@ import { window } from 'vscode';
 import { shell } from 'cli/shell/exec';
 import { telemetry } from 'extension';
 import { FluxSource, FluxTreeResources, FluxWorkload } from 'types/fluxCliTypes';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
 import { buildCLIArgs, cliKind } from './cliArgs';
 
@@ -67,7 +67,7 @@ class FluxTools {
 		const result = await shell.execWithOutput(safesh`flux check --context ${context}`, { revealOutputView: false });
 
 		if (result.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CHECK);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CHECK);
 			const stderr = result?.stderr;
 			if (stderr) {
 				window.showErrorMessage(String(result?.stderr || ''));
@@ -133,7 +133,7 @@ class FluxTools {
 		const treeShellResult = await shell.exec(`flux tree kustomization ${name} -n ${namespace} -o json`);
 
 		if (treeShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_TREE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_TREE);
 			window.showErrorMessage(`Failed to get resources created by the workload ${name}. ERROR: ${treeShellResult?.stderr}`);
 			return;
 		}
@@ -154,7 +154,7 @@ class FluxTools {
 		}
 		const installShellResult = await shell.execWithOutput(`flux install ${contextArg}`);
 		if (installShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_INSTALL);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_INSTALL);
 		}
 	}
 
@@ -171,7 +171,7 @@ class FluxTools {
 		}
 		const uninstallShellResult = await shell.execWithOutput(`flux uninstall --silent ${contextArg}`);
 		if (uninstallShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_UNINSTALL);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_UNINSTALL);
 		}
 	}
 
@@ -186,7 +186,7 @@ class FluxTools {
 	async suspend(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		const suspendShellResult = await shell.execWithOutput(`flux suspend ${type} ${name} -n ${namespace}`);
 		if (suspendShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_SUSPEND);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_SUSPEND);
 		}
 	}
 
@@ -201,7 +201,7 @@ class FluxTools {
 	async resume(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		const resumeShellResult = await shell.execWithOutput(`flux resume ${type} ${name} -n ${namespace}`);
 		if (resumeShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_RESUME);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_RESUME);
 		}
 	}
 
@@ -216,7 +216,7 @@ class FluxTools {
 	async reconcile(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		const reconcileShellResult = await shell.execWithOutput(`flux reconcile ${type} ${name} -n ${namespace}`);
 		if (reconcileShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_RECONCILE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_RECONCILE);
 		}
 	}
 
@@ -226,7 +226,7 @@ class FluxTools {
 	async trace(name: string, kind: string, apiVersion: string, namespace: string) {
 		const traceShellResult = await shell.execWithOutput(`flux trace ${name} --kind=${kind} --api-version=${apiVersion} --namespace=${namespace}`);
 		if (traceShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_TRACE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_TRACE);
 		}
 	}
 
@@ -241,7 +241,7 @@ class FluxTools {
 	async delete(type: FluxSource | FluxWorkload, name: string, namespace: string) {
 		const deleteSourceShellResult = await shell.execWithOutput(`flux delete ${type} ${name} -n ${namespace} --silent`);
 		if (deleteSourceShellResult.code !== 0) {
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_DELETE_SOURCE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_DELETE_SOURCE);
 		}
 	}
 
@@ -274,7 +274,7 @@ class FluxTools {
 
 		if (shellResult.code !== 0) {
 			window.showErrorMessage(shellResult.stderr);
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
 		}
 
 		const output = shellResult.stdout || shellResult.stderr;
@@ -289,7 +289,7 @@ class FluxTools {
 
 		if(shellResult.code !== 0) {
 			window.showErrorMessage(shellResult.stderr);
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CREATE_SOURCE);
 
 			return '---';
 		}
@@ -303,7 +303,7 @@ class FluxTools {
 
 		if (shellResult.code !== 0) {
 			window.showErrorMessage(shellResult.stderr);
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
 		}
 	}
 
@@ -313,7 +313,7 @@ class FluxTools {
 
 		if(shellResult.code !== 0) {
 			window.showErrorMessage(shellResult.stderr);
-			telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
+			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CREATE_KUSTOMIZATION);
 
 			return '---';
 		}

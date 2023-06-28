@@ -5,13 +5,13 @@ import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { GitRepository } from 'types/flux/gitRepository';
 import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
-import { Kustomize } from 'types/flux/kustomize';
+import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
 import { KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
-import { Deployment, KubernetesObjectKinds, Namespace } from 'types/kubernetes/kubernetesTypes';
+import { Deployment, Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { shortenRevision } from './stringUtils';
 
-export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment | GitOpsTemplate;
+export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomization | Deployment | GitOpsTemplate;
 
 /**
  * Create markdown table for tree view item hovers.
@@ -42,27 +42,27 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	createMarkdownTableRow('namespace', kubernetesObject.metadata?.namespace, markdown);
 
 	// Object-specific properties
-	if (kubernetesObject.kind === KubernetesObjectKinds.GitRepository) {
+	if (kubernetesObject.kind === Kind.GitRepository) {
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 		createMarkdownTableRow('spec.ref.commit', kubernetesObject.spec?.ref?.commit, markdown);
 		createMarkdownTableRow('spec.ref.branch', kubernetesObject.spec?.ref?.branch, markdown);
 		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
 		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
-	} else if (kubernetesObject.kind === KubernetesObjectKinds.OCIRepository) {
+	} else if (kubernetesObject.kind === Kind.OCIRepository) {
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 		createMarkdownTableRow('spec.ref.digest', kubernetesObject.spec?.ref?.digest, markdown);
 		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
 		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
-	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRepository) {
+	} else if (kubernetesObject.kind === Kind.HelmRepository) {
 		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
 		createMarkdownTableRow('spec.type', kubernetesObject.spec?.type, markdown);
-	} else if (kubernetesObject.kind === KubernetesObjectKinds.Bucket) {
+	} else if (kubernetesObject.kind === Kind.Bucket) {
 		createMarkdownTableRow('spec.bucketName', kubernetesObject.spec?.bucketName, markdown);
 		createMarkdownTableRow('spec.endpoint', kubernetesObject.spec?.endpoint, markdown);
 		createMarkdownTableRow('spec.provider', kubernetesObject.spec?.provider, markdown);
 		createMarkdownTableRow('spec.insecure', kubernetesObject.spec?.insecure, markdown);
-	} else if (kubernetesObject.kind === KubernetesObjectKinds.Kustomization) {
+	} else if (kubernetesObject.kind === Kind.Kustomization) {
 		const sourceRef = `${kubernetesObject.spec?.sourceRef?.kind}/${kubernetesObject.spec?.sourceRef?.name}.${kubernetesObject.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
 		createMarkdownTableRow('source', sourceRef, markdown);
 
@@ -70,7 +70,7 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.prune', kubernetesObject.spec?.prune, markdown);
 		createMarkdownTableRow('spec.force', kubernetesObject.spec?.force, markdown);
 		createMarkdownTableRow('spec.path', kubernetesObject.spec?.path, markdown);
-	} else if (kubernetesObject.kind === KubernetesObjectKinds.HelmRelease) {
+	} else if (kubernetesObject.kind === Kind.HelmRelease) {
 		const sourceRef = `${kubernetesObject.spec?.chart?.spec?.sourceRef?.kind}/${kubernetesObject.spec?.chart?.spec?.sourceRef?.name}.${kubernetesObject.spec?.chart?.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
 		createMarkdownTableRow('source', sourceRef, markdown);
 
@@ -78,7 +78,7 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);
 
 		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
-	} else if (kubernetesObject.kind === KubernetesObjectKinds.Deployment) {
+	} else if (kubernetesObject.kind === Kind.Deployment) {
 		createMarkdownTableRow('spec.paused', kubernetesObject.spec?.paused, markdown);
 		createMarkdownTableRow('spec.minReadySeconds', kubernetesObject.spec?.minReadySeconds, markdown);
 		createMarkdownTableRow('spec.progressDeadlineSeconds', kubernetesObject.spec?.progressDeadlineSeconds, markdown);

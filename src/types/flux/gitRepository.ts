@@ -1,25 +1,13 @@
-import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
+import { Artifact } from 'types/flux/artifact';
+import { Condition, Kind, KubernetesObject, LocalObjectReference } from 'types/kubernetes/kubernetesTypes';
 
-/**
- * Git repositories result from running
- * `kubectl get GitRepository -A` command.
- */
-export interface GitRepositoryResult {
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.List;
-	readonly items: GitRepository[];
-	readonly metadata: ResultMetadata;
-}
 
 /**
  * Git repository info object.
  */
 export interface GitRepository extends KubernetesObject {
+	readonly kind: Kind.GitRepository;
 
-	// standard kubernetes object fields
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.GitRepository;
-	readonly metadata: ObjectMeta;
 
 	/**
 	 * Git repository spec details.
@@ -105,7 +93,7 @@ export interface GitRepository extends KubernetesObject {
 		/**
 		 * Conditions holds the conditions for the GitRepository
 		 */
-		readonly conditions?: DeploymentCondition[];
+		readonly conditions?: Condition[];
 
 		/**
 		 * URL is the download link for the artifact output of the last repository sync

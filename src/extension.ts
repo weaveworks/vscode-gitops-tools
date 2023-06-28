@@ -9,7 +9,7 @@ import { GlobalState, GlobalStateKey } from './data/globalState';
 import { Telemetry } from './data/telemetry';
 import { succeeded } from './types/errorable';
 import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensionIds';
-import { TelemetryEventNames } from './types/telemetryEventNames';
+import { TelemetryEvent } from './types/telemetryEventNames';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
 import { statusBar } from './ui/statusBar';
 import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
@@ -48,10 +48,10 @@ export async function activate(context: ExtensionContext) {
 	// register gitops commands
 	registerCommands(context);
 
-	telemetry.send(TelemetryEventNames.Startup);
+	telemetry.send(TelemetryEvent.Startup);
 
 	if (globalState.get(GlobalStateKey.FirstEverActivationStorageKey) === undefined) {
-		telemetry.send(TelemetryEventNames.NewInstall);
+		telemetry.send(TelemetryEvent.NewInstall);
 		showNewUserGuide();
 		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}

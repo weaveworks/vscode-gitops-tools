@@ -1,9 +1,11 @@
 import safesh from 'shell-escape-tag';
 import { QuickPickItem, window } from 'vscode';
 
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { getClusterName } from 'cli/kubernetes/kubernetesConfig';
+import { invokeKubectlCommand } from 'cli/kubernetes/kubernetesToolsKubectl';
 import { ShellResult, shell } from 'cli/shell/exec';
-import { ClusterProvider, ConfigMap } from 'types/kubernetes/kubernetesTypes';
+import { ClusterProvider } from 'types/kubernetes/clusterProvider';
+import { ConfigMap } from 'types/kubernetes/kubernetesTypes';
 import { parseJson } from 'utils/jsonUtils';
 import { AzureClusterProvider, AzureConstants } from './azureTools';
 
@@ -55,7 +57,7 @@ export async function getAzureMetadata(contextName: string, clusterProvider: Azu
 		return metadata;
 	}
 
-	const clusterName = await kubernetesTools.getClusterName(contextName);
+	const clusterName = await getClusterName(contextName);
 	return await getAzCliOrUserMetadata(clusterName);
 }
 
@@ -162,9 +164,9 @@ export async function askUserForAzureMetadata(
 export async function getAzureConfigMapMetadata(contextName: string, clusterProvider: AzureClusterProvider): Promise<AzureMetadata | undefined>  {
 	let configMapShellResult: ShellResult | undefined;
 	if (clusterProvider === ClusterProvider.AKS) {
-		configMapShellResult = await kubernetesTools.invokeKubectlCommand(safesh`get configmaps extension-manager-config -n ${AzureConstants.KubeSystemNamespace} --context=${contextName} --ignore-not-found -o json`);
+		configMapShellResult = await invokeKubectlCommand(safesh`get configmaps extension-manager-config -n ${AzureConstants.KubeSystemNamespace} --context=${contextName} --ignore-not-found -o json`);
 	} else {
-		configMapShellResult = await kubernetesTools.invokeKubectlCommand(safesh`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${contextName} --ignore-not-found -o json`);
+		configMapShellResult = await invokeKubectlCommand(safesh`get configmaps azure-clusterconfig -n ${AzureConstants.ArcNamespace} --context=${contextName} --ignore-not-found -o json`);
 	}
 
 	// the configmap does not exist, or something else went wrong

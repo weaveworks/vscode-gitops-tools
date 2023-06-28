@@ -3,7 +3,7 @@ import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
 import { showOutputChannel } from 'cli/shell/output';
 import { telemetry } from 'extension';
 import { CommandId } from 'types/extensionIds';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { TelemetryError } from 'types/telemetryEventNames';
 import { refreshAllTreeViews, refreshResourcesTreeViews } from 'ui/treeviews/treeViews';
 import { addKustomization } from './addKustomization';
 import { addSource } from './addSource';
@@ -108,7 +108,7 @@ function registerCommand(commandId: string, callback: (...args: any[])=> any, th
 		try {
 			await callback(...args);
 		} catch(e: unknown) {
-			telemetry.sendError(TelemetryErrorEventNames.UNCAUGHT_EXCEPTION, e as Error);
+			telemetry.sendError(TelemetryError.UNCAUGHT_EXCEPTION, e as Error);
 			window.showErrorMessage(String(e));
 			console.error(e);
 		}

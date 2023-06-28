@@ -1,25 +1,12 @@
-import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
+import { Artifact } from 'types/flux/artifact';
+import { Condition, Kind, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 
-/**
- * Buckets result from running
- * `kubectl get Bucket -A` command.
- */
-export interface BucketResult {
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.List;
-	readonly items: Bucket[];
-	readonly metadata: ResultMetadata;
-}
 
 /**
  * Bucket info object.
  */
 export interface Bucket extends KubernetesObject {
-
-	// standard kubernetes object fields
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.Bucket;
-	readonly metadata: ObjectMeta;
+	readonly kind: Kind.Bucket;
 
 	/**
 	 * Bucket spec details.
@@ -96,7 +83,7 @@ export interface Bucket extends KubernetesObject {
 		/**
 		 * Conditions holds the conditions for the Bucket
 		 */
-		readonly conditions?: DeploymentCondition[];
+		readonly conditions?: Condition[];
 
 		/**
 		 * URL is the download link for the artifact output of the last Bucket sync

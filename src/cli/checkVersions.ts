@@ -3,7 +3,7 @@ import { commands, Uri, window } from 'vscode';
 import { enabledWGE, telemetry } from 'extension';
 import { Errorable, failed } from 'types/errorable';
 import { CommandId } from 'types/extensionIds';
-import { TelemetryErrorEventNames } from 'types/telemetryEventNames';
+import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
 import { shell, shellCodeError } from './shell/exec';
 
@@ -141,7 +141,7 @@ export async function checkGitVersion(): Promise<string | undefined> {
 	const gitVersionShellResult = await getGitVersion();
 
 	if (failed(gitVersionShellResult)) {
-		telemetry.sendError(TelemetryErrorEventNames.GIT_NOT_INSTALLED);
+		telemetry.sendError(TelemetryError.GIT_NOT_INSTALLED);
 		const installButton = 'Install';
 		const confirm = await window.showErrorMessage('Please install Git.', installButton);
 		if (confirm === installButton) {

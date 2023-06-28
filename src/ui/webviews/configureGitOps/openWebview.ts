@@ -1,15 +1,17 @@
 import { Uri, window, workspace } from 'vscode';
 
 import { GitInfo, getFolderGitInfo } from 'cli/git/gitInfo';
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
 import { extensionContext, telemetry } from 'extension';
 import { failed } from 'types/errorable';
-import { FluxSourceObject, namespacedObject } from 'types/flux/object';
-import { ClusterProvider, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { FluxSourceObject } from 'types/flux/object';
+import { ClusterProvider } from 'types/kubernetes/clusterProvider';
+import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEvent } from 'types/telemetryEventNames';
 import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
+import { namespacedFluxObject } from 'utils/namespacedFluxObject';
 import { WebviewBackend } from '../WebviewBackend';
 
+import { getBuckets, getGitRepositories, getNamespaces, getOciRepositories } from 'cli/kubernetes/kubectlGet';
 import { ConfigureGitOpsWebviewParams } from 'types/webviewParams';
 import { receiveMessage } from './receiveMessage';
 
@@ -20,7 +22,7 @@ let webview: WebviewBackend | undefined;
  * needed to create a source (and possibly Kustomization)
  */
 export async function openConfigureGitOpsWebview(selectSource: boolean, selectedSource?: FluxSourceObject | string, set?: any, gitInfo?: GitInfo) {
-	telemetry.send(TelemetryEventNames.CreateSourceOpenWebview);
+	telemetry.send(TelemetryEvent.CreateSourceOpenWebview);
 
 	const clusterInfo = await getCurrentClusterInfo();
 	if (failed(clusterInfo)) {
@@ -40,19 +42,22 @@ export async function openConfigureGitOpsWebview(selectSource: boolean, selected
 		gitInfo = await getFolderGitInfo(workspace.workspaceFolders[0].uri.fsPath);
 	}
 
-	const [nsResults, gitResults, ociResults, bucketResults] = await Promise.all([kubernetesTools.getNamespaces(),
-		kubernetesTools.getGitRepositories(),
-		kubernetesTools.getOciRepositories(),
-		kubernetesTools.getBuckets(),
+	const [nsResults, gitResults, ociResults, bucketResults] = await Promise.all([
+		getNamespaces(),
+		getGitRepositories(),
+		getOciRepositories(),
+		getBuckets(),
 	]);
 
-	const namespaces = nsResults?.items.map(i => i.metadata.name) as string[];
+	const namespaces = nsResults.map(i => i.metadata.name) as string[];
 
-	const sources: KubernetesObject[] = [...gitResults?.items || [],
-									 ...ociResults?.items || [],
-									 ...bucketResults?.items || []];
+	const sources: KubernetesObject[] = [
+		...gitResults,
+		...ociResults,
+		...bucketResults,
+	];
 
-	const selectedSourceName = typeof selectedSource === 'string' ? selectedSource : (namespacedObject(selectedSource) || '');
+	const selectedSourceName = typeof selectedSource === 'string' ? selectedSource : (namespacedFluxObject(selectedSource) || '');
 
 	const webviewParams: ConfigureGitOpsWebviewParams = {
 		clusterInfo: clusterInfo.result,

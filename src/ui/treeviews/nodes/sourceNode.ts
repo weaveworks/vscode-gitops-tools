@@ -4,7 +4,7 @@ import { Bucket } from 'types/flux/bucket';
 import { GitRepository } from 'types/flux/gitRepository';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { OCIRepository } from 'types/flux/ociRepository';
-import { DeploymentCondition } from 'types/kubernetes/kubernetesTypes';
+import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
@@ -73,7 +73,7 @@ export class SourceNode extends TreeNode {
 	 *
 	 * @param conditions "status.conditions" of the source
 	 */
-	findReadyOrFirstCondition(conditions?: DeploymentCondition[]): DeploymentCondition | undefined {
+	findReadyOrFirstCondition(conditions?: Condition[]): Condition | undefined {
 		return conditions?.find(condition => condition.type === 'Ready') || conditions?.[0];
 	}
 

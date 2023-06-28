@@ -5,8 +5,8 @@ import { fluxTools } from 'cli/flux/fluxTools';
 import { telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { FluxWorkload } from 'types/fluxCliTypes';
-import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEvent } from 'types/telemetryEventNames';
 import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
 import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
 import { getCurrentClusterInfo, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
@@ -19,18 +19,18 @@ import { getCurrentClusterInfo, refreshWorkloadsTreeView } from 'ui/treeviews/tr
  */
 export async function deleteWorkload(workloadNode: KustomizationNode | HelmReleaseNode) {
 
-	const workloadName = workloadNode.resource.metadata.name || '';
-	const workloadNamespace = workloadNode.resource.metadata.namespace || '';
+	const workloadName = workloadNode.resource.metadata?.name || '';
+	const workloadNamespace = workloadNode.resource.metadata?.namespace || '';
 	const confirmButton = 'Delete';
 
 	let workloadType: FluxWorkload;
 	switch(workloadNode.resource.kind) {
-		case KubernetesObjectKinds.Kustomization: {
+		case Kind.Kustomization: {
 			workloadType = 'kustomization';
 			break;
 		}
 
-		case KubernetesObjectKinds.HelmRelease: {
+		case Kind.HelmRelease: {
 			workloadType = 'helmrelease';
 			break;
 		}
@@ -59,7 +59,7 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 		return;
 	}
 
-	telemetry.send(TelemetryEventNames.DeleteWorkload, {
+	telemetry.send(TelemetryEvent.DeleteWorkload, {
 		kind: workloadNode.resource.kind,
 	});
 

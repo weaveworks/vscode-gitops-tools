@@ -1,26 +1,11 @@
-import { DeploymentCondition, KubernetesJSON, KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
-import { DependsOn, KubeConfig, Kustomize, NamespacedObjectKindReference } from './kustomize';
-
-/**
- * Helm releases result from running
- * `kubectl get helmreleases.helm.toolkit.fluxcd.io -A` command.
- */
-export interface HelmReleaseResult {
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.List;
-	readonly items: HelmRelease[];
-	readonly metadata: ResultMetadata;
-}
+import { Condition, Kind, KubernetesJSON, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { DependsOn, KubeConfig, Kustomization, NamespacedObjectKindReference } from './kustomization';
 
 /**
  * Helm release info object.
  */
 export interface HelmRelease extends KubernetesObject {
-
-	// standard kubernetes object fields
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.HelmRelease;
-	readonly metadata: ObjectMeta;
+	readonly kind: Kind.HelmRelease;
 
 	/**
 	 * Helm release spec details.
@@ -154,7 +139,7 @@ export interface HelmRelease extends KubernetesObject {
 		/**
 		 * Conditions holds the conditions for the HelmRelease
 		 */
-		readonly conditions?: DeploymentCondition;
+		readonly conditions?: Condition;
 
 		/**
 		 * LastAppliedRevision is the revision of the last successfully applied source
@@ -571,8 +556,8 @@ interface PostRenderer {
 	 * Kustomization to apply as PostRenderer
 	 */
 	readonly kustomize: {
-		readonly patchesStrategicMerge?: Kustomize['spec']['patchesStrategicMerge'];
-		readonly patchesJson6902?: Kustomize['spec']['patchesJson6902'];
-		readonly images?: Kustomize['spec']['images'];
+		readonly patchesStrategicMerge?: Kustomization['spec']['patchesStrategicMerge'];
+		readonly patchesJson6902?: Kustomization['spec']['patchesJson6902'];
+		readonly images?: Kustomization['spec']['images'];
 	};
 }

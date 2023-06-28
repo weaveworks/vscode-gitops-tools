@@ -3,10 +3,10 @@ import path from 'path';
 import { window } from 'vscode';
 
 import { checkGitVersion } from 'cli/checkVersions';
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
 import { shell } from 'cli/shell/exec';
 import { makeSSHUrlFromGitUrl } from 'commands/createSource';
 import { GitRepository } from 'types/flux/gitRepository';
+import { getGitRepositories } from 'cli/kubernetes/kubectlGet';
 
 
 export interface GitInfo {
@@ -25,8 +25,8 @@ export async function getGitRepositoryforGitInfo(gitInfo?: GitInfo): Promise<Git
 		return;
 	}
 
-	const gitRepositories = await kubernetesTools.getGitRepositories();
-	return gitRepositories?.items.find(gr => gr.spec.url === gitInfo.url);
+	const gitRepositories = await getGitRepositories();
+	return gitRepositories.find(gr => gr.spec.url === gitInfo.url);
 }
 
 /**

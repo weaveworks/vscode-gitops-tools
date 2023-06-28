@@ -1,8 +1,8 @@
 import { MarkdownString } from 'vscode';
 
 import { HelmRelease } from 'types/flux/helmRelease';
-import { Kustomize } from 'types/flux/kustomize';
-import { DeploymentCondition } from 'types/kubernetes/kubernetesTypes';
+import { Kustomization } from 'types/flux/kustomization';
+import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from './treeNode';
@@ -17,9 +17,9 @@ export class WorkloadNode extends TreeNode {
 	 */
 	isReconcileFailed = false;
 
-	resource: Kustomize | HelmRelease;
+	resource: Kustomization | HelmRelease;
 
-	constructor(label: string, resource: Kustomize | HelmRelease) {
+	constructor(label: string, resource: Kustomization | HelmRelease) {
 
 		super(`${resource.kind}: ${label}`);
 
@@ -34,7 +34,7 @@ export class WorkloadNode extends TreeNode {
 	 *
 	 * @param conditions "status.conditions" of the workload
 	 */
-	findReadyOrFirstCondition(conditions?: DeploymentCondition | DeploymentCondition[]): DeploymentCondition | undefined {
+	findReadyOrFirstCondition(conditions?: Condition | Condition[]): Condition | undefined {
 		if (Array.isArray(conditions)) {
 			return conditions.find(condition => condition.type === 'Ready') || conditions[0];
 		} else {
@@ -46,7 +46,7 @@ export class WorkloadNode extends TreeNode {
 	 * Update workload status with showing error icon when reconcile has failed.
 	 * @param workload target resource
 	 */
-	updateStatus(workload: Kustomize | HelmRelease): void {
+	updateStatus(workload: Kustomization | HelmRelease): void {
 		const condition = this.findReadyOrFirstCondition(workload.status.conditions);
 
 		if (condition?.status === 'True') {
@@ -82,7 +82,7 @@ export class WorkloadNode extends TreeNode {
 	 * @param workload Kustomize or HelmRelease kubernetes object.
 	 * @returns Markdown string to use for Source tree view item tooltip.
 	 */
-	getMarkdownHover(workload: Kustomize | HelmRelease): MarkdownString {
+	getMarkdownHover(workload: Kustomization | HelmRelease): MarkdownString {
 		const markdown: MarkdownString = createMarkdownTable(workload);
 
 		// show status in hover when source fetching failed

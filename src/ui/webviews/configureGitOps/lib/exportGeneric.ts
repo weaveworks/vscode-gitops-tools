@@ -1,11 +1,11 @@
 import { window, workspace } from 'vscode';
 import { telemetry } from 'extension';
 import { fluxTools } from 'cli/flux/fluxTools';
-import { TelemetryErrorEventNames, TelemetryEventNames } from 'types/telemetryEventNames';
+import { TelemetryError, TelemetryEvent } from 'types/telemetryEventNames';
 import { ParamsDictionary } from 'utils/typeUtils';
 
 export async function exportConfigurationGeneric(data: ParamsDictionary) {
-	telemetry.send(TelemetryEventNames.ExportSource, {
+	telemetry.send(TelemetryEvent.ExportSource, {
 		kind: data.source?.kind,
 	});
 
@@ -32,7 +32,7 @@ async function showYaml(text: string) {
 	},
 	error =>  {
 		window.showErrorMessage(`Error loading document: ${error}`);
-		telemetry.sendError(TelemetryErrorEventNames.FAILED_TO_OPEN_RESOURCE);
+		telemetry.sendError(TelemetryError.FAILED_TO_OPEN_RESOURCE);
 	});
 }
 

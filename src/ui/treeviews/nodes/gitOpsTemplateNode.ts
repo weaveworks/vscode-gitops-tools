@@ -1,7 +1,7 @@
 import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
 
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
-import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownTable } from 'utils/markdownUtils';
 import { TreeNode } from './treeNode';
 
@@ -12,7 +12,7 @@ export class GitOpsTemplateNode extends TreeNode {
 	resource: GitOpsTemplate;
 
 	constructor(template: GitOpsTemplate) {
-		super(template.metadata.name || 'No name');
+		super(template.metadata?.name || 'No name');
 
 		this.resource = template;
 
@@ -35,6 +35,6 @@ export class GitOpsTemplateNode extends TreeNode {
 	}
 
 	get contexts() {
-		return [KubernetesObjectKinds.GitOpsTemplate];
+		return [Kind.GitOpsTemplate];
 	}
 }

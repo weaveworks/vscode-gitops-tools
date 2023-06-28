@@ -3,7 +3,7 @@ import { Uri, window, workspace } from 'vscode';
 
 import { getFolderGitInfo, getGitRepositoryforGitInfo } from 'cli/git/gitInfo';
 import { failed } from 'types/errorable';
-import { namespacedObject } from 'types/flux/object';
+import { namespacedFluxObject } from 'utils/namespacedFluxObject';
 import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
 import { openConfigureGitOpsWebview } from 'ui/webviews/configureGitOps/openWebview';
 
@@ -54,7 +54,7 @@ export async function createKustomizationForPath(fileExplorerUri?: Uri): Promise
 	const gr = await getGitRepositoryforGitInfo(gitInfo);
 
 	const selectSource = !!gr;
-	let sourceName = namespacedObject(gr) || '';
+	let sourceName = namespacedFluxObject(gr) || '';
 
 	openConfigureGitOpsWebview(selectSource, sourceName, {
 		kustomization: {

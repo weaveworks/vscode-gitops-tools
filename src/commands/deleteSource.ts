@@ -5,8 +5,8 @@ import { fluxTools } from 'cli/flux/fluxTools';
 import { telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { FluxSource } from 'types/fluxCliTypes';
-import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEvent } from 'types/telemetryEventNames';
 import { BucketNode } from 'ui/treeviews/nodes/bucketNode';
 import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
 import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
@@ -20,14 +20,14 @@ import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView
  */
 export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepositoryNode | HelmRepositoryNode | BucketNode) {
 
-	const sourceName = sourceNode.resource.metadata.name || '';
-	const sourceNamespace = sourceNode.resource.metadata.namespace || '';
+	const sourceName = sourceNode.resource.metadata?.name || '';
+	const sourceNamespace = sourceNode.resource.metadata?.namespace || '';
 	const confirmButton = 'Delete';
 
-	const sourceType: FluxSource | 'unknown' = sourceNode.resource.kind === KubernetesObjectKinds.GitRepository ? 'source git' :
-		sourceNode.resource.kind === KubernetesObjectKinds.HelmRepository ? 'source helm' :
-			sourceNode.resource.kind === KubernetesObjectKinds.OCIRepository ? 'source oci' :
-				sourceNode.resource.kind === KubernetesObjectKinds.Bucket ? 'source bucket' : 'unknown';
+	const sourceType: FluxSource | 'unknown' = sourceNode.resource.kind === Kind.GitRepository ? 'source git' :
+		sourceNode.resource.kind === Kind.HelmRepository ? 'source helm' :
+			sourceNode.resource.kind === Kind.OCIRepository ? 'source oci' :
+				sourceNode.resource.kind === Kind.Bucket ? 'source bucket' : 'unknown';
 
 	if (sourceType === 'unknown') {
 		window.showErrorMessage(`Unknown Source resource kind ${sourceNode.resource.kind}`);
@@ -41,7 +41,7 @@ export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepository
 		return;
 	}
 
-	telemetry.send(TelemetryEventNames.DeleteSource, {
+	telemetry.send(TelemetryEvent.DeleteSource, {
 		kind: sourceNode.resource.kind,
 	});
 

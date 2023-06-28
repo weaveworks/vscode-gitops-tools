@@ -1,12 +1,12 @@
 import { KubernetesObject } from '@kubernetes/client-node';
 import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
+import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
 
 export const enum TreeNodeIcon {
@@ -130,7 +130,7 @@ export class TreeNode extends TreeItem {
 	get command(): Command | undefined {
 		// Set click event handler to load kubernetes resource as yaml file in editor.
 		if (this.resource) {
-			const resourceUri = kubernetesTools.getResourceUri(
+			const resourceUri = getResourceUri(
 				this.resource.metadata?.namespace,
 				`${this.resource.kind}/${this.resource.metadata?.name}`,
 				FileTypes.Yaml,

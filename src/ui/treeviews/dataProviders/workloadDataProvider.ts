@@ -1,11 +1,11 @@
-import { setVSCodeContext } from 'extension';
 import { fluxTools } from 'cli/flux/fluxTools';
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
-import { sortByMetadataName } from 'cli/kubernetes/kubernetesUtils';
-import { statusBar } from 'ui/statusBar';
+import { getChildrenOfWorkload, getHelmReleases, getKustomizations, getNamespaces } from 'cli/kubernetes/kubectlGet';
+import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { FluxTreeResources } from 'types/fluxCliTypes';
-import { KubernetesObjectKinds, NamespaceResult } from 'types/kubernetes/kubernetesTypes';
+import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
+import { statusBar } from 'ui/statusBar';
+import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { HelmReleaseNode } from '../nodes/helmReleaseNode';
 import { KustomizationNode } from '../nodes/kustomizationNode';
@@ -21,7 +21,7 @@ import { DataProvider } from './dataProvider';
  */
 export class WorkloadDataProvider extends DataProvider {
 
-	namespaceResult?: NamespaceResult;
+	namespaces: Namespace[] = [];
 
 	/**
    * Creates Workload tree nodes for the currently selected kubernetes cluster.
@@ -36,26 +36,20 @@ export class WorkloadDataProvider extends DataProvider {
 
 		const [kustomizations, helmReleases, namespaces] = await Promise.all([
 			// Fetch all workloads
-			kubernetesTools.getKustomizations(),
-			kubernetesTools.getHelmReleases(),
+			getKustomizations(),
+			getHelmReleases(),
 			// Fetch namespaces to group the nodes
-			kubernetesTools.getNamespaces(),
-			// cache resource kinds
-			kubernetesTools.getAvailableResourceKinds(),
+			getNamespaces(),
 		]);
 
-		this.namespaceResult = namespaces;
+		this.namespaces = namespaces;
 
-		if (kustomizations) {
-			for (const kustomizeWorkload of sortByMetadataName(kustomizations.items)) {
-				workloadNodes.push(new KustomizationNode(kustomizeWorkload));
-			}
+		for (const kustomizeWorkload of sortByMetadataName(kustomizations)) {
+			workloadNodes.push(new KustomizationNode(kustomizeWorkload));
 		}
 
-		if (helmReleases) {
-			for (const helmRelease of sortByMetadataName(helmReleases.items)) {
-				workloadNodes.push(new HelmReleaseNode(helmRelease));
-			}
+		for (const helmRelease of sortByMetadataName(helmReleases)) {
+			workloadNodes.push(new HelmReleaseNode(helmRelease));
 		}
 
 		for (const node of workloadNodes) {
@@ -67,12 +61,12 @@ export class WorkloadDataProvider extends DataProvider {
 		statusBar.stopLoadingTree();
 
 
-		return this.groupByNamespace(namespaces?.items || [], workloadNodes);
+		return this.groupByNamespace(namespaces, workloadNodes);
 	}
 
 	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {
 		for (const resource of resourceTree) {
-			if (resource.resource.GroupKind.Kind === KubernetesObjectKinds.Namespace) {
+			if (resource.resource.GroupKind.Kind === Kind.Namespace) {
 				continue;
 			}
 
@@ -100,8 +94,8 @@ export class WorkloadDataProvider extends DataProvider {
 	 * @param workloadNode target workload node
 	 */
 	async updateWorkloadChildren(workloadNode: WorkloadNode) {
-		const name = workloadNode.resource.metadata.name || '';
-		const namespace = workloadNode.resource.metadata.namespace || '';
+		const name = workloadNode.resource.metadata?.name || '';
+		const namespace = workloadNode.resource.metadata?.namespace || '';
 		const targetNamespace = workloadNode.resource.spec.targetNamespace || namespace;
 
 		let workloadChildren;
@@ -120,7 +114,7 @@ export class WorkloadDataProvider extends DataProvider {
 			return;
 		} else if (workloadNode instanceof HelmReleaseNode) {
 			// TODO: use `flux tree` to fetch the resources
-			workloadChildren = await kubernetesTools.getChildrenOfWorkload('helm', name, targetNamespace);
+			workloadChildren = await getChildrenOfWorkload('helm', name, targetNamespace);
 		}
 
 		if (!workloadChildren) {
@@ -130,12 +124,12 @@ export class WorkloadDataProvider extends DataProvider {
 		}
 
 		// Get all namespaces
-		const namespaces = this.namespaceResult || await kubernetesTools.getNamespaces();
+		const namespaces = this.namespaces || await getNamespaces();
 		if (!namespaces) {
 			return;
 		}
 
-		const namespaceNodes = namespaces.items.map(ns => new NamespaceNode(ns));
+		const namespaceNodes = namespaces.map(ns => new NamespaceNode(ns));
 		namespaceNodes.forEach(namespaceNode => namespaceNode.expand());
 
 		/*
@@ -146,12 +140,12 @@ export class WorkloadDataProvider extends DataProvider {
 
 		// group children of workload by namespace
 		for (const namespaceNode of namespaceNodes) {
-			for (const workloadChild of workloadChildren.items) {
-				if (workloadChild.kind !== KubernetesObjectKinds.Namespace &&
-					workloadChild.metadata?.namespace === namespaceNode.resource.metadata.name) {
+			for (const workloadChild of workloadChildren) {
+				if (workloadChild.kind !== Kind.Namespace &&
+					workloadChild.metadata?.namespace === namespaceNode.resource.metadata?.name) {
 					namespaceNode.addChild(new AnyResourceNode(workloadChild));
 				} else {
-					const namespaceName = namespaceNode.resource.metadata.name;
+					const namespaceName = namespaceNode.resource.metadata?.name;
 					if (namespaceName) {
 						exceptNamespaces.push();
 					}
@@ -161,7 +155,7 @@ export class WorkloadDataProvider extends DataProvider {
 
 		// only show namespaces that are not empty
 		workloadNode.children = namespaceNodes.filter(
-			namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata.name)
+			namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata?.name)
 		&& namespaceNode.children.length);
 
 		if(workloadNode.children.length === 0) {

@@ -1,21 +1,9 @@
-import { KubernetesObject, KubernetesObjectKinds, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
+import { Kind, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 
-/**
- * `kubectl get GitOpsTemplate -A` command.
- */
-export interface GitOpsTemplateResult {
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.List;
-	readonly items: GitOpsTemplate[];
-	readonly metadata: ResultMetadata;
-}
 
 
 export interface GitOpsTemplate extends KubernetesObject {
-	// standard kubernetes object fields
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.GitOpsTemplate;
-	readonly metadata: ObjectMeta;
+	readonly kind: Kind.GitOpsTemplate;
 
 	readonly spec: {
 		readonly params?: TemplateParam[];

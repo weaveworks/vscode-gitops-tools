@@ -1,25 +1,12 @@
-import { Artifact, DeploymentCondition, KubernetesObject, KubernetesObjectKinds, LocalObjectReference, ObjectMeta, ResultMetadata } from 'types/kubernetes/kubernetesTypes';
+import { Artifact } from 'types/flux/artifact';
+import { Condition, Kind, KubernetesObject, LocalObjectReference } from 'types/kubernetes/kubernetesTypes';
 
-/**
- * OCI repositories result from running
- * `kubectl get OCIRepository -A` command.
- */
-export interface OCIRepositoryResult {
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.List;
-	readonly items: OCIRepository[];
-	readonly metadata: ResultMetadata;
-}
 
 /**
  * Helm repository info object.
  */
 export interface OCIRepository extends KubernetesObject {
-
-	// standard kubernetes object fields
-	readonly apiVersion: string;
-	readonly kind: KubernetesObjectKinds.OCIRepository;
-	readonly metadata: ObjectMeta;
+	readonly kind: Kind.OCIRepository;
 
 	/**
 	 * Oci repository spec details.
@@ -115,7 +102,7 @@ export interface OCIRepository extends KubernetesObject {
 		/**
 		 * Conditions holds the conditions for the HelmRepository
 		 */
-		readonly conditions?: DeploymentCondition[];
+		readonly conditions?: Condition[];
 
 		/**
 		 * URL is the download link for the last index fetched

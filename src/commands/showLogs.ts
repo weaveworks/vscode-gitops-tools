@@ -1,19 +1,20 @@
 import { commands, window } from 'vscode';
 
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { getPodsOfADeployment } from 'cli/kubernetes/kubectlGet';
 import { ClusterDeploymentNode } from 'ui/treeviews/nodes/clusterDeploymentNode';
-import { ResourceNode, podResourceKind } from './showLogsTypes';
+import { getResourceUri } from 'utils/getResourceUri';
+import { ResourceNode, podResourceKind } from 'types/showLogsTypes';
 
 /**
  * Show logs in the editor webview (running Kubernetes extension command)
  */
 export async function showLogs(deploymentNode: ClusterDeploymentNode): Promise<void> {
 
-	const pods = await kubernetesTools.getPodsOfADeployment(deploymentNode.resource.metadata.name, deploymentNode.resource.metadata.namespace);
-	const pod = pods?.items[0];
+	const pods = await getPodsOfADeployment(deploymentNode.resource.metadata?.name, deploymentNode.resource.metadata?.namespace);
+	const pod = pods[0];
 
 	if (!pod) {
-		window.showErrorMessage(`No pods were found from ${deploymentNode.resource.metadata.name} deployment.`);
+		window.showErrorMessage(`No pods were found from ${deploymentNode.resource.metadata?.name} deployment.`);
 		return;
 	}
 
@@ -25,7 +26,7 @@ export async function showLogs(deploymentNode: ClusterDeploymentNode): Promise<v
 		kindName: `pod/${pod.metadata.name}`,
 		kind: podResourceKind,
 		uri(outputFormat: string) {
-			return kubernetesTools.getResourceUri(this.namespace, this.kindName, outputFormat);
+			return getResourceUri(this.namespace, this.kindName, outputFormat);
 		},
 	};
 

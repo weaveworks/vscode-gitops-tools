@@ -2,11 +2,11 @@ import { window } from 'vscode';
 
 import { azureTools, isAzureProvider } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
-import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { disableConfirmations, telemetry } from 'extension';
 import { failed } from 'types/errorable';
-import { ClusterProvider } from 'types/kubernetes/kubernetesTypes';
-import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { ClusterProvider } from 'types/kubernetes/clusterProvider';
+import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ClusterContextNode } from 'ui/treeviews/nodes/clusterContextNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
 
@@ -33,7 +33,7 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 		clusterName = currentClusterInfo.result.clusterName;
 	}
 
-	const clusterProvider = await kubernetesTools.detectClusterProvider(contextName);
+	const clusterProvider = await detectClusterProvider(contextName);
 
 	if (clusterProvider === ClusterProvider.Unknown) {
 		window.showErrorMessage('Cluster provider not detected yet.');
@@ -53,11 +53,11 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
 	}
 
 	if (enableGitOps) {
-		telemetry.send(TelemetryEventNames.EnableGitOps, {
+		telemetry.send(TelemetryEvent.EnableGitOps, {
 			clusterProvider,
 		});
 	} else {
-		telemetry.send(TelemetryEventNames.DisableGitOps, {
+		telemetry.send(TelemetryEvent.DisableGitOps, {
 			clusterProvider,
 		});
 	}
