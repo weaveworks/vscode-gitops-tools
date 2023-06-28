@@ -1,25 +1,28 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
-import { CommandId, registerCommands } from './commands';
+
+import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
+import { shell } from './cli/shell/exec';
+import { registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
-import { ContextTypes, setVSCodeContext } from './vscodeContext';
-import { succeeded } from './errorable';
-import { setExtensionContext } from './extensionContext';
-import { GlobalState, GlobalStateKey } from './globalState';
-import { checkFluxPrerequisites, checkWGEVersion, promptToInstallFlux } from './install';
-import { statusBar } from './statusBar';
-import { Telemetry, TelemetryEventNames } from './telemetry';
-import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
-import { shell } from './shell';
+import { GlobalState, GlobalStateKey } from './data/globalState';
+import { Telemetry } from './data/telemetry';
+import { succeeded } from './types/errorable';
+import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensionIds';
+import { TelemetryEventNames } from './types/telemetryEventNames';
+import { promptToInstallFlux } from './ui/promptToInstallFlux';
+import { statusBar } from './ui/statusBar';
+import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
 export let experimentalFlag = false;
 
-
-export const enum GitOpsExtensionConstants {
-	ExtensionId = 'weaveworks.vscode-gitops-tools',
-}
+/*
+ * This is the extension runtime context. contains workspace state, subscriptions, paths, persistent state, etc.
+ Should not be confused with vscode context (like 'gitops:noClusterSelected' that's used in package.json to specify when to show/hide commands)
+ */
+export let extensionContext: ExtensionContext;
 
 /** State that is saved even between editor reloads */
 export let globalState: GlobalState;
@@ -32,7 +35,7 @@ export let telemetry: Telemetry | any;
  */
 export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
-	setExtensionContext(context);
+	extensionContext = context;
 	listenConfigChanged();
 
 	globalState = new GlobalState(context);
@@ -54,7 +57,7 @@ export async function activate(context: ExtensionContext) {
 	}
 
 	// set vscode context: developing extension. test is also dev
-	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
+	setVSCodeContext(ContextId.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
 	if(context.extensionMode === ExtensionMode.Test) {
 		disableConfirmations = true;
 	}
@@ -112,3 +115,10 @@ export function deactivate() {
 	telemetry?.dispose();
 	statusBar?.dispose();
 }
+
+
+
+export async function setVSCodeContext(context: ContextId, value: boolean) {
+	return await commands.executeCommand(CommandId.VSCodeSetContext, context, value);
+}
+

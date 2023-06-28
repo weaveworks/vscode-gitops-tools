@@ -1,4 +1,4 @@
-import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
+import { openConfigureGitOpsWebview } from 'ui/webviews/configureGitOps/openWebview';
 
 /**
  * Open ConfigureGitops webview with 'New Source' tab open

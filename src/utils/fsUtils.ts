@@ -3,8 +3,9 @@ import extractZip from 'extract-zip';
 import fs from 'fs';
 import https from 'https';
 import path from 'path';
-import { Errorable } from '../errorable';
-import { shell } from '../shell';
+
+import { shell } from 'cli/shell/exec';
+import { Errorable } from 'types/errorable';
 
 /**
  * Wrap file path in quotes depending on the user os.

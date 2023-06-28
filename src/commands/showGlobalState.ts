@@ -1,4 +1,4 @@
-import { globalState } from '../extension';
+import { globalState } from 'extension';
 
 export function showGlobalState() {
 	globalState.showGlobalStateValue();

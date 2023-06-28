@@ -1,14 +1,15 @@
 import { MarkdownString } from 'vscode';
-import { Bucket } from '../kubernetes/types/flux/bucket';
-import { GitRepository } from '../kubernetes/types/flux/gitRepository';
-import { OCIRepository } from '../kubernetes/types/flux/ociRepository';
-import { HelmRelease } from '../kubernetes/types/flux/helmRelease';
-import { HelmRepository } from '../kubernetes/types/flux/helmRepository';
-import { KubernetesCluster, KubernetesContextWithCluster } from '../kubernetes/types/kubernetesConfig';
-import { Deployment, KubernetesObjectKinds, Namespace } from '../kubernetes/types/kubernetesTypes';
-import { Kustomize } from '../kubernetes/types/flux/kustomize';
+
+import { Bucket } from 'types/flux/bucket';
+import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
+import { GitRepository } from 'types/flux/gitRepository';
+import { HelmRelease } from 'types/flux/helmRelease';
+import { HelmRepository } from 'types/flux/helmRepository';
+import { Kustomize } from 'types/flux/kustomize';
+import { OCIRepository } from 'types/flux/ociRepository';
+import { KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
+import { Deployment, KubernetesObjectKinds, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { shortenRevision } from './stringUtils';
-import { GitOpsTemplate } from '../kubernetes/types/flux/gitOpsTemplate';
 
 export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomize | Deployment | GitOpsTemplate;
 

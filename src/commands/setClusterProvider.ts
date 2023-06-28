@@ -1,9 +1,10 @@
 import { window } from 'vscode';
-import { globalState } from '../extension';
-import { ClusterMetadata } from '../globalState';
-import { KnownClusterProviders, knownClusterProviders } from '../kubernetes/types/kubernetesTypes';
-import { ClusterContextNode } from '../views/nodes/clusterContextNode';
-import { refreshAllTreeViews } from '../views/treeViews';
+
+import { ClusterMetadata } from 'data/globalState';
+import { globalState } from 'extension';
+import { KnownClusterProviders, knownClusterProviders } from 'types/kubernetes/kubernetesTypes';
+import { ClusterContextNode } from 'ui/treeviews/nodes/clusterContextNode';
+import { refreshAllTreeViews } from 'ui/treeviews/treeViews';
 
 export async function setClusterProvider(clusterNode: ClusterContextNode) {
 

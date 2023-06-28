@@ -1,14 +1,15 @@
 import { window } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
-import { failed } from '../errorable';
-import { telemetry } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
-import { FluxWorkload } from '../flux/fluxTypes';
-import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
-import { TelemetryEventNames } from '../telemetry';
-import { KustomizationNode } from '../views/nodes/kustomizationNode';
-import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';
-import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeViews';
+
+import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { telemetry } from 'extension';
+import { failed } from 'types/errorable';
+import { FluxWorkload } from 'types/fluxCliTypes';
+import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
+import { getCurrentClusterInfo, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 
 /**

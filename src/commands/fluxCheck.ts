@@ -1,6 +1,7 @@
 import safesh from 'shell-escape-tag';
-import { shell } from '../shell';
-import { ClusterContextNode } from '../views/nodes/clusterContextNode';
+
+import { shell } from 'cli/shell/exec';
+import { ClusterContextNode } from 'ui/treeviews/nodes/clusterContextNode';
 
 /**
  * Runs `flux check` command for selected cluster in the output view.

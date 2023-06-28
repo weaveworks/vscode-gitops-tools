@@ -1,13 +1,14 @@
 import { window } from 'vscode';
-import { azureTools, isAzureProvider } from '../azure/azureTools';
-import { failed } from '../errorable';
-import { telemetry, disableConfirmations } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
-import { kubernetesTools } from '../kubernetes/kubernetesTools';
-import { ClusterProvider } from '../kubernetes/types/kubernetesTypes';
-import { TelemetryEventNames } from '../telemetry';
-import { ClusterContextNode } from '../views/nodes/clusterContextNode';
-import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
+
+import { azureTools, isAzureProvider } from 'cli/azure/azureTools';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { kubernetesTools } from 'cli/kubernetes/kubernetesTools';
+import { disableConfirmations, telemetry } from 'extension';
+import { failed } from 'types/errorable';
+import { ClusterProvider } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { ClusterContextNode } from 'ui/treeviews/nodes/clusterContextNode';
+import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
 
 
 

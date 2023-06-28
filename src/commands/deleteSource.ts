@@ -1,16 +1,17 @@
 import { window } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
-import { failed } from '../errorable';
-import { telemetry } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
-import { FluxSource } from '../flux/fluxTypes';
-import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
-import { TelemetryEventNames } from '../telemetry';
-import { BucketNode } from '../views/nodes/bucketNode';
-import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
-import { OCIRepositoryNode } from '../views/nodes/ociRepositoryNode';
-import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
-import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
+
+import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { telemetry } from 'extension';
+import { failed } from 'types/errorable';
+import { FluxSource } from 'types/fluxCliTypes';
+import { KubernetesObjectKinds } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEventNames } from 'types/telemetryEventNames';
+import { BucketNode } from 'ui/treeviews/nodes/bucketNode';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
+import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**
  * Delete a source
