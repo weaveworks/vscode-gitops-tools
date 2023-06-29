@@ -97,16 +97,6 @@ export async function startFluxInformers(
 		return Promise.resolve({response: result.response, body: kbody});
 	};
 
-	// const listFn = () => {
-	// 	const x = k8sCoreApi.listNamespacedPod('default');
-	// 	return x;
-	// };
-
-	// listFnBad();
-	// const a: ListPromise<KubernetesOjbect>;
-
-	// const inf2 = k8s.make
-
 	const informer = k8s.makeInformer(
 		kc,
 		`/apis/${group}/${version}/${plural}`,
@@ -152,43 +142,3 @@ export async function startFluxInformers(
 
 	return true;
 }
-
-
-// const fn = k8sApi.depl
-
-// k8sCoreApi.listPodForAllNamespaces();
-
-
-
-// const watch = new k8s.Watch(kc);
-// // watch.watch('/api/v1/namespaces', {},
-// // watch.watch('/apis/apps/v1/deployments', {},
-// watch.watch('/apis/source.toolkit.fluxcd.io/v1beta2/gitrepositories', {},
-// 	(type, apiObj, watchObj) => {
-// 		// console.log(type, apiObj, watchObj);
-// 		if (type === 'ADDED') {
-// 			// tslint:disable-next-line:no-console
-// 			console.log(`NEW: ${apiObj.metadata.name}`);
-// 		} else if (type === 'DELETED') {
-// 			// tslint:disable-next-line:no-console
-// 			console.log(`DELETED: ${apiObj.metadata.name}`);
-// 		}
-// 	},
-// 	err => {
- 	// 		console.log(err);
-// 	},
-// );
-
-
-
-// const crApi = kc.makeApiClient(k8s.CustomObjectsApi);
-// crApi.listClusterCustomObject('source.toolkit.fluxcd.io', 'v1',
-// 	'gitrepositories')
-// 	.then(res => {
-// 		console.log('GITREPO', res.body);
-// 	}).catch(err => {
-// 		console.log(err);
-// 	});
-
-
-

@@ -1,5 +1,6 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 
+import { startFluxInformers } from 'data/fluxInformer';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
 import { shell } from './cli/shell/exec';
 import { registerCommands } from './commands/commands';
@@ -13,7 +14,6 @@ import { TelemetryEvent } from './types/telemetryEventNames';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
 import { statusBar } from './ui/statusBar';
 import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, templateTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
-import { startFluxInformers } from 'flux/fluxInformer';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
