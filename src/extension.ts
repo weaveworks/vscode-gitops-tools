@@ -12,7 +12,8 @@ import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensio
 import { TelemetryEvent } from './types/telemetryEventNames';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
 import { statusBar } from './ui/statusBar';
-import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
+import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, templateTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
+import { startFluxInformers } from 'flux/fluxInformer';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
@@ -44,6 +45,7 @@ export async function activate(context: ExtensionContext) {
 
 	// create gitops tree views
 	createTreeViews();
+	startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
 
 	// register gitops commands
 	registerCommands(context);

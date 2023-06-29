@@ -1,5 +1,5 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { Namespace } from 'types/kubernetes/kubernetesTypes';
+import { KubernetesObject, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 
@@ -72,6 +72,27 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	 */
 	buildTree(): Promise<TreeNode[]> {
 		return Promise.resolve([]);
+	}
+
+	public add(object: KubernetesObject) {
+		// find or create namespace TreeItem for node
+		// add update TreeItem
+		// this.refresh(treeItem)
+		console.log('add', object);
+	}
+
+	public update(object: KubernetesObject) {
+		// find or create namespace TreeItem for node
+		// add update TreeItem
+		// this.refresh(treeItem)
+		console.log('add', object);
+	}
+
+	public delete(object: KubernetesObject) {
+		// find or create namespace TreeItem for node
+		// add update TreeItem
+		// this.refresh(treeItem)
+		console.log('add', object);
 	}
 
 	groupByNamespace(namespaces: Namespace[], nodes: TreeNode[]): NamespaceNode[] {
