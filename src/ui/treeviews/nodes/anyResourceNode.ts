@@ -22,6 +22,10 @@ export class AnyResourceNode extends TreeNode {
 	}
 
 	get tooltip() {
-		return '';
+		if(this.resource.metadata?.namespace) {
+			return `Namespace: ${this.resource.metadata.namespace}`;
+		} else {
+			return '';
+		}
 	}
 }

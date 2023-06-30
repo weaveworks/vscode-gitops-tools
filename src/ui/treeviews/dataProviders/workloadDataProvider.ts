@@ -67,10 +67,6 @@ export class WorkloadDataProvider extends DataProvider {
 
 	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {
 		for (const resource of resourceTree) {
-			if (resource.resource.GroupKind.Kind === Kind.Namespace) {
-				continue;
-			}
-
 			// Nested items have empty namespace https://github.com/fluxcd/flux2/issues/2149
 			const namespace = resource.resource.Namespace || parentNamespace;
 
@@ -95,32 +91,40 @@ export class WorkloadDataProvider extends DataProvider {
 	 * @param workloadNode target workload node
 	 */
 	async updateWorkloadChildren(workloadNode: WorkloadNode) {
-		const name = workloadNode.resource.metadata?.name || '';
-		const namespace = workloadNode.resource.metadata?.namespace || '';
-		const targetNamespace = workloadNode.resource.spec.targetNamespace || namespace;
-
-		let workloadChildren;
 		if (workloadNode instanceof KustomizationNode) {
-			const resourceTree = await fluxTools.tree(name, namespace);
-
-			if (!resourceTree || !resourceTree.resources) {
-				workloadNode.children = [new TreeNode('No Resources')];
-				refreshWorkloadsTreeView(workloadNode);
-				return;
-			}
-
-			this.buildWorkloadsTree(workloadNode, resourceTree.resources);
-			refreshWorkloadsTreeView(workloadNode);
-
-			return;
+			this.updateKustomizationChildren(workloadNode);
 		} else if (workloadNode instanceof HelmReleaseNode) {
-			// TODO: use `flux tree` to fetch the resources
-			workloadChildren = await getChildrenOfWorkload('helm', name, targetNamespace);
+			this.updateHelmReleaseChildren(workloadNode);
+		}
+	}
+
+	async updateKustomizationChildren(node: KustomizationNode) {
+		const name = node.resource.metadata?.name || '';
+		const namespace = node.resource.metadata?.namespace || '';
+		const resourceTree = await fluxTools.tree(name, namespace);
+
+		if (!resourceTree || !resourceTree.resources) {
+			node.children = [new TreeNode('No Resources')];
+			refreshWorkloadsTreeView(node);
+			return;
 		}
 
+		this.buildWorkloadsTree(node, resourceTree.resources);
+		refreshWorkloadsTreeView(node);
+	}
+
+
+	async updateHelmReleaseChildren(node: HelmReleaseNode) {
+		const name = node.resource.metadata?.name || '';
+		const namespace = node.resource.metadata?.namespace || '';
+
+		const targetNamespace = node.resource.spec.targetNamespace || namespace;
+		const workloadChildren = await getChildrenOfWorkload('helm', name, targetNamespace);
+
+
 		if (!workloadChildren) {
-			workloadNode.children = [new TreeNode('No Resources')];
-			refreshWorkloadsTreeView(workloadNode);
+			node.children = [new TreeNode('No Resources')];
+			refreshWorkloadsTreeView(node);
 			return;
 		}
 
@@ -155,15 +159,15 @@ export class WorkloadDataProvider extends DataProvider {
 		}
 
 		// only show namespaces that are not empty
-		workloadNode.children = namespaceNodes.filter(
+		node.children = namespaceNodes.filter(
 			namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata?.name)
 		&& namespaceNode.children.length);
 
-		if(workloadNode.children.length === 0) {
-			workloadNode.children = [new TreeNode('No Resources')];
+		if(node.children.length === 0) {
+			node.children = [new TreeNode('No Resources')];
 		}
 
-		refreshWorkloadsTreeView(workloadNode);
+		refreshWorkloadsTreeView(node);
 	}
 
 	/**
