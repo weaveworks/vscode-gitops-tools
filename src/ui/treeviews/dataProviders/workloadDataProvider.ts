@@ -7,10 +7,11 @@ import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
-import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
-import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
+import { groupNodesByNamespace } from '../../../utils/groupNodesByNamespace';
+import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
+import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
 import { refreshWorkloadsTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
@@ -61,7 +62,7 @@ export class WorkloadDataProvider extends DataProvider {
 		statusBar.stopLoadingTree();
 
 
-		return this.groupByNamespace(namespaces, workloadNodes);
+		return groupNodesByNamespace(workloadNodes);
 	}
 
 	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {

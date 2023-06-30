@@ -1,6 +1,5 @@
-import { KubernetesObject, Namespace } from 'types/kubernetes/kubernetesTypes';
+import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 
 /**
@@ -95,20 +94,4 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		console.log('add', object);
 	}
 
-	groupByNamespace(namespaces: Namespace[], nodes: TreeNode[]): NamespaceNode[] {
-		const namespaceNodes: NamespaceNode[] = [];
-
-		namespaces.forEach(ns => {
-			const name = ns.metadata.name;
-
-			const nsChildNodes = nodes.filter(node => node.resource?.metadata?.namespace === name);
-			if(nsChildNodes.length > 0) {
-				const nsNode = new NamespaceNode(ns);
-				nsChildNodes.forEach(childNode => nsNode.addChild(childNode));
-				namespaceNodes.push(nsNode);
-			}
-		});
-
-		return namespaceNodes;
-	}
 }

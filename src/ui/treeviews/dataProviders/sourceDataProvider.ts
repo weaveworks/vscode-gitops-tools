@@ -1,14 +1,15 @@
-import { getBuckets, getGitRepositories, getHelmRepositories, getNamespaces, getOciRepositories } from 'cli/kubernetes/kubectlGet';
+import { getBuckets, getGitRepositories, getHelmRepositories, getOciRepositories } from 'cli/kubernetes/kubectlGet';
 import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
+import { NamespaceNode } from '../nodes/namespaceNode';
 import { BucketNode } from '../nodes/source/bucketNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';
-import { NamespaceNode } from '../nodes/namespaceNode';
 import { OCIRepositoryNode } from '../nodes/source/ociRepositoryNode';
 import { SourceNode } from '../nodes/source/sourceNode';
+import { groupNodesByNamespace } from '../../../utils/groupNodesByNamespace';
 import { DataProvider } from './dataProvider';
 
 /**
@@ -24,43 +25,41 @@ export class SourceDataProvider extends DataProvider {
 	async buildTree(): Promise<NamespaceNode[]> {
 		statusBar.startLoadingTree();
 
-		const treeItems: SourceNode[] = [];
+		const treeNodes: SourceNode[] = [];
 
 		setVSCodeContext(ContextId.LoadingSources, true);
 
 		// Fetch all sources asynchronously and at once
-		const [gitRepositories, ociRepositories, helmRepositories, buckets, namespaces] = await Promise.all([
+		const [gitRepositories, ociRepositories, helmRepositories, buckets] = await Promise.all([
 			getGitRepositories(),
 			getOciRepositories(),
 			getHelmRepositories(),
 			getBuckets(),
-			getNamespaces(),
 		]);
 
 		// add git repositories to the tree
 		for (const gitRepository of sortByMetadataName(gitRepositories)) {
-			treeItems.push(new GitRepositoryNode(gitRepository));
+			treeNodes.push(new GitRepositoryNode(gitRepository));
 		}
-
 
 		// add oci repositories to the tree
 		for (const ociRepository of sortByMetadataName(ociRepositories)) {
-			treeItems.push(new OCIRepositoryNode(ociRepository));
+			treeNodes.push(new OCIRepositoryNode(ociRepository));
 		}
 
 		for (const helmRepository of sortByMetadataName(helmRepositories)) {
-			treeItems.push(new HelmRepositoryNode(helmRepository));
+			treeNodes.push(new HelmRepositoryNode(helmRepository));
 		}
 
 		// add buckets to the tree
 		for (const bucket of sortByMetadataName(buckets)) {
-			treeItems.push(new BucketNode(bucket));
+			treeNodes.push(new BucketNode(bucket));
 		}
 
 		setVSCodeContext(ContextId.LoadingSources, false);
-		setVSCodeContext(ContextId.NoSources, treeItems.length === 0);
+		setVSCodeContext(ContextId.NoSources, treeNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		return this.groupByNamespace(namespaces, treeItems);
+		return groupNodesByNamespace(treeNodes);
 	}
 }
