@@ -101,6 +101,7 @@ export class TreeNode extends TreeItem {
 		return this;
 	}
 
+
 	/**
 	 *
 	 * VSCode doesn't support multiple contexts on the Tree Nodes, only string.

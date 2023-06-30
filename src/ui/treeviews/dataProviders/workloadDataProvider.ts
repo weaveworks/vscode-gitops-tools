@@ -2,14 +2,13 @@ import { fluxTools } from 'cli/flux/fluxTools';
 import { getChildrenOfWorkload, getHelmReleases, getKustomizations, getNamespaces } from 'cli/kubernetes/kubectlGet';
 import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
-import { FluxTreeResources } from 'types/fluxCliTypes';
-import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
+import { Namespace } from 'types/kubernetes/kubernetesTypes';
 import { statusBar } from 'ui/statusBar';
+import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
-import { groupNodesByNamespace } from '../../../utils/groupNodesByNamespace';
 import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
@@ -61,30 +60,10 @@ export class WorkloadDataProvider extends DataProvider {
 		setVSCodeContext(ContextId.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-
-		return groupNodesByNamespace(workloadNodes);
+		const [groupedNodes] = await groupNodesByNamespace(workloadNodes);
+		return groupedNodes;
 	}
 
-	buildWorkloadsTree(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {
-		for (const resource of resourceTree) {
-			// Nested items have empty namespace https://github.com/fluxcd/flux2/issues/2149
-			const namespace = resource.resource.Namespace || parentNamespace;
-
-			const childNode = new AnyResourceNode({
-				kind: resource.resource.GroupKind.Kind,
-				metadata: {
-					name: resource.resource.Name,
-					namespace,
-				},
-			});
-
-			node.addChild(childNode);
-
-			if (resource.resources && resource.resources.length) {
-				this.buildWorkloadsTree(childNode, resource.resources, namespace);
-			}
-		}
-	}
 	/**
 	 * Fetch all kubernetes resources that were created by a kustomize/helmRelease
 	 * and add them as child nodes of the workload.
@@ -109,7 +88,7 @@ export class WorkloadDataProvider extends DataProvider {
 			return;
 		}
 
-		this.buildWorkloadsTree(node, resourceTree.resources);
+		addFluxTreeToNode(node, resourceTree.resources);
 		refreshWorkloadsTreeView(node);
 	}
 
@@ -118,8 +97,8 @@ export class WorkloadDataProvider extends DataProvider {
 		const name = node.resource.metadata?.name || '';
 		const namespace = node.resource.metadata?.namespace || '';
 
-		const targetNamespace = node.resource.spec.targetNamespace || namespace;
-		const workloadChildren = await getChildrenOfWorkload('helm', name, targetNamespace);
+		// const targetNamespace = node.resource.spec.targetNamespace;
+		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
 
 
 		if (!workloadChildren) {
@@ -128,44 +107,9 @@ export class WorkloadDataProvider extends DataProvider {
 			return;
 		}
 
-		// Get all namespaces
-		const namespaces = this.namespaces || await getNamespaces();
-		if (!namespaces) {
-			return;
-		}
-
-		const namespaceNodes = namespaces.map(ns => new NamespaceNode(ns));
-		namespaceNodes.forEach(namespaceNode => namespaceNode.expand());
-
-		/*
-		 * Do not delete empty namespace if it was in the fetched resources.
-		 * Workloads can create namespace kubernetes resources.
-		 */
-		const exceptNamespaces: string[] = [];
-
-		// group children of workload by namespace
-		for (const namespaceNode of namespaceNodes) {
-			for (const workloadChild of workloadChildren) {
-				if (workloadChild.kind !== Kind.Namespace &&
-					workloadChild.metadata?.namespace === namespaceNode.resource.metadata?.name) {
-					namespaceNode.addChild(new AnyResourceNode(workloadChild));
-				} else {
-					const namespaceName = namespaceNode.resource.metadata?.name;
-					if (namespaceName) {
-						exceptNamespaces.push();
-					}
-				}
-			}
-		}
-
-		// only show namespaces that are not empty
-		node.children = namespaceNodes.filter(
-			namespaceNode => !exceptNamespaces.some(exceptNamespace => exceptNamespace !== namespaceNode.resource.metadata?.name)
-		&& namespaceNode.children.length);
-
-		if(node.children.length === 0) {
-			node.children = [new TreeNode('No Resources')];
-		}
+		const childrenNodes = workloadChildren.map(child => new AnyResourceNode(child));
+		const [groupedNodes, clusterScopedNodes] = await groupNodesByNamespace(childrenNodes);
+		node.children = [...groupedNodes, ...clusterScopedNodes];
 
 		refreshWorkloadsTreeView(node);
 	}

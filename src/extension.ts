@@ -45,7 +45,7 @@ export async function activate(context: ExtensionContext) {
 
 	// create gitops tree views
 	createTreeViews();
-	startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
+	// startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
 
 	// register gitops commands
 	registerCommands(context);

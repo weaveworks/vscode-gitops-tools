@@ -162,16 +162,19 @@ export async function getChildrenOfWorkload(
 		return [];
 	}
 
-	const query = `get ${resourceKinds.join(',')} -l ${workload}.toolkit.fluxcd.io/name=${name} -n ${namespace} -o json`;
-	const resourcesShellResult = await invokeKubectlCommand(query);
+	const labelNameSelector = `-l ${workload}.toolkit.fluxcd.io/name=${name}`;
+	const labelNamespaceSelector = `-l ${workload}.toolkit.fluxcd.io/namespace=${namespace}`;
 
-	if (!resourcesShellResult || resourcesShellResult.code !== 0) {
+	const query = `get ${resourceKinds.join(',')} ${labelNameSelector} ${labelNamespaceSelector} -A -o json`;
+	const shellResult = await invokeKubectlCommand(query);
+
+	if (!shellResult || shellResult.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
-		window.showErrorMessage(`Failed to get ${workload} created resources: ${resourcesShellResult?.stderr}`);
+		window.showErrorMessage(`Failed to get ${workload} created resources: ${shellResult?.stderr}`);
 		return [];
 	}
 
-	return parseJsonItems(resourcesShellResult.stdout);
+	return parseJsonItems(shellResult.stdout);
 }
 
 

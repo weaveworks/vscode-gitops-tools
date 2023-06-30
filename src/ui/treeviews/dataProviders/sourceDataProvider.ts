@@ -9,7 +9,7 @@ import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';
 import { OCIRepositoryNode } from '../nodes/source/ociRepositoryNode';
 import { SourceNode } from '../nodes/source/sourceNode';
-import { groupNodesByNamespace } from '../../../utils/groupNodesByNamespace';
+import { groupNodesByNamespace } from '../../../utils/treeNodeUtils';
 import { DataProvider } from './dataProvider';
 
 /**
@@ -60,6 +60,7 @@ export class SourceDataProvider extends DataProvider {
 		setVSCodeContext(ContextId.NoSources, treeNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		return groupNodesByNamespace(treeNodes);
+		const [groupedNodes] = await groupNodesByNamespace(treeNodes);
+		return groupedNodes;
 	}
 }
