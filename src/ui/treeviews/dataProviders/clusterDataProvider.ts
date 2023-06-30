@@ -6,8 +6,8 @@ import { failed } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { TreeItem, window } from 'vscode';
-import { ClusterContextNode } from '../nodes/clusterContextNode';
-import { ClusterDeploymentNode } from '../nodes/clusterDeploymentNode';
+import { ClusterDeploymentNode } from '../nodes/cluster/clusterDeploymentNode';
+import { ClusterNode } from '../nodes/cluster/clusterNode';
 import { TreeNode } from '../nodes/treeNode';
 import { refreshClustersTreeView, revealClusterNode } from '../treeViews';
 import { DataProvider } from './dataProvider';
@@ -21,7 +21,7 @@ export class ClusterDataProvider extends DataProvider {
 	/**
 	 * Keep a reference to all the nodes in the Clusters Tree View.
 	 */
-	private clusterNodes: ClusterContextNode[] = [];
+	private clusterNodes: ClusterNode[] = [];
 
 	/**
 	 * Check if the cluster node exists or not.
@@ -42,7 +42,7 @@ export class ClusterDataProvider extends DataProvider {
 	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
-	async buildTree(): Promise<ClusterContextNode[]> {
+	async buildTree(): Promise<ClusterNode[]> {
 
 		setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
 		setVSCodeContext(ContextId.NoClusters, false);
@@ -64,8 +64,8 @@ export class ClusterDataProvider extends DataProvider {
 			return [];
 		}
 
-		const clusterNodes: ClusterContextNode[] = [];
-		let currentContextTreeItem: ClusterContextNode | undefined;
+		const clusterNodes: ClusterNode[] = [];
+		let currentContextTreeItem: ClusterNode | undefined;
 
 		let currentContext = '';
 		if (failed(currentContextResult)) {
@@ -80,7 +80,7 @@ export class ClusterDataProvider extends DataProvider {
 		}
 
 		for (const cluster of contextsResult.result) {
-			const clusterNode = new ClusterContextNode(cluster);
+			const clusterNode = new ClusterNode(cluster);
 			if (cluster.name === currentContext) {
 				clusterNode.isCurrent = true;
 				currentContextTreeItem = clusterNode;
@@ -119,7 +119,7 @@ export class ClusterDataProvider extends DataProvider {
 	 * Update deployment status for flux controllers.
 	 * Get status from running flux commands instead of kubectl.
 	 */
-	async updateDeploymentStatus(clusterNode?: ClusterContextNode) {
+	async updateDeploymentStatus(clusterNode?: ClusterNode) {
 		if (!clusterNode || clusterNode.children.length === 0) {
 			return;
 		}
@@ -153,7 +153,7 @@ export class ClusterDataProvider extends DataProvider {
 	 * @param clusterNodes all cluster nodes in this tree view.
 	 */
 	// TODO: FIXME: calling this is a bad idea with more than 10-100 contexts
-	async updateClusterContexts(clusterNodes: ClusterContextNode[]) {
+	async updateClusterContexts(clusterNodes: ClusterNode[]) {
 		await Promise.all(clusterNodes.map(async clusterNode => {
 			await clusterNode.updateNodeContext();
 			refreshClustersTreeView(clusterNode);
@@ -164,7 +164,7 @@ export class ClusterDataProvider extends DataProvider {
 	 * Update cluster context for a single cluster node.
 	 * @param clusterNode Usually the selected clusterNode.
 	 */
-	async updateClusterContext(clusterNode: ClusterContextNode) {
+	async updateClusterContext(clusterNode: ClusterNode) {
 		await clusterNode.updateNodeContext();
 		refreshClustersTreeView(clusterNode);
 	}

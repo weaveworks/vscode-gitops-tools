@@ -5,7 +5,7 @@ import { Kustomization } from 'types/flux/kustomization';
 import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
-import { TreeNode, TreeNodeIcon } from './treeNode';
+import { TreeNode, TreeNodeIcon } from '../treeNode';
 
 /**
  * Base class for all Workload tree view items.

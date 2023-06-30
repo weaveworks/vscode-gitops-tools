@@ -7,15 +7,15 @@ import { extensionContext, globalState, setVSCodeContext } from 'extension';
 import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { KubernetesCluster, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
+import { NodeContext } from 'types/nodeContext';
 import { createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
-import { NodeContext } from '../../../types/nodeContext';
-import { TreeNode } from './treeNode';
+import { TreeNode } from '../treeNode';
 
 /**
- * Defines Cluster tree view item for displaying
+ * Defines Cluster context tree view item for displaying
  * kubernetes contexts inside the Clusters tree view.
  */
-export class ClusterContextNode extends TreeNode {
+export class ClusterNode extends TreeNode {
 
 	/**
 	 * Whether cluster is managed by AKS or Azure ARC

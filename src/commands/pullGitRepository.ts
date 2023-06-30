@@ -8,7 +8,7 @@ import { checkGitVersion } from 'cli/checkVersions';
 import { shell } from 'cli/shell/exec';
 import { telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
 import { quoteFsPath } from 'utils/fsUtils';
 
 /**

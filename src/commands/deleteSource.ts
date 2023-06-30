@@ -7,10 +7,10 @@ import { failed } from 'types/errorable';
 import { FluxSource } from 'types/fluxCliTypes';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryEvent } from 'types/telemetryEventNames';
-import { BucketNode } from 'ui/treeviews/nodes/bucketNode';
-import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
-import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
-import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
+import { BucketNode } from 'ui/treeviews/nodes/source/bucketNode';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
+import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**

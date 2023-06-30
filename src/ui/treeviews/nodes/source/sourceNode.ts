@@ -7,7 +7,7 @@ import { OCIRepository } from 'types/flux/ociRepository';
 import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
-import { TreeNode, TreeNodeIcon } from './treeNode';
+import { TreeNode, TreeNodeIcon } from '../treeNode';
 
 /**
  * Base class for all the Source tree view items.

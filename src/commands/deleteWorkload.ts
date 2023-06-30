@@ -7,8 +7,8 @@ import { failed } from 'types/errorable';
 import { FluxWorkload } from 'types/fluxCliTypes';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryEvent } from 'types/telemetryEventNames';
-import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
-import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
 import { getCurrentClusterInfo, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 

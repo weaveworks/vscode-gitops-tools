@@ -4,11 +4,11 @@ import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
 import { failed } from 'types/errorable';
 import { FluxSource, FluxWorkload } from 'types/fluxCliTypes';
-import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
-import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
-import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
-import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
-import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
+import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**

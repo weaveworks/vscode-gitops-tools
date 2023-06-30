@@ -9,7 +9,7 @@ import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
-import { ClusterContextNode } from './nodes/clusterContextNode';
+import { ClusterNode } from './nodes/cluster/clusterNode';
 import { TreeNode } from './nodes/treeNode';
 
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
@@ -184,7 +184,7 @@ export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
  * Expand, focus or select a tree node inside the Clusters tree view.
  * @param clusterNode Target cluster node
  */
-export async function revealClusterNode(clusterNode: ClusterContextNode, {
+export async function revealClusterNode(clusterNode: ClusterNode, {
 	expand = false,
 	focus = false,
 	select = false,

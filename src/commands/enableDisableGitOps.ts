@@ -7,7 +7,7 @@ import { disableConfirmations, telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryEvent } from 'types/telemetryEventNames';
-import { ClusterContextNode } from 'ui/treeviews/nodes/clusterContextNode';
+import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
 
 
@@ -17,7 +17,7 @@ import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeVie
  * @param clusterNode target cluster tree view item
  * @param enableGitOps Specifies if function should install or uninstall
  */
-async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, enableGitOps: boolean) {
+async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableGitOps: boolean) {
 
 	let contextName = clusterNode?.contextName || '';
 	let clusterName = clusterNode?.clusterName || '';
@@ -85,7 +85,7 @@ async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, 
  * Install flux to the passed or current cluster (if first argument is undefined)
  * @param clusterNode target cluster tree node
  */
-export async function fluxEnableGitOps(clusterNode: ClusterContextNode | undefined) {
+export async function fluxEnableGitOps(clusterNode: ClusterNode | undefined) {
 	return await enableDisableGitOps(clusterNode, true);
 }
 
@@ -93,6 +93,6 @@ export async function fluxEnableGitOps(clusterNode: ClusterContextNode | undefin
  * Uninstall flux from the passed or current cluster (if first argument is undefined)
  * @param clusterNode target cluster tree node
  */
-export async function fluxDisableGitOps(clusterNode: ClusterContextNode | undefined) {
+export async function fluxDisableGitOps(clusterNode: ClusterNode | undefined) {
 	return await enableDisableGitOps(clusterNode, false);
 }

@@ -3,12 +3,12 @@ import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
-import { BucketNode } from '../nodes/bucketNode';
-import { GitRepositoryNode } from '../nodes/gitRepositoryNode';
-import { HelmRepositoryNode } from '../nodes/helmRepositoryNode';
+import { BucketNode } from '../nodes/source/bucketNode';
+import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
+import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
-import { OCIRepositoryNode } from '../nodes/ociRepositoryNode';
-import { SourceNode } from '../nodes/sourceNode';
+import { OCIRepositoryNode } from '../nodes/source/ociRepositoryNode';
+import { SourceNode } from '../nodes/source/sourceNode';
 import { DataProvider } from './dataProvider';
 
 /**

@@ -1,5 +1,5 @@
-import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { KubernetesObject, Namespace } from 'types/kubernetes/kubernetesTypes';
+import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 

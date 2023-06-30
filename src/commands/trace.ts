@@ -3,7 +3,7 @@ import { window } from 'vscode';
 import { fluxTools } from 'cli/flux/fluxTools';
 import { telemetry } from 'extension';
 import { AnyResourceNode } from 'ui/treeviews/nodes/anyResourceNode';
-import { WorkloadNode } from 'ui/treeviews/nodes/workloadNode';
+import { WorkloadNode } from 'ui/treeviews/nodes/workload/workloadNode';
 import { getResource } from 'cli/kubernetes/kubectlGet';
 
 /**

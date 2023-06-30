@@ -24,19 +24,6 @@ function startKubeProxy(): number | false  {
 	return 57375;
 }
 
-// interface KubernetesCustomObject {
-// 	'apiVersion'?: string;
-// 	'kind'?: string;
-// 	'metadata'?: k8s.V1ObjectMeta;
-// 	'spec'?: k8s.V1PodSpec;
-// 	'status'?: k8s.V1PodStatus;
-// }
-
-// export class FluxInformer {
-// 	public list(): KubernetesObject[] {
-// 		return [];
-// 	}
-// }
 
 function createKubeProxyConfig(port: number): k8s.KubeConfig {
 	const kcDefault = new k8s.KubeConfig();

@@ -7,11 +7,11 @@ import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
-import { HelmReleaseNode } from '../nodes/helmReleaseNode';
-import { KustomizationNode } from '../nodes/kustomizationNode';
+import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
+import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
-import { WorkloadNode } from '../nodes/workloadNode';
+import { WorkloadNode } from '../nodes/workload/workloadNode';
 import { refreshWorkloadsTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
 
