@@ -18,7 +18,7 @@ import { fluxCheck } from './fluxCheck';
 import { checkFluxPrerequisites } from './fluxCheckPrerequisites';
 import { fluxReconcileRepositoryForPath } from './fluxReconcileGitRepositoryForPath';
 import { fluxReconcileSourceCommand } from './fluxReconcileSource';
-import { fluxReconcileWorkload } from './fluxReconcileWorkload';
+import { fluxReconcileWorkload, fluxReconcileWorkloadWithSource } from './fluxReconcileWorkload';
 import { installFluxCli } from './installFluxCli';
 import { openResource } from './openResource';
 import { pullGitRepository } from './pullGitRepository';
@@ -54,6 +54,7 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.FluxCheckPrerequisites, checkFluxPrerequisites);
 	registerCommand(CommandId.FluxReconcileSource, fluxReconcileSourceCommand);
 	registerCommand(CommandId.FluxReconcileRepository, fluxReconcileRepositoryForPath);
+	registerCommand(CommandId.FluxReconcileWorkloadWithSource, fluxReconcileWorkloadWithSource);
 	registerCommand(CommandId.FluxReconcileWorkload, fluxReconcileWorkload);
 	registerCommand(CommandId.FluxEnableGitOps, fluxEnableGitOps);
 	registerCommand(CommandId.FluxDisableGitOps, fluxDisableGitOps);

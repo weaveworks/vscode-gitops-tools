@@ -123,6 +123,11 @@
 				"category": "GitOps"
 			},
 			{
+				"command": "gitops.flux.reconcileWorkloadWithSource",
+				"title": "Reconcile with Source",
+				"category": "GitOps"
+			},
+			{
 				"command": "gitops.flux.reconcileWorkload",
 				"title": "Reconcile",
 				"category": "GitOps"
@@ -402,9 +407,14 @@
 					"group": "navigation@0"
 				},
 				{
-					"command": "gitops.flux.reconcileWorkload",
+					"command": "gitops.flux.reconcileWorkloadWithSource",
 					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
 					"group": "navigation@0"
+				},
+				{
+					"command": "gitops.flux.reconcileWorkload",
+					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
+					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.suspend",
@@ -494,6 +504,10 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
+					"when": "never"
+				},
+				{
+					"command": "gitops.flux.reconcileWorkloadWithSource",
 					"when": "never"
 				},
 				{
