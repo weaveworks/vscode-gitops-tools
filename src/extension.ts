@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 
-import { startFluxInformers } from 'data/fluxInformer';
+import { initFluxInformers } from 'data/fluxInformer';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
 import { shell } from './cli/shell/exec';
 import { registerCommands } from './commands/commands';
@@ -45,7 +45,8 @@ export async function activate(context: ExtensionContext) {
 
 	// create gitops tree views
 	createTreeViews();
-	// startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
+	// await startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
+	await initFluxInformers();
 
 	// register gitops commands
 	registerCommands(context);

@@ -16,101 +16,33 @@
 	* 5. recreate informer as needed
 	*/
 import * as k8s from '@kubernetes/client-node';
-import { KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { GitRepository } from 'types/flux/gitRepository';
+import { Kind, KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { createKubeProxyConfig } from './createKubeProxyConfig';
+import { initKubeProxy, kubeProxyPort } from './informerKubeProxy';
+import { initKubeConfigWatcher } from './kubeConfigWatcher';
 
-// export const fluxInformers: Record<string, FluxInformer> = {};
 
-function startKubeProxy(): number | false  {
-	return 57375;
+
+type KindPlural = string;
+type ApiGroup = string;
+type ApiVersion = string;
+type ApiEndpointParams = [KindPlural, ApiGroup, ApiVersion];
+
+type InformerEventType = 'add' | 'update' | 'delete';
+type InformerEventFunc = (event: InformerEventType, obj: KubernetesObject)=> void;
+
+// TODO: lookup real paths
+// TODO: loop for all Kind types to automate this
+function getAPIPaths(kind: Kind): ApiEndpointParams {
+	const paths: Record<Kind, ApiEndpointParams> = {
+		'GitRepository': ['gitrepositories', 'source.toolkit.fluxcd.io', 'v1'],
+	} as Record<Kind, ApiEndpointParams>;
+
+	return paths[kind];
 }
 
-
-function createKubeProxyConfig(port: number): k8s.KubeConfig {
-	const kcDefault = new k8s.KubeConfig();
-	kcDefault.loadFromDefault();
-
-	const cluster = {
-		name: kcDefault.getCurrentCluster()?.name,
-		server: `http://127.0.0.1:${port}`,
-	};
-
-	const user = kcDefault.getCurrentUser();
-
-	const context = {
-		name: kcDefault.getCurrentContext(),
-		user: user?.name,
-		cluster: cluster.name,
-	};
-
-	const kc = new k8s.KubeConfig();
-	kc.loadFromOptions({
-		clusters: [cluster],
-		users: [user],
-		contexts: [context],
-		currentContext: context.name,
-	});
-
-	return kc;
-}
-
-function getAPIPaths() {
-	return {
-		'gitrepositories': ['source.toolkit.fluxcd.io', 'v1'],
-	};
-}
-
-
-// will start a self-healing informer for each resource type and namespaces
-export async function startFluxInformers(
-	sourceDataProvider: any,
-	workloadDataProvider: any,
-	templateDataProvider: any): Promise<boolean> {
-	const port = startKubeProxy();
-	if(!port) {
-		return false;
-	}
-
-	const kc = createKubeProxyConfig(port);
-
-	const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
-	const k8sCustomApi = kc.makeApiClient(k8s.CustomObjectsApi);
-
-	const plural = 'gitrepositories';
-	const [group, version] = getAPIPaths()[plural];
-
-	const listFn = async () => {
-		const result = await k8sCustomApi.listClusterCustomObject(group, version, plural);
-		const kbody = result.body as KubernetesListObject<KubernetesObject>;
-		return Promise.resolve({response: result.response, body: kbody});
-	};
-
-	const informer = k8s.makeInformer(
-		kc,
-		`/apis/${group}/${version}/${plural}`,
-		listFn,
-	);
-
-
-	informer.on('add', (obj: KubernetesObject) => {
-		console.log(`Added: ${obj.metadata?.name}`);
-		sourceDataProvider.add(obj);
-	});
-	informer.on('update', (obj: KubernetesObject) => {
-		console.log(`Updated: ${obj.metadata?.name}`);
-		sourceDataProvider.update(obj);
-	});
-	informer.on('delete', (obj: KubernetesObject) => {
-		console.log(`Deleted: ${obj.metadata?.name}`);
-		sourceDataProvider.delete(obj);
-	});
-	informer.on('error', (err: any) => {
-		console.error('ERRORed:', err);
-		// Restart informer after 5sec
-		setTimeout(() => {
-			console.log('Restarting informer...');
-			informer.start();
-		}, 2000);
-	});
+async function informerKeepAlive<T extends KubernetesObject>(informer: k8s.Informer<T>) {
 	try {
 		await informer.start();
 	} catch (err) {
@@ -124,8 +56,106 @@ export async function startFluxInformers(
 
 		return false;
 	}
-	const l = informer.list();
-	console.log('list:', l);
-
-	return true;
 }
+
+// registering an add function before informer start will fire for each existing object
+// registering after the start wont fire for old objects
+// autonomous is somehow simpler in this case
+
+
+export let informer: k8s.Informer<GitRepository> & k8s.ObjectCache<GitRepository> | undefined;
+
+export async function initFluxInformers(eventFn?: InformerEventFunc) {
+	await initKubeConfigWatcher(() => {});
+	// initKubeProxy();
+
+	// await createFluxInformer();
+	// setInterval(() => createFluxInformer(), 1000);
+
+
+	// // DEBUG
+	// setInterval(() => {
+	// 	if(informer) {
+	// 		console.log('+Informer exists: ', Date().slice(19, 24), informer.list());
+	// 	} else {
+	// 		console.log('!No Informer: ', Date().slice(19, 24));
+	// 	}
+	// }, 1500);
+}
+
+export async function createFluxInformer() {
+	// running already or no proxy
+	if(informer || !kubeProxyPort) {
+		return;
+	}
+
+	const kc = createKubeProxyConfig(kubeProxyPort);
+	console.log('starting informer...');
+
+	informer = await startInformer(Kind.GitRepository, kc);
+	if(!informer) {
+		console.log('failed to start informer');
+		return;
+	}
+
+	informer.on('error', (err: any) => {
+		console.error('informer error event', err);
+		if(informer) {
+			informer.stop();
+		}
+		informer = undefined;
+	});
+
+	console.log('informer started');
+}
+
+
+// will start a self-healing informer for each resource type and namespaces
+async function startInformer(kind: Kind, kubeConfig: k8s.KubeConfig) {
+	// const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
+	const k8sCustomApi = kubeConfig.makeApiClient(k8s.CustomObjectsApi);
+
+	const [plural, group, version] = getAPIPaths(kind);
+
+	const listFn = async () => {
+		const result = await k8sCustomApi.listClusterCustomObject(group, version, plural);
+		const kbody = result.body as KubernetesListObject<GitRepository>;
+		return Promise.resolve({response: result.response, body: kbody});
+	};
+
+	const kinformer = k8s.makeInformer(
+		kubeConfig,
+		`/apis/${group}/${version}/${plural}`,
+		listFn,
+	);
+
+	try {
+		await kinformer.start();
+		return kinformer;
+	} catch (err) {
+		return undefined;
+	}
+}
+
+
+
+// console.log('begin informer watch!');
+// console.log('listing: ', informer.list());
+
+// informer.on('add', (obj: KubernetesObject) => {
+// 	console.log(`Added: ${obj.metadata?.name}`);
+// });
+
+// informer.on('update', (obj: KubernetesObject) => {
+// 	console.log(`Updated: ${obj.metadata?.name}`);
+// });
+
+// informer.on('delete', (obj: KubernetesObject) => {
+// 	console.log(`Deleted: ${obj.metadata?.name}`);
+// });
+
+// sourceDataProvider.add(obj);
+// sourceDataProvider.update(obj);
+// sourceDataProvider.delete(obj);
+
+//

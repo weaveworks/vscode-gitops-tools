@@ -3,13 +3,13 @@ import { window } from 'vscode';
 
 import { shellCodeError } from 'cli/shell/exec';
 import { setVSCodeContext, telemetry } from 'extension';
-import { Errorable, failed, succeeded } from 'types/errorable';
+import { Errorable, aresult, failed, succeeded } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
 import { KubernetesConfig, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
-import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { clearSupportedResourceKinds } from './kubectlGet';
+import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
 export let currentContextName: string;
 
@@ -38,7 +38,7 @@ export async function getKubectlConfig(): Promise<Errorable<KubernetesConfig>> {
 /**
  * Gets current kubectl context name.
  */
-export async function getCurrentContext(): Promise<Errorable<string>> {
+export async function getCurrentContextName(): Promise<Errorable<string>> {
 	const currentContextShellResult = await invokeKubectlCommand('config current-context');
 	if (currentContextShellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT);
@@ -67,7 +67,7 @@ export async function getCurrentContext(): Promise<Errorable<string>> {
  * whether or not context was switched or didn't need it (current).
  */
 export async function setCurrentContext(contextName: string): Promise<undefined | { isChanged: boolean;	}> {
-	const currentContextResult = await getCurrentContext();
+	const currentContextResult = await getCurrentContextName();
 	if (succeeded(currentContextResult) && currentContextResult.result === contextName) {
 		return {
 			isChanged: false,
@@ -134,5 +134,21 @@ export async function getClusterName(contextName: string): Promise<string> {
 	} else {
 		return contextName;
 	}
+}
+
+export async function getCurrentContextWithCluster(): Promise<KubernetesContextWithCluster | undefined> {
+	const [contextName, contexts] = await Promise.all([
+		aresult(getCurrentContextName()),
+		aresult(getContexts()),
+	]);
+
+	if(!contextName || !contexts) {
+		return;
+	}
+
+	// const contexts = result(contextsResults);
+	const context = contexts?.find(c => c.name === contextName);
+
+	return context;
 }
 

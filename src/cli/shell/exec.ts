@@ -109,6 +109,7 @@ function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
 		cwd: cwd,
 		env: env,
 		async: true,
+		silent: true,
 	};
 	return opts;
 }

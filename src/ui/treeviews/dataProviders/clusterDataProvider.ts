@@ -1,6 +1,6 @@
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
-import { getContexts, getCurrentContext } from 'cli/kubernetes/kubernetesConfig';
+import { getContexts, getCurrentContextName } from 'cli/kubernetes/kubernetesConfig';
 import { setVSCodeContext } from 'extension';
 import { failed } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
@@ -52,7 +52,7 @@ export class ClusterDataProvider extends DataProvider {
 
 		const [contextsResult, currentContextResult] = await Promise.all([
 			getContexts(),
-			getCurrentContext(),
+			getCurrentContextName(),
 		]);
 
 		if (failed(contextsResult)) {

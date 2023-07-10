@@ -13,7 +13,7 @@ import { ClusterNode } from './nodes/cluster/clusterNode';
 import { TreeNode } from './nodes/treeNode';
 
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
-import { getClusterName, getCurrentContext } from 'cli/kubernetes/kubernetesConfig';
+import { getClusterName, getCurrentContextName } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
 
@@ -148,7 +148,7 @@ export function refreshTemplatesTreeView(node?: TreeNode) {
  * 3. Detect cluster provider.
  */
 export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
-	const currentContextResult = await getCurrentContext();
+	const currentContextResult = await getCurrentContextName();
 
 	if (failed(currentContextResult)) {
 		const error = `Failed to get current context ${currentContextResult.error[0]}`;
