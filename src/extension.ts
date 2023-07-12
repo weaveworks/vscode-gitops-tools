@@ -14,6 +14,9 @@ import { TelemetryEvent } from './types/telemetryEventNames';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
 import { statusBar } from './ui/statusBar';
 import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, templateTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
+import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
+import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { initKubeProxy } from 'cli/kubernetes/kubectlProxy';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
@@ -37,16 +40,20 @@ export let telemetry: Telemetry | any;
 export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
 	extensionContext = context;
-	listenConfigChanged();
+	listenExtensionConfigChanged();
 
 	globalState = new GlobalState(context);
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
 	// create gitops tree views
-	createTreeViews();
+	// createTreeViews();
 	// await startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
-	await initFluxInformers();
+	// await initFluxInformers();
+	await loadKubeConfig();
+
+	await initKubeConfigWatcher();
+	await initKubeProxy();
 
 	// register gitops commands
 	registerCommands(context);
@@ -92,7 +99,7 @@ export async function activate(context: ExtensionContext) {
 	return api;
 }
 
-function listenConfigChanged() {
+function listenExtensionConfigChanged() {
 	workspace.onDidChangeConfiguration(async e => {
 		if(!e.affectsConfiguration('gitops')) {
 			return;

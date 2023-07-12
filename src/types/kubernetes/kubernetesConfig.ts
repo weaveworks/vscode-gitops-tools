@@ -18,11 +18,9 @@ export interface KubernetesConfig {
  */
 export interface KubernetesCluster {
 	readonly name: string;
-	readonly cluster: {
-		readonly server: string;
-		readonly 'certificate-authority'?: string;
-		readonly 'certificate-authority-data'?: string;
-	};
+	readonly server: string;
+	readonly 'certificate-authority'?: string;
+	readonly 'certificate-authority-data'?: string;
 }
 
 /**
@@ -30,6 +28,7 @@ export interface KubernetesCluster {
  */
 export interface KubernetesContext {
 	readonly name: string;
+	isCurrentContext?: boolean;
 	readonly context: {
 		readonly cluster: string;
 		readonly user: string;

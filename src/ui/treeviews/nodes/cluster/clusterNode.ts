@@ -2,7 +2,7 @@ import { ExtensionMode, MarkdownString } from 'vscode';
 
 import { fluxVersion } from 'cli/checkVersions';
 import { detectClusterProvider, isGitOpsEnabled } from 'cli/kubernetes/clusterProvider';
-import { currentContextName } from 'cli/kubernetes/kubernetesConfig';
+// import { currentContextName } from 'cli/kubernetes/kubernetesConfig';
 import { extensionContext, globalState, setVSCodeContext } from 'extension';
 import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
@@ -10,6 +10,8 @@ import { KubernetesCluster, KubernetesContextWithCluster } from 'types/kubernete
 import { NodeContext } from 'types/nodeContext';
 import { createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
+import { getCurrentContextName } from 'cli/kubernetes/kubernetesConfig';
+import { result } from 'types/errorable';
 
 /**
  * Defines Cluster context tree view item for displaying
@@ -71,7 +73,7 @@ export class ClusterNode extends TreeNode {
 		this.clusterContext = kubernetesContext;
 		this.clusterName = kubernetesContext.context.clusterInfo?.name || kubernetesContext.name;
 		this.contextName = kubernetesContext.name;
-		this.description = kubernetesContext.context.clusterInfo?.cluster.server;
+		this.description = kubernetesContext.context.clusterInfo?.server;
 
 		this.setIcon('cloud');
 	}
@@ -114,7 +116,7 @@ export class ClusterNode extends TreeNode {
 		const markdown: MarkdownString = createMarkdownTable(cluster);
 
 		createMarkdownHr(markdown);
-		if(this.contextName === currentContextName) {
+		if(this.contextName === result(getCurrentContextName())) {
 			markdown.appendMarkdown(`Flux Version: ${fluxVersion}`);
 		}
 
@@ -142,19 +144,19 @@ export class ClusterNode extends TreeNode {
 	}
 
 	get contexts() {
-		const result = [NodeContext.Cluster];
+		const cs = [NodeContext.Cluster];
 
 		if (typeof this.isGitOpsEnabled === 'boolean') {
-			result.push(
+			cs.push(
 				this.isGitOpsEnabled ? NodeContext.ClusterGitOpsEnabled : NodeContext.ClusterGitOpsNotEnabled,
 			);
 		}
 
-		result.push(
+		cs.push(
 			this.isCurrent ? NodeContext.CurrentCluster : NodeContext.NotCurrentCluster,
 		);
 
-		return result;
+		return cs;
 	}
 
 }

@@ -40,6 +40,7 @@ export const enum Platform {
 
 export type ExecCallback = shelljs.ExecCallback;
 
+type ProcCallback = (proc: ChildProcess)=> void;
 const WINDOWS = 'win32';
 
 export interface ShellResult {
@@ -114,9 +115,9 @@ function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
 	return opts;
 }
 
-async function exec(cmd: string, { cwd }: { cwd?: string; } = {}): Promise<ShellResult> {
+async function exec(cmd: string, { cwd, callback }: { cwd?: string; callback?: ProcCallback;} = {}): Promise<ShellResult> {
 	try {
-		return await execCore(cmd, execOpts({ cwd }), null);
+		return await execCore(cmd, execOpts({ cwd }), callback);
 	} catch (e) {
 		console.error(e);
 		window.showErrorMessage(String(e));
@@ -199,7 +200,7 @@ async function execWithOutput(
 	}
 }
 
-function execCore(cmd: string, opts: any, callback?: ((proc: ChildProcess)=> void) | null, stdin?: string): Promise<ShellResult> {
+function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: string): Promise<ShellResult> {
 	return new Promise<ShellResult>(resolve => {
 		if (getUseWsl()) {
 			cmd = `wsl ${cmd}`;

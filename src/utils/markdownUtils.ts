@@ -30,9 +30,9 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	if ('context' in kubernetesObject) {
 		createMarkdownTableRow('context name', kubernetesObject.name, markdown);
 		createMarkdownTableRow('cluster name', kubernetesObject.context.clusterInfo?.name, markdown);
-		createMarkdownTableRow('cluster.server', kubernetesObject.context.clusterInfo?.cluster?.server, markdown);
-		createMarkdownTableRow('cluster.certificate-authority', kubernetesObject.context.clusterInfo?.cluster?.['certificate-authority'], markdown);
-		createMarkdownTableRow('cluster.certificate-authority-data', kubernetesObject.context.clusterInfo?.cluster?.['certificate-authority-data'], markdown);
+		createMarkdownTableRow('cluster.server', kubernetesObject.context.clusterInfo?.server, markdown);
+		createMarkdownTableRow('cluster.certificate-authority', kubernetesObject.context.clusterInfo?.['certificate-authority'], markdown);
+		createMarkdownTableRow('cluster.certificate-authority-data', kubernetesObject.context.clusterInfo?.['certificate-authority-data'], markdown);
 		return markdown;
 	}
 

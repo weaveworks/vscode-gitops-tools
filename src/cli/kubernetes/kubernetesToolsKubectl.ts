@@ -38,7 +38,7 @@ async function getKubectlApi() {
  * @param command Kubectl command to run.
  * @returns Kubectl command results.
  */
-export async function invokeKubectlCommand(command: string): Promise<kubernetes.KubectlV1.ShellResult | undefined> {
+export async function invokeKubectlCommand(command: string, printOutput = true): Promise<kubernetes.KubectlV1.ShellResult | undefined> {
 	const kubectl = await getKubectlApi();
 	if (!kubectl) {
 		return;
@@ -46,23 +46,25 @@ export async function invokeKubectlCommand(command: string): Promise<kubernetes.
 
 	const kubectlShellResult = await kubectl.invokeCommand(command);
 
-	output.send(`> kubectl ${command}`, {
-		channelName: 'GitOps: kubectl',
-		newline: 'single',
-		revealOutputView: false,
-	});
+	if(printOutput) {
+		output.send(`> kubectl ${command}`, {
+			channelName: 'GitOps: kubectl',
+			newline: 'single',
+			revealOutputView: false,
+		});
 
-	if (kubectlShellResult?.code === 0) {
-		output.send(kubectlShellResult.stdout, {
-			channelName: 'GitOps: kubectl',
-			revealOutputView: false,
-		});
-	} else {
-		output.send(kubectlShellResult?.stderr || '', {
-			channelName: 'GitOps: kubectl',
-			revealOutputView: false,
-			logLevel: 'error',
-		});
+		if (kubectlShellResult?.code === 0) {
+			output.send(kubectlShellResult.stdout, {
+				channelName: 'GitOps: kubectl',
+				revealOutputView: false,
+			});
+		} else {
+			output.send(kubectlShellResult?.stderr || '', {
+				channelName: 'GitOps: kubectl',
+				revealOutputView: false,
+				logLevel: 'error',
+			});
+		}
 	}
 
 	return kubectlShellResult;

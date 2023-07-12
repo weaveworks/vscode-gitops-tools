@@ -18,9 +18,8 @@
 import * as k8s from '@kubernetes/client-node';
 import { GitRepository } from 'types/flux/gitRepository';
 import { Kind, KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
-import { createKubeProxyConfig } from './createKubeProxyConfig';
-import { initKubeProxy, kubeProxyPort } from './informerKubeProxy';
-import { initKubeConfigWatcher } from './kubeConfigWatcher';
+// import { createKubeProxyConfig } from './createKubeProxyConfig';
+// import { initKubeConfigWatcher } from '../cli/kubernetes/kubernetesConfigWatcher';
 
 
 
@@ -66,47 +65,53 @@ async function informerKeepAlive<T extends KubernetesObject>(informer: k8s.Infor
 export let informer: k8s.Informer<GitRepository> & k8s.ObjectCache<GitRepository> | undefined;
 
 export async function initFluxInformers(eventFn?: InformerEventFunc) {
-	await initKubeConfigWatcher(() => {});
+
+	// await initKubeConfigWatcher(() => {
+	// 	restartKubeProxy();
+	// 	const contextName = aresult(getCurrentContextName());
+	// 	console.log('kubeconfig changed event!', contextName);
+	// });
 	// initKubeProxy();
-
-	// await createFluxInformer();
-	// setInterval(() => createFluxInformer(), 1000);
-
-
-	// // DEBUG
-	// setInterval(() => {
-	// 	if(informer) {
-	// 		console.log('+Informer exists: ', Date().slice(19, 24), informer.list());
-	// 	} else {
-	// 		console.log('!No Informer: ', Date().slice(19, 24));
-	// 	}
-	// }, 1500);
 }
+
+// await createFluxInformer();
+// setInterval(() => createFluxInformer(), 1000);
+
+
+// // DEBUG
+// setInterval(() => {
+// 	if(informer) {
+// 		console.log('+Informer exists: ', Date().slice(19, 24), informer.list());
+// 	} else {
+// 		console.log('!No Informer: ', Date().slice(19, 24));
+// 	}
+// }, 1500);
+
 
 export async function createFluxInformer() {
 	// running already or no proxy
-	if(informer || !kubeProxyPort) {
-		return;
-	}
+	// if(informer || !kubeProxyPort) {
+	// 	return;
+	// }
 
-	const kc = createKubeProxyConfig(kubeProxyPort);
-	console.log('starting informer...');
+	// const kc = createKubeProxyConfig(kubeProxyPort);
+	// console.log('starting informer...');
 
-	informer = await startInformer(Kind.GitRepository, kc);
-	if(!informer) {
-		console.log('failed to start informer');
-		return;
-	}
+	// informer = await startInformer(Kind.GitRepository, kc);
+	// if(!informer) {
+	// 	console.log('failed to start informer');
+	// 	return;
+	// }
 
-	informer.on('error', (err: any) => {
-		console.error('informer error event', err);
-		if(informer) {
-			informer.stop();
-		}
-		informer = undefined;
-	});
+	// informer.on('error', (err: any) => {
+	// 	console.error('informer error event', err);
+	// 	if(informer) {
+	// 		informer.stop();
+	// 	}
+	// 	informer = undefined;
+	// });
 
-	console.log('informer started');
+	// console.log('informer started');
 }
 
 
@@ -159,3 +164,4 @@ async function startInformer(kind: Kind, kubeConfig: k8s.KubeConfig) {
 // sourceDataProvider.delete(obj);
 
 //
+

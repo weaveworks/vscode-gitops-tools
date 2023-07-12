@@ -13,7 +13,7 @@ import { ClusterNode } from './nodes/cluster/clusterNode';
 import { TreeNode } from './nodes/treeNode';
 
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
-import { getClusterName, getCurrentContextName } from 'cli/kubernetes/kubernetesConfig';
+import { getClusterName, getCurrentContextName, loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
 
