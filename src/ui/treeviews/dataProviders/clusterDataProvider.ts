@@ -1,11 +1,10 @@
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
-import { getContexts, getCurrentContextName } from 'cli/kubernetes/kubernetesConfig';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { setVSCodeContext } from 'extension';
-import { failed } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
-import { TreeItem, window } from 'vscode';
+import { TreeItem } from 'vscode';
 import { ClusterDeploymentNode } from '../nodes/cluster/clusterDeploymentNode';
 import { ClusterNode } from '../nodes/cluster/clusterNode';
 import { TreeNode } from '../nodes/treeNode';
@@ -43,45 +42,32 @@ export class ClusterDataProvider extends DataProvider {
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async buildTree(): Promise<ClusterNode[]> {
-
 		setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
 		setVSCodeContext(ContextId.NoClusters, false);
 		setVSCodeContext(ContextId.LoadingClusters, true);
 		statusBar.startLoadingTree();
 		this.clusterNodes = [];
 
-		const [contextsResult, currentContextResult] = await Promise.all([
-			getContexts(),
-			getCurrentContextName(),
-		]);
-
-		if (failed(contextsResult)) {
+		if (!kubeConfig) {
 			setVSCodeContext(ContextId.NoClusters, false);
 			setVSCodeContext(ContextId.FailedToLoadClusterContexts, true);
 			setVSCodeContext(ContextId.LoadingClusters, false);
 			statusBar.stopLoadingTree();
-			window.showErrorMessage(`Failed to get contexts: ${contextsResult.error[0]}`);
 			return [];
 		}
 
 		const clusterNodes: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
 
-		let currentContext = '';
-		if (failed(currentContextResult)) {
-			window.showErrorMessage(`Failed to get current context: ${currentContextResult.error[0]}`);
-		} else {
-			currentContext = currentContextResult.result;
-		}
 
-		if (contextsResult.result.length === 0) {
+		if (kubeConfig.getContexts().length === 0) {
 			setVSCodeContext(ContextId.NoClusters, true);
 			return [];
 		}
 
-		for (const cluster of contextsResult.result) {
-			const clusterNode = new ClusterNode(cluster);
-			if (cluster.name === currentContext) {
+		for (const context of kubeConfig.getContexts()) {
+			const clusterNode = new ClusterNode(context);
+			if (context.name === kubeConfig.getCurrentContext()) {
 				clusterNode.isCurrent = true;
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
@@ -96,9 +82,6 @@ export class ClusterDataProvider extends DataProvider {
 						clusterNode.addChild(new ClusterDeploymentNode(deployment));
 					}
 				}
-			}
-			if(clusterNode.isCurrent) {
-				this.updateClusterContext(clusterNode);
 			}
 			clusterNodes.push(clusterNode);
 		}
@@ -123,7 +106,7 @@ export class ClusterDataProvider extends DataProvider {
 		if (!clusterNode || clusterNode.children.length === 0) {
 			return;
 		}
-		const fluxCheckResult = await fluxTools.check(clusterNode.contextName);
+		const fluxCheckResult = await fluxTools.check(clusterNode.context.name);
 		if (!fluxCheckResult) {
 			return;
 		}

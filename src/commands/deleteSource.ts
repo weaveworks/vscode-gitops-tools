@@ -12,6 +12,7 @@ import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
 import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 /**
  * Delete a source
@@ -46,12 +47,13 @@ export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepository
 	});
 
 	const currentClusterInfo = await getCurrentClusterInfo();
+	const contextName = kubeConfig.getCurrentContext();
 	if (failed(currentClusterInfo)) {
 		return;
 	}
 
 	if (currentClusterInfo.result.isAzure) {
-		await azureTools.deleteSource(sourceName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		await azureTools.deleteSource(sourceName, contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 		refreshWorkloadsTreeView();
 	} else {
 		await fluxTools.delete(sourceType, sourceName, sourceNamespace);

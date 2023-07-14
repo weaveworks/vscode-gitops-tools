@@ -11,6 +11,7 @@ import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeVie
 import { parseJson } from 'utils/jsonUtils';
 import { checkAzurePrerequisites } from './azurePrereqs';
 import { getAzureMetadata } from './getAzureMetadata';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 
@@ -127,16 +128,16 @@ class AzureTools {
 	}
 
 	async enableGitOpsGeneric(contextName: string) {
-		const currentClusterInfo = await getCurrentClusterInfo();
-		if (failed(currentClusterInfo)) {
+		const context = kubeConfig.getContextObject(contextName);
+		if (!context) {
 			return;
 		}
 
-		const clusterName = currentClusterInfo.result.clusterName;
-		const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterName) || {};
+		const clusterName = context.cluster;
+		const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterName || contextName) || {};
 
 		clusterMetadata.clusterProvider = ClusterProvider.Generic;
-		globalState.setClusterMetadata(clusterName, clusterMetadata);
+		globalState.setClusterMetadata(clusterName || contextName, clusterMetadata);
 		refreshAllTreeViews();
 		await fluxTools.install(contextName);
 	}

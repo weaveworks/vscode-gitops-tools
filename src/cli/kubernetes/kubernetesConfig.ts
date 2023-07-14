@@ -3,25 +3,25 @@ import safesh from 'shell-escape-tag';
 import { EventEmitter, window } from 'vscode';
 
 import * as k8s from '@kubernetes/client-node';
+import { ActionOnInvalid } from '@kubernetes/client-node/dist/config_types';
 import { shellCodeError } from 'cli/shell/exec';
 import { setVSCodeContext, telemetry } from 'extension';
-import { Errorable, aresult, failed, result, succeeded } from 'types/errorable';
+import { Errorable, succeeded } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
-import { KubernetesConfig, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { parseJson } from 'utils/jsonUtils';
 import { clearSupportedResourceKinds } from './kubectlGet';
+import { loadKubeConfigPath } from './kubernetesConfigWatcher';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { ActionOnInvalid } from '@kubernetes/client-node/dist/config_types';
 
-export const onKubeConfigChanged = new EventEmitter<k8s.KubeConfig>();
+export const onKubeConfigContextsChanged = new EventEmitter<k8s.KubeConfig>();
 export const onCurrentContextChanged = new EventEmitter<k8s.KubeConfig>();
 
-export const kubeConfig = new k8s.KubeConfig();
+export const kubeConfig: k8s.KubeConfig  = new k8s.KubeConfig();
 
 type KubeConfigChanges = {
 	currentContextChanged: boolean;
-	configChanged: boolean;
+	contextsChanged: boolean;
+	kubeConfigTextChanged: boolean;
 };
 
 function compareKubeConfigs(kc1: k8s.KubeConfig, kc2: k8s.KubeConfig): KubeConfigChanges {
@@ -39,18 +39,27 @@ function compareKubeConfigs(kc1: k8s.KubeConfig, kc2: k8s.KubeConfig): KubeConfi
 
 	const currentContextChanged = !deepEqual(context1, context2) || !deepEqual(cluster1, cluster2) || !deepEqual(user1, user2);
 
+	const contexts1 = kc1.getContexts();
+	const contexts2 = kc2.getContexts();
+
+	const contextsChanged = !deepEqual(contexts1, contexts2);
+
 	return {
 		currentContextChanged,
-		configChanged: textChanged || currentContextChanged,
+		// if current context user or server changed, we need to reload the contexts list
+		contextsChanged: contextsChanged || currentContextChanged,
+		kubeConfigTextChanged: textChanged,
 	};
 }
 
 // reload the kubeconfig via kubernetes-tools. fire events if things have changed
-export async function loadKubeConfig(force = false) {
+export async function loadKubeConfig() {
 	const configShellResult = await invokeKubectlCommand('config view');
 
 	if (configShellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_KUBECTL_CONFIG);
+		const path = await loadKubeConfigPath();
+		window.showErrorMessage(`Failed to load kubeconfig: ${path} ${shellCodeError(configShellResult)}`);
 		return;
 	}
 
@@ -60,13 +69,14 @@ export async function loadKubeConfig(force = false) {
 	newKubeConfig.loadFromString(configShellResult.stdout, {onInvalidEntry: ActionOnInvalid.FILTER});
 
 	const kcChanges = compareKubeConfigs(kubeConfig, newKubeConfig);
-	if (force || kcChanges.configChanged) {
+	if (kcChanges.kubeConfigTextChanged) {
 		kubeConfig.loadFromString(configShellResult.stdout);
 
-		console.log('KubeConfig changed');
-		onKubeConfigChanged.fire(kubeConfig);
+		if(kcChanges.contextsChanged) {
+			onKubeConfigContextsChanged.fire(kubeConfig);
+		}
 
-		if(force || kcChanges.currentContextChanged) {
+		if(kcChanges.currentContextChanged) {
 			console.log('Current Context changed');
 			onCurrentContextChanged.fire(kubeConfig);
 		}
@@ -81,8 +91,7 @@ export async function loadKubeConfig(force = false) {
  * whether or not context was switched or didn't need it (current).
  */
 export async function setCurrentContext(contextName: string): Promise<undefined | { isChanged: boolean;	}> {
-	const currentContextResult = getCurrentContextName();
-	if (succeeded(currentContextResult) && currentContextResult.result === contextName) {
+	if (kubeConfig.getCurrentContext() === contextName) {
 		return {
 			isChanged: false,
 		};
@@ -107,84 +116,6 @@ export async function setCurrentContext(contextName: string): Promise<undefined 
 	};
 }
 
-/**
- * Get a list of contexts from kubeconfig.
- * Also add cluster info to the context objects.
- */
-export async function getContexts(): Promise<Errorable<KubernetesContextWithCluster[]>> {
-	return {succeeded: false, error: ['Not implemented']};
-	// const kubectlConfig = await getKubectlConfig();
-
-	// if (failed(kubectlConfig)) {
-	// 	return {
-	// 		succeeded: false,
-	// 		error: kubectlConfig.error,
-	// 	};
-	// }
-	// if (!kubectlConfig.result.contexts) {
-	// 	return {
-	// 		succeeded: false,
-	// 		error: ['Config fetched, but contexts not found.'],
-	// 	};
-	// }
-
-	// const contexts: KubernetesContextWithCluster[] = kubectlConfig.result.contexts.map((context: KubernetesContextWithCluster) => {
-	// 	const currentContextNameKc = kubectlConfig.result['current-context'];
-	// 	context.isCurrentContext = context.name === currentContextNameKc;
-	// 	const clusterInfo = kubectlConfig.result.clusters?.find(cluster => cluster.name === context.context.cluster);
-	// 	if (clusterInfo) {
-	// 		context.context.clusterInfo = clusterInfo;
-	// 	}
-	// 	return context;
-	// });
-
-	// kubectlConfig.result['current-context'];
-
-	// return {
-	// 	succeeded: true,
-	// 	result: contexts,
-	// };
-}
-
-export async function getClusterName(contextName: string): Promise<string> {
-	const context = kubeConfig.getContextObject(contextName);
-	return kubeConfig.getCluster(context?.cluster || contextName)?.name ?? contextName;
-}
-
-export async function updateCurrentContextWithCluster(): Promise<KubernetesContextWithCluster | undefined> {
-	const [contextName, contexts] = await Promise.all([
-		result(getCurrentContextName()),
-		aresult(getContexts()),
-	]);
-
-	if(!contextName || !contexts) {
-		return;
-	}
-
-	// const contexts = result(contextsResults);
-	const context = contexts?.find(c => c.name === contextName);
-
-	return context;
-}
-
-
-/**
- * Gets current kubectl context name.
- */
-export function getCurrentContextName(): Errorable<string> {
-	const name = kubeConfig.getCurrentContext();
-	if (name) {
-		return {
-			succeeded: true,
-			result: kubeConfig.getCurrentContext(),
-		};
-	} else {
-		return {
-			succeeded: false,
-			error: ['No current context'],
-		};
-	}
-}
 
 
 // const currentContextShellResult = await invokeKubectlCommand('config current-context');

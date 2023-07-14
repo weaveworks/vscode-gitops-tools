@@ -1,17 +1,17 @@
+import * as k8s from '@kubernetes/client-node';
 import { ExtensionMode, MarkdownString } from 'vscode';
+
 
 import { fluxVersion } from 'cli/checkVersions';
 import { detectClusterProvider, isGitOpsEnabled } from 'cli/kubernetes/clusterProvider';
-// import { currentContextName } from 'cli/kubernetes/kubernetesConfig';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { extensionContext, globalState, setVSCodeContext } from 'extension';
+import { result } from 'types/errorable';
 import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
-import { KubernetesCluster, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { NodeContext } from 'types/nodeContext';
-import { createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
+import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
-import { getCurrentContextName } from 'cli/kubernetes/kubernetesConfig';
-import { result } from 'types/errorable';
 
 /**
  * Defines Cluster context tree view item for displaying
@@ -34,22 +34,12 @@ export class ClusterNode extends TreeNode {
 	/**
 	 * Cluster object.
 	 */
-	private cluster?: KubernetesCluster;
+	public cluster?: k8s.Cluster;
 
 	/**
 	 * Cluster context.
 	 */
-	private clusterContext: KubernetesContextWithCluster;
-
-	/**
-	 * Context name.
-	 */
-	contextName: string;
-
-	/**
-	 * Cluster name.
-	 */
-	clusterName: string;
+	public context: k8s.Context;
 
 	/**
 	 * Current/active cluster/context.
@@ -66,14 +56,12 @@ export class ClusterNode extends TreeNode {
 	 * Creates new Cluster tree view item for display.
 	 * @param kubernetesContext Cluster object info.
 	 */
-	constructor(kubernetesContext: KubernetesContextWithCluster) {
-		super(kubernetesContext.name);
+	constructor(context: k8s.Context) {
+		super(context.name);
 
-		this.cluster = kubernetesContext.context.clusterInfo;
-		this.clusterContext = kubernetesContext;
-		this.clusterName = kubernetesContext.context.clusterInfo?.name || kubernetesContext.name;
-		this.contextName = kubernetesContext.name;
-		this.description = kubernetesContext.context.clusterInfo?.server;
+		this.cluster = kubeConfig.getCluster(context.cluster) || undefined;
+		this.context = context;
+		this.description = this.cluster?.server;
 
 		this.setIcon('cloud');
 	}
@@ -84,13 +72,13 @@ export class ClusterNode extends TreeNode {
 	 * - Cluster provider.
 	 */
 	async updateNodeContext() {
-		this.isGitOpsEnabled = await isGitOpsEnabled(this.contextName);
+		this.isGitOpsEnabled = await isGitOpsEnabled(this.context.name);
 
-		const clusterMetadata = globalState.getClusterMetadata(this.clusterName);
+		const clusterMetadata = globalState.getClusterMetadata(this.cluster?.name || this.context.name);
 		if (clusterMetadata?.clusterProvider) {
 			this.clusterProviderManuallyOverridden = true;
 		}
-		this.clusterProvider = clusterMetadata?.clusterProvider || await detectClusterProvider(this.contextName);
+		this.clusterProvider = clusterMetadata?.clusterProvider || await detectClusterProvider(this.context.name);
 
 		// Update vscode context for welcome view of other tree views
 		if (this.isCurrent && typeof this.isGitOpsEnabled === 'boolean') {
@@ -105,18 +93,17 @@ export class ClusterNode extends TreeNode {
 	}
 
 	get tooltip(): MarkdownString {
-		return this.getMarkdownHover(this.clusterContext);
+		return this.getMarkdownHover();
 	}
 
 	/**
 	 * Creates markdwon string for the Cluster tree view item tooltip.
-	 * @param cluster Cluster info object.
 	 */
-	getMarkdownHover(cluster: KubernetesContextWithCluster): MarkdownString {
-		const markdown: MarkdownString = createMarkdownTable(cluster);
+	getMarkdownHover(): MarkdownString {
+		const markdown: MarkdownString = createContextMarkdownTable(this.context, this.cluster);
 
 		createMarkdownHr(markdown);
-		if(this.contextName === result(getCurrentContextName())) {
+		if(this.context.name === kubeConfig.getCurrentContext()) {
 			markdown.appendMarkdown(`Flux Version: ${fluxVersion}`);
 		}
 

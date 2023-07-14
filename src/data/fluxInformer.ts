@@ -16,6 +16,7 @@
 	* 5. recreate informer as needed
 	*/
 import * as k8s from '@kubernetes/client-node';
+import { kubectlApi } from 'cli/kubernetes/kubernetesToolsKubectl';
 import { GitRepository } from 'types/flux/gitRepository';
 import { Kind, KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 // import { createKubeProxyConfig } from './createKubeProxyConfig';
@@ -33,6 +34,7 @@ type InformerEventFunc = (event: InformerEventType, obj: KubernetesObject)=> voi
 
 // TODO: lookup real paths
 // TODO: loop for all Kind types to automate this
+
 function getAPIPaths(kind: Kind): ApiEndpointParams {
 	const paths: Record<Kind, ApiEndpointParams> = {
 		'GitRepository': ['gitrepositories', 'source.toolkit.fluxcd.io', 'v1'],

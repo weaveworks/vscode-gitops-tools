@@ -8,5 +8,5 @@ import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
  * @param clusterNode target cluster node (from tree node context menu)
  */
 export async function fluxCheck(clusterNode: ClusterNode) {
-	shell.execWithOutput(safesh`flux check --context ${clusterNode.contextName}`);
+	shell.execWithOutput(safesh`flux check --context ${clusterNode.context.name}`);
 }

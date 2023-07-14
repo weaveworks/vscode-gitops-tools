@@ -8,20 +8,27 @@ import { ChildProcess } from 'child_process';
 export let kubeProxyConfig: k8s.KubeConfig | undefined;
 let kubectlProxyProcess: ChildProcess | undefined;
 
-// export const fluxInformers: Record<string, FluxInformer> = {};
+// tries to keep alive the `kubectl proxy` process
+// if process dies or errors out it will be stopped
+// and restarted by the 1000ms interval
+// if context changes proxy is stopped and restarted immediately
 export function initKubeProxy() {
-	restartKubeProxy();
+	startKubeProxy();
 
 	// keep alive
-	setInterval(() => {
+	setInterval(async () => {
 		if(!kubeProxyConfig) {
-			restartKubeProxy();
+			await stopKubeProxy();
+			await startKubeProxy();
 		}
 	}, 1000);
 
-	// user switched kubeconfig context
-	onCurrentContextChanged.event(() => {
-		restartKubeProxy();
+	// user switched kubeconfig context.
+	onCurrentContextChanged.event(async () => {
+		if(kubectlProxyProcess) {
+			await stopKubeProxy();
+		}
+		await startKubeProxy();
 	});
 }
 
@@ -29,14 +36,14 @@ function procStarted(p: ChildProcess) {
 	kubectlProxyProcess = p;
 	console.log('got a proc!', p);
 
-	p.on('exit', code => {
+	p.on('exit', async code => {
 		console.log('proc exit', p, code);
-		restartKubeProxy();
+		stopKubeProxy();
 	});
 
 	p.on('error', err => {
 		console.log('proc error', p, err);
-		restartKubeProxy();
+		stopKubeProxy();
 	});
 
 	p.stdout?.on('data', (data: string) => {
@@ -49,23 +56,23 @@ function procStarted(p: ChildProcess) {
 
 	p.stderr?.on('data', (data: string) => {
 		console.log(`proxy STDERR: ${data}`);
-		restartKubeProxy();
+		stopKubeProxy();
 	});
 }
 
 
-async function restartKubeProxy() {
-	console.log('restartKubeProxy()');
-	await stopKubeProxy();
+async function startKubeProxy() {
+	console.log('startKubeProx');
 
 	shell.exec('kubectl proxy -p 0', {callback: procStarted});
 }
 
 async function stopKubeProxy() {
-	// kubeProxyPort = undefined;
 	kubeProxyConfig = undefined;
 	if(kubectlProxyProcess) {
-		kubectlProxyProcess.kill();
+		if(!kubectlProxyProcess.killed) {
+			kubectlProxyProcess.kill();
+		}
 		kubectlProxyProcess = undefined;
 	}
 }

@@ -19,7 +19,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		if (!treeItem) {
 			// Only clear all root nodes when no node was passed
 			this.treeItems = null;
-			await loadKubeConfig(true);
+			await loadKubeConfig();
 
 		}
 		this._onDidChangeTreeData.fire(treeItem);

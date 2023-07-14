@@ -17,6 +17,7 @@ import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, templ
 import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { initKubeProxy } from 'cli/kubernetes/kubectlProxy';
+import { kubectlApi } from 'cli/kubernetes/kubernetesToolsKubectl';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
@@ -46,14 +47,15 @@ export async function activate(context: ExtensionContext) {
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
-	// create gitops tree views
-	// createTreeViews();
-	// await startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
-	// await initFluxInformers();
 	await loadKubeConfig();
 
 	await initKubeConfigWatcher();
-	await initKubeProxy();
+	initKubeProxy();
+	// create gitops tree views
+	// await startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
+	// await initFluxInformers();
+	createTreeViews();
+
 
 	// register gitops commands
 	registerCommands(context);
@@ -83,7 +85,7 @@ export async function activate(context: ExtensionContext) {
 	const fluxFoundResult = await promptToInstallFlux();
 	if (succeeded(fluxFoundResult)) {
 		// check flux prerequisites
-		await checkFluxPrerequisites();
+		checkFluxPrerequisites();
 	}
 
 	checkWGEVersion();
@@ -101,7 +103,7 @@ export async function activate(context: ExtensionContext) {
 
 function listenExtensionConfigChanged() {
 	workspace.onDidChangeConfiguration(async e => {
-		if(!e.affectsConfiguration('gitops')) {
+		if(!e.affectsConfiguration('gitops.weaveGitopsEnterprise')) {
 			return;
 		}
 

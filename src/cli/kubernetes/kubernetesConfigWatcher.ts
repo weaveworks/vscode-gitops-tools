@@ -1,17 +1,23 @@
 
-import deepEqual from 'lite-deep-equal';
 import * as vscode from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { ConfigurationV1_1 as KubernetesToolsConfigurationV1_1 } from 'vscode-kubernetes-tools-api/js/configuration/v1_1';
 import { Utils } from 'vscode-uri';
 
-// import { getCurrentContextWithCluster } from 'cli/kubernetes/kubernetesConfig';
-import { KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { loadKubeConfig } from './kubernetesConfig';
 
 
 let fsWacher: vscode.FileSystemWatcher | undefined;
 let kubeConfigPath: string | undefined;
+
+export async function loadKubeConfigPath(): Promise<string | undefined> {
+	const configuration = await kubernetes.extension.configuration.v1_1;
+	if (!configuration.available) {
+		return;
+	}
+
+	return hostPath(configuration.api.getKubeconfigPath());
+}
 
 function hostPath(kcPath: KubernetesToolsConfigurationV1_1.KubeconfigPath): string | undefined {
 	if(kcPath.pathType === 'host') {
@@ -26,7 +32,7 @@ export async function initKubeConfigWatcher() {
 		return;
 	}
 
-	kubeConfigPath = hostPath(configuration.api.getKubeconfigPath());
+	kubeConfigPath = await loadKubeConfigPath();
 
 	await initKubeConfigPathWatcher();
 

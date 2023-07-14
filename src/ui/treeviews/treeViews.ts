@@ -1,5 +1,4 @@
 import { TreeItem, TreeView, window } from 'vscode';
-import * as k8s from 'vscode-kubernetes-tools-api';
 
 import { isAzureProvider } from 'cli/azure/azureTools';
 import { globalState } from 'extension';
@@ -13,7 +12,7 @@ import { ClusterNode } from './nodes/cluster/clusterNode';
 import { TreeNode } from './nodes/treeNode';
 
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
-import { getClusterName, getCurrentContextName, loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { kubeConfig, onCurrentContextChanged, onKubeConfigContextsChanged } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
 
@@ -69,28 +68,19 @@ export function createTreeViews() {
 		showCollapseAll: true,
 	});
 
-	refreshWhenK8sContextChange();
-	detectK8sConfigPathChange();
+	listenRefreshEvents();
 }
 
-async function refreshWhenK8sContextChange() {
-	const configuration = await k8s.extension.configuration.v1_1;
-	if (!configuration.available) {
-		return;
-	}
-	configuration.api.onDidChangeContext(_context => {
-		refreshAllTreeViews();
+async function listenRefreshEvents() {
+	onKubeConfigContextsChanged.event(() => {
+		refreshClustersTreeView();
+	});
+
+	onCurrentContextChanged.event(() => {
+		refreshResourcesTreeViews();
 	});
 }
-async function detectK8sConfigPathChange() {
-	const configuration = await k8s.extension.configuration.v1_1;
-	if (!configuration.available) {
-		return;
-	}
-	configuration.api.onDidChangeKubeconfigPath(_path => {
-		refreshAllTreeViews();
-	});
-}
+
 
 /**
  * Refreshes all GitOps tree views.
@@ -148,31 +138,28 @@ export function refreshTemplatesTreeView(node?: TreeNode) {
  * 3. Detect cluster provider.
  */
 export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
-	const currentContextResult = await getCurrentContextName();
+	const currentContextName = kubeConfig.getCurrentContext();
 
-	if (failed(currentContextResult)) {
-		const error = `Failed to get current context ${currentContextResult.error[0]}`;
+	if (!currentContextName) {
+		const error = `Failed to get current context ${currentContextName}`;
 		window.showErrorMessage(error);
 		return {
 			succeeded: false,
 			error: [error],
 		};
 	}
-	const currentContextName = currentContextResult.result;
 
 
-	let currentClusterName = await getClusterName(currentContextName);
+	let currentClusterName = kubeConfig.getCurrentCluster()?.name;
 
 	// Pick user cluster provider override if defined
-	const clusterMetadata = globalState.getClusterMetadata(currentClusterName);
+	const clusterMetadata = globalState.getClusterMetadata(currentClusterName || currentContextName);
 	const isClusterProviderUserOverride = Boolean(clusterMetadata?.clusterProvider);
 	const currentClusterProvider = clusterMetadata?.clusterProvider || await detectClusterProvider(currentContextName);
 
 	return {
 		succeeded: true,
 		result: {
-			clusterName: currentClusterName,
-			contextName: currentContextName,
 			clusterProvider: currentClusterProvider,
 			isClusterProviderUserOverride,
 			isAzure: isAzureProvider(currentClusterProvider),

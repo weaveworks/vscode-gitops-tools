@@ -9,6 +9,7 @@ import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
 import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 
 
@@ -18,20 +19,11 @@ import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeVie
  * @param enableGitOps Specifies if function should install or uninstall
  */
 async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableGitOps: boolean) {
+	let context = clusterNode?.context;
+	let cluster = clusterNode?.cluster;
 
-	let contextName = clusterNode?.contextName || '';
-	let clusterName = clusterNode?.clusterName || '';
-
-	if (!clusterNode) {
-		// was executed from the welcome view - get current context
-		const currentClusterInfo = await getCurrentClusterInfo();
-		if (failed(currentClusterInfo)) {
-		  return;
-		}
-
-		contextName = currentClusterInfo.result.contextName;
-		clusterName = currentClusterInfo.result.clusterName;
-	}
+	const contextName = context?.name || kubeConfig.getCurrentContext();
+	const clusterName = cluster?.name || kubeConfig.getCurrentCluster()?.name;
 
 	const clusterProvider = await detectClusterProvider(contextName);
 
