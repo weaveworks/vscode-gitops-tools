@@ -58,6 +58,7 @@ export class ClusterDataProvider extends DataProvider {
 
 		const clusterNodes: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
+		process.nextTick(() => {});
 
 
 		if (kubeConfig.getContexts().length === 0) {

@@ -1,6 +1,8 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 
-import { initFluxInformers } from 'data/fluxInformer';
+import { initKubeProxy } from 'cli/kubernetes/kubectlProxy';
+import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
 import { shell } from './cli/shell/exec';
 import { registerCommands } from './commands/commands';
@@ -13,11 +15,7 @@ import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensio
 import { TelemetryEvent } from './types/telemetryEventNames';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
 import { statusBar } from './ui/statusBar';
-import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, templateTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
-import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
-import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { initKubeProxy } from 'cli/kubernetes/kubectlProxy';
-import { kubectlApi } from 'cli/kubernetes/kubernetesToolsKubectl';
+import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;

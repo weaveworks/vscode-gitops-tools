@@ -25,7 +25,6 @@ function hostPath(kcPath: KubernetesToolsConfigurationV1_1.KubeconfigPath): stri
 	}
 }
 
-
 export async function initKubeConfigWatcher() {
 	const configuration = await kubernetes.extension.configuration.v1_1;
 	if (!configuration.available) {
@@ -37,15 +36,11 @@ export async function initKubeConfigWatcher() {
 	await initKubeConfigPathWatcher();
 
 	configuration.api.onDidChangeContext(context => {
-		// current context is changed, do something with it
-		console.log('context changed!', context);
 		loadKubeConfig();
 	});
 
 	restartFsWatcher();
 
-
-	console.log('watching kubeconfigs');
 }
 
 
@@ -57,7 +52,6 @@ async function initKubeConfigPathWatcher() {
 
 	configuration.api.onDidChangeKubeconfigPath(async kcpath => {
 		const path = hostPath(kcpath);
-		console.log('path changed event!', path);
 		// fires twice
 		if(path !== kubeConfigPath) {
 			kubeConfigPath = path;
@@ -81,7 +75,6 @@ function restartFsWatcher() {
 
 	const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(dirname, basename));
 	watcher.onDidChange(e => {
-		console.log('kubeconfig file changed!', e);
 		loadKubeConfig();
 	});
 }

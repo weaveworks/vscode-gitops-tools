@@ -3,6 +3,7 @@ import { kubeConfig, onCurrentContextChanged } from 'cli/kubernetes/kubernetesCo
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { shell } from 'cli/shell/exec';
 import { ChildProcess } from 'child_process';
+import { startFluxInformer, stopFluxInformer } from 'informer/kubernetesInformer';
 
 
 export let kubeProxyConfig: k8s.KubeConfig | undefined;
@@ -34,15 +35,15 @@ export function initKubeProxy() {
 
 function procStarted(p: ChildProcess) {
 	kubectlProxyProcess = p;
-	console.log('got a proc!', p);
+	console.log('proxy proc started', p);
 
 	p.on('exit', async code => {
-		console.log('proc exit', p, code);
+		console.log('proxy exit', p, code);
 		stopKubeProxy();
 	});
 
 	p.on('error', err => {
-		console.log('proc error', p, err);
+		console.log('proxy error', p, err);
 		stopKubeProxy();
 	});
 
@@ -51,6 +52,8 @@ function procStarted(p: ChildProcess) {
 		if(data.includes('Starting to serve on')) {
 			const port = parseInt(data.split(':')[1].trim());
 			kubeProxyConfig = makeProxyConfig(port);
+			stopFluxInformer();
+			startFluxInformer();
 		}
 	});
 
@@ -75,6 +78,8 @@ async function stopKubeProxy() {
 		}
 		kubectlProxyProcess = undefined;
 	}
+
+	stopFluxInformer();
 }
 
 

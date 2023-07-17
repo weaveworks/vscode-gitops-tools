@@ -4,7 +4,6 @@ import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemColla
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
-import { KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
@@ -24,7 +23,7 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Kubernetes resource.
 	 */
-	resource?: Exclude<KnownTreeNodeResources, KubernetesContextWithCluster> | GitOpsTemplate | KubernetesObject;
+	resource?: KnownTreeNodeResources | GitOpsTemplate | KubernetesObject;
 
 	/**
 	 * Reference to the parent node (if exists).

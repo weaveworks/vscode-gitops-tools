@@ -116,27 +116,3 @@ export async function setCurrentContext(contextName: string): Promise<undefined 
 	};
 }
 
-
-
-// const currentContextShellResult = await invokeKubectlCommand('config current-context');
-// if (currentContextShellResult?.code !== 0) {
-// 	telemetry.sendError(TelemetryError.FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT);
-// 	console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
-// 	setVSCodeContext(ContextId.NoClusterSelected, true);
-// 	return {
-// 		succeeded: false,
-// 		error: [`${currentContextShellResult?.code || ''} ${currentContextShellResult?.stderr}`],
-// 	};
-// }
-
-// const currentContext = currentContextShellResult.stdout.trim();
-// setVSCodeContext(ContextId.NoClusterSelected, false);
-
-// currentContextName = currentContext;
-// return {
-// 	succeeded: true,
-// 	result: currentContext,
-// };
-// }
-
-

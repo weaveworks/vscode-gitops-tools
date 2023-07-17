@@ -13,7 +13,7 @@ import { Deployment, KubernetesObject, Namespace, Pod } from 'types/kubernetes/k
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-
+import { informer } from 'informer/kubernetesInformer';
 /*
 	* Current cluster supported kubernetes resource kinds.
 	*/
@@ -61,6 +61,15 @@ export async function getResource(name: string, namespace: string, kind: string)
 }
 
 export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: string, telemetryError: TelemetryError): Promise<T[]> {
+	if(kind === 'GitRepository') {
+		if(informer) {
+			console.log('informer GitRepository list');
+			return informer.list() as any as T[];
+		} else {
+			console.log('kubectl GitRepository list');
+
+		}
+	}
 	const shellResult = await invokeKubectlCommand(`get ${kind} -A -o json`);
 
 	if (shellResult?.code !== 0) {
