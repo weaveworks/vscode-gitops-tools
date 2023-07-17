@@ -52,6 +52,8 @@ function procStarted(p: ChildProcess) {
 		if(data.includes('Starting to serve on')) {
 			const port = parseInt(data.split(':')[1].trim());
 			kubeProxyConfig = makeProxyConfig(port);
+			console.log('kubeproxy config ready');
+
 			stopFluxInformer();
 			startFluxInformer();
 		}

@@ -20,7 +20,6 @@ export async function addFluxTreeToNode(node: TreeNode, resourceTree: FluxTreeRe
 			},
 		});
 
-		// this.addChild(childNode);
 		nodes.push(childNode);
 
 		if (resource.resources && resource.resources.length) {
@@ -52,8 +51,6 @@ export async function groupNodesByNamespace(nodes: TreeNode[]): Promise<[Namespa
 			});
 			namespaceNodes.push(nsNode);
 		}
-
-
 	});
 
 	const clusterScopedNodes = nodes.filter(node => !node.resource?.metadata?.namespace && node.resource?.kind !== 'Namespace');

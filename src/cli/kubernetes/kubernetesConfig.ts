@@ -61,7 +61,9 @@ function compareKubeConfigs(kc1: k8s.KubeConfig, kc2: k8s.KubeConfig): KubeConfi
 }
 
 // reload the kubeconfig via kubernetes-tools. fire events if things have changed
-export async function loadKubeConfig() {
+export async function loadKubeConfig(forceReloadResourceKinds = false) {
+	console.log('loadKubeConfig');
+
 	const configShellResult = await invokeKubectlCommand('config view');
 
 	if (configShellResult?.code !== 0) {
@@ -70,8 +72,6 @@ export async function loadKubeConfig() {
 		window.showErrorMessage(`Failed to load kubeconfig: ${path} ${shellCodeError(configShellResult)}`);
 		return;
 	}
-
-	console.log('kc context name', kubeConfig.getCurrentContext());
 
 	const newKubeConfig = new k8s.KubeConfig();
 	newKubeConfig.loadFromString(configShellResult.stdout, {onInvalidEntry: ActionOnInvalid.FILTER});
@@ -85,12 +85,14 @@ export async function loadKubeConfig() {
 		}
 
 		if(kcChanges.currentContextChanged) {
-			console.log('Current Context changed');
+			console.log('currentContext changed', kubeConfig.getCurrentContext());
 			onCurrentContextChanged.fire(kubeConfig);
+		} else if(forceReloadResourceKinds) {
+			await loadAvailableResourceKinds();
 		}
+
 	}
 }
-
 
 /**
  * Sets current kubectl context.
@@ -111,7 +113,6 @@ export async function setCurrentContext(contextName: string): Promise<undefined 
 		window.showErrorMessage(`Failed to set kubectl context to ${contextName}: ${setContextShellResult?.stderr}`);
 		return;
 	}
-
 
 	return {
 		isChanged: true,

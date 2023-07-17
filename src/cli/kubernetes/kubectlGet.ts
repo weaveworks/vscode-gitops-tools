@@ -42,6 +42,16 @@ export async function getNamespaces(): Promise<Namespace[]> {
 	return parseJsonItems(shellResult.stdout);
 }
 
+let nsCache: Namespace[] = [];
+export async function getNamespace(name: string): Promise<Namespace | undefined> {
+	const cachedNs = nsCache.find(ns => ns.metadata.name === name);
+	if(cachedNs) {
+		return cachedNs;
+	}
+	nsCache = await getNamespaces();
+	return nsCache.find(ns => ns.metadata.name === name);
+}
+
 /**
  * Get one resource object by kind/name and namespace
  * @param name name of the target resource

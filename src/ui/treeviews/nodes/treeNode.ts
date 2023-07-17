@@ -15,6 +15,8 @@ export const enum TreeNodeIcon {
 	Unknown = 'unknown',
 }
 
+type ResourceType = KnownTreeNodeResources | GitOpsTemplate | KubernetesObject;
+
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
@@ -23,7 +25,7 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Kubernetes resource.
 	 */
-	resource?: KnownTreeNodeResources | GitOpsTemplate | KubernetesObject;
+	resource?: ResourceType;
 
 	/**
 	 * Reference to the parent node (if exists).
@@ -98,6 +100,20 @@ export class TreeNode extends TreeItem {
 			}
 		}
 		return this;
+	}
+
+	removeChild(child: TreeNode) {
+		this.children = this.children.filter(c => c !== child);
+	}
+
+	findChildByResource(resource: ResourceType): TreeNode | undefined {
+		return this.children.find(child => {
+			if (child.resource) {
+				return child.resource.metadata?.name === resource.metadata?.name &&
+					child.resource.kind === resource.kind &&
+					child.resource.metadata?.namespace === resource.metadata?.namespace;
+			}
+		});
 	}
 
 

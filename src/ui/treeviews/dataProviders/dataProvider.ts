@@ -1,4 +1,3 @@
-import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { TreeNode } from '../nodes/treeNode';
 import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
@@ -7,9 +6,21 @@ import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
  * Defines tree view data provider base class for all GitOps tree views.
  */
 export class DataProvider implements TreeDataProvider<TreeItem> {
-	private treeItems: TreeItem[] | null = null;
-	private _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
+	protected treeItems: TreeItem[] | null = null;
+	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
+
+
+	protected sortTreeItems() {
+		if(this.treeItems) {
+			this.treeItems.sort((a, b) => {
+				if(a.id && b.id) {
+					return a.id.localeCompare(b.id);
+				}
+				return 0;
+			});
+		}
+	}
 
 	/**
 	 * Reloads tree view item and its children.
@@ -19,7 +30,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		if (!treeItem) {
 			// Only clear all root nodes when no node was passed
 			this.treeItems = null;
-			await loadKubeConfig();
+			await loadKubeConfig(true);
 
 		}
 		this._onDidChangeTreeData.fire(treeItem);
@@ -74,27 +85,6 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	 */
 	buildTree(): Promise<TreeNode[]> {
 		return Promise.resolve([]);
-	}
-
-	public add(object: KubernetesObject) {
-		// find or create namespace TreeItem for node
-		// add update TreeItem
-		// this.refresh(treeItem)
-		console.log('add', object);
-	}
-
-	public update(object: KubernetesObject) {
-		// find or create namespace TreeItem for node
-		// add update TreeItem
-		// this.refresh(treeItem)
-		console.log('add', object);
-	}
-
-	public delete(object: KubernetesObject) {
-		// find or create namespace TreeItem for node
-		// add update TreeItem
-		// this.refresh(treeItem)
-		console.log('add', object);
 	}
 
 }

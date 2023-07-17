@@ -11,12 +11,13 @@ import { OCIRepositoryNode } from '../nodes/source/ociRepositoryNode';
 import { SourceNode } from '../nodes/source/sourceNode';
 import { groupNodesByNamespace } from '../../../utils/treeNodeUtils';
 import { DataProvider } from './dataProvider';
+import { NamespaceGroupedObjectDataProvider } from './namespaceGroupedObjectDataProvider';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
  * and Buckets in GitOps Sources tree view.
  */
-export class SourceDataProvider extends DataProvider {
+export class SourceDataProvider extends NamespaceGroupedObjectDataProvider {
 
 	/**
    * Creates Source tree view items for the currently selected kubernetes cluster.

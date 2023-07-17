@@ -15,12 +15,13 @@ import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig, onCurrentContextChanged, onKubeConfigContextsChanged } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
+import { loadAvailableResourceKinds } from 'cli/kubernetes/kubectlGet';
 
-export let clusterTreeViewProvider: ClusterDataProvider;
-export let sourceTreeViewProvider: SourceDataProvider;
-export let workloadTreeViewProvider: WorkloadDataProvider;
-export let documentationTreeViewProvider: DocumentationDataProvider;
-export let templateTreeViewProvider: TemplateDataProvider;
+export let clusterDataProvider: ClusterDataProvider;
+export let sourceDataProvider: SourceDataProvider;
+export let workloadDataProvider: WorkloadDataProvider;
+export let documentationDataProvider: DocumentationDataProvider;
+export let templateDateProvider: TemplateDataProvider;
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
@@ -33,42 +34,47 @@ let templateTreeView: TreeView<TreeItem>;
  */
 export function createTreeViews() {
 	// create gitops tree view data providers
-	clusterTreeViewProvider = new ClusterDataProvider();
-	sourceTreeViewProvider =  new SourceDataProvider();
-	workloadTreeViewProvider = new WorkloadDataProvider();
-	documentationTreeViewProvider = new DocumentationDataProvider();
-	templateTreeViewProvider = new TemplateDataProvider();
+	clusterDataProvider = new ClusterDataProvider();
+	sourceDataProvider =  new SourceDataProvider();
+	workloadDataProvider = new WorkloadDataProvider();
+	documentationDataProvider = new DocumentationDataProvider();
+	templateDateProvider = new TemplateDataProvider();
 
+	// schedule tree view initialiation for next phase of event loop
+	// when informers should be ready to avoid slower kubectl fallback
+	setTimeout(() => {
 	// create gitops sidebar tree views
-	clusterTreeView = window.createTreeView(TreeViewId.ClustersView, {
-		treeDataProvider: clusterTreeViewProvider,
-		showCollapseAll: true,
-	});
+		clusterTreeView = window.createTreeView(TreeViewId.ClustersView, {
+			treeDataProvider: clusterDataProvider,
+			showCollapseAll: true,
+		});
 
-	sourceTreeView = window.createTreeView(TreeViewId.SourcesView, {
-		treeDataProvider: sourceTreeViewProvider,
-		showCollapseAll: true,
-	});
+		sourceTreeView = window.createTreeView(TreeViewId.SourcesView, {
+			treeDataProvider: sourceDataProvider,
+			showCollapseAll: true,
+		});
 
-	workloadTreeView = window.createTreeView(TreeViewId.WorkloadsView, {
-		treeDataProvider: workloadTreeViewProvider,
-		showCollapseAll: true,
-	});
+		workloadTreeView = window.createTreeView(TreeViewId.WorkloadsView, {
+			treeDataProvider: workloadDataProvider,
+			showCollapseAll: true,
+		});
 
 
-	// WGE templates
-	templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
-		treeDataProvider: templateTreeViewProvider,
-		showCollapseAll: true,
-	});
+		// WGE templates
+		templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
+			treeDataProvider: templateDateProvider,
+			showCollapseAll: true,
+		});
 
-	// create documentation links sidebar tree view
-	documentationTreeView = window.createTreeView(TreeViewId.DocumentationView, {
-		treeDataProvider: documentationTreeViewProvider,
-		showCollapseAll: true,
-	});
+		// create documentation links sidebar tree view
+		documentationTreeView = window.createTreeView(TreeViewId.DocumentationView, {
+			treeDataProvider: documentationDataProvider,
+			showCollapseAll: true,
+		});
 
-	listenRefreshEvents();
+		listenRefreshEvents();
+	}, 100);
+
 }
 
 async function listenRefreshEvents() {
@@ -103,32 +109,32 @@ export function refreshResourcesTreeViews() {
  * and its children are updated.
  */
 export function refreshClustersTreeView(node?: TreeNode) {
-	if (node && !clusterTreeViewProvider.includesTreeNode(node)) {
+	if (node && !clusterDataProvider.includesTreeNode(node)) {
 		// Trying to refresh old (non-existent) cluster context node
 		return;
 	}
-	clusterTreeViewProvider.refresh(node);
+	clusterDataProvider.refresh(node);
 }
 
 /**
  * Reloads sources tree view for the selected cluster.
  */
 export function refreshSourcesTreeView(node?: TreeNode) {
-	sourceTreeViewProvider.refresh(node);
+	sourceDataProvider.refresh(node);
 }
 
 /**
  * Reloads workloads tree view for the selected cluster.
  */
 export function refreshWorkloadsTreeView(node?: TreeNode) {
-	workloadTreeViewProvider.refresh(node);
+	workloadDataProvider.refresh(node);
 }
 
 /**
  * Reloads workloads tree view for the selected cluster.
  */
 export function refreshTemplatesTreeView(node?: TreeNode) {
-	templateTreeViewProvider.refresh(node);
+	templateDateProvider.refresh(node);
 }
 
 /**

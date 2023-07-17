@@ -10,6 +10,7 @@ import * as k8s from '@kubernetes/client-node';
 import { kubeProxyConfig } from 'cli/kubernetes/kubectlProxy';
 import { GitRepository } from 'types/flux/gitRepository';
 import { Kind, KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { sourceDataProvider } from 'ui/treeviews/treeViews';
 // import { createKubeProxyConfig } from './createKubeProxyConfig';
 // import { initKubeConfigWatcher } from '../cli/kubernetes/kubernetesConfigWatcher';
 
@@ -34,21 +35,6 @@ function getAPIPaths(kind: Kind): ApiEndpointParams {
 	return paths[kind];
 }
 
-async function informerKeepAlive<T extends KubernetesObject>(informer: k8s.Informer<T>) {
-	try {
-		await informer.start();
-	} catch (err) {
-		console.error('flux resources informer unavailable:', err);
-		informer.stop();
-		setTimeout(() => {
-			console.info('Restarting informer...');
-			informer.start();
-			// this needs to be recursive
-		}, 2000);
-
-		return false;
-	}
-}
 
 // registering an add function before informer start will fire for each existing object
 // registering after the start wont fire for old objects
@@ -57,12 +43,6 @@ async function informerKeepAlive<T extends KubernetesObject>(informer: k8s.Infor
 
 export let informer: k8s.Informer<GitRepository> & k8s.ObjectCache<GitRepository> | undefined;
 
-export async function initFluxInformers(eventFn?: InformerEventFunc) {
-
-
-}
-
-
 
 export async function startFluxInformer() {
 	// running already or no proxy
@@ -70,12 +50,13 @@ export async function startFluxInformer() {
 		return;
 	}
 
-	console.log('informer starting...');
 
 	informer = createInformer(Kind.GitRepository, kubeProxyConfig);
 
 	try {
+		console.log('informer starting...');
 		await informer.start();
+		console.log('informer started');
 		informer.on('error', (err: any) => {
 			console.error('informer error event', err);
 			stopFluxInformer();
@@ -90,7 +71,6 @@ export async function startFluxInformer() {
 	}
 
 	registerInformerEvents();
-	console.log('informer started');
 }
 
 
@@ -128,19 +108,21 @@ function createInformer(kind: Kind, kubeConfig: k8s.KubeConfig) {
 function registerInformerEvents() {
 	informer?.on('add', (obj: KubernetesObject) => {
 		console.log('informer add event', obj);
-
+		sourceDataProvider.add(obj);
 	});
+
 	informer?.on('update', (obj: KubernetesObject) => {
 		console.log('informer update event', obj);
-
+		sourceDataProvider.update(obj);
 	});
+
 	informer?.on('delete', (obj: KubernetesObject) => {
 		console.log('informer delete event', obj);
-
+		sourceDataProvider.delete(obj);
 	});
+	console.log('informer listening for events...');
+
 }
 
-// sourceDataProvider.add(obj);
-// sourceDataProvider.update(obj);
-// sourceDataProvider.delete(obj);
+
 
