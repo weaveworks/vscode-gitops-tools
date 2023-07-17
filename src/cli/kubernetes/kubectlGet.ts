@@ -18,9 +18,7 @@ import { informer } from 'informer/kubernetesInformer';
 	* Current cluster supported kubernetes resource kinds.
 	*/
 export let clusterSupportedResourceKinds: string[] | undefined;
-export function clearSupportedResourceKinds(): void {
-	clusterSupportedResourceKinds = undefined;
-}
+
 /**
  * RegExp for the Error that should not be sent in telemetry.
  * Server doesn't have a resource type = when GitOps not enabled
@@ -135,14 +133,16 @@ export async function getFluxControllers(context?: string): Promise<Deployment[]
 /**
  * Return all available kubernetes resource kinds.
  */
-export async function getAvailableResourceKinds(): Promise<string[] | undefined> {
-	if (clusterSupportedResourceKinds) {
-		return clusterSupportedResourceKinds;
-	}
+export function getAvailableResourceKinds(): string[] | undefined {
+	return clusterSupportedResourceKinds;
+}
+
+
+export async function loadAvailableResourceKinds() {
+	clusterSupportedResourceKinds = undefined;
 
 	const kindsShellResult = await invokeKubectlCommand('api-resources --verbs=list -o name');
 	if (kindsShellResult?.code !== 0) {
-		clusterSupportedResourceKinds = undefined;
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
 		console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
 		return;
@@ -153,7 +153,6 @@ export async function getAvailableResourceKinds(): Promise<string[] | undefined>
 		.filter(kind => kind.length);
 
 	clusterSupportedResourceKinds = kinds;
-	return kinds;
 }
 
 /**
@@ -166,7 +165,7 @@ export async function getChildrenOfWorkload(
 	name: string,
 	namespace: string,
 ): Promise<KubernetesObject[]> {
-	const resourceKinds = await getAvailableResourceKinds();
+	const resourceKinds = getAvailableResourceKinds();
 	if (!resourceKinds) {
 		return [];
 	}

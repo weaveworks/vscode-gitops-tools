@@ -6,15 +6,23 @@ import * as k8s from '@kubernetes/client-node';
 import { ActionOnInvalid } from '@kubernetes/client-node/dist/config_types';
 import { shellCodeError } from 'cli/shell/exec';
 import { setVSCodeContext, telemetry } from 'extension';
-import { Errorable, succeeded } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { clearSupportedResourceKinds } from './kubectlGet';
+import { loadAvailableResourceKinds } from './kubectlGet';
 import { loadKubeConfigPath } from './kubernetesConfigWatcher';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
 export const onKubeConfigContextsChanged = new EventEmitter<k8s.KubeConfig>();
 export const onCurrentContextChanged = new EventEmitter<k8s.KubeConfig>();
+
+onKubeConfigContextsChanged.event(kc => {
+	setVSCodeContext(ContextId.NoClusterSelected, false);
+	setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
+	setVSCodeContext(ContextId.NoSources, false);
+	setVSCodeContext(ContextId.NoWorkloads, false);
+	setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
+	loadAvailableResourceKinds();
+});
 
 export const kubeConfig: k8s.KubeConfig  = new k8s.KubeConfig();
 
@@ -104,12 +112,6 @@ export async function setCurrentContext(contextName: string): Promise<undefined 
 		return;
 	}
 
-	setVSCodeContext(ContextId.NoClusterSelected, false);
-	setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
-	setVSCodeContext(ContextId.NoSources, false);
-	setVSCodeContext(ContextId.NoWorkloads, false);
-	setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
-	clearSupportedResourceKinds();
 
 	return {
 		isChanged: true,
