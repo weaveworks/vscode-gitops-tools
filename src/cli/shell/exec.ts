@@ -215,11 +215,22 @@ function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: strin
 	});
 }
 
+function execProc(cmd: string): ChildProcess {
+	const opts = execOpts();
+	if (getUseWsl()) {
+		cmd = `wsl ${cmd}`;
+	}
+
+	const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => {});
+	return proc;
+}
+
 export const shell = {
 	isWindows : isWindows,
 	isUnix : isUnix,
 	platform : platform,
 	exec : exec,
+	execProc: execProc,
 	// execCore : execCore,
 	execWithOutput: execWithOutput,
 };

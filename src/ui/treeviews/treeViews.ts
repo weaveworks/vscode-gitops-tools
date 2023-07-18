@@ -12,16 +12,16 @@ import { ClusterNode } from './nodes/cluster/clusterNode';
 import { TreeNode } from './nodes/treeNode';
 
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
-import { kubeConfig, onCurrentContextChanged, onKubeConfigContextsChanged } from 'cli/kubernetes/kubernetesConfig';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
 import { loadAvailableResourceKinds } from 'cli/kubernetes/apiResources';
 
-export let clusterDataProvider: ClusterDataProvider;
-export let sourceDataProvider: SourceDataProvider;
-export let workloadDataProvider: WorkloadDataProvider;
-export let documentationDataProvider: DocumentationDataProvider;
-export let templateDateProvider: TemplateDataProvider;
+export let clusterDataProvider = new ClusterDataProvider();
+export let sourceDataProvider = new SourceDataProvider();
+export let workloadDataProvider = new WorkloadDataProvider();
+export let documentationDataProvider = new DocumentationDataProvider();
+export let templateDateProvider = new TemplateDataProvider();
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
@@ -33,13 +33,6 @@ let templateTreeView: TreeView<TreeItem>;
  * Creates tree views for the GitOps sidebar.
  */
 export function createTreeViews() {
-	// create gitops tree view data providers
-	clusterDataProvider = new ClusterDataProvider();
-	sourceDataProvider =  new SourceDataProvider();
-	workloadDataProvider = new WorkloadDataProvider();
-	documentationDataProvider = new DocumentationDataProvider();
-	templateDateProvider = new TemplateDataProvider();
-
 	// schedule tree view initialiation for next phase of event loop
 	// when informers should be ready to avoid slower kubectl fallback
 	setTimeout(() => {
@@ -72,36 +65,9 @@ export function createTreeViews() {
 			showCollapseAll: true,
 		});
 
-		listenRefreshEvents();
 	}, 100);
 
 }
-
-async function listenRefreshEvents() {
-	onKubeConfigContextsChanged.event(() => {
-		refreshClustersTreeView();
-	});
-
-	onCurrentContextChanged.event(() => {
-		refreshResourcesTreeViews();
-	});
-}
-
-
-/**
- * Refreshes all GitOps tree views.
- */
-export function refreshAllTreeViews() {
-	refreshClustersTreeView();
-	refreshResourcesTreeViews();
-}
-
-export function refreshResourcesTreeViews() {
-	refreshSourcesTreeView();
-	refreshWorkloadsTreeView();
-	refreshTemplatesTreeView();
-}
-
 
 /**
  * Reloads configured clusters tree view via kubectl.

@@ -1,11 +1,12 @@
 import { window } from 'vscode';
 
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterMetadata } from 'data/globalState';
 import { globalState } from 'extension';
 import { KnownClusterProviders, knownClusterProviders } from 'types/kubernetes/clusterProvider';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
-import { refreshAllTreeViews } from 'ui/treeviews/treeViews';
-import { kubeConfig, onCurrentContextChanged } from 'cli/kubernetes/kubernetesConfig';
+import { refreshClustersTreeView } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViews } from './refreshTreeViews';
 
 export async function setClusterProvider(clusterNode: ClusterNode) {
 
@@ -34,9 +35,9 @@ export async function setClusterProvider(clusterNode: ClusterNode) {
 
 	if (clusterMetadata.clusterProvider !== oldClusterProvider) {
 		if(clusterNode.context.name === kubeConfig.getCurrentContext()) {
-			onCurrentContextChanged.fire(kubeConfig);
+			refreshAllTreeViews();
+		} else {
+			refreshClustersTreeView();
 		}
-
-		onCurrentContextChanged.fire(kubeConfig);
 	}
 }

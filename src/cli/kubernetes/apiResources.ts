@@ -61,5 +61,5 @@ export async function loadAvailableResourceKinds() {
 		apiResources?.set(kind, { plural, group, version });
 	});
 
-	console.log('lines', lines);
+	console.log('apiResources loaded');
 }

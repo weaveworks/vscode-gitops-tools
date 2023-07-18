@@ -1,5 +1,5 @@
 import * as k8s from '@kubernetes/client-node';
-import { kubeConfig, onCurrentContextChanged } from 'cli/kubernetes/kubernetesConfig';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { shell } from 'cli/shell/exec';
 import { ChildProcess } from 'child_process';
@@ -13,9 +13,7 @@ let kubectlProxyProcess: ChildProcess | undefined;
 // if process dies or errors out it will be stopped
 // and restarted by the 1000ms interval
 // if context changes proxy is stopped and restarted immediately
-export function initKubeProxy() {
-	startKubeProxy();
-
+export function kubeProxyKeepAlive() {
 	// keep alive
 	setInterval(async () => {
 		if(!kubeProxyConfig) {
@@ -23,20 +21,20 @@ export function initKubeProxy() {
 			await startKubeProxy();
 		}
 	}, 1000);
-
-	// user switched kubeconfig context.
-	onCurrentContextChanged.event(async () => {
-		if(kubectlProxyProcess) {
-			await stopKubeProxy();
-		}
-		await startKubeProxy();
-	});
 }
 
-function procStarted(p: ChildProcess) {
-	kubectlProxyProcess = p;
-	console.log('proxy proc started', p);
+async function startKubeProxy() {
+	if(kubectlProxyProcess) {
+		await stopKubeProxy();
+	}
 
+	kubectlProxyProcess = shell.execProc('kubectl proxy -p 0');
+	console.log('started kube proxy process');
+
+	procListen(kubectlProxyProcess);
+}
+
+function procListen(p: ChildProcess) {
 	p.on('exit', async code => {
 		console.log('proxy exit', p, code);
 		stopKubeProxy();
@@ -66,12 +64,6 @@ function procStarted(p: ChildProcess) {
 }
 
 
-async function startKubeProxy() {
-	console.log('startKubeProx');
-
-	shell.exec('kubectl proxy -p 0', {callback: procStarted});
-}
-
 async function stopKubeProxy() {
 	kubeProxyConfig = undefined;
 	if(kubectlProxyProcess) {
@@ -82,8 +74,16 @@ async function stopKubeProxy() {
 	}
 
 	stopFluxInformer();
+	console.log('stopped kube proxy');
+
 }
 
+export async function restartKubeProxy() {
+	if(kubectlProxyProcess) {
+		await stopKubeProxy();
+	}
+	await startKubeProxy();
+}
 
 
 function makeProxyConfig(port: number) {

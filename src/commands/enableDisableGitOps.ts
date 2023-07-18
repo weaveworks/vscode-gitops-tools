@@ -8,7 +8,8 @@ import { failed } from 'types/errorable';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
-import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 
@@ -70,7 +71,7 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
 	}
 
 	// Refresh now that flux is installed or uninstalled
-	refreshAllTreeViews();
+	refreshAllTreeViewsCommand();
 }
 
 /**

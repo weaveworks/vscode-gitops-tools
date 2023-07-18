@@ -1,6 +1,5 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { TreeNode } from '../nodes/treeNode';
-import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 /**
  * Defines tree view data provider base class for all GitOps tree views.
@@ -20,8 +19,6 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		if (!treeItem) {
 			// Only clear all root nodes when no node was passed
 			this.treeItems = null;
-			await loadKubeConfig(true);
-
 		}
 		this._onDidChangeTreeData.fire(treeItem);
 	}

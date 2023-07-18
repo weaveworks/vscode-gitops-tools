@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 
-import { initKubeProxy } from 'cli/kubernetes/kubectlProxy';
+import { kubeProxyKeepAlive } from 'cli/kubernetes/kubectlProxy';
 import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
@@ -45,18 +45,14 @@ export async function activate(context: ExtensionContext) {
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
-	await loadKubeConfig();
+	await loadKubeConfig(true);
 
 	await initKubeConfigWatcher();
-	initKubeProxy();
-	// create gitops tree views
-	// await startFluxInformers(sourceTreeViewProvider, workloadTreeViewProvider, templateTreeViewProvider);
-	// await initFluxInformers();
 	createTreeViews();
-
 
 	// register gitops commands
 	registerCommands(context);
+	kubeProxyKeepAlive();
 
 	telemetry.send(TelemetryEvent.Startup);
 

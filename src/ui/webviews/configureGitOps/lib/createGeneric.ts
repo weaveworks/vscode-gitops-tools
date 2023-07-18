@@ -3,7 +3,8 @@ import { telemetry } from 'extension';
 import { fluxTools } from 'cli/flux/fluxTools';
 import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ParamsDictionary } from 'utils/typeUtils';
-import { refreshAllTreeViews, refreshSourcesTreeView } from 'ui/treeviews/treeViews';
+import { refreshSourcesTreeView } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 
 export async function createConfigurationGeneric(data: ParamsDictionary) {
 	telemetry.send(TelemetryEvent.CreateSource, {
@@ -25,5 +26,5 @@ export async function createConfigurationGeneric(data: ParamsDictionary) {
 		await fluxTools.createKustomization(data.kustomization);
 	}
 
-	refreshAllTreeViews();
+	refreshAllTreeViewsCommand();
 }

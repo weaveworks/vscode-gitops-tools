@@ -7,7 +7,8 @@ import { globalState, telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { parseJson } from 'utils/jsonUtils';
 import { checkAzurePrerequisites } from './azurePrereqs';
 import { getAzureMetadata } from './getAzureMetadata';
@@ -138,7 +139,7 @@ class AzureTools {
 
 		clusterMetadata.clusterProvider = ClusterProvider.Generic;
 		globalState.setClusterMetadata(clusterName || contextName, clusterMetadata);
-		refreshAllTreeViews();
+		refreshAllTreeViewsCommand();
 		await fluxTools.install(contextName);
 	}
 

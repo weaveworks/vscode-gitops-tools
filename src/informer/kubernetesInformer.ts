@@ -69,7 +69,7 @@ export function stopFluxInformer() {
 
 // will start a self-healing informer for each resource type and namespaces
 function createInformer(kind: Kind, kubeConfig: k8s.KubeConfig) {
-	const k8sCoreApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
+	// const k8sCoreApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
 	// k8sCoreApi.listNamespace()
 
 	const k8sCustomApi = kubeConfig.makeApiClient(k8s.CustomObjectsApi);

@@ -4,7 +4,7 @@ import { showOutputChannel } from 'cli/shell/output';
 import { telemetry } from 'extension';
 import { CommandId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { refreshAllTreeViews, refreshResourcesTreeViews } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViewsCommand, refreshResourcesTreeViewsCommand } from 'commands/refreshTreeViews';
 import { addKustomization } from './addKustomization';
 import { addSource } from './addSource';
 import { copyResourceName } from './copyResourceName';
@@ -62,8 +62,8 @@ export function registerCommands(context: ExtensionContext) {
 
 	// tree views
 	registerCommand(CommandId.SetClusterProvider, setClusterProvider);
-	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViews);
-	registerCommand(CommandId.RefreshResourcesTreeView, refreshResourcesTreeViews);
+	registerCommand(CommandId.RefreshAllTreeViews, refreshAllTreeViewsCommand);
+	registerCommand(CommandId.RefreshResourcesTreeView, refreshResourcesTreeViewsCommand);
 	registerCommand(CommandId.PullGitRepository, pullGitRepository);
 	registerCommand(CommandId.CreateGitRepository, (fileExplorerUri?: Uri) => {
 		// only pass one argument when running from File Explorer context menu
