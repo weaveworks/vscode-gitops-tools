@@ -4,6 +4,7 @@ import { Namespace } from 'types/kubernetes/kubernetesTypes';
 import { AnyResourceNode } from 'ui/treeviews/nodes/anyResourceNode';
 import { NamespaceNode } from '../ui/treeviews/nodes/namespaceNode';
 import { TreeNode } from '../ui/treeviews/nodes/treeNode';
+import { TreeItem } from 'vscode';
 
 
 export async function addFluxTreeToNode(node: TreeNode, resourceTree: FluxTreeResources[], parentNamespace = '') {
@@ -64,3 +65,16 @@ function filterNodesForNamespace(nodes: TreeNode[], namespace: string): TreeNode
 	return nodes.filter(node => belongsToNamespace(node) || isNamespace(node));
 }
 
+
+export function sortNodes(nodes?: TreeItem[] | null) {
+	if(nodes) {
+		nodes.sort((a, b) => {
+			if(a.label && b.label) {
+				const al = typeof a.label === 'string' ? a.label : a.label.label;
+				const bl = typeof b.label === 'string' ? b.label : b.label.label;
+				return al.localeCompare(bl);
+			}
+			return 0;
+		});
+	}
+}

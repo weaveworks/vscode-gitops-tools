@@ -1,9 +1,8 @@
-import { KubernetesObject } from '@kubernetes/client-node';
 import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
-import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
+import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
@@ -15,8 +14,6 @@ export const enum TreeNodeIcon {
 	Unknown = 'unknown',
 }
 
-type ResourceType = KnownTreeNodeResources | GitOpsTemplate | KubernetesObject;
-
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
@@ -25,7 +22,7 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Kubernetes resource.
 	 */
-	resource?: ResourceType;
+	resource?: KubernetesObject;
 
 	/**
 	 * Reference to the parent node (if exists).
@@ -58,6 +55,12 @@ export class TreeNode extends TreeItem {
 	expand() {
 		this.collapsibleState = TreeItemCollapsibleState.Expanded;
 	}
+
+	/**
+	 * Update icon and other status properties.
+	 */
+	updateStatus(): void {}
+
 
 	/**
 	 * Sets tree view item icon.
@@ -106,7 +109,7 @@ export class TreeNode extends TreeItem {
 		this.children = this.children.filter(c => c !== child);
 	}
 
-	findChildByResource(resource: ResourceType): TreeNode | undefined {
+	findChildByResource(resource: KubernetesObject): TreeNode | undefined {
 		return this.children.find(child => {
 			if (child.resource) {
 				return child.resource.metadata?.name === resource.metadata?.name &&

@@ -11,16 +11,6 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
 
 
-	protected sortTreeItems() {
-		if(this.treeItems) {
-			this.treeItems.sort((a, b) => {
-				if(a.id && b.id) {
-					return a.id.localeCompare(b.id);
-				}
-				return 0;
-			});
-		}
-	}
 
 	/**
 	 * Reloads tree view item and its children.

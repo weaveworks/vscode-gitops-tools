@@ -107,17 +107,17 @@ function createInformer(kind: Kind, kubeConfig: k8s.KubeConfig) {
 
 function registerInformerEvents() {
 	informer?.on('add', (obj: KubernetesObject) => {
-		console.log('informer add event', obj);
+		// console.log('informer add event', obj);
 		sourceDataProvider.add(obj);
 	});
 
 	informer?.on('update', (obj: KubernetesObject) => {
-		console.log('informer update event', obj);
+		// console.log('informer update event', obj);
 		sourceDataProvider.update(obj);
 	});
 
 	informer?.on('delete', (obj: KubernetesObject) => {
-		console.log('informer delete event', obj);
+		// console.log('informer delete event', obj);
 		sourceDataProvider.delete(obj);
 	});
 	console.log('informer listening for events...');

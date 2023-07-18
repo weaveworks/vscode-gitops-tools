@@ -23,7 +23,6 @@ export class HelmReleaseNode extends WorkloadNode {
 		this.resource = helmRelease;
 
 		this.makeCollapsible();
-
 	}
 
 	get contexts() {

@@ -27,7 +27,7 @@ export class SourceNode extends TreeNode {
 		this.resource = source;
 
 		// update reconciliation status
-		this.updateStatus(source);
+		this.updateStatus();
 	}
 
 	get tooltip() {
@@ -40,7 +40,7 @@ export class SourceNode extends TreeNode {
 		let revisionOrError = '';
 
 		if (this.isReconcileFailed) {
-			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason}`;
+			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason || ''}`;
 		} else {
 			revisionOrError = shortenRevision(this.resource.status.artifact?.revision);
 		}
@@ -81,8 +81,8 @@ export class SourceNode extends TreeNode {
 	 * Update source status with showing error icon when fetch failed.
 	 * @param source target source
 	 */
-	updateStatus(source: GitRepository | OCIRepository | HelmRepository | Bucket): void {
-		if (this.findReadyOrFirstCondition(source.status.conditions)?.status === 'True') {
+	updateStatus(): void {
+		if (this.findReadyOrFirstCondition(this.resource.status.conditions)?.status === 'True') {
 			this.setIcon(TreeNodeIcon.Success);
 			this.isReconcileFailed = false;
 		} else {

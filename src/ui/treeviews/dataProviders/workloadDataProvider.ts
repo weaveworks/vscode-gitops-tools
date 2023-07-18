@@ -14,13 +14,13 @@ import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
 import { refreshWorkloadsTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
-import { NamespaceGroupedObjectDataProvider } from './namespaceGroupedObjectDataProvider';
+import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
 
 /**
  * Defines data provider for loading Kustomizations
  * and Helm Releases in Workloads Tree View.
  */
-export class WorkloadDataProvider extends NamespaceGroupedObjectDataProvider {
+export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 	namespaces: Namespace[] = [];
 

@@ -72,7 +72,8 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 	if(kind === 'GitRepository') {
 		if(informer) {
 			console.log('informer GitRepository list');
-			return informer.list() as any as T[];
+			const l = informer.list() as any as T[];
+			return l;
 		} else {
 			console.log('kubectl GitRepository list');
 
