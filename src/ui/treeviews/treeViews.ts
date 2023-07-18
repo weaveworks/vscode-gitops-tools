@@ -15,7 +15,7 @@ import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig, onCurrentContextChanged, onKubeConfigContextsChanged } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
-import { loadAvailableResourceKinds } from 'cli/kubernetes/kubectlGet';
+import { loadAvailableResourceKinds } from 'cli/kubernetes/apiResources';
 
 export let clusterDataProvider: ClusterDataProvider;
 export let sourceDataProvider: SourceDataProvider;

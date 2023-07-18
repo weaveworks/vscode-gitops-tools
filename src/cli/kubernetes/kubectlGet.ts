@@ -14,11 +14,7 @@ import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { informer } from 'informer/kubernetesInformer';
-/*
-	* Current cluster supported kubernetes resource kinds.
-	*/
-export let clusterSupportedResourceKinds: string[] | undefined;
-
+import { getAvailableResourceKinds } from './apiResources';
 /**
  * RegExp for the Error that should not be sent in telemetry.
  * Server doesn't have a resource type = when GitOps not enabled
@@ -141,30 +137,7 @@ export async function getFluxControllers(context?: string): Promise<Deployment[]
 	return parseJsonItems(fluxDeploymentShellResult.stdout);
 }
 
-/**
- * Return all available kubernetes resource kinds.
- */
-export function getAvailableResourceKinds(): string[] | undefined {
-	return clusterSupportedResourceKinds;
-}
 
-
-export async function loadAvailableResourceKinds() {
-	clusterSupportedResourceKinds = undefined;
-
-	const kindsShellResult = await invokeKubectlCommand('api-resources --verbs=list -o name');
-	if (kindsShellResult?.code !== 0) {
-		telemetry.sendError(TelemetryError.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
-		console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
-		return;
-	}
-
-	const kinds = kindsShellResult.stdout
-		.split('\n')
-		.filter(kind => kind.length);
-
-	clusterSupportedResourceKinds = kinds;
-}
 
 /**
  * Return all kubernetes resources that were created by a kustomize/helmRelease.

@@ -8,7 +8,7 @@ import { shellCodeError } from 'cli/shell/exec';
 import { setVSCodeContext, telemetry } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { loadAvailableResourceKinds } from './kubectlGet';
+import { loadAvailableResourceKinds } from './apiResources';
 import { loadKubeConfigPath } from './kubernetesConfigWatcher';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
@@ -87,10 +87,9 @@ export async function loadKubeConfig(forceReloadResourceKinds = false) {
 		if(kcChanges.currentContextChanged) {
 			console.log('currentContext changed', kubeConfig.getCurrentContext());
 			onCurrentContextChanged.fire(kubeConfig);
-		} else if(forceReloadResourceKinds) {
-			await loadAvailableResourceKinds();
 		}
-
+	} else if(forceReloadResourceKinds) {
+		await loadAvailableResourceKinds();
 	}
 }
 

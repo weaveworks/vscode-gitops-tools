@@ -7,6 +7,7 @@
 // flux prerelease: /apis/source.toolkit.fluxcd.io/v1/gitrepositories
 
 import * as k8s from '@kubernetes/client-node';
+import { getAPIParams } from 'cli/kubernetes/apiResources';
 import { kubeProxyConfig } from 'cli/kubernetes/kubectlProxy';
 import { GitRepository } from 'types/flux/gitRepository';
 import { Kind, KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
@@ -15,25 +16,6 @@ import { sourceDataProvider } from 'ui/treeviews/treeViews';
 // import { initKubeConfigWatcher } from '../cli/kubernetes/kubernetesConfigWatcher';
 
 
-
-type KindPlural = string;
-type ApiGroup = string;
-type ApiVersion = string;
-type ApiEndpointParams = [KindPlural, ApiGroup, ApiVersion];
-
-type InformerEventType = 'add' | 'update' | 'delete';
-type InformerEventFunc = (event: InformerEventType, obj: KubernetesObject)=> void;
-
-// TODO: lookup real paths
-// TODO: loop for all Kind types to automate this
-
-function getAPIPaths(kind: Kind): ApiEndpointParams {
-	const paths: Record<Kind, ApiEndpointParams> = {
-		'GitRepository': ['gitrepositories', 'source.toolkit.fluxcd.io', 'v1'],
-	} as Record<Kind, ApiEndpointParams>;
-
-	return paths[kind];
-}
 
 
 // registering an add function before informer start will fire for each existing object
@@ -52,7 +34,9 @@ export async function startFluxInformer() {
 
 
 	informer = createInformer(Kind.GitRepository, kubeProxyConfig);
-
+	if(!informer) {
+		return;
+	}
 	try {
 		console.log('informer starting...');
 		await informer.start();
@@ -85,20 +69,25 @@ export function stopFluxInformer() {
 
 // will start a self-healing informer for each resource type and namespaces
 function createInformer(kind: Kind, kubeConfig: k8s.KubeConfig) {
-	// const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
+	const k8sCoreApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
+	// k8sCoreApi.listNamespace()
+
 	const k8sCustomApi = kubeConfig.makeApiClient(k8s.CustomObjectsApi);
 
-	const [plural, group, version] = getAPIPaths(kind);
+	const api = getAPIParams(kind);
+	if(!api) {
+		return;
+	}
 
 	const listFn = async () => {
-		const result = await k8sCustomApi.listClusterCustomObject(group, version, plural);
+		const result = await k8sCustomApi.listClusterCustomObject(api.group, api.version, api.plural);
 		const kbody = result.body as KubernetesListObject<GitRepository>;
 		return Promise.resolve({response: result.response, body: kbody});
 	};
 
 	const k8sinformer = k8s.makeInformer(
 		kubeConfig,
-		`/apis/${group}/${version}/${plural}`,
+		`/apis/${api.group}/${api.version}/${api.plural}`,
 		listFn,
 	);
 
