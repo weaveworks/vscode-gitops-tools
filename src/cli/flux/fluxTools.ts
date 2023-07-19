@@ -213,8 +213,9 @@ class FluxTools {
 	 * @param name resource name
 	 * @param namespace resource namespace
 	 */
-	async reconcile(type: FluxSource | FluxWorkload, name: string, namespace: string) {
-		const reconcileShellResult = await shell.execWithOutput(`flux reconcile ${type} ${name} -n ${namespace}`);
+	async reconcile(type: FluxSource | FluxWorkload, name: string, namespace: string, withSource = false) {
+		const withSourceArg = withSource ? '--with-source' : '';
+		const reconcileShellResult = await shell.execWithOutput(`flux reconcile ${type} ${name} -n ${namespace} ${withSourceArg}`);
 		if (reconcileShellResult.code !== 0) {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_RECONCILE);
 		}

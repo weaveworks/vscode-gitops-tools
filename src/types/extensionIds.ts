@@ -39,6 +39,7 @@ export const enum CommandId {
 	FluxReconcileSource = 'gitops.flux.reconcileSource',
 	FluxReconcileRepository = 'gitops.flux.reconcileRepository',
 	FluxReconcileWorkload = 'gitops.flux.reconcileWorkload',
+	FluxReconcileWorkloadWithSource = 'gitops.flux.reconcileWorkloadWithSource',
 	FluxTrace = 'gitops.flux.trace',
 
 	// tree view

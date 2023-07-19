@@ -5,13 +5,13 @@ import { FluxWorkload } from 'types/fluxCliTypes';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
 import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
-import { refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**
  * Invoke flux reconcile of a specific workload.
  * @param workload Target workload tree view item.
  */
-export async function fluxReconcileWorkload(workload: KustomizationNode | HelmReleaseNode): Promise<void> {
+export async function fluxReconcileWorkload(workload: KustomizationNode | HelmReleaseNode, withSource = false): Promise<void> {
 	/**
 	 * Accepted workload names in flux: `kustomization`, `helmrelease`.
 	 * Can be checked with: `flux reconcile --help`
@@ -23,7 +23,15 @@ export async function fluxReconcileWorkload(workload: KustomizationNode | HelmRe
 		return;
 	}
 
-	await fluxTools.reconcile(workloadType, workload.resource.metadata?.name || '', workload.resource.metadata?.namespace || '');
+	await fluxTools.reconcile(workloadType, workload.resource.metadata?.name || '', workload.resource.metadata?.namespace || '', withSource);
 
 	refreshWorkloadsTreeView();
+	if(withSource) {
+		refreshSourcesTreeView();
+	}
+}
+
+
+export async function fluxReconcileWorkloadWithSource(workload: KustomizationNode | HelmReleaseNode): Promise<void> {
+	fluxReconcileWorkload(workload, true);
 }
