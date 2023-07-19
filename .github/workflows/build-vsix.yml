@@ -64,12 +64,12 @@ jobs:
           fi;
 
       - name: Clone Repository
-        uses: actions/checkout@dc323e67f16fb5f7663d20ff7941f27f5809e9b6 # pin@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # pin@v2
         with:
           fetch-depth: 0
 
       - name: Setup Flux CLI
-        uses: fluxcd/flux2/action@2c7d650d4472bb7c92fa5fea86589527dfa5abcc # pin@main
+        uses: fluxcd/flux2/action@44d69d6fc0c353e79c1bad021a4aca135033bce8 # pin@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -94,10 +94,10 @@ jobs:
         run: npm run compile
 
       - name: Setup Kubernetes
-        uses: engineerd/setup-kind@aa272fe2a7309878ffc2a81c56cfe3ef108ae7d0 # pin@v0.5.0
+        uses: engineerd/setup-kind@eb0371b1c9fd37b92d7474a26196f078514de7bf # pin@master
         with:
-          version: v0.17.0
-          image: kindest/node:v1.23.13
+          version: v0.19.0
+          image: kindest/node:v1.27.3
 
       - name: Run Tests
         uses: GabrielBB/xvfb-action@86d97bde4a65fe9b290c0b3fb92c2c4ed0e5302d # pin@v1
@@ -167,7 +167,7 @@ jobs:
         if: ${{ github.event.inputs.publishMarketplace == 'yes' && github.event.inputs.releaseChannel == 'stable' }}
 
       - name: Publish to Open VSX Registry (Edge)
-        uses: HaaLeo/publish-vscode-extension@c1a0486c5a3eed24e8c21d4e37889a7c4c60c443 # pin@v1
+        uses: HaaLeo/publish-vscode-extension@dfe4f6ad46624424fe24cb5bca79839183399045 # pin@v1
         if: ${{ github.event.inputs.publishOpenVSX == 'yes' && github.event.inputs.releaseChannel == 'edge' }}
         with:
           preRelease: true
@@ -175,7 +175,7 @@ jobs:
           extensionFile: ./gitops-tools-${{ env.RELEASE_VERSION }}.vsix
 
       - name: Publish to Open VSX Registry (Stable)
-        uses: HaaLeo/publish-vscode-extension@c1a0486c5a3eed24e8c21d4e37889a7c4c60c443 # pin@v1
+        uses: HaaLeo/publish-vscode-extension@dfe4f6ad46624424fe24cb5bca79839183399045 # pin@v1
         if: ${{ github.event.inputs.publishOpenVSX == 'yes' && github.event.inputs.releaseChannel == 'stable' }}
         with:
           preRelease: false
