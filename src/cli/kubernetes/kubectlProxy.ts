@@ -2,7 +2,7 @@ import * as k8s from '@kubernetes/client-node';
 import { ChildProcess } from 'child_process';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { shell } from 'cli/shell/exec';
-import { createK8sClients, destroyK8sClients } from 'informer/kubernetesInformer';
+import { createK8sClients, destroyK8sClients } from 'k8s/client';
 
 let connected = false;
 let kubectlProxyProcess: ChildProcess | undefined;

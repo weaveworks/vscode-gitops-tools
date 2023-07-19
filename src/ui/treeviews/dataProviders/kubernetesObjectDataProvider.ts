@@ -1,4 +1,4 @@
-import { getNamespace } from 'cli/kubernetes/kubectlGet';
+import { getNamespace } from 'cli/kubernetes/kubectlGetNamespace';
 import { GitRepository } from 'types/flux/gitRepository';
 import { KubernetesObject, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { NamespaceNode } from '../nodes/namespaceNode';

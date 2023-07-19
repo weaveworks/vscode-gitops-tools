@@ -6,6 +6,7 @@ import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from '../treeNode';
+import { FluxWorkloadObject } from 'types/flux/object';
 
 /**
  * Base class for all Workload tree view items.
@@ -17,9 +18,9 @@ export class WorkloadNode extends TreeNode {
 	 */
 	isReconcileFailed = false;
 
-	resource: Kustomization | HelmRelease;
+	resource: FluxWorkloadObject;
 
-	constructor(label: string, resource: Kustomization | HelmRelease) {
+	constructor(label: string, resource: FluxWorkloadObject) {
 		super(`${resource.kind}: ${label}`);
 
 		this.resource = resource;

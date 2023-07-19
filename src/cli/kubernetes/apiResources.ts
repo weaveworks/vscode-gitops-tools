@@ -18,9 +18,14 @@ let apiResources: Map<Kind, KindApiParams> | undefined;
 /**
  * Return all available kubernetes resource kinds
  */
-export function getAvailableResourceKinds(): Kind[] | undefined {
+export function getAvailableResourcePlurals(): string[] | undefined {
+	const plurals: string[] = [];
 	if(apiResources) {
-		return Object.keys(apiResources) as Kind[];
+		apiResources.forEach((value, key) => {
+			plurals.push(value.plural);
+		});
+
+		return plurals;
 	}
 }
 
@@ -49,10 +54,14 @@ export async function loadAvailableResourceKinds() {
 	apiResources = new Map<Kind, KindApiParams>();
 
 	lines.map(line => {
-		const cols = line.split(/\s+/);
-		const kind = cols[4] as Kind;
+		let cols = line.split(/\s+/);
+		if(cols.length === 7) {
+			// delete optional SHORTNAMES column
+			cols = cols.slice(0, 1).concat(cols.slice(2));
+		}
+		const kind = cols[3] as Kind;
 		const plural = cols[0];
-		const groupVersion = cols[2];
+		const groupVersion = cols[1];
 		let [group, version] = groupVersion.split('/');
 		if(!version) {
 			version = group;

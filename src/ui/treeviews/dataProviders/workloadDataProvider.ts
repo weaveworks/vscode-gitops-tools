@@ -1,5 +1,6 @@
 import { fluxTools } from 'cli/flux/fluxTools';
-import { getChildrenOfWorkload, getHelmReleases, getKustomizations, getNamespaces } from 'cli/kubernetes/kubectlGet';
+import { getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/kubernetes/kubectlGet';
+import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { Namespace } from 'types/kubernetes/kubernetesTypes';
@@ -21,9 +22,6 @@ import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
  * and Helm Releases in Workloads Tree View.
  */
 export class WorkloadDataProvider extends KubernetesObjectDataProvider {
-
-	namespaces: Namespace[] = [];
-
 	/**
    * Creates Workload tree nodes for the currently selected kubernetes cluster.
    * @returns Workload tree nodes to display.
@@ -42,8 +40,6 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 			// Fetch namespaces to group the nodes
 			getNamespaces(),
 		]);
-
-		this.namespaces = namespaces;
 
 		for (const kustomizeWorkload of sortByMetadataName(kustomizations)) {
 			workloadNodes.push(new KustomizationNode(kustomizeWorkload));
@@ -102,7 +98,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
 
 
-		if (!workloadChildren) {
+		if (!workloadChildren || workloadChildren.length === 0) {
 			node.children = [new TreeNode('No Resources')];
 			refreshWorkloadsTreeView(node);
 			return;

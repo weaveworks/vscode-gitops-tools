@@ -11,6 +11,7 @@ import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';
 import { OCIRepositoryNode } from '../nodes/source/ociRepositoryNode';
 import { SourceNode } from '../nodes/source/sourceNode';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
+import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
@@ -30,11 +31,12 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 		setVSCodeContext(ContextId.LoadingSources, true);
 
 		// Fetch all sources asynchronously and at once
-		const [gitRepositories, ociRepositories, helmRepositories, buckets] = await Promise.all([
+		const [gitRepositories, ociRepositories, helmRepositories, buckets, _] = await Promise.all([
 			getGitRepositories(),
 			getOciRepositories(),
 			getHelmRepositories(),
 			getBuckets(),
+			getNamespaces(), // cache namespaces
 		]);
 
 		// add git repositories to the tree

@@ -8,20 +8,21 @@ import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from '../treeNode';
+import { FluxSourceObject } from 'types/flux/object';
 
 /**
  * Base class for all the Source tree view items.
  */
 export class SourceNode extends TreeNode {
 
-	resource: GitRepository | OCIRepository | HelmRepository | Bucket;
+	resource: FluxSourceObject;
 
 	/**
 	 * Whether or not the source failed to reconcile.
 	 */
 	isReconcileFailed = false;
 
-	constructor(label: string, source: GitRepository | OCIRepository | HelmRepository | Bucket) {
+	constructor(label: string, source: FluxSourceObject) {
 		super(label);
 
 		this.resource = source;

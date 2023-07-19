@@ -1,7 +1,7 @@
 import safesh from 'shell-escape-tag';
-import { window } from 'vscode';
 
 import { telemetry } from 'extension';
+import { k8sList } from 'k8s/list';
 import { Bucket } from 'types/flux/bucket';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { GitRepository } from 'types/flux/gitRepository';
@@ -9,12 +9,12 @@ import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
-import { Deployment, Kind, KubernetesObject, Namespace, Pod } from 'types/kubernetes/kubernetesTypes';
+import { Deployment, Kind, KubernetesObject, Pod } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { informer, k8sList } from 'informer/kubernetesInformer';
-import { getAvailableResourceKinds } from './apiResources';
+import { getAvailableResourcePlurals } from './apiResources';
+import { window } from 'vscode';
 /**
  * RegExp for the Error that should not be sent in telemetry.
  * Server doesn't have a resource type = when GitOps not enabled
@@ -22,31 +22,6 @@ import { getAvailableResourceKinds } from './apiResources';
  */
 export const notAnErrorServerDoesntHaveResourceTypeRegExp = /the server doesn't have a resource type/i;
 export const notAnErrorServerNotRunning = /no connection could be made because the target machine actively refused it/i;
-
-/**
- * Get namespaces from current context.
- */
-export async function getNamespaces(): Promise<Namespace[]> {
-	const shellResult = await invokeKubectlCommand('get ns -o json');
-
-	if (shellResult?.code !== 0) {
-		telemetry.sendError(TelemetryError.FAILED_TO_GET_NAMESPACES);
-		window.showErrorMessage(`Failed to get namespaces ${shellResult?.stderr}`);
-		return [];
-	}
-
-	return parseJsonItems(shellResult.stdout);
-}
-
-let nsCache: Namespace[] = [];
-export async function getNamespace(name: string): Promise<Namespace | undefined> {
-	const cachedNs = nsCache.find(ns => ns.metadata.name === name);
-	if(cachedNs) {
-		return cachedNs;
-	}
-	nsCache = await getNamespaces();
-	return nsCache.find(ns => ns.metadata.name === name);
-}
 
 /**
  * Get one resource object by kind/name and namespace
@@ -67,16 +42,14 @@ export async function getResource(name: string, namespace: string, kind: string)
 export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: Kind, telemetryError: TelemetryError): Promise<T[]> {
 	const t1 = Date.now();
 
-	if(kind === 'GitRepository') {
-		const list = await k8sList(Kind.GitRepository);
-		if(list !== undefined) {
-			console.log('k8sList', list);
-			console.log(`get ${kind} ∆`, Date.now() - t1);
-			return list as T[];
-		}
-
-		console.log('kubectl GitRepository list');
+	const list = await k8sList(kind);
+	if(list !== undefined) {
+		console.log(`k8sList ${kind}`, list);
+		console.log(`list ${kind} ∆`, Date.now() - t1);
+		return list as T[];
 	}
+
+	console.log(`kubectl get ${kind}`);
 
 	const shellResult = await invokeKubectlCommand(`get ${kind} -A -o json`);
 
@@ -88,7 +61,7 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 		return [];
 	}
 
-	console.log(`get ${kind} ∆`, Date.now() - t1);
+	console.log(`list ${kind} ∆`, Date.now() - t1);
 	return parseJsonItems(shellResult.stdout);
 }
 
@@ -153,7 +126,8 @@ export async function getChildrenOfWorkload(
 	name: string,
 	namespace: string,
 ): Promise<KubernetesObject[]> {
-	const resourceKinds = getAvailableResourceKinds();
+	// return [];
+	const resourceKinds = getAvailableResourcePlurals();
 	if (!resourceKinds) {
 		return [];
 	}

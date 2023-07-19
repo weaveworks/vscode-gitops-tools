@@ -8,6 +8,7 @@ import { OCIRepository } from './ociRepository';
 
 export type FluxSourceObject = GitRepository | OCIRepository | HelmRepository | Bucket;
 export type FluxWorkloadObject = Kustomization | HelmRelease;
+export type FluxObject = FluxSourceObject | FluxWorkloadObject;
 
 export const FluxSourceKinds: string[] = [
 	Kind.GitRepository,
