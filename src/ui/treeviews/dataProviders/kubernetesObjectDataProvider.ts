@@ -61,7 +61,9 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 	}
 
 	public update(object: KubernetesObject) {
-		console.log('update', object);
+		// console.log('update', object);
+		// console.log('treeitems', this.treeItems);
+
 
 		const namespaceNode = this.findParentNamespaceNode(object);
 		if(!namespaceNode) {

@@ -53,7 +53,10 @@ export async function loadKubeConfig(forceReloadResourceKinds = false) {
 			console.log('currentContext changed', kubeConfig.getCurrentContext());
 			vscodeOnCurrentContextChanged();
 			await restartKubeProxy();
-			refreshAllTreeViews();
+			// give proxy a chance to start
+			setTimeout(() => {
+				refreshAllTreeViews();
+			}, 100);
 		}
 	} else if(forceReloadResourceKinds) {
 		await loadAvailableResourceKinds();

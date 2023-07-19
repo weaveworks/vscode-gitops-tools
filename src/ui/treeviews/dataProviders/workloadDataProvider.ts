@@ -33,11 +33,11 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		setVSCodeContext(ContextId.LoadingWorkloads, true);
 
-		const [kustomizations, helmReleases, namespaces] = await Promise.all([
+		const [kustomizations, helmReleases, _] = await Promise.all([
 			// Fetch all workloads
 			getKustomizations(),
 			getHelmReleases(),
-			// Fetch namespaces to group the nodes
+			// Cache namespaces to group the nodes
 			getNamespaces(),
 		]);
 
@@ -123,7 +123,8 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 				return [new TreeNode('Loading...')];
 			}
 		} else {
-			return await this.buildTree();
+			this.treeItems = await this.buildTree();
+			return this.treeItems;
 		}
 	}
 }

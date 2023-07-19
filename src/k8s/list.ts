@@ -1,6 +1,3 @@
-// kubectl auth can-i watch gitrepository
-// kubectl auth can-i watch kustomizations --all-namespaces
-
 import { getAPIParams } from 'cli/kubernetes/apiResources';
 import { FluxObject } from 'types/flux/object';
 import { Kind, KubernetesListObject, Namespace } from 'types/kubernetes/kubernetesTypes';

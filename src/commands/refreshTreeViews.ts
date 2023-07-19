@@ -7,11 +7,15 @@ import { refreshClustersTreeView, refreshSourcesTreeView, refreshTemplatesTreeVi
 
 export async function refreshAllTreeViewsCommand() {
 	await loadKubeConfig(true);
-	refreshClustersTreeView();
-	refreshResourcesTreeViews();
+	// give proxy a chance to start
+	setTimeout(() => {
+		refreshAllTreeViews();
+	}, 100);
 }
 
 export async function refreshAllTreeViews() {
+	console.log('refreshAllTreeViews');
+
 	refreshClustersTreeView();
 	refreshResourcesTreeViews();
 }

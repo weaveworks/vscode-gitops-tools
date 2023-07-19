@@ -55,6 +55,8 @@ export async function loadAvailableResourceKinds() {
 
 	lines.map(line => {
 		let cols = line.split(/\s+/);
+
+
 		if(cols.length === 7) {
 			// delete optional SHORTNAMES column
 			cols = cols.slice(0, 1).concat(cols.slice(2));

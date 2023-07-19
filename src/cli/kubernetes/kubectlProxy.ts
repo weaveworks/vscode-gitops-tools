@@ -4,8 +4,8 @@ import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { shell } from 'cli/shell/exec';
 import { createK8sClients, destroyK8sClients } from 'k8s/client';
 
-let connected = false;
-let kubectlProxyProcess: ChildProcess | undefined;
+// let isConnecting = false;
+let proxyProc: ChildProcess | undefined;
 
 // tries to keep alive the `kubectl proxy` process
 // if process dies or errors out it will be stopped
@@ -14,70 +14,74 @@ let kubectlProxyProcess: ChildProcess | undefined;
 export function kubeProxyKeepAlive() {
 	// keep alive
 	setInterval(async () => {
-		if(!connected) {
-			await stopKubeProxy();
+		if(!proxyProc) {
+			destroyK8sClients();
 			await startKubeProxy();
 		}
-	}, 1000);
+	}, 2000);
 }
 
 async function startKubeProxy() {
-	if(kubectlProxyProcess) {
+	if(proxyProc) {
 		await stopKubeProxy();
 	}
 
-	kubectlProxyProcess = shell.execProc('kubectl proxy -p 0');
-	console.log('started kube proxy process');
+	proxyProc = shell.execProc('kubectl proxy -p 0');
+	console.log(`~proxy started ${proxyProc.pid}`);
 
-	procListen(kubectlProxyProcess);
+	procListen(proxyProc);
 }
 
 function procListen(p: ChildProcess) {
 	p.on('exit', async code => {
-		console.log('proxy exit', p, code);
-		stopKubeProxy();
+		console.log('~proxy exit', p.pid, code);
+		if(proxyProc?.pid === p.pid) {
+			stopKubeProxy();
+		}
 	});
 
 	p.on('error', err => {
-		console.log('proxy error', p, err);
-		stopKubeProxy();
+		console.log('~proxy error', p.pid, err);
+		p.kill();
+
 	});
 
 	p.stdout?.on('data', (data: string) => {
-		console.log(`proxy STDOUT: ${data}`);
+		console.log(`~proxy ${p.pid} STDOUT: ${data}`);
 		if(data.includes('Starting to serve on')) {
 			const port = parseInt(data.split(':')[1].trim());
 			const proxyKc = makeProxyConfig(port);
 			console.log('kubeproxy config ready');
-			connected = true;
+			// isConnecting = true;
 
 			createK8sClients(proxyKc);
 		}
 	});
 
 	p.stderr?.on('data', (data: string) => {
-		console.log(`proxy STDERR: ${data}`);
-		stopKubeProxy();
+		console.log(`~proxy ${p.pid} STDERR: ${data}`);
+		p.kill();
 	});
 }
 
 
 async function stopKubeProxy() {
-	if(kubectlProxyProcess) {
-		if(!kubectlProxyProcess.killed) {
-			kubectlProxyProcess.kill();
+	if(proxyProc) {
+		if(!proxyProc.killed) {
+			console.log(`~proxy.kill() ${proxyProc.pid}`);
+			proxyProc.kill();
 		}
-		kubectlProxyProcess = undefined;
-	}
+		proxyProc = undefined;
 
-	destroyK8sClients();
-	connected = false;
-	console.log('stopped kube proxy');
+		destroyK8sClients();
+		// isConnecting = false;
+		console.log('stopped kube proxy');
+	}
 
 }
 
 export async function restartKubeProxy() {
-	if(kubectlProxyProcess) {
+	if(proxyProc) {
 		await stopKubeProxy();
 	}
 	await startKubeProxy();
