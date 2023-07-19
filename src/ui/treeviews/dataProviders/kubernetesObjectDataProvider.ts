@@ -43,6 +43,8 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 			namespaceNode = new NamespaceNode(ns);
 			this.treeItems?.push(namespaceNode);
 			sortNodes(this.treeItems);
+			namespaceNode.expand();
+			this._onDidChangeTreeData.fire(undefined);
 		}
 
 

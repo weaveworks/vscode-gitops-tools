@@ -1,10 +1,5 @@
 // kubectl auth can-i watch gitrepository
 // kubectl auth can-i watch kustomizations --all-namespaces
-// kubectl api-resources -o wide
-//  experiment how the fallbacks work by default if watch is disabled
-
-// flux v 0.42: /apis/source.toolkit.fluxcd.io/v1beta2/gitrepositories
-// flux prerelease: /apis/source.toolkit.fluxcd.io/v1/gitrepositories
 
 import * as k8s from '@kubernetes/client-node';
 import { getAPIParams } from 'cli/kubernetes/apiResources';
@@ -12,15 +7,6 @@ import { kubeProxyConfig } from 'cli/kubernetes/kubectlProxy';
 import { GitRepository } from 'types/flux/gitRepository';
 import { Kind, KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { sourceDataProvider } from 'ui/treeviews/treeViews';
-// import { createKubeProxyConfig } from './createKubeProxyConfig';
-// import { initKubeConfigWatcher } from '../cli/kubernetes/kubernetesConfigWatcher';
-
-
-
-
-// registering an add function before informer start will fire for each existing object
-// registering after the start wont fire for old objects
-// autonomous is somehow simpler in this case
 
 
 export let informer: k8s.Informer<GitRepository> & k8s.ObjectCache<GitRepository> | undefined;
@@ -62,8 +48,8 @@ export function stopFluxInformer() {
 	if(informer) {
 		informer.stop();
 		informer = undefined;
+		console.log('informer stopped');
 	}
-	console.log('informer stopped');
 }
 
 
