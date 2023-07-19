@@ -46,9 +46,14 @@ export async function activate(context: ExtensionContext) {
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
 	await loadKubeConfig(true);
-
 	await initKubeConfigWatcher();
-	createTreeViews();
+
+	// schedule load start for tree view data for the event loop
+	// then k8s proxy client is more likely to be ready
+	// to avoid the slower kubectl client
+	setTimeout(() => {
+		createTreeViews();
+	}, 100);
 
 	// register gitops commands
 	registerCommands(context);

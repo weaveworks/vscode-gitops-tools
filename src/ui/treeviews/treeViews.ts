@@ -33,39 +33,35 @@ let templateTreeView: TreeView<TreeItem>;
  * Creates tree views for the GitOps sidebar.
  */
 export function createTreeViews() {
-	// schedule tree view initialiation for next phase of event loop
-	// when informers should be ready to avoid slower kubectl fallback
-	setTimeout(() => {
 	// create gitops sidebar tree views
-		clusterTreeView = window.createTreeView(TreeViewId.ClustersView, {
-			treeDataProvider: clusterDataProvider,
-			showCollapseAll: true,
-		});
+	clusterTreeView = window.createTreeView(TreeViewId.ClustersView, {
+		treeDataProvider: clusterDataProvider,
+		showCollapseAll: true,
+	});
 
-		sourceTreeView = window.createTreeView(TreeViewId.SourcesView, {
-			treeDataProvider: sourceDataProvider,
-			showCollapseAll: true,
-		});
+	sourceTreeView = window.createTreeView(TreeViewId.SourcesView, {
+		treeDataProvider: sourceDataProvider,
+		showCollapseAll: true,
+	});
 
-		workloadTreeView = window.createTreeView(TreeViewId.WorkloadsView, {
-			treeDataProvider: workloadDataProvider,
-			showCollapseAll: true,
-		});
+	workloadTreeView = window.createTreeView(TreeViewId.WorkloadsView, {
+		treeDataProvider: workloadDataProvider,
+		showCollapseAll: true,
+	});
 
 
-		// WGE templates
-		templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
-			treeDataProvider: templateDateProvider,
-			showCollapseAll: true,
-		});
+	// WGE templates
+	templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
+		treeDataProvider: templateDateProvider,
+		showCollapseAll: true,
+	});
 
-		// create documentation links sidebar tree view
-		documentationTreeView = window.createTreeView(TreeViewId.DocumentationView, {
-			treeDataProvider: documentationDataProvider,
-			showCollapseAll: true,
-		});
+	// create documentation links sidebar tree view
+	documentationTreeView = window.createTreeView(TreeViewId.DocumentationView, {
+		treeDataProvider: documentationDataProvider,
+		showCollapseAll: true,
+	});
 
-	}, 100);
 
 }
 

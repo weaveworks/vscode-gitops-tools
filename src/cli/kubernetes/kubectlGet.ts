@@ -9,11 +9,11 @@ import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
-import { Deployment, KubernetesObject, Namespace, Pod } from 'types/kubernetes/kubernetesTypes';
+import { Deployment, Kind, KubernetesObject, Namespace, Pod } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { informer } from 'informer/kubernetesInformer';
+import { informer, k8sList } from 'informer/kubernetesInformer';
 import { getAvailableResourceKinds } from './apiResources';
 /**
  * RegExp for the Error that should not be sent in telemetry.
@@ -64,17 +64,20 @@ export async function getResource(name: string, namespace: string, kind: string)
 	return parseJson(shellResult.stdout);
 }
 
-export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: string, telemetryError: TelemetryError): Promise<T[]> {
-	if(kind === 'GitRepository') {
-		if(informer) {
-			console.log('informer GitRepository list');
-			const l = informer.list() as any as T[];
-			return l;
-		} else {
-			console.log('kubectl GitRepository list');
+export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: Kind, telemetryError: TelemetryError): Promise<T[]> {
+	const t1 = Date.now();
 
+	if(kind === 'GitRepository') {
+		const list = await k8sList(Kind.GitRepository);
+		if(list !== undefined) {
+			console.log('k8sList', list);
+			console.log(`get ${kind} ∆`, Date.now() - t1);
+			return list as T[];
 		}
+
+		console.log('kubectl GitRepository list');
 	}
+
 	const shellResult = await invokeKubectlCommand(`get ${kind} -A -o json`);
 
 	if (shellResult?.code !== 0) {
@@ -85,36 +88,37 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 		return [];
 	}
 
+	console.log(`get ${kind} ∆`, Date.now() - t1);
 	return parseJsonItems(shellResult.stdout);
 }
 
 
 export async function getBuckets(): Promise<Bucket[]> {
-	return getResourcesAllNamespaces('Buckets', TelemetryError.FAILED_TO_GET_BUCKETS);
+	return getResourcesAllNamespaces(Kind.Bucket, TelemetryError.FAILED_TO_GET_BUCKETS);
 }
 
 export async function getGitRepositories(): Promise<GitRepository[]> {
-	return getResourcesAllNamespaces('GitRepository', TelemetryError.FAILED_TO_GET_GIT_REPOSITORIES);
+	return getResourcesAllNamespaces(Kind.GitRepository, TelemetryError.FAILED_TO_GET_GIT_REPOSITORIES);
 }
 
 export async function getHelmRepositories(): Promise<HelmRepository[]> {
-	return getResourcesAllNamespaces('HelmRepository', TelemetryError.FAILED_TO_GET_HELM_REPOSITORIES);
+	return getResourcesAllNamespaces(Kind.HelmRepository, TelemetryError.FAILED_TO_GET_HELM_REPOSITORIES);
 }
 
 export async function getOciRepositories(): Promise<OCIRepository[]> {
-	return getResourcesAllNamespaces('OciRepository', TelemetryError.FAILED_TO_GET_OCI_REPOSITORIES);
+	return getResourcesAllNamespaces(Kind.OCIRepository, TelemetryError.FAILED_TO_GET_OCI_REPOSITORIES);
 }
 
 export async function getKustomizations(): Promise<Kustomization[]> {
-	return getResourcesAllNamespaces('Kustomization', TelemetryError.FAILED_TO_GET_KUSTOMIZATIONS);
+	return getResourcesAllNamespaces(Kind.Kustomization, TelemetryError.FAILED_TO_GET_KUSTOMIZATIONS);
 }
 
 export async function getHelmReleases(): Promise<HelmRelease[]> {
-	return getResourcesAllNamespaces('HelmRelease', TelemetryError.FAILED_TO_GET_HELM_RELEASES);
+	return getResourcesAllNamespaces(Kind.HelmRelease, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
 }
 
 export async function getGitOpsTemplates(): Promise<GitOpsTemplate[]> {
-	return getResourcesAllNamespaces('GitOpsTemplate', TelemetryError.FAILED_TO_GET_GITOPSTEMPLATES);
+	return getResourcesAllNamespaces(Kind.GitOpsTemplate, TelemetryError.FAILED_TO_GET_GITOPSTEMPLATES);
 }
 
 

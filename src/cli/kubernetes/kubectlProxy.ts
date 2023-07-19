@@ -1,12 +1,10 @@
 import * as k8s from '@kubernetes/client-node';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { shell } from 'cli/shell/exec';
 import { ChildProcess } from 'child_process';
-import { startFluxInformer, stopFluxInformer } from 'informer/kubernetesInformer';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { shell } from 'cli/shell/exec';
+import { createK8sClients, destroyK8sClients } from 'informer/kubernetesInformer';
 
-
-export let kubeProxyConfig: k8s.KubeConfig | undefined;
+let connected = false;
 let kubectlProxyProcess: ChildProcess | undefined;
 
 // tries to keep alive the `kubectl proxy` process
@@ -16,7 +14,7 @@ let kubectlProxyProcess: ChildProcess | undefined;
 export function kubeProxyKeepAlive() {
 	// keep alive
 	setInterval(async () => {
-		if(!kubeProxyConfig) {
+		if(!connected) {
 			await stopKubeProxy();
 			await startKubeProxy();
 		}
@@ -49,11 +47,11 @@ function procListen(p: ChildProcess) {
 		console.log(`proxy STDOUT: ${data}`);
 		if(data.includes('Starting to serve on')) {
 			const port = parseInt(data.split(':')[1].trim());
-			kubeProxyConfig = makeProxyConfig(port);
+			const proxyKc = makeProxyConfig(port);
 			console.log('kubeproxy config ready');
+			connected = true;
 
-			stopFluxInformer();
-			startFluxInformer();
+			createK8sClients(proxyKc);
 		}
 	});
 
@@ -65,7 +63,6 @@ function procListen(p: ChildProcess) {
 
 
 async function stopKubeProxy() {
-	kubeProxyConfig = undefined;
 	if(kubectlProxyProcess) {
 		if(!kubectlProxyProcess.killed) {
 			kubectlProxyProcess.kill();
@@ -73,7 +70,8 @@ async function stopKubeProxy() {
 		kubectlProxyProcess = undefined;
 	}
 
-	stopFluxInformer();
+	destroyK8sClients();
+	connected = false;
 	console.log('stopped kube proxy');
 
 }
