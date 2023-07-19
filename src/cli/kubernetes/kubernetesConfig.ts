@@ -1,63 +1,74 @@
 import safesh from 'shell-escape-tag';
 import { window } from 'vscode';
 
+import * as k8s from '@kubernetes/client-node';
+import { ActionOnInvalid } from '@kubernetes/client-node/dist/config_types';
 import { shellCodeError } from 'cli/shell/exec';
+import { refreshAllTreeViews } from 'commands/refreshTreeViews';
 import { setVSCodeContext, telemetry } from 'extension';
-import { Errorable, failed, succeeded } from 'types/errorable';
 import { ContextId } from 'types/extensionIds';
-import { KubernetesConfig, KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { parseJson } from 'utils/jsonUtils';
+import { refreshClustersTreeView } from 'ui/treeviews/treeViews';
+import { kcContextsListChanged, kcCurrentContextChanged, kcTextChanged } from 'utils/kubeConfigCompare';
+import { loadAvailableResourceKinds } from './apiResources';
+import { restartKubeProxy } from './kubectlProxy';
+import { loadKubeConfigPath } from './kubernetesConfigWatcher';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { clearSupportedResourceKinds } from './kubectlGet';
-
-export let currentContextName: string;
 
 
-/**
- * Gets current kubectl config with available contexts and clusters.
- */
-export async function getKubectlConfig(): Promise<Errorable<KubernetesConfig>> {
-	const configShellResult = await invokeKubectlCommand('config view -o json');
+export const kubeConfig: k8s.KubeConfig  = new k8s.KubeConfig();
+
+// reload the kubeconfig via kubernetes-tools. fire events if things have changed
+export async function loadKubeConfig(forceReloadResourceKinds = false) {
+	console.log('loadKubeConfig');
+
+	const configShellResult = await invokeKubectlCommand('config view');
 
 	if (configShellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_KUBECTL_CONFIG);
-		return {
-			succeeded: false,
-			error: [shellCodeError(configShellResult)],
-		};
+		const path = await loadKubeConfigPath();
+		window.showErrorMessage(`Failed to load kubeconfig: ${path} ${shellCodeError(configShellResult)}`);
+		return;
 	}
 
-	const kubectlConfig = parseJson(configShellResult.stdout);
-	return {
-		succeeded: true,
-		result: kubectlConfig,
-	};
+	const newKubeConfig = new k8s.KubeConfig();
+	newKubeConfig.loadFromString(configShellResult.stdout, {onInvalidEntry: ActionOnInvalid.FILTER});
+
+	if (kcTextChanged(kubeConfig, newKubeConfig)) {
+		const contextsListChanged = kcContextsListChanged(kubeConfig, newKubeConfig);
+		const contextChanged = kcCurrentContextChanged(kubeConfig, newKubeConfig);
+
+		// load the changed kubeconfig globally so that subsequent commands use the new config
+		kubeConfig.loadFromString(configShellResult.stdout);
+
+		if(contextsListChanged) {
+			refreshClustersTreeView();
+		}
+
+		if(contextChanged || forceReloadResourceKinds) {
+			await loadAvailableResourceKinds();
+		}
+
+		if(contextChanged) {
+			console.log('currentContext changed', kubeConfig.getCurrentContext());
+			vscodeOnCurrentContextChanged();
+			await restartKubeProxy();
+			// give proxy a chance to start
+			setTimeout(() => {
+				refreshAllTreeViews();
+			}, 100);
+		}
+	} else if(forceReloadResourceKinds) {
+		await loadAvailableResourceKinds();
+	}
 }
 
-/**
- * Gets current kubectl context name.
- */
-export async function getCurrentContext(): Promise<Errorable<string>> {
-	const currentContextShellResult = await invokeKubectlCommand('config current-context');
-	if (currentContextShellResult?.code !== 0) {
-		telemetry.sendError(TelemetryError.FAILED_TO_GET_CURRENT_KUBERNETES_CONTEXT);
-		console.warn(`Failed to get current kubectl context: ${currentContextShellResult?.stderr}`);
-		setVSCodeContext(ContextId.NoClusterSelected, true);
-		return {
-			succeeded: false,
-			error: [`${currentContextShellResult?.code || ''} ${currentContextShellResult?.stderr}`],
-		};
-	}
-
-	const currentContext = currentContextShellResult.stdout.trim();
+async function vscodeOnCurrentContextChanged() {
 	setVSCodeContext(ContextId.NoClusterSelected, false);
-
-	currentContextName = currentContext;
-	return {
-		succeeded: true,
-		result: currentContext,
-	};
+	setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
+	setVSCodeContext(ContextId.NoSources, false);
+	setVSCodeContext(ContextId.NoWorkloads, false);
+	setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
 }
 
 /**
@@ -67,8 +78,7 @@ export async function getCurrentContext(): Promise<Errorable<string>> {
  * whether or not context was switched or didn't need it (current).
  */
 export async function setCurrentContext(contextName: string): Promise<undefined | { isChanged: boolean;	}> {
-	const currentContextResult = await getCurrentContext();
-	if (succeeded(currentContextResult) && currentContextResult.result === contextName) {
+	if (kubeConfig.getCurrentContext() === contextName) {
 		return {
 			isChanged: false,
 		};
@@ -81,58 +91,8 @@ export async function setCurrentContext(contextName: string): Promise<undefined 
 		return;
 	}
 
-	setVSCodeContext(ContextId.NoClusterSelected, false);
-	setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
-	setVSCodeContext(ContextId.NoSources, false);
-	setVSCodeContext(ContextId.NoWorkloads, false);
-	setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
-	clearSupportedResourceKinds();
-
 	return {
 		isChanged: true,
 	};
-}
-
-/**
- * Get a list of contexts from kubeconfig.
- * Also add cluster info to the context objects.
- */
-export async function getContexts(): Promise<Errorable<KubernetesContextWithCluster[]>> {
-	const kubectlConfig = await getKubectlConfig();
-
-	if (failed(kubectlConfig)) {
-		return {
-			succeeded: false,
-			error: kubectlConfig.error,
-		};
-	}
-	if (!kubectlConfig.result.contexts) {
-		return {
-			succeeded: false,
-			error: ['Config fetched, but contexts not found.'],
-		};
-	}
-
-	const contexts: KubernetesContextWithCluster[] = kubectlConfig.result.contexts.map((context: KubernetesContextWithCluster) => {
-		const clusterInfo = kubectlConfig.result.clusters?.find(cluster => cluster.name === context.context.cluster);
-		if (clusterInfo) {
-			context.context.clusterInfo = clusterInfo;
-		}
-		return context;
-	});
-
-	return {
-		succeeded: true,
-		result: contexts,
-	};
-}
-
-export async function getClusterName(contextName: string): Promise<string> {
-	const contexts = await getContexts();
-	if(contexts.succeeded === true) {
-		return contexts.result.find(context => context.name === contextName)?.context.clusterInfo?.name || contextName;
-	} else {
-		return contextName;
-	}
 }
 

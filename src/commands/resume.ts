@@ -2,13 +2,14 @@ import { window } from 'vscode';
 
 import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { failed } from 'types/errorable';
 import { FluxSource, FluxWorkload } from 'types/fluxCliTypes';
-import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
-import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
-import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
-import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
-import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
+import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**
@@ -17,9 +18,9 @@ import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView
  * @param node sources tree view node
  */
 export async function resume(node: GitRepositoryNode | HelmReleaseNode | HelmRepositoryNode | KustomizationNode) {
-
+	const contextName = kubeConfig.getCurrentContext();
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (failed(currentClusterInfo)) {
+	if (failed(currentClusterInfo) || !contextName) {
 		return;
 	}
 
@@ -40,7 +41,7 @@ export async function resume(node: GitRepositoryNode | HelmReleaseNode | HelmRep
 			window.showInformationMessage('Not implemented on AKS/ARC', { modal: true });
 			return;
 		}
-		await azureTools.resume(node.resource.metadata?.name || '', currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		await azureTools.resume(node.resource.metadata?.name || '', contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
 		await fluxTools.resume(fluxResourceType, node.resource.metadata?.name || '', node.resource.metadata?.namespace || '');
 	}

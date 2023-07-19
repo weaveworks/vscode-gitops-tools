@@ -12,7 +12,7 @@ import { runTerminalCommand } from 'cli/shell/terminal';
 import { GlobalStateKey } from 'data/globalState';
 import { globalState } from 'extension';
 import { Errorable, failed } from 'types/errorable';
-import { refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from 'utils/fsUtils';
 
 const fluxGitHubUserProject = 'fluxcd/flux2';
@@ -239,7 +239,7 @@ export async function installFluxCli() {
 
 		output.send(`✔ Flux ${latestFluxVersionResult.result} successfully installed`);
 
-		refreshAllTreeViews();
+		refreshAllTreeViewsCommand();
 		showNotificationToReloadTheEditor();
 
 		return;

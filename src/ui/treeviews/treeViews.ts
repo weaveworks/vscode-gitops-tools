@@ -1,5 +1,4 @@
 import { TreeItem, TreeView, window } from 'vscode';
-import * as k8s from 'vscode-kubernetes-tools-api';
 
 import { isAzureProvider } from 'cli/azure/azureTools';
 import { globalState } from 'extension';
@@ -9,19 +8,20 @@ import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
-import { ClusterContextNode } from './nodes/clusterContextNode';
+import { ClusterNode } from './nodes/cluster/clusterNode';
 import { TreeNode } from './nodes/treeNode';
 
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
-import { getClusterName, getCurrentContext } from 'cli/kubernetes/kubernetesConfig';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
+import { loadAvailableResourceKinds } from 'cli/kubernetes/apiResources';
 
-export let clusterTreeViewProvider: ClusterDataProvider;
-export let sourceTreeViewProvider: SourceDataProvider;
-export let workloadTreeViewProvider: WorkloadDataProvider;
-export let documentationTreeViewProvider: DocumentationDataProvider;
-export let templateTreeViewProvider: TemplateDataProvider;
+export let clusterDataProvider = new ClusterDataProvider();
+export let sourceDataProvider = new SourceDataProvider();
+export let workloadDataProvider = new WorkloadDataProvider();
+export let documentationDataProvider = new DocumentationDataProvider();
+export let templateDateProvider = new TemplateDataProvider();
 
 let clusterTreeView: TreeView<TreeItem>;
 let sourceTreeView: TreeView<TreeItem>;
@@ -33,79 +33,37 @@ let templateTreeView: TreeView<TreeItem>;
  * Creates tree views for the GitOps sidebar.
  */
 export function createTreeViews() {
-	// create gitops tree view data providers
-	clusterTreeViewProvider = new ClusterDataProvider();
-	sourceTreeViewProvider =  new SourceDataProvider();
-	workloadTreeViewProvider = new WorkloadDataProvider();
-	documentationTreeViewProvider = new DocumentationDataProvider();
-	templateTreeViewProvider = new TemplateDataProvider();
-
 	// create gitops sidebar tree views
 	clusterTreeView = window.createTreeView(TreeViewId.ClustersView, {
-		treeDataProvider: clusterTreeViewProvider,
+		treeDataProvider: clusterDataProvider,
 		showCollapseAll: true,
 	});
 
 	sourceTreeView = window.createTreeView(TreeViewId.SourcesView, {
-		treeDataProvider: sourceTreeViewProvider,
+		treeDataProvider: sourceDataProvider,
 		showCollapseAll: true,
 	});
 
 	workloadTreeView = window.createTreeView(TreeViewId.WorkloadsView, {
-		treeDataProvider: workloadTreeViewProvider,
+		treeDataProvider: workloadDataProvider,
 		showCollapseAll: true,
 	});
 
 
 	// WGE templates
 	templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
-		treeDataProvider: templateTreeViewProvider,
+		treeDataProvider: templateDateProvider,
 		showCollapseAll: true,
 	});
 
 	// create documentation links sidebar tree view
 	documentationTreeView = window.createTreeView(TreeViewId.DocumentationView, {
-		treeDataProvider: documentationTreeViewProvider,
+		treeDataProvider: documentationDataProvider,
 		showCollapseAll: true,
 	});
 
-	refreshWhenK8sContextChange();
-	detectK8sConfigPathChange();
-}
 
-async function refreshWhenK8sContextChange() {
-	const configuration = await k8s.extension.configuration.v1_1;
-	if (!configuration.available) {
-		return;
-	}
-	configuration.api.onDidChangeContext(_context => {
-		refreshAllTreeViews();
-	});
 }
-async function detectK8sConfigPathChange() {
-	const configuration = await k8s.extension.configuration.v1_1;
-	if (!configuration.available) {
-		return;
-	}
-	configuration.api.onDidChangeKubeconfigPath(_path => {
-		refreshAllTreeViews();
-	});
-}
-
-/**
- * Refreshes all GitOps tree views.
- */
-export function refreshAllTreeViews() {
-	refreshClustersTreeView();
-	refreshResourcesTreeViews();
-}
-
-export function refreshResourcesTreeViews() {
-	refreshSourcesTreeView();
-	refreshWorkloadsTreeView();
-	refreshTemplatesTreeView();
-}
-
 
 /**
  * Reloads configured clusters tree view via kubectl.
@@ -113,32 +71,32 @@ export function refreshResourcesTreeViews() {
  * and its children are updated.
  */
 export function refreshClustersTreeView(node?: TreeNode) {
-	if (node && !clusterTreeViewProvider.includesTreeNode(node)) {
+	if (node && !clusterDataProvider.includesTreeNode(node)) {
 		// Trying to refresh old (non-existent) cluster context node
 		return;
 	}
-	clusterTreeViewProvider.refresh(node);
+	clusterDataProvider.refresh(node);
 }
 
 /**
  * Reloads sources tree view for the selected cluster.
  */
 export function refreshSourcesTreeView(node?: TreeNode) {
-	sourceTreeViewProvider.refresh(node);
+	sourceDataProvider.refresh(node);
 }
 
 /**
  * Reloads workloads tree view for the selected cluster.
  */
 export function refreshWorkloadsTreeView(node?: TreeNode) {
-	workloadTreeViewProvider.refresh(node);
+	workloadDataProvider.refresh(node);
 }
 
 /**
  * Reloads workloads tree view for the selected cluster.
  */
 export function refreshTemplatesTreeView(node?: TreeNode) {
-	templateTreeViewProvider.refresh(node);
+	templateDateProvider.refresh(node);
 }
 
 /**
@@ -148,31 +106,28 @@ export function refreshTemplatesTreeView(node?: TreeNode) {
  * 3. Detect cluster provider.
  */
 export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
-	const currentContextResult = await getCurrentContext();
+	const currentContextName = kubeConfig.getCurrentContext();
 
-	if (failed(currentContextResult)) {
-		const error = `Failed to get current context ${currentContextResult.error[0]}`;
+	if (!currentContextName) {
+		const error = `Failed to get current context ${currentContextName}`;
 		window.showErrorMessage(error);
 		return {
 			succeeded: false,
 			error: [error],
 		};
 	}
-	const currentContextName = currentContextResult.result;
 
 
-	let currentClusterName = await getClusterName(currentContextName);
+	let currentClusterName = kubeConfig.getCurrentCluster()?.name;
 
 	// Pick user cluster provider override if defined
-	const clusterMetadata = globalState.getClusterMetadata(currentClusterName);
+	const clusterMetadata = globalState.getClusterMetadata(currentClusterName || currentContextName);
 	const isClusterProviderUserOverride = Boolean(clusterMetadata?.clusterProvider);
 	const currentClusterProvider = clusterMetadata?.clusterProvider || await detectClusterProvider(currentContextName);
 
 	return {
 		succeeded: true,
 		result: {
-			clusterName: currentClusterName,
-			contextName: currentContextName,
 			clusterProvider: currentClusterProvider,
 			isClusterProviderUserOverride,
 			isAzure: isAzureProvider(currentClusterProvider),
@@ -184,7 +139,7 @@ export async function getCurrentClusterInfo(): Promise<Errorable<ClusterInfo>> {
  * Expand, focus or select a tree node inside the Clusters tree view.
  * @param clusterNode Target cluster node
  */
-export async function revealClusterNode(clusterNode: ClusterContextNode, {
+export async function revealClusterNode(clusterNode: ClusterNode, {
 	expand = false,
 	focus = false,
 	select = false,

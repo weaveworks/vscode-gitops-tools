@@ -1,7 +1,7 @@
 import safesh from 'shell-escape-tag';
-import { window } from 'vscode';
 
 import { telemetry } from 'extension';
+import { k8sList } from 'k8s/list';
 import { Bucket } from 'types/flux/bucket';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { GitRepository } from 'types/flux/gitRepository';
@@ -9,18 +9,12 @@ import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
-import { Deployment, KubernetesObject, Namespace, Pod } from 'types/kubernetes/kubernetesTypes';
+import { Deployment, Kind, KubernetesObject, Pod } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-
-/*
-	* Current cluster supported kubernetes resource kinds.
-	*/
-export let clusterSupportedResourceKinds: string[] | undefined;
-export function clearSupportedResourceKinds(): void {
-	clusterSupportedResourceKinds = undefined;
-}
+import { getAvailableResourcePlurals } from './apiResources';
+import { window } from 'vscode';
 /**
  * RegExp for the Error that should not be sent in telemetry.
  * Server doesn't have a resource type = when GitOps not enabled
@@ -28,21 +22,6 @@ export function clearSupportedResourceKinds(): void {
  */
 export const notAnErrorServerDoesntHaveResourceTypeRegExp = /the server doesn't have a resource type/i;
 export const notAnErrorServerNotRunning = /no connection could be made because the target machine actively refused it/i;
-
-/**
- * Get namespaces from current context.
- */
-export async function getNamespaces(): Promise<Namespace[]> {
-	const shellResult = await invokeKubectlCommand('get ns -o json');
-
-	if (shellResult?.code !== 0) {
-		telemetry.sendError(TelemetryError.FAILED_TO_GET_NAMESPACES);
-		window.showErrorMessage(`Failed to get namespaces ${shellResult?.stderr}`);
-		return [];
-	}
-
-	return parseJsonItems(shellResult.stdout);
-}
 
 /**
  * Get one resource object by kind/name and namespace
@@ -60,7 +39,18 @@ export async function getResource(name: string, namespace: string, kind: string)
 	return parseJson(shellResult.stdout);
 }
 
-export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: string, telemetryError: TelemetryError): Promise<T[]> {
+export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: Kind, telemetryError: TelemetryError): Promise<T[]> {
+	const t1 = Date.now();
+
+	const list = await k8sList(kind);
+	if(list !== undefined) {
+		console.log(`k8sList ${kind}`, list);
+		console.log(`list ${kind} ∆`, Date.now() - t1);
+		return list as T[];
+	}
+
+	console.log(`kubectl get ${kind}`);
+
 	const shellResult = await invokeKubectlCommand(`get ${kind} -A -o json`);
 
 	if (shellResult?.code !== 0) {
@@ -71,36 +61,37 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 		return [];
 	}
 
+	console.log(`list ${kind} ∆`, Date.now() - t1);
 	return parseJsonItems(shellResult.stdout);
 }
 
 
 export async function getBuckets(): Promise<Bucket[]> {
-	return getResourcesAllNamespaces('Buckets', TelemetryError.FAILED_TO_GET_BUCKETS);
+	return getResourcesAllNamespaces(Kind.Bucket, TelemetryError.FAILED_TO_GET_BUCKETS);
 }
 
 export async function getGitRepositories(): Promise<GitRepository[]> {
-	return getResourcesAllNamespaces('GitRepository', TelemetryError.FAILED_TO_GET_GIT_REPOSITORIES);
+	return getResourcesAllNamespaces(Kind.GitRepository, TelemetryError.FAILED_TO_GET_GIT_REPOSITORIES);
 }
 
 export async function getHelmRepositories(): Promise<HelmRepository[]> {
-	return getResourcesAllNamespaces('HelmRepository', TelemetryError.FAILED_TO_GET_HELM_REPOSITORIES);
+	return getResourcesAllNamespaces(Kind.HelmRepository, TelemetryError.FAILED_TO_GET_HELM_REPOSITORIES);
 }
 
 export async function getOciRepositories(): Promise<OCIRepository[]> {
-	return getResourcesAllNamespaces('OciRepository', TelemetryError.FAILED_TO_GET_OCI_REPOSITORIES);
+	return getResourcesAllNamespaces(Kind.OCIRepository, TelemetryError.FAILED_TO_GET_OCI_REPOSITORIES);
 }
 
 export async function getKustomizations(): Promise<Kustomization[]> {
-	return getResourcesAllNamespaces('Kustomization', TelemetryError.FAILED_TO_GET_KUSTOMIZATIONS);
+	return getResourcesAllNamespaces(Kind.Kustomization, TelemetryError.FAILED_TO_GET_KUSTOMIZATIONS);
 }
 
 export async function getHelmReleases(): Promise<HelmRelease[]> {
-	return getResourcesAllNamespaces('HelmRelease', TelemetryError.FAILED_TO_GET_HELM_RELEASES);
+	return getResourcesAllNamespaces(Kind.HelmRelease, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
 }
 
 export async function getGitOpsTemplates(): Promise<GitOpsTemplate[]> {
-	return getResourcesAllNamespaces('GitOpsTemplate', TelemetryError.FAILED_TO_GET_GITOPSTEMPLATES);
+	return getResourcesAllNamespaces(Kind.GitOpsTemplate, TelemetryError.FAILED_TO_GET_GITOPSTEMPLATES);
 }
 
 
@@ -123,29 +114,7 @@ export async function getFluxControllers(context?: string): Promise<Deployment[]
 	return parseJsonItems(fluxDeploymentShellResult.stdout);
 }
 
-/**
- * Return all available kubernetes resource kinds.
- */
-export async function getAvailableResourceKinds(): Promise<string[] | undefined> {
-	if (clusterSupportedResourceKinds) {
-		return clusterSupportedResourceKinds;
-	}
 
-	const kindsShellResult = await invokeKubectlCommand('api-resources --verbs=list -o name');
-	if (kindsShellResult?.code !== 0) {
-		clusterSupportedResourceKinds = undefined;
-		telemetry.sendError(TelemetryError.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
-		console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
-		return;
-	}
-
-	const kinds = kindsShellResult.stdout
-		.split('\n')
-		.filter(kind => kind.length);
-
-	clusterSupportedResourceKinds = kinds;
-	return kinds;
-}
 
 /**
  * Return all kubernetes resources that were created by a kustomize/helmRelease.
@@ -157,21 +126,25 @@ export async function getChildrenOfWorkload(
 	name: string,
 	namespace: string,
 ): Promise<KubernetesObject[]> {
-	const resourceKinds = await getAvailableResourceKinds();
+	// return [];
+	const resourceKinds = getAvailableResourcePlurals();
 	if (!resourceKinds) {
 		return [];
 	}
 
-	const query = `get ${resourceKinds.join(',')} -l ${workload}.toolkit.fluxcd.io/name=${name} -n ${namespace} -o json`;
-	const resourcesShellResult = await invokeKubectlCommand(query);
+	const labelNameSelector = `-l ${workload}.toolkit.fluxcd.io/name=${name}`;
+	const labelNamespaceSelector = `-l ${workload}.toolkit.fluxcd.io/namespace=${namespace}`;
 
-	if (!resourcesShellResult || resourcesShellResult.code !== 0) {
+	const query = `get ${resourceKinds.join(',')} ${labelNameSelector} ${labelNamespaceSelector} -A -o json`;
+	const shellResult = await invokeKubectlCommand(query);
+
+	if (!shellResult || shellResult.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
-		window.showErrorMessage(`Failed to get ${workload} created resources: ${resourcesShellResult?.stderr}`);
+		window.showErrorMessage(`Failed to get ${workload} created resources: ${shellResult?.stderr}`);
 		return [];
 	}
 
-	return parseJsonItems(resourcesShellResult.stdout);
+	return parseJsonItems(shellResult.stdout);
 }
 
 

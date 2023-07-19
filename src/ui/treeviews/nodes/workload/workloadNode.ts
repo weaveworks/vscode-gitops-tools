@@ -5,7 +5,8 @@ import { Kustomization } from 'types/flux/kustomization';
 import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
-import { TreeNode, TreeNodeIcon } from './treeNode';
+import { TreeNode, TreeNodeIcon } from '../treeNode';
+import { FluxWorkloadObject } from 'types/flux/object';
 
 /**
  * Base class for all Workload tree view items.
@@ -17,15 +18,14 @@ export class WorkloadNode extends TreeNode {
 	 */
 	isReconcileFailed = false;
 
-	resource: Kustomization | HelmRelease;
+	resource: FluxWorkloadObject;
 
-	constructor(label: string, resource: Kustomization | HelmRelease) {
-
+	constructor(label: string, resource: FluxWorkloadObject) {
 		super(`${resource.kind}: ${label}`);
 
 		this.resource = resource;
 
-		this.updateStatus(resource);
+		this.updateStatus();
 	}
 
 	/**
@@ -46,8 +46,8 @@ export class WorkloadNode extends TreeNode {
 	 * Update workload status with showing error icon when reconcile has failed.
 	 * @param workload target resource
 	 */
-	updateStatus(workload: Kustomization | HelmRelease): void {
-		const condition = this.findReadyOrFirstCondition(workload.status.conditions);
+	updateStatus(): void {
+		const condition = this.findReadyOrFirstCondition(this.resource.status.conditions);
 
 		if (condition?.status === 'True') {
 			this.isReconcileFailed = false;
@@ -61,7 +61,6 @@ export class WorkloadNode extends TreeNode {
 	get tooltip() {
 		const md = this.getMarkdownHover(this.resource);
 		return md;
-
 	}
 
 	// @ts-ignore
@@ -70,7 +69,7 @@ export class WorkloadNode extends TreeNode {
 		let revisionOrError = '';
 
 		if (this.isReconcileFailed) {
-			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason}`;
+			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason || ''}`;
 		} else {
 			revisionOrError = shortenRevision(this.resource.status.lastAppliedRevision);
 		}

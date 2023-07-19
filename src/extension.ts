@@ -1,5 +1,8 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 
+import { kubeProxyKeepAlive } from 'cli/kubernetes/kubectlProxy';
+import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
 import { shell } from './cli/shell/exec';
 import { registerCommands } from './commands/commands';
@@ -12,7 +15,7 @@ import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensio
 import { TelemetryEvent } from './types/telemetryEventNames';
 import { promptToInstallFlux } from './ui/promptToInstallFlux';
 import { statusBar } from './ui/statusBar';
-import { clusterTreeViewProvider, createTreeViews, sourceTreeViewProvider, workloadTreeViewProvider } from './ui/treeviews/treeViews';
+import { clusterDataProvider, createTreeViews, sourceDataProvider, workloadDataProvider } from './ui/treeviews/treeViews';
 
 /** Disable interactive modal dialogs, useful for testing */
 export let disableConfirmations = false;
@@ -36,17 +39,25 @@ export let telemetry: Telemetry | any;
 export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
 	extensionContext = context;
-	listenConfigChanged();
+	listenExtensionConfigChanged();
 
 	globalState = new GlobalState(context);
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
-	// create gitops tree views
-	createTreeViews();
+	await loadKubeConfig(true);
+	await initKubeConfigWatcher();
+
+	// schedule load start for tree view data for the event loop
+	// then k8s proxy client is more likely to be ready
+	// to avoid the slower kubectl client
+	setTimeout(() => {
+		createTreeViews();
+	}, 100);
 
 	// register gitops commands
 	registerCommands(context);
+	kubeProxyKeepAlive();
 
 	telemetry.send(TelemetryEvent.Startup);
 
@@ -73,7 +84,7 @@ export async function activate(context: ExtensionContext) {
 	const fluxFoundResult = await promptToInstallFlux();
 	if (succeeded(fluxFoundResult)) {
 		// check flux prerequisites
-		await checkFluxPrerequisites();
+		checkFluxPrerequisites();
 	}
 
 	checkWGEVersion();
@@ -81,17 +92,17 @@ export async function activate(context: ExtensionContext) {
 	let api = {
 		shell: shell,
 		data: {
-			clusterTreeViewProvider: clusterTreeViewProvider,
-			sourceTreeViewProvider: sourceTreeViewProvider,
-			workloadTreeViewProvider: workloadTreeViewProvider,
+			clusterTreeViewProvider: clusterDataProvider,
+			sourceTreeViewProvider: sourceDataProvider,
+			workloadTreeViewProvider: workloadDataProvider,
 		}};
 
 	return api;
 }
 
-function listenConfigChanged() {
+function listenExtensionConfigChanged() {
 	workspace.onDidChangeConfiguration(async e => {
-		if(!e.affectsConfiguration('gitops')) {
+		if(!e.affectsConfiguration('gitops.weaveGitopsEnterprise')) {
 			return;
 		}
 

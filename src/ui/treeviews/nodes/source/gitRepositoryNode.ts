@@ -1,6 +1,6 @@
 import { GitRepository } from 'types/flux/gitRepository';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { NodeContext } from '../../../types/nodeContext';
+import { NodeContext } from 'types/nodeContext';
 import { SourceNode } from './sourceNode';
 
 /**

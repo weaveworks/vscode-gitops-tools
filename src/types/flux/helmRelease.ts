@@ -1,5 +1,5 @@
 import { Condition, Kind, KubernetesJSON, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
-import { DependsOn, KubeConfig, Kustomization, NamespacedObjectKindReference } from './kustomization';
+import { DependsOn, KustomizationKubeConfig, Kustomization, NamespacedObjectKindReference } from './kustomization';
 
 /**
  * Helm release info object.
@@ -28,7 +28,7 @@ export interface HelmRelease extends KubernetesObject {
 		 * KubeConfig for reconciling the HelmRelease on a remote cluster.
 		 * When specified, KubeConfig takes precedence over ServiceAccountName.
 		 */
-		readonly kubeConfig?: KubeConfig;
+		readonly kubeConfig?: KustomizationKubeConfig;
 
 		/**
 		 * Suspend tells the controller to suspend reconciliation

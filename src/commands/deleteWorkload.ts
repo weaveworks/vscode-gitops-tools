@@ -7,9 +7,10 @@ import { failed } from 'types/errorable';
 import { FluxWorkload } from 'types/fluxCliTypes';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryEvent } from 'types/telemetryEventNames';
-import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
-import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
 import { getCurrentClusterInfo, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 
 /**
@@ -41,7 +42,9 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 	}
 
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (failed(currentClusterInfo)) {
+	const contextName = kubeConfig.getCurrentContext();
+
+	if (failed(currentClusterInfo) || !contextName) {
 		return;
 	}
 
@@ -49,8 +52,6 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 		window.showWarningMessage('Delete HelmRelease not supported on Azure cluster.');
 		return;
 	}
-
-
 
 	const pressedButton = await window.showWarningMessage(`Do you want to delete ${workloadNode.resource.kind} "${workloadName}"?`, {
 		modal: true,
@@ -67,7 +68,7 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 	if (currentClusterInfo.result.isAzure && workloadType === 'kustomization') {
 		const fluxConfigName = (workloadNode.resource.spec as any).sourceRef?.name;
 		const azResourceName = azureTools.getAzName(fluxConfigName, workloadName);
-		await azureTools.deleteKustomization(fluxConfigName, azResourceName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		await azureTools.deleteKustomization(fluxConfigName, azResourceName, contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
 		await fluxTools.delete(workloadType, workloadName, workloadNamespace);
 	}

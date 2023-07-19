@@ -1,21 +1,21 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { Namespace } from 'types/kubernetes/kubernetesTypes';
-import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 
 /**
  * Defines tree view data provider base class for all GitOps tree views.
  */
 export class DataProvider implements TreeDataProvider<TreeItem> {
-	private treeItems: TreeItem[] | null = null;
-	private _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
+	protected treeItems: TreeItem[] | null = null;
+	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
+
+
 
 	/**
 	 * Reloads tree view item and its children.
 	 * @param treeItem Tree item to refresh.
 	 */
-	public refresh(treeItem?: TreeItem) {
+	public async refresh(treeItem?: TreeItem) {
 		if (!treeItem) {
 			// Only clear all root nodes when no node was passed
 			this.treeItems = null;
@@ -74,20 +74,4 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		return Promise.resolve([]);
 	}
 
-	groupByNamespace(namespaces: Namespace[], nodes: TreeNode[]): NamespaceNode[] {
-		const namespaceNodes: NamespaceNode[] = [];
-
-		namespaces.forEach(ns => {
-			const name = ns.metadata.name;
-
-			const nsChildNodes = nodes.filter(node => node.resource?.metadata?.namespace === name);
-			if(nsChildNodes.length > 0) {
-				const nsNode = new NamespaceNode(ns);
-				nsChildNodes.forEach(childNode => nsNode.addChild(childNode));
-				namespaceNodes.push(nsNode);
-			}
-		});
-
-		return namespaceNodes;
-	}
 }

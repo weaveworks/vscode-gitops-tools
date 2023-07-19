@@ -1,6 +1,11 @@
 import * as k8s from '@kubernetes/client-node';
 
-export type KubernetesObject = k8s.KubernetesObject;
+export type KubernetesObject = k8s.KubernetesObject & {
+	spec?: unknown;
+	status?: unknown;
+};
+
+export type KubernetesListObject<T extends KubernetesObject> = k8s.KubernetesListObject<T>;
 export type Condition = k8s.V1Condition;
 
 // Specify types from `@kubernetes/client-node`

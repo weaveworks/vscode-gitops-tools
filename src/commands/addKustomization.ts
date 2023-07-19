@@ -1,5 +1,5 @@
 import { openConfigureGitOpsWebview } from 'ui/webviews/configureGitOps/openWebview';
-import { SourceNode } from 'ui/treeviews/nodes/sourceNode';
+import { SourceNode } from 'ui/treeviews/nodes/source/sourceNode';
 import { FluxSourceKinds } from 'types/flux/object';
 
 /**

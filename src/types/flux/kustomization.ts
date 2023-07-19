@@ -45,7 +45,7 @@ export interface Kustomization extends KubernetesObject {
 		/**
 		 * KubeConfig references a Kubernetes secret that contains a kubeconfig file
 		 */
-		readonly kubeConfig?: KubeConfig;
+		readonly kubeConfig?: KustomizationKubeConfig;
 
 		/**
 		 * Path to the directory containing the kustomization.yaml file,
@@ -321,7 +321,7 @@ interface Snapshot {
 	}[];
 }
 
-export interface KubeConfig {
+export interface KustomizationKubeConfig {
 
 	/**
 	 * SecretRef holds the name to a secret that contains a ‘value’ key

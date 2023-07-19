@@ -7,30 +7,31 @@ import { ConfigMap, Node } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { getFluxControllers, notAnErrorServerNotRunning } from './kubectlGet';
-import { getClusterName } from './kubernetesConfig';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
+import { kubeConfig } from './kubernetesConfig';
 
 /**
  * Try to detect known cluster providers. Returns user selected cluster type if that is set.
  * @param context target context to get resources from.
  * TODO: maybe use Errorable?
  */
-export async function detectClusterProvider(context: string): Promise<ClusterProvider> {
-	const clusterName = await getClusterName(context);
+export async function detectClusterProvider(contextName: string): Promise<ClusterProvider> {
+	const context = kubeConfig.getContextObject(contextName)!;
+	const clusterName = context.cluster || contextName;
 	const clusterMetadata = globalState.getClusterMetadata(clusterName);
 
 	if(clusterMetadata?.clusterProvider) {
 		return clusterMetadata.clusterProvider;
 	}
 
-	const tryProviderAzureARC = await isClusterAzureARC(context);
+	const tryProviderAzureARC = await isClusterAzureARC(contextName);
 	if (tryProviderAzureARC === ClusterProvider.AzureARC) {
 		return ClusterProvider.AzureARC;
 	} else if (tryProviderAzureARC === ClusterProvider.DetectionFailed) {
 		return ClusterProvider.DetectionFailed;
 	}
 
-	const tryProviderAKS = await isClusterAKS(context);
+	const tryProviderAKS = await isClusterAKS(contextName);
 	if (tryProviderAKS === ClusterProvider.AKS) {
 		return ClusterProvider.AKS;
 	} else if (tryProviderAKS === ClusterProvider.DetectionFailed) {

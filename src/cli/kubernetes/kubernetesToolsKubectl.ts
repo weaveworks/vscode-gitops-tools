@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { window, workspace } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 
 import { output } from 'cli/shell/output';
@@ -38,34 +38,43 @@ async function getKubectlApi() {
  * @param command Kubectl command to run.
  * @returns Kubectl command results.
  */
-export async function invokeKubectlCommand(command: string): Promise<kubernetes.KubectlV1.ShellResult | undefined> {
+export async function invokeKubectlCommand(command: string, printOutput = true): Promise<kubernetes.KubectlV1.ShellResult | undefined> {
 	const kubectl = await getKubectlApi();
 	if (!kubectl) {
 		return;
 	}
 
-	const kubectlShellResult = await kubectl.invokeCommand(command);
+	let kubectlShellResult;
+	const commandWithArgs = `${command} --request-timeout ${getRequestTimeout()}`;
+	kubectlShellResult = await kubectl.invokeCommand(commandWithArgs);
 
-	output.send(`> kubectl ${command}`, {
-		channelName: 'GitOps: kubectl',
-		newline: 'single',
-		revealOutputView: false,
-	});
 
-	if (kubectlShellResult?.code === 0) {
-		output.send(kubectlShellResult.stdout, {
+	if(printOutput) {
+		output.send(`> kubectl ${command}`, {
 			channelName: 'GitOps: kubectl',
+			newline: 'single',
 			revealOutputView: false,
 		});
-	} else {
-		output.send(kubectlShellResult?.stderr || '', {
-			channelName: 'GitOps: kubectl',
-			revealOutputView: false,
-			logLevel: 'error',
-		});
+
+		if (kubectlShellResult?.code === 0) {
+			output.send(kubectlShellResult.stdout, {
+				channelName: 'GitOps: kubectl',
+				revealOutputView: false,
+			});
+		} else {
+			output.send(kubectlShellResult?.stderr || '', {
+				channelName: 'GitOps: kubectl',
+				revealOutputView: false,
+				logLevel: 'error',
+			});
+		}
 	}
 
 	return kubectlShellResult;
 }
 
+
+function getRequestTimeout(): string {
+	return workspace.getConfiguration('gitops').get('kubectlTimeout') || '20s';
+}
 

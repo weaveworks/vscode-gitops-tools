@@ -1,24 +1,28 @@
 import { window } from 'vscode';
 
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterMetadata } from 'data/globalState';
 import { globalState } from 'extension';
 import { KnownClusterProviders, knownClusterProviders } from 'types/kubernetes/clusterProvider';
-import { ClusterContextNode } from 'ui/treeviews/nodes/clusterContextNode';
-import { refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
+import { refreshClustersTreeView } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViews } from './refreshTreeViews';
 
-export async function setClusterProvider(clusterNode: ClusterContextNode) {
+export async function setClusterProvider(clusterNode: ClusterNode) {
 
 	const automatically = 'Automatically (Let the extension infer)';
 	const quickPickItems: string[] = [...knownClusterProviders, automatically];
 
 	const pickedProvider = await window.showQuickPick(quickPickItems, {
-		title: `Choose cluster provider for "${clusterNode.clusterName}" cluster.`,
+		title: `Choose cluster provider for "${clusterNode.context.cluster}" cluster.`,
 	});
 	if (!pickedProvider) {
 		return;
 	}
 
-	const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterNode.clusterName) || {};
+
+	const clusterOrContextName = clusterNode.cluster?.name || clusterNode.context.name;
+	const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterOrContextName) || {};
 	const oldClusterProvider = clusterMetadata.clusterProvider;
 
 	if (pickedProvider === automatically) {
@@ -27,9 +31,13 @@ export async function setClusterProvider(clusterNode: ClusterContextNode) {
 		clusterMetadata.clusterProvider = pickedProvider as KnownClusterProviders;
 	}
 
-	globalState.setClusterMetadata(clusterNode.clusterName, clusterMetadata);
+	globalState.setClusterMetadata(clusterOrContextName, clusterMetadata);
 
 	if (clusterMetadata.clusterProvider !== oldClusterProvider) {
-		refreshAllTreeViews();
+		if(clusterNode.context.name === kubeConfig.getCurrentContext()) {
+			refreshAllTreeViews();
+		} else {
+			refreshClustersTreeView();
+		}
 	}
 }
