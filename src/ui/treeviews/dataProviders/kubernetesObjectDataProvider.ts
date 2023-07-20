@@ -61,10 +61,6 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 	}
 
 	public update(object: KubernetesObject) {
-		// console.log('update', object);
-		// console.log('treeitems', this.treeItems);
-
-
 		const namespaceNode = this.findParentNamespaceNode(object);
 		if(!namespaceNode) {
 			return;
@@ -72,12 +68,6 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 
 		const node = namespaceNode.findChildByResource(object);
 		if(node && node.resource) {
-			// console.log('old', node.resource?.metadata, node.resource?.spec, node.resource?.status);
-			// console.log('new', object.metadata, object.spec, object.status);
-			// console.log('equals?',
-			// 	deepEqual(node.resource?.metadata, object.metadata),
-			// 	deepEqual(node.resource?.spec, object.spec),
-			// 	deepEqual(node.resource?.status, object.status));
 			node.resource = object;
 			node.updateStatus();
 			this._onDidChangeTreeData.fire(node);

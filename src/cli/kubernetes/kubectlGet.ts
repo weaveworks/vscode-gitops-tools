@@ -44,12 +44,11 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 
 	const list = await k8sList(kind);
 	if(list !== undefined) {
-		console.log(`k8sList ${kind}`, list);
+		console.log(`k8sList ${kind}`, list.length);
 		console.log(`list ${kind} ∆`, Date.now() - t1);
 		return list as T[];
 	}
 
-	console.log(`kubectl get ${kind}`);
 
 	const shellResult = await invokeKubectlCommand(`get ${kind} -A -o json`);
 
@@ -61,8 +60,10 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 		return [];
 	}
 
+	const items = parseJsonItems(shellResult.stdout);
+	console.log(`kubectl get ${kind}`, items.length);
 	console.log(`list ${kind} ∆`, Date.now() - t1);
-	return parseJsonItems(shellResult.stdout);
+	return items as T[];
 }
 
 
