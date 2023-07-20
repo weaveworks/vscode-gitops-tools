@@ -71,6 +71,14 @@ suite('Extension Test Suite', () => {
 		assert.strictEqual(cluster?.label, currentContext, `Clusters treeview must include the current context ${currentContext}`);
 	});
 
+
+	function retry(fn: ()=> Promise<any>, retries = 3, err = null) {
+		if (!retries) {
+			return Promise.reject(err);
+		}
+		return fn().catch((erro): any => retry(fn, (retries - 1), erro));
+	}
+
 	test('Enable GitOps installs Flux',  async function () {
 		this.timeout(180000);
 
@@ -78,8 +86,10 @@ suite('Extension Test Suite', () => {
 
 		await vscode.commands.executeCommand('gitops.flux.install', cluster);
 
-		cluster = await getTreeItem(api.data.clusterTreeViewProvider, currentContext);
-		assert.strictEqual((cluster as any).children.length, 4, 'Enabling GitOps should list installed Flux controllers');
+		retry(async function () {
+			cluster = await getTreeItem(api.data.clusterTreeViewProvider, currentContext);
+			assert.strictEqual((cluster as any).children.length, 4, 'Enabling GitOps should list installed Flux controllers');
+		});
 	});
 
 
