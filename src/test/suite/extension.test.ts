@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { before } from 'mocha';
+import { after, before } from 'mocha';
 import * as vscode from 'vscode';
 import { DataProvider } from 'ui/treeviews/dataProviders/dataProvider';
 import { ClusterDataProvider } from 'ui/treeviews/dataProviders/clusterDataProvider';
@@ -55,6 +55,12 @@ suite('Extension Test Suite', () => {
 
 		const fluxNamespaceOutput = await api.shell.execWithOutput('kubectl get namespace flux-system');
 		assert.notStrictEqual(fluxNamespaceOutput.code, 0, 'Flux must not be installed - the namespace flux-system should not exist');
+	});
+
+	// Flux should be uninstalled after tests are done
+	after(async function() {
+		let cluster = await getTreeItem(api.data.clusterTreeViewProvider, currentContext);
+		await vscode.commands.executeCommand('gitops.flux.uninstall', cluster);
 	});
 
 	test('Extension is activated', async () => {
