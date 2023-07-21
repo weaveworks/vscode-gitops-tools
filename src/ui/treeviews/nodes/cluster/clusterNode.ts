@@ -12,6 +12,7 @@ import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { NodeContext } from 'types/nodeContext';
 import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
+import { clusterDataProvider } from 'ui/treeviews/treeViews';
 
 /**
  * Defines Cluster context tree view item for displaying
@@ -40,11 +41,6 @@ export class ClusterNode extends TreeNode {
 	 * Cluster context.
 	 */
 	public context: k8s.Context;
-
-	/**
-	 * Current/active cluster/context.
-	 */
-	isCurrent = false;
 
 	/**
 	 * Whether or not gitops is installed on this cluster.
@@ -90,6 +86,12 @@ export class ClusterNode extends TreeNode {
 		} else {
 			this.setIcon('cloud');
 		}
+
+		clusterDataProvider.refresh(this);
+	}
+
+	get isCurrent(): boolean {
+		return this.context.name === kubeConfig.getCurrentContext();
 	}
 
 	get tooltip(): MarkdownString {

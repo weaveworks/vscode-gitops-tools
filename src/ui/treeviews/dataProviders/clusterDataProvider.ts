@@ -22,6 +22,14 @@ export class ClusterDataProvider extends DataProvider {
 	 */
 	private clusterNodes: ClusterNode[] = [];
 
+	public getCurrentClusterNode(): ClusterNode | undefined {
+		return this.clusterNodes.find(c => c.context.name === kubeConfig?.getCurrentContext());
+	}
+
+	public refreshCurrentNode() {
+		this.refresh(this.getCurrentClusterNode());
+	}
+
 	/**
 	 * Check if the cluster node exists or not.
 	 */
@@ -69,7 +77,6 @@ export class ClusterDataProvider extends DataProvider {
 		for (const context of kubeConfig.getContexts()) {
 			const clusterNode = new ClusterNode(context);
 			if (context.name === kubeConfig.getCurrentContext()) {
-				clusterNode.isCurrent = true;
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 				// load flux system deployments
@@ -88,9 +95,9 @@ export class ClusterDataProvider extends DataProvider {
 		}
 
 		// Update async status of the deployments (flux commands take a while to run)
+		currentContextTreeItem?.updateNodeContext();
 		this.updateDeploymentStatus(currentContextTreeItem);
-		// Update async cluster context/icons
-		// this.updateClusterContexts(clusterNodes);
+
 
 		statusBar.stopLoadingTree();
 		setVSCodeContext(ContextId.LoadingClusters, false);
@@ -132,24 +139,5 @@ export class ClusterDataProvider extends DataProvider {
 		}
 	}
 
-	/**
-	 * Update cluster context for all cluster nodes one by one.
-	 * @param clusterNodes all cluster nodes in this tree view.
-	 */
-	// TODO: FIXME: calling this is a bad idea with more than 10-100 contexts
-	async updateClusterContexts(clusterNodes: ClusterNode[]) {
-		await Promise.all(clusterNodes.map(async clusterNode => {
-			await clusterNode.updateNodeContext();
-			refreshClustersTreeView(clusterNode);
-		}));
-	}
 
-	/**
-	 * Update cluster context for a single cluster node.
-	 * @param clusterNode Usually the selected clusterNode.
-	 */
-	async updateClusterContext(clusterNode: ClusterNode) {
-		await clusterNode.updateNodeContext();
-		refreshClustersTreeView(clusterNode);
-	}
 }
