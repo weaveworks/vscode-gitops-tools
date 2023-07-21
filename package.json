@@ -181,6 +181,20 @@
 				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
+				"command": "gitops.views.expandAllSources",
+				"title": "Expand All",
+				"category": "GitOps",
+				"icon": "$(expand-all)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:noSources"
+			},
+			{
+				"command": "gitops.views.expandAllWorkloads",
+				"title": "Expand All",
+				"category": "GitOps",
+				"icon": "$(expand-all)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:noWorkloads"
+			},
+			{
 				"command": "gitops.views.deleteWorkload",
 				"title": "Delete",
 				"category": "GitOps"
@@ -376,6 +390,16 @@
 				},
 				{
 					"command": "gitops.views.showWorkloadsHelpMessage",
+					"group": "navigation@1",
+					"when": "view == gitops.views.workloads"
+				},
+				{
+					"command": "gitops.views.expandAllSources",
+					"group": "navigation@2",
+					"when": "view == gitops.views.sources"
+				},
+				{
+					"command": "gitops.views.expandAllWorkloads",
 					"group": "navigation@2",
 					"when": "view == gitops.views.workloads"
 				}

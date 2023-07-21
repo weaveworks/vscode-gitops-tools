@@ -10,6 +10,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
 
 
+	public expandNewTree = false;
 
 	/**
 	 * Reloads tree view item and its children.
@@ -21,6 +22,10 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 			this.treeItems = null;
 		}
 		this._onDidChangeTreeData.fire(treeItem);
+	}
+
+	public redraw() {
+		this._onDidChangeTreeData.fire(undefined);
 	}
 
 	/**

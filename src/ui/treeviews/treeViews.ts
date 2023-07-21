@@ -1,8 +1,8 @@
-import { TreeItem, TreeView, window } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, TreeView, window } from 'vscode';
 
 import { isAzureProvider } from 'cli/azure/azureTools';
 import { globalState } from 'extension';
-import { Errorable, failed } from 'types/errorable';
+import { Errorable } from 'types/errorable';
 import { TreeViewId } from 'types/extensionIds';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
@@ -15,7 +15,7 @@ import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { TemplateDataProvider } from './dataProviders/templateDataProvider';
-import { loadAvailableResourceKinds } from 'cli/kubernetes/apiResources';
+import { NamespaceNode } from './nodes/namespaceNode';
 
 export let clusterDataProvider = new ClusterDataProvider();
 export let sourceDataProvider = new SourceDataProvider();
@@ -24,7 +24,7 @@ export let documentationDataProvider = new DocumentationDataProvider();
 export let templateDateProvider = new TemplateDataProvider();
 
 let clusterTreeView: TreeView<TreeItem>;
-let sourceTreeView: TreeView<TreeItem>;
+export let sourceTreeView: TreeView<TreeItem>;
 let workloadTreeView: TreeView<TreeItem>;
 let documentationTreeView: TreeView<TreeItem>;
 let templateTreeView: TreeView<TreeItem>;
@@ -49,6 +49,8 @@ export function createTreeViews() {
 		showCollapseAll: true,
 	});
 
+	listenCollapsableState();
+
 
 	// WGE templates
 	templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
@@ -63,6 +65,41 @@ export function createTreeViews() {
 	});
 
 
+}
+
+function listenCollapsableState() {
+	sourceTreeView.onDidCollapseElement(e => {
+		if (e.element instanceof NamespaceNode) {
+			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
+			e.element.updateLabel();
+			sourceDataProvider.refresh(e.element);
+		}
+	});
+
+	sourceTreeView.onDidExpandElement(e => {
+		if (e.element instanceof NamespaceNode) {
+			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
+			e.element.updateLabel();
+			sourceDataProvider.refresh(e.element);
+		}
+	});
+
+
+	workloadTreeView.onDidCollapseElement(e => {
+		if (e.element instanceof NamespaceNode) {
+			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
+			e.element.updateLabel();
+			workloadDataProvider.refresh(e.element);
+		}
+	});
+
+	workloadTreeView.onDidExpandElement(e => {
+		if (e.element instanceof NamespaceNode) {
+			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
+			e.element.updateLabel();
+			workloadDataProvider.refresh(e.element);
+		}
+	});
 }
 
 /**

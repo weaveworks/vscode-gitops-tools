@@ -62,7 +62,8 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 		setVSCodeContext(ContextId.NoSources, treeNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		const [groupedNodes] = await groupNodesByNamespace(treeNodes);
+		const [groupedNodes] = await groupNodesByNamespace(treeNodes, this.expandNewTree);
+		this.expandNewTree = false;
 		return groupedNodes;
 	}
 }

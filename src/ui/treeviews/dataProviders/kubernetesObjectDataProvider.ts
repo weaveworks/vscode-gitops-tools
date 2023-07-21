@@ -56,6 +56,7 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 		const resourceNode = new GitRepositoryNode(object as GitRepository);
 		namespaceNode.addChild(resourceNode);
 		sortNodes(namespaceNode.children);
+		namespaceNode.updateLabel();
 
 		this._onDidChangeTreeData.fire(namespaceNode);
 	}
@@ -87,6 +88,7 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 			namespaceNode.removeChild(childNode);
 			if(namespaceNode.children.length > 0) {
 				// namespace has other children
+				namespaceNode.updateLabel();
 				this._onDidChangeTreeData.fire(namespaceNode);
 			} else {
 				// namespace has no more children. should be removed

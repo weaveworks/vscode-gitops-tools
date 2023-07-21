@@ -57,7 +57,9 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		setVSCodeContext(ContextId.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		const [groupedNodes] = await groupNodesByNamespace(workloadNodes);
+		const [groupedNodes] = await groupNodesByNamespace(workloadNodes, this.expandNewTree);
+		this.expandNewTree = false;
+
 		return groupedNodes;
 	}
 

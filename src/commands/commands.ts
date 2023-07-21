@@ -32,6 +32,7 @@ import { showNewUserGuide } from './showNewUserGuide';
 import { showWorkloadsHelpMessage } from './showWorkloadsHelpMessage';
 import { suspend } from './suspend';
 import { trace } from './trace';
+import { expandAllSources, expandAllWorkloads } from './expandAll';
 
 
 let _context: ExtensionContext;
@@ -75,6 +76,8 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.CopyResourceName, copyResourceName);
 	registerCommand(CommandId.AddSource, addSource);
 	registerCommand(CommandId.AddKustomization, addKustomization);
+	registerCommand(CommandId.ExpandAllSources, expandAllSources);
+	registerCommand(CommandId.ExpandAllWorkloads, expandAllWorkloads);
 
 
 	// editor

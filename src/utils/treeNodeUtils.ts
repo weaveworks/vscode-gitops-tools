@@ -2,7 +2,7 @@ import { getCachedNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { FluxTreeResources } from 'types/fluxCliTypes';
 import { Namespace } from 'types/kubernetes/kubernetesTypes';
 import { AnyResourceNode } from 'ui/treeviews/nodes/anyResourceNode';
-import { TreeItem } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { NamespaceNode } from '../ui/treeviews/nodes/namespaceNode';
 import { TreeNode } from '../ui/treeviews/nodes/treeNode';
 
@@ -34,7 +34,7 @@ export async function addFluxTreeToNode(node: TreeNode, resourceTree: FluxTreeRe
 }
 
 // returns grouped by namespace, and ugroupable (cluster scoped) nodes
-export async function groupNodesByNamespace(nodes: TreeNode[]): Promise<[NamespaceNode[], TreeNode[]]>  {
+export async function groupNodesByNamespace(nodes: TreeNode[], expandAll = false): Promise<[NamespaceNode[], TreeNode[]]>  {
 	const namespaces: Namespace[] = getCachedNamespaces();
 	const namespaceNodes: NamespaceNode[] = [];
 
@@ -50,6 +50,9 @@ export async function groupNodesByNamespace(nodes: TreeNode[]): Promise<[Namespa
 					 nsNode.addChild(childNode);
 				}
 			});
+			nsNode.collapsibleState = expandAll ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.Collapsed;
+			nsNode.updateLabel();
+
 			namespaceNodes.push(nsNode);
 		}
 	});
