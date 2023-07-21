@@ -3,7 +3,7 @@ import { ActionOnInvalid } from '@kubernetes/client-node/dist/config_types';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 
-export function createKubeProxyConfig(port: number): k8s.KubeConfig {
+export function createProxyConfig(port: number) {
 	const cluster = {
 		name: kubeConfig.getCurrentCluster()?.name,
 		server: `http://127.0.0.1:${port}`,
@@ -24,7 +24,6 @@ export function createKubeProxyConfig(port: number): k8s.KubeConfig {
 		contexts: [context],
 		currentContext: context.name,
 	});
-
 	return kc;
 }
 

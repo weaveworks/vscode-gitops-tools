@@ -1,4 +1,3 @@
-
 import * as vscode from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { ConfigurationV1_1 as KubernetesToolsConfigurationV1_1 } from 'vscode-kubernetes-tools-api/js/configuration/v1_1';

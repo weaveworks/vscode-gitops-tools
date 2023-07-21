@@ -10,7 +10,6 @@ export function createK8sClients(kc: k8s.KubeConfig) {
 	k8sCustomApi = kc.makeApiClient(k8s.CustomObjectsApi);
 
 	createInformers(kc);
-
 }
 
 export function destroyK8sClients() {

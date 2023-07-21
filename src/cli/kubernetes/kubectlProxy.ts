@@ -3,6 +3,7 @@ import { ChildProcess } from 'child_process';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { shell } from 'cli/shell/exec';
 import { createK8sClients, destroyK8sClients } from 'k8s/client';
+import { createProxyConfig } from 'k8s/createKubeProxyConfig';
 
 // let isConnecting = false;
 let proxyProc: ChildProcess | undefined;
@@ -43,16 +44,14 @@ function procListen(p: ChildProcess) {
 	p.on('error', err => {
 		console.log('~proxy error', p.pid, err);
 		p.kill();
-
 	});
 
 	p.stdout?.on('data', (data: string) => {
 		console.log(`~proxy ${p.pid} STDOUT: ${data}`);
 		if(data.includes('Starting to serve on')) {
 			const port = parseInt(data.split(':')[1].trim());
-			const proxyKc = makeProxyConfig(port);
+			const proxyKc = createProxyConfig(port);
 			console.log('kubeproxy config ready');
-			// isConnecting = true;
 
 			createK8sClients(proxyKc);
 		}
@@ -87,28 +86,4 @@ export async function restartKubeProxy() {
 	await startKubeProxy();
 }
 
-
-function makeProxyConfig(port: number) {
-	const cluster = {
-		name: kubeConfig.getCurrentCluster()?.name,
-		server: `http://127.0.0.1:${port}`,
-	};
-
-	const user = kubeConfig.getCurrentUser();
-
-	const context = {
-		name: kubeConfig.getCurrentContext(),
-		user: user?.name,
-		cluster: cluster.name,
-	};
-
-	const kc = new k8s.KubeConfig();
-	kc.loadFromOptions({
-		clusters: [cluster],
-		users: [user],
-		contexts: [context],
-		currentContext: context.name,
-	});
-	return kc;
-}
 
