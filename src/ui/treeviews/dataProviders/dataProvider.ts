@@ -24,10 +24,6 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		this._onDidChangeTreeData.fire(treeItem);
 	}
 
-	public redraw() {
-		this._onDidChangeTreeData.fire(undefined);
-	}
-
 	/**
 	 * Gets tree view item for the specified tree element.
 	 * @param element Tree element.
