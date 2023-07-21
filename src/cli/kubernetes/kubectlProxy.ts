@@ -6,7 +6,7 @@ import { createK8sClients, destroyK8sClients } from 'k8s/client';
 import { createProxyConfig } from 'k8s/createKubeProxyConfig';
 
 // let isConnecting = false;
-let proxyProc: ChildProcess | undefined;
+export let proxyProc: ChildProcess | undefined;
 
 // tries to keep alive the `kubectl proxy` process
 // if process dies or errors out it will be stopped
@@ -64,7 +64,7 @@ function procListen(p: ChildProcess) {
 }
 
 
-async function stopKubeProxy() {
+export async function stopKubeProxy() {
 	if(proxyProc) {
 		if(!proxyProc.killed) {
 			console.log(`~proxy.kill() ${proxyProc.pid}`);
@@ -85,5 +85,3 @@ export async function restartKubeProxy() {
 	}
 	await startKubeProxy();
 }
-
-

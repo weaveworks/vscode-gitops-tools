@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 
-import { kubeProxyKeepAlive } from 'cli/kubernetes/kubectlProxy';
+import { kubeProxyKeepAlive, stopKubeProxy } from 'cli/kubernetes/kubectlProxy';
 import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
@@ -125,6 +125,7 @@ export function enabledWGE(): boolean {
 export function deactivate() {
 	telemetry?.dispose();
 	statusBar?.dispose();
+	stopKubeProxy();
 }
 
 
@@ -132,4 +133,3 @@ export function deactivate() {
 export async function setVSCodeContext(context: ContextId, value: boolean) {
 	return await commands.executeCommand(CommandId.VSCodeSetContext, context, value);
 }
-
