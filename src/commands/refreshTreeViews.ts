@@ -1,4 +1,4 @@
-import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { refreshClustersTreeView, refreshSourcesTreeView, refreshTemplatesTreeView, refreshWorkloadsTreeView } from '../ui/treeviews/treeViews';
 
 /**
@@ -6,7 +6,7 @@ import { refreshClustersTreeView, refreshSourcesTreeView, refreshTemplatesTreeVi
  */
 
 export async function refreshAllTreeViewsCommand() {
-	await loadKubeConfig(true);
+	await syncKubeConfig(true);
 	// give proxy a chance to start
 	setTimeout(() => {
 		refreshAllTreeViews();

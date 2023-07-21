@@ -4,7 +4,7 @@ import * as kubernetes from 'vscode-kubernetes-tools-api';
 import { ConfigurationV1_1 as KubernetesToolsConfigurationV1_1 } from 'vscode-kubernetes-tools-api/js/configuration/v1_1';
 import { Utils } from 'vscode-uri';
 
-import { loadKubeConfig } from './kubernetesConfig';
+import { syncKubeConfig } from './kubernetesConfig';
 
 
 let fsWacher: vscode.FileSystemWatcher | undefined;
@@ -36,7 +36,7 @@ export async function initKubeConfigWatcher() {
 	await initKubeConfigPathWatcher();
 
 	configuration.api.onDidChangeContext(context => {
-		loadKubeConfig();
+		syncKubeConfig();
 	});
 
 	restartFsWatcher();
@@ -55,7 +55,7 @@ async function initKubeConfigPathWatcher() {
 		// fires twice
 		if(path !== kubeConfigPath) {
 			kubeConfigPath = path;
-			loadKubeConfig();
+			syncKubeConfig();
 
 			restartFsWatcher();
 		}
@@ -75,7 +75,7 @@ function restartFsWatcher() {
 
 	const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(dirname, basename));
 	watcher.onDidChange(e => {
-		loadKubeConfig();
+		syncKubeConfig();
 	});
 }
 

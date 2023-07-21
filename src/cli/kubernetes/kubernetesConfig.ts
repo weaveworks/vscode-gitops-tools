@@ -19,8 +19,8 @@ import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 export const kubeConfig: k8s.KubeConfig  = new k8s.KubeConfig();
 
 // reload the kubeconfig via kubernetes-tools. fire events if things have changed
-export async function loadKubeConfig(forceReloadResourceKinds = false) {
-	console.log('loadKubeConfig');
+export async function syncKubeConfig(forceReloadResourceKinds = false) {
+	console.log('syncKubeConfig');
 
 	const configShellResult = await invokeKubectlCommand('config view');
 

@@ -33,7 +33,7 @@ export async function k8sListNamespaces(): Promise<Namespace[] | undefined> {
 	try	{
 		const t1 = Date.now();
 		const result = await k8sCoreApi.listNamespace();
-		console.log('list Namespace ∆', Date.now() - t1);
+		console.log('k8sList Namespace ∆', Date.now() - t1);
 
 		const kbody = result.body as KubernetesListObject<Namespace>;
 		return kbody.items.map(ns => {

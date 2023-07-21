@@ -1,7 +1,7 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
 
 import { kubeProxyKeepAlive } from 'cli/kubernetes/kubectlProxy';
-import { loadKubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
 import { shell } from './cli/shell/exec';
@@ -45,7 +45,7 @@ export async function activate(context: ExtensionContext) {
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
-	await loadKubeConfig(true);
+	await syncKubeConfig(true);
 	await initKubeConfigWatcher();
 
 	// schedule load start for tree view data for the event loop
