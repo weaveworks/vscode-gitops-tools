@@ -27,5 +27,5 @@ export async function fluxReconcileSourceCommand(source: GitRepositoryNode | OCI
 
 	await fluxTools.reconcile(sourceType, source.resource.metadata?.name || '', source.resource.metadata?.namespace || '');
 
-	refreshSourcesTreeView();
+	// refreshSourcesTreeView();
 }
