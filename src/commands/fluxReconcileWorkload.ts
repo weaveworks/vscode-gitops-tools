@@ -25,10 +25,10 @@ export async function fluxReconcileWorkload(workload: KustomizationNode | HelmRe
 
 	await fluxTools.reconcile(workloadType, workload.resource.metadata?.name || '', workload.resource.metadata?.namespace || '', withSource);
 
-	refreshWorkloadsTreeView();
-	if(withSource) {
-		refreshSourcesTreeView();
-	}
+	// refreshWorkloadsTreeView(workload);
+	// if(withSource) {
+	// 	refreshSourcesTreeView();
+	// }
 }
 
 
