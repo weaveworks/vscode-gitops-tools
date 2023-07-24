@@ -1,3 +1,4 @@
+import * as k8s from '@kubernetes/client-node';
 import { MarkdownString } from 'vscode';
 
 import { Bucket } from 'types/flux/bucket';
@@ -7,11 +8,25 @@ import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
-import { KubernetesContextWithCluster } from 'types/kubernetes/kubernetesConfig';
 import { Deployment, Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { shortenRevision } from './stringUtils';
 
-export type KnownTreeNodeResources = KubernetesContextWithCluster | Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomization | Deployment | GitOpsTemplate;
+export type KnownTreeNodeResources = Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomization | Deployment | GitOpsTemplate;
+
+
+export function createContextMarkdownTable(context: k8s.Context, cluster?: k8s.Cluster): MarkdownString {
+	const markdown = new MarkdownString(undefined, true);
+	markdown.isTrusted = true;
+	// Create table header
+	markdown.appendMarkdown('Property | Value\n');
+	markdown.appendMarkdown(':--- | :---\n');
+
+	// Cluster type is incompatible with the rest. Handle it first.
+	createMarkdownTableRow('context name', context.name, markdown);
+	createMarkdownTableRow('cluster name', cluster?.name, markdown);
+	createMarkdownTableRow('cluster.server', cluster?.server, markdown);
+	return markdown;
+}
 
 /**
  * Create markdown table for tree view item hovers.
@@ -25,16 +40,6 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	// Create table header
 	markdown.appendMarkdown('Property | Value\n');
 	markdown.appendMarkdown(':--- | :---\n');
-
-	// Cluster type is incompatible with the rest. Handle it first.
-	if ('context' in kubernetesObject) {
-		createMarkdownTableRow('context name', kubernetesObject.name, markdown);
-		createMarkdownTableRow('cluster name', kubernetesObject.context.clusterInfo?.name, markdown);
-		createMarkdownTableRow('cluster.server', kubernetesObject.context.clusterInfo?.cluster?.server, markdown);
-		createMarkdownTableRow('cluster.certificate-authority', kubernetesObject.context.clusterInfo?.cluster?.['certificate-authority'], markdown);
-		createMarkdownTableRow('cluster.certificate-authority-data', kubernetesObject.context.clusterInfo?.cluster?.['certificate-authority-data'], markdown);
-		return markdown;
-	}
 
 	// Should exist on every object
 	createMarkdownTableRow('kind', kubernetesObject.kind, markdown);

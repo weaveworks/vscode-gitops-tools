@@ -7,10 +7,12 @@ import { globalState, telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { getCurrentClusterInfo, refreshAllTreeViews } from 'ui/treeviews/treeViews';
+import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { parseJson } from 'utils/jsonUtils';
 import { checkAzurePrerequisites } from './azurePrereqs';
 import { getAzureMetadata } from './getAzureMetadata';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 
@@ -127,17 +129,17 @@ class AzureTools {
 	}
 
 	async enableGitOpsGeneric(contextName: string) {
-		const currentClusterInfo = await getCurrentClusterInfo();
-		if (failed(currentClusterInfo)) {
+		const context = kubeConfig.getContextObject(contextName);
+		if (!context) {
 			return;
 		}
 
-		const clusterName = currentClusterInfo.result.clusterName;
-		const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterName) || {};
+		const clusterName = context.cluster;
+		const clusterMetadata: ClusterMetadata = globalState.getClusterMetadata(clusterName || contextName) || {};
 
 		clusterMetadata.clusterProvider = ClusterProvider.Generic;
-		globalState.setClusterMetadata(clusterName, clusterMetadata);
-		refreshAllTreeViews();
+		globalState.setClusterMetadata(clusterName || contextName, clusterMetadata);
+		refreshAllTreeViewsCommand();
 		await fluxTools.install(contextName);
 	}
 

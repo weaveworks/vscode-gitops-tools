@@ -6,6 +6,7 @@ import { CommandId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
 import { shell, shellCodeError } from './shell/exec';
+import { clusterDataProvider } from 'ui/treeviews/treeViews';
 
 interface KubectlVersion {
 	major: string;
@@ -81,6 +82,7 @@ export async function getFluxVersion(): Promise<Errorable<string>> {
 
 	if (fluxVersionShellResult.code === 0) {
 		fluxVersion = parseJson(fluxVersionShellResult.stdout.trim()).flux;
+		clusterDataProvider.refreshCurrentNode();
 
 		return {
 			succeeded: true,

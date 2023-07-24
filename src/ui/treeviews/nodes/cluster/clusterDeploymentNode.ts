@@ -1,5 +1,5 @@
 import { Deployment, Kind } from 'types/kubernetes/kubernetesTypes';
-import { TreeNode, TreeNodeIcon } from './treeNode';
+import { TreeNode, TreeNodeIcon } from '../treeNode';
 
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.

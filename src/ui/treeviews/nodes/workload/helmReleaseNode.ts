@@ -1,6 +1,6 @@
 import { HelmRelease } from 'types/flux/helmRelease';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { NodeContext } from '../../../types/nodeContext';
+import { NodeContext } from 'types/nodeContext';
 import { WorkloadNode } from './workloadNode';
 
 /**
@@ -23,7 +23,6 @@ export class HelmReleaseNode extends WorkloadNode {
 		this.resource = helmRelease;
 
 		this.makeCollapsible();
-
 	}
 
 	get contexts() {

@@ -17,7 +17,7 @@ export function getResourceUri(
 	namespace: string | null | undefined,
 	resourceName: string | undefined,
 	documentFormat: string,
-	action?: string
+	action?: string,
 ): Uri {
 
 	// determine resource file extension

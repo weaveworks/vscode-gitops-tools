@@ -1,7 +1,7 @@
 import { commands, window } from 'vscode';
 
 import { getPodsOfADeployment } from 'cli/kubernetes/kubectlGet';
-import { ClusterDeploymentNode } from 'ui/treeviews/nodes/clusterDeploymentNode';
+import { ClusterDeploymentNode } from 'ui/treeviews/nodes/cluster/clusterDeploymentNode';
 import { getResourceUri } from 'utils/getResourceUri';
 import { ResourceNode, podResourceKind } from 'types/showLogsTypes';
 

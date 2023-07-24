@@ -40,6 +40,7 @@ export const enum Platform {
 
 export type ExecCallback = shelljs.ExecCallback;
 
+type ProcCallback = (proc: ChildProcess)=> void;
 const WINDOWS = 'win32';
 
 export interface ShellResult {
@@ -109,13 +110,14 @@ function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
 		cwd: cwd,
 		env: env,
 		async: true,
+		silent: true,
 	};
 	return opts;
 }
 
-async function exec(cmd: string, { cwd }: { cwd?: string; } = {}): Promise<ShellResult> {
+async function exec(cmd: string, { cwd, callback }: { cwd?: string; callback?: ProcCallback;} = {}): Promise<ShellResult> {
 	try {
-		return await execCore(cmd, execOpts({ cwd }), null);
+		return await execCore(cmd, execOpts({ cwd }), callback);
 	} catch (e) {
 		console.error(e);
 		window.showErrorMessage(String(e));
@@ -198,7 +200,7 @@ async function execWithOutput(
 	}
 }
 
-function execCore(cmd: string, opts: any, callback?: ((proc: ChildProcess)=> void) | null, stdin?: string): Promise<ShellResult> {
+function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: string): Promise<ShellResult> {
 	return new Promise<ShellResult>(resolve => {
 		if (getUseWsl()) {
 			cmd = `wsl ${cmd}`;
@@ -213,11 +215,22 @@ function execCore(cmd: string, opts: any, callback?: ((proc: ChildProcess)=> voi
 	});
 }
 
+function execProc(cmd: string): ChildProcess {
+	const opts = execOpts();
+	if (getUseWsl()) {
+		cmd = `wsl ${cmd}`;
+	}
+
+	const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => {});
+	return proc;
+}
+
 export const shell = {
 	isWindows : isWindows,
 	isUnix : isUnix,
 	platform : platform,
 	exec : exec,
+	execProc: execProc,
 	// execCore : execCore,
 	execWithOutput: execWithOutput,
 };

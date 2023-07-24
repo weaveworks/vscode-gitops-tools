@@ -4,12 +4,13 @@ import { AzureClusterProvider, azureTools, isAzureProvider } from 'cli/azure/azu
 import { failed } from 'types/errorable';
 import { fluxTools } from 'cli/flux/fluxTools';
 import { FluxSource, FluxWorkload } from 'types/fluxCliTypes';
-import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
-import { HelmReleaseNode } from 'ui/treeviews/nodes/helmReleaseNode';
-import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
-import { KustomizationNode } from 'ui/treeviews/nodes/kustomizationNode';
-import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
+import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 /**
  * Suspend source or workload reconciliation and refresh its Tree View.
@@ -17,9 +18,9 @@ import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView
  * @param node sources tree view node
  */
 export async function suspend(node: GitRepositoryNode | HelmReleaseNode | KustomizationNode | HelmRepositoryNode) {
-
+	const contextName = kubeConfig.getCurrentContext();
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (failed(currentClusterInfo)) {
+	if (failed(currentClusterInfo) || !contextName) {
 		return;
 	}
 
@@ -42,7 +43,7 @@ export async function suspend(node: GitRepositoryNode | HelmReleaseNode | Kustom
 			return;
 		}
 
-		await azureTools.suspend(node.resource.metadata?.name || '', currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		await azureTools.suspend(node.resource.metadata?.name || '', contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
 		await fluxTools.suspend(fluxResourceType, node.resource.metadata?.name || '', node.resource.metadata?.namespace || '');
 	}

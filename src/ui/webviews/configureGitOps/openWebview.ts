@@ -11,7 +11,8 @@ import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
 import { namespacedFluxObject } from 'utils/namespacedFluxObject';
 import { WebviewBackend } from '../WebviewBackend';
 
-import { getBuckets, getGitRepositories, getNamespaces, getOciRepositories } from 'cli/kubernetes/kubectlGet';
+import { getBuckets, getGitRepositories, getOciRepositories } from 'cli/kubernetes/kubectlGet';
+import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { ConfigureGitOpsWebviewParams } from 'types/webviewParams';
 import { receiveMessage } from './receiveMessage';
 

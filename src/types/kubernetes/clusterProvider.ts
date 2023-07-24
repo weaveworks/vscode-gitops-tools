@@ -36,8 +36,6 @@ export const knownClusterProviders: KnownClusterProviders[] = [
 ];
 
 export interface ClusterInfo {
-	contextName: string;
-	clusterName: string;
 	clusterProvider: ClusterProvider;
 	isClusterProviderUserOverride: boolean;
 	isAzure: boolean;

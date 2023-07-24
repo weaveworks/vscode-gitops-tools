@@ -48,6 +48,9 @@ export const enum CommandId {
 	RefreshResourcesTreeView = 'gitops.views.refreshResourcesTreeView',
 	PullGitRepository = 'gitops.views.pullGitRepository',
 	CreateGitRepository = 'gitops.views.createGitRepository',
+	ExpandAllSources = 'gitops.views.expandAllSources',
+	ExpandAllWorkloads = 'gitops.views.expandAllWorkloads',
+
 	CreateKustomization = 'gitops.createKustomization',
 	ShowWorkloadsHelpMessage = 'gitops.views.showWorkloadsHelpMessage',
 	DeleteWorkload = 'gitops.views.deleteWorkload',

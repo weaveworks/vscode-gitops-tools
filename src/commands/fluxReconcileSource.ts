@@ -3,10 +3,10 @@ import { window } from 'vscode';
 import { fluxTools } from 'cli/flux/fluxTools';
 import { FluxSource } from 'types/fluxCliTypes';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { BucketNode } from 'ui/treeviews/nodes/bucketNode';
-import { GitRepositoryNode } from 'ui/treeviews/nodes/gitRepositoryNode';
-import { HelmRepositoryNode } from 'ui/treeviews/nodes/helmRepositoryNode';
-import { OCIRepositoryNode } from 'ui/treeviews/nodes/ociRepositoryNode';
+import { BucketNode } from 'ui/treeviews/nodes/source/bucketNode';
+import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
+import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
+import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
 import { refreshSourcesTreeView } from 'ui/treeviews/treeViews';
 
 /**

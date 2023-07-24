@@ -7,27 +7,28 @@ import { OCIRepository } from 'types/flux/ociRepository';
 import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
-import { TreeNode, TreeNodeIcon } from './treeNode';
+import { TreeNode, TreeNodeIcon } from '../treeNode';
+import { FluxSourceObject } from 'types/flux/object';
 
 /**
  * Base class for all the Source tree view items.
  */
 export class SourceNode extends TreeNode {
 
-	resource: GitRepository | OCIRepository | HelmRepository | Bucket;
+	resource: FluxSourceObject;
 
 	/**
 	 * Whether or not the source failed to reconcile.
 	 */
 	isReconcileFailed = false;
 
-	constructor(label: string, source: GitRepository | OCIRepository | HelmRepository | Bucket) {
+	constructor(label: string, source: FluxSourceObject) {
 		super(label);
 
 		this.resource = source;
 
 		// update reconciliation status
-		this.updateStatus(source);
+		this.updateStatus();
 	}
 
 	get tooltip() {
@@ -40,7 +41,7 @@ export class SourceNode extends TreeNode {
 		let revisionOrError = '';
 
 		if (this.isReconcileFailed) {
-			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason}`;
+			revisionOrError = `${this.findReadyOrFirstCondition(this.resource.status.conditions)?.reason || ''}`;
 		} else {
 			revisionOrError = shortenRevision(this.resource.status.artifact?.revision);
 		}
@@ -81,8 +82,8 @@ export class SourceNode extends TreeNode {
 	 * Update source status with showing error icon when fetch failed.
 	 * @param source target source
 	 */
-	updateStatus(source: GitRepository | OCIRepository | HelmRepository | Bucket): void {
-		if (this.findReadyOrFirstCondition(source.status.conditions)?.status === 'True') {
+	updateStatus(): void {
+		if (this.findReadyOrFirstCondition(this.resource.status.conditions)?.status === 'True') {
 			this.setIcon(TreeNodeIcon.Success);
 			this.isReconcileFailed = false;
 		} else {

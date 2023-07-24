@@ -6,9 +6,11 @@ import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ParamsDictionary } from 'utils/typeUtils';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 export async function createConfigurationAzure(data: ParamsDictionary) {
 	const clusterInfo = data.clusterInfo as ClusterInfo;
+	const contextName = kubeConfig.getCurrentContext();
 	const source = data.source;
 	const kustomization = data.kustomization;
 
@@ -21,12 +23,13 @@ export async function createConfigurationAzure(data: ParamsDictionary) {
 
 	} else if(kustomization) {
 		azureTools.createKustomization(kustomization.name, kustomization.source, kustomization.path,
-			clusterInfo.contextName, clusterInfo.clusterProvider as AzureClusterProvider, kustomization.dependsOn, kustomization.prune);
+			contextName, clusterInfo.clusterProvider as AzureClusterProvider, kustomization.dependsOn, kustomization.prune);
 	}
 }
 
 async function createGitSourceAzure(source: ParamsDictionary, kustomization: ParamsDictionary, clusterInfo: ClusterInfo) {
 	const args = {
+		contextName: kubeConfig.getCurrentContext(),
 		sourceName: source.name,
 		url: source.url,
 		...source,
@@ -60,6 +63,7 @@ async function createBucketSourceAzure(source: ParamsDictionary, kustomization: 
 	});
 
 	const args: any = {
+		contextName: kubeConfig.getCurrentContext(),
 		sourceName: source.name,
 		url: source.endpoint,
 		configurationName: source.name,
