@@ -4,7 +4,7 @@ import { createConfigurationGeneric } from './lib/createGeneric';
 import { exportConfigurationGeneric } from './lib/exportGeneric';
 
 
-const isAzure = (data: ParamsDictionary) => data.clusterInfo.isAzure && data.source?.createFluxConfig;
+const isAzure = (data: ParamsDictionary) => data.clusterInfo.isAzure && (data.source?.createFluxConfig || !data.source);
 
 function removeAzureData(data: any) {
 	if(data.source) {
