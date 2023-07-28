@@ -4,6 +4,21 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.25.0
+
+* Major enhancement: fork and exec/kubectl CLI is mostly removed from the main process flow.
+  * Reactive ui with client-node and kubectl proxy (#446)
+  * Closes #422 - Fork and exec is dangerous and slow
+* Refactor: treeview Sources/Workloads organization and code has been majorly reorganized.
+* Update dependencies (#449)
+* Reconcile with Source (#444)
+* Clean up Kubernetes list types (#443)
+* Improve code layout and use baseUrl for imports (#442)
+
+# v0.24.3
+
+* Fix webview dispose bug and createSecret bug (#439)
+
 # v0.24.2
 
 * Fix YouTube link in README (#436)
