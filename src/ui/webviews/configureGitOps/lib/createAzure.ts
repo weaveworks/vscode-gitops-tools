@@ -7,6 +7,7 @@ import { ParamsDictionary } from 'utils/typeUtils';
 import { refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { splitNamespacedFluxObject } from 'utils/namespacedFluxObject';
 
 export async function createConfigurationAzure(data: ParamsDictionary) {
 	const clusterInfo = data.clusterInfo as ClusterInfo;
@@ -22,7 +23,8 @@ export async function createConfigurationAzure(data: ParamsDictionary) {
 		}
 
 	} else if(kustomization) {
-		azureTools.createKustomization(kustomization.name, kustomization.source, kustomization.path,
+		const gitRepositoryName = splitNamespacedFluxObject(kustomization.source).name;
+		azureTools.createKustomization(kustomization.name, gitRepositoryName, kustomization.path,
 			contextName, clusterInfo.clusterProvider as AzureClusterProvider, kustomization.dependsOn, kustomization.prune);
 	}
 }
