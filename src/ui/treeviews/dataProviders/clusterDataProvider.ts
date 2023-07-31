@@ -1,10 +1,10 @@
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { setVSCodeContext } from 'extension';
+import { enabledFluxChecks, setVSCodeContext, suppressDebugMessages } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
-import { TreeItem } from 'vscode';
+import { TreeItem, window } from 'vscode';
 import { ClusterDeploymentNode } from '../nodes/cluster/clusterDeploymentNode';
 import { ClusterNode } from '../nodes/cluster/clusterNode';
 import { TreeNode } from '../nodes/treeNode';
@@ -108,30 +108,33 @@ export class ClusterDataProvider extends DataProvider {
 		if (!clusterNode || clusterNode.children.length === 0) {
 			return;
 		}
-		const fluxCheckResult = await fluxTools.check(clusterNode.context.name);
-		if (!fluxCheckResult) {
-			return;
-		}
+		if(enabledFluxChecks()){ // disable nixes health checking on the cluster
+			const fluxCheckResult = await fluxTools.check(clusterNode.context.name);
+			if (!fluxCheckResult) {
+				return;
+			}
+			// Match controllers fetched with flux with controllers
+			// fetched with kubectl and update tree nodes.
+			for (const clusterController of (clusterNode.children as ClusterDeploymentNode[])) {
+				for (const controller of fluxCheckResult.controllers) {
+					const clusterControllerName = clusterController.resource.metadata.name?.trim();
+					const deploymentName = controller.name.trim();
 
-		// Match controllers fetched with flux with controllers
-		// fetched with kubectl and update tree nodes.
-		for (const clusterController of (clusterNode.children as ClusterDeploymentNode[])) {
-			for (const controller of fluxCheckResult.controllers) {
-				const clusterControllerName = clusterController.resource.metadata.name?.trim();
-				const deploymentName = controller.name.trim();
-
-				if (clusterControllerName === deploymentName) {
-					clusterController.description = controller.status;
-					if (controller.success) {
-						clusterController.setStatus('success');
-					} else {
-						clusterController.setStatus('failure');
+					if (clusterControllerName === deploymentName) {
+						clusterController.description = controller.status;
+						if (controller.success) {
+							clusterController.setStatus('success');
+						} else {
+							clusterController.setStatus('failure');
+						}
 					}
 				}
+				refreshClustersTreeView(clusterController);
 			}
-			refreshClustersTreeView(clusterController);
+		} else {
+			if(!suppressDebugMessages()) {
+				window.showInformationMessage('DEBUG: not running `flux check`');
+			}
 		}
 	}
-
-
 }

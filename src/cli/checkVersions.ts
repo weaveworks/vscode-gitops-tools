@@ -1,7 +1,7 @@
 import { commands, Uri, window } from 'vscode';
 
 import * as shell from 'cli/shell/exec';
-import { enabledWGE, telemetry } from 'extension';
+import { enabledWGE, telemetry, enabledFluxChecks, suppressDebugMessages } from 'extension';
 import { Errorable, failed } from 'types/errorable';
 import { CommandId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
@@ -105,13 +105,18 @@ export async function getFluxVersion(): Promise<Errorable<string>> {
  * @see https://fluxcd.io/docs/cmd/flux_check/
  */
 export async function checkFluxPrerequisites() {
-	const prerequisiteShellResult = await shell.execWithOutput('flux check --pre', { revealOutputView: false });
-
-	if (prerequisiteShellResult.code !== 0) {
-		const showOutput = 'Show Output';
-		const showOutputConfirm = await window.showWarningMessage('Flux prerequisites check failed.', showOutput);
-		if (showOutput === showOutputConfirm) {
-			commands.executeCommand(CommandId.ShowOutputChannel);
+	if(enabledFluxChecks()) {
+		const prerequisiteShellResult = await shell.execWithOutput('flux check --pre', { revealOutputView: false });
+		if (prerequisiteShellResult.code !== 0) {
+			const showOutput = 'Show Output';
+			const showOutputConfirm = await window.showWarningMessage('Flux prerequisites check failed.', showOutput);
+			if (showOutput === showOutputConfirm) {
+				commands.executeCommand(CommandId.ShowOutputChannel);
+			}
+		}
+	} else {
+		if(!suppressDebugMessages()) {
+			window.showInformationMessage('DEBUG: not running `flux check`');
 		}
 	}
 }
