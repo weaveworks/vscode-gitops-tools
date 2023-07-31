@@ -283,6 +283,11 @@
 					"default": true,
 					"description": "Enable Flux Check (uncheck to skip flux check)"
 				},
+				"gitops.suppressDebugMessages": {
+					"type": "boolean",
+					"default": false,
+					"description": "Do not emit debug-level messages (only error, info, warn)"
+				},
 				"gitops.weaveGitopsEnterprise": {
 					"type": "boolean",
 					"default": false,

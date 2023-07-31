@@ -1,6 +1,6 @@
 import { commands, Uri, window } from 'vscode';
 
-import { enabledWGE, telemetry, enabledFluxChecks } from 'extension';
+import { enabledWGE, telemetry, enabledFluxChecks, suppressDebugMessages } from 'extension';
 import { Errorable, failed } from 'types/errorable';
 import { CommandId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
@@ -114,7 +114,9 @@ export async function checkFluxPrerequisites() {
 			}
 		}
 	} else {
-		window.showInformationMessage('DEBUG: not running `flux check`');
+		if(!suppressDebugMessages()) {
+			window.showInformationMessage('DEBUG: not running `flux check`');
+		}
 	}
 }
 

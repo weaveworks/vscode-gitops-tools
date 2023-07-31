@@ -2,7 +2,7 @@ import safesh from 'shell-escape-tag';
 
 import { shell } from 'cli/shell/exec';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
-import { enabledFluxChecks } from 'extension';
+import { enabledFluxChecks, suppressDebugMessages } from 'extension';
 import { window } from 'vscode';
 
 /**
@@ -14,6 +14,8 @@ export async function fluxCheck(clusterNode: ClusterNode) {
 		shell.execWithOutput(safesh`flux check --context ${clusterNode.context.name}`);
 	} else {
 		// user called for health checking, notify them it isn't being performed
-		window.showInformationMessage('DEBUG: not running `flux check`');
+		if(!suppressDebugMessages()) {
+			window.showInformationMessage('DEBUG: not running `flux check`');
+		}
 	}
 }

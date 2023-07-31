@@ -1,7 +1,7 @@
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { enabledFluxChecks, setVSCodeContext } from 'extension';
+import { enabledFluxChecks, setVSCodeContext, suppressDebugMessages } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { TreeItem, window } from 'vscode';
@@ -138,7 +138,9 @@ export class ClusterDataProvider extends DataProvider {
 				refreshClustersTreeView(clusterController);
 			}
 		} else {
-			window.showInformationMessage('DEBUG: not running `flux check`');
+			if(!suppressDebugMessages()) {
+				window.showInformationMessage('DEBUG: not running `flux check`');
+			}
 		}
 	}
 }
