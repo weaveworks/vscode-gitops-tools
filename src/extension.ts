@@ -127,6 +127,15 @@ export function enabledFluxChecks(): boolean {
 	}
 }
 
+export function suppressDebugMessages(): boolean {
+	let ret = workspace.getConfiguration('gitops').get('suppressDebugMessages');
+	if(ret === true) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 
 /**
  * Called when extension is deactivated.
