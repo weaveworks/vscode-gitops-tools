@@ -278,6 +278,11 @@
 		"configuration": {
 			"title": "GitOps Tools",
 			"properties": {
+				"gitops.doFluxCheck": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable Flux Check (uncheck to skip flux check)"
+				},
 				"gitops.weaveGitopsEnterprise": {
 					"type": "boolean",
 					"default": false,
