@@ -118,6 +118,15 @@ export function enabledWGE(): boolean {
 	return workspace.getConfiguration('gitops').get('weaveGitopsEnterprise') || false;
 }
 
+export function enabledFluxChecks(): boolean {
+	let ret = workspace.getConfiguration('gitops').get('doFluxCheck');
+	if(ret === false) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
 
 /**
  * Called when extension is deactivated.
