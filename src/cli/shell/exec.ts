@@ -60,14 +60,14 @@ export type ShellHandler = (code: number, stdout: string, stderr: string)=> void
 /**
  * Return `true` when user has windows OS.
  */
-function isWindows(): boolean {
+export function isWindows(): boolean {
 	return (process.platform === WINDOWS) && !getUseWsl();
 }
 
 /**
  * Return `true` when user has Unix OS.
  */
-function isUnix(): boolean {
+export function isUnix(): boolean {
 	return !isWindows();
 }
 
@@ -75,7 +75,7 @@ function isUnix(): boolean {
  * Return user platform.
  * For WSL - return Linux.
  */
-function platform(): Platform {
+export function platform(): Platform {
 	if (getUseWsl()) {
 		return Platform.Linux;
 	}
@@ -115,7 +115,9 @@ function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
 	return opts;
 }
 
-async function exec(cmd: string, { cwd, callback }: { cwd?: string; callback?: ProcCallback;} = {}): Promise<ShellResult> {
+export async function exec(
+	cmd: string,
+	{ cwd, callback }: { cwd?: string; callback?: ProcCallback; } = {}): Promise<ShellResult> {
 	try {
 		return await execCore(cmd, execOpts({ cwd }), callback);
 	} catch (e) {
@@ -133,7 +135,7 @@ async function exec(cmd: string, { cwd, callback }: { cwd?: string; callback?: P
  * Execute command in cli and send the text to vscode output view.
  * @param cmd CLI command string
  */
-async function execWithOutput(
+export async function execWithOutput(
 	cmd: string,
 	{
 		revealOutputView = true,
@@ -215,7 +217,7 @@ function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: strin
 	});
 }
 
-function execProc(cmd: string): ChildProcess {
+export function execProc(cmd: string): ChildProcess {
 	const opts = execOpts();
 	if (getUseWsl()) {
 		cmd = `wsl ${cmd}`;
@@ -225,12 +227,11 @@ function execProc(cmd: string): ChildProcess {
 	return proc;
 }
 
-export const shell = {
-	isWindows : isWindows,
-	isUnix : isUnix,
-	platform : platform,
-	exec : exec,
-	execProc: execProc,
-	// execCore : execCore,
-	execWithOutput: execWithOutput,
-};
+function timeoutKillProcess(proc: ChildProcess, timeout: number) {
+	setTimeout(() => {
+		if (proc.exitCode === null) {
+			proc.kill(9);
+		}
+	}, timeout);
+}
+

@@ -1,6 +1,7 @@
 import { window, workspace } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 
+import * as shell from 'cli/shell/exec';
 import { output } from 'cli/shell/output';
 import { telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';

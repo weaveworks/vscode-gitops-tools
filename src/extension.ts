@@ -4,7 +4,7 @@ import { kubeProxyKeepAlive, stopKubeProxy } from 'cli/kubernetes/kubectlProxy';
 import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
-import { shell } from './cli/shell/exec';
+import * as shell from './cli/shell/exec';
 import { registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';

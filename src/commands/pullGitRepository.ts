@@ -5,7 +5,7 @@ import safesh from 'shell-escape-tag';
 import { commands, Uri, window } from 'vscode';
 
 import { checkGitVersion } from 'cli/checkVersions';
-import { shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
 import { telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
