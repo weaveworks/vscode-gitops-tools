@@ -134,7 +134,7 @@ class FluxTools {
 
 		if (treeShellResult.code !== 0) {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_TREE);
-			window.showErrorMessage(`Failed to get resources created by the workload ${name}. ERROR: ${treeShellResult?.stderr}`);
+			window.showErrorMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${treeShellResult?.stderr}`);
 			return;
 		}
 

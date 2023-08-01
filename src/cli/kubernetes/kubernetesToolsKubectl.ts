@@ -46,9 +46,8 @@ export async function invokeKubectlCommand(command: string, printOutput = true):
 	}
 
 	let kubectlShellResult;
-	const commandWithArgs = `${command} --request-timeout ${getRequestTimeout()}`;
-	kubectlShellResult = await kubectl.invokeCommand(commandWithArgs);
-
+	const commandWithArgs = `kubectl ${command} --request-timeout ${getRequestTimeout()}`;
+	kubectlShellResult = await shell.exec(commandWithArgs);
 
 	if(printOutput) {
 		output.send(`> kubectl ${command}`, {
@@ -76,6 +75,6 @@ export async function invokeKubectlCommand(command: string, printOutput = true):
 
 
 function getRequestTimeout(): string {
-	return workspace.getConfiguration('gitops').get('kubectlTimeout') || '20s';
+	return workspace.getConfiguration('gitops').get('kubectlRequestTimeout') || '20s';
 }
 

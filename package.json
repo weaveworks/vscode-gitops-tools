@@ -283,10 +283,15 @@
 					"default": false,
 					"description": "Enable WGE GitOpsTemplates feature"
 				},
-				"gitops.kubectlTimeout": {
+				"gitops.kubectlRequestTimeout": {
 					"type": "string",
 					"default": "10s",
 					"description": "kubectl --request-timeout"
+				},
+				"gitops.execTimeout": {
+					"type": "string",
+					"default": "10",
+					"description": "Seconds until SIGKILL for every shell exec (except `kubectl proxy`). Set to 0 for no timeout."
 				}
 			}
 		},

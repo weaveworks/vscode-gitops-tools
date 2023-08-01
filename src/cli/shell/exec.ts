@@ -170,6 +170,7 @@ export async function execWithOutput(
 				cwd: cwd,
 				env: execOpts().env,
 			});
+			setExecTimeoutKill(childProcess);
 
 			let stdout = '';
 			let stderr = '';
@@ -208,6 +209,7 @@ function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: strin
 			cmd = `wsl ${cmd}`;
 		}
 		const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => resolve({code : code, stdout : stdout, stderr : stderr}));
+		setExecTimeoutKill(proc);
 		if (stdin) {
 			proc.stdin?.end(stdin);
 		}
@@ -227,11 +229,17 @@ export function execProc(cmd: string): ChildProcess {
 	return proc;
 }
 
-function timeoutKillProcess(proc: ChildProcess, timeout: number) {
+function setExecTimeoutKill(proc: ChildProcess) {
+	const timeout = workspace.getConfiguration('gitops').get('execTimeout') as string;
+	const timeoutSeconds = parseInt(timeout);
+	if (isNaN(timeoutSeconds) || timeoutSeconds === 0) {
+		return;
+	}
+
 	setTimeout(() => {
 		if (proc.exitCode === null) {
 			proc.kill(9);
 		}
-	}, timeout);
+	}, timeoutSeconds * 1000);
 }
 
