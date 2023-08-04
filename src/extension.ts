@@ -45,19 +45,10 @@ export async function activate(context: ExtensionContext) {
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
-	await syncKubeConfig(true);
-	await initKubeConfigWatcher();
-
-	// schedule load start for tree view data for the event loop
-	// then k8s proxy client is more likely to be ready
-	// to avoid the slower kubectl client
-	setTimeout(() => {
-		createTreeViews();
-	}, 100);
+	initData();
 
 	// register gitops commands
 	registerCommands(context);
-	kubeProxyKeepAlive();
 
 	telemetry.send(TelemetryEvent.Startup);
 
@@ -81,11 +72,7 @@ export async function activate(context: ExtensionContext) {
 
 
 	// show error notification if flux is not installed
-	const fluxFoundResult = await promptToInstallFlux();
-	if (succeeded(fluxFoundResult)) {
-		// check flux prerequisites
-		checkFluxPrerequisites();
-	}
+	checkFluxVersions();
 
 	checkWGEVersion();
 
@@ -98,6 +85,33 @@ export async function activate(context: ExtensionContext) {
 		}};
 
 	return api;
+}
+
+async function checkFluxVersions() {
+	const fluxFoundResult = await promptToInstallFlux();
+	if (succeeded(fluxFoundResult)) {
+		// check flux prerequisites
+		checkFluxPrerequisites();
+	}
+}
+
+async function initData() {
+	// load kubeconfig (could hang w)
+	// syncKubeConfig(true).then(() => {
+	// 	initKubeConfigWatcher();
+	// });
+
+	syncKubeConfig(true);
+	initKubeConfigWatcher();
+	kubeProxyKeepAlive();
+
+	// schedule load start for tree view data for the event loop
+	// then k8s proxy client is more likely to be ready
+	// to avoid using the slower kubectl client
+	setTimeout(() => {
+		createTreeViews();
+	}, 100);
+
 }
 
 function listenExtensionConfigChanged() {
