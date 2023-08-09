@@ -1,6 +1,6 @@
 import safesh from 'shell-escape-tag';
 
-import { shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
 import { enabledFluxChecks, suppressDebugMessages } from 'extension';
 import { window } from 'vscode';

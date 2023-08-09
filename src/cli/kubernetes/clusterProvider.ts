@@ -102,13 +102,3 @@ async function isClusterAzureARC(context: string): Promise<ClusterProvider> {
 	return ClusterProvider.Generic;
 }
 
-/**
- * Return true if gitops is enabled in the current cluster.
- * Function checks if `flux-system` namespace contains flux controllers.
- * @param contextName target cluster name
- */
-export async function isGitOpsEnabled(contextName: string) {
-	const fluxControllers = await getFluxControllers(contextName);
-
-	return fluxControllers.length !== 0;
-}

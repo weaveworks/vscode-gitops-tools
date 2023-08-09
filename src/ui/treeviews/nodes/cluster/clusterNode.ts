@@ -3,7 +3,7 @@ import { ExtensionMode, MarkdownString } from 'vscode';
 
 
 import { fluxVersion } from 'cli/checkVersions';
-import { detectClusterProvider, isGitOpsEnabled } from 'cli/kubernetes/clusterProvider';
+import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { extensionContext, globalState, setVSCodeContext } from 'extension';
 import { result } from 'types/errorable';
@@ -12,7 +12,9 @@ import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { NodeContext } from 'types/nodeContext';
 import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
-import { clusterDataProvider } from 'ui/treeviews/treeViews';
+import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
+import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
+import { ClusterDeploymentNode } from './clusterDeploymentNode';
 
 /**
  * Defines Cluster context tree view item for displaying
@@ -68,7 +70,21 @@ export class ClusterNode extends TreeNode {
 	 * - Cluster provider.
 	 */
 	async updateNodeContext() {
-		this.isGitOpsEnabled = await isGitOpsEnabled(this.context.name);
+		const fluxControllers = await getFluxControllers(this.context.name);
+		this.isGitOpsEnabled = fluxControllers.length !== 0;
+
+		if(this.isGitOpsEnabled) {
+			// load flux system deployments
+			this.expand();
+			revealClusterNode(this, {
+				expand: true,
+			});
+			for (const deployment of fluxControllers) {
+				this.addChild(new ClusterDeploymentNode(deployment));
+			}
+		} else {
+			this.addChild(new TreeNode('Flux controllers not found'));
+		}
 
 		const clusterMetadata = globalState.getClusterMetadata(this.cluster?.name || this.context.name);
 		if (clusterMetadata?.clusterProvider) {

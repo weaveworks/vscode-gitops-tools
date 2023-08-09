@@ -1,13 +1,14 @@
 import safesh from 'shell-escape-tag';
 import { QuickPickItem, window } from 'vscode';
 
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { invokeKubectlCommand } from 'cli/kubernetes/kubernetesToolsKubectl';
-import { ShellResult, shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
+import { ShellResult } from 'cli/shell/exec';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { ConfigMap } from 'types/kubernetes/kubernetesTypes';
 import { parseJson } from 'utils/jsonUtils';
 import { AzureClusterProvider, AzureConstants } from './azureTools';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 export interface AzureMetadata {
 	resourceGroup: string;

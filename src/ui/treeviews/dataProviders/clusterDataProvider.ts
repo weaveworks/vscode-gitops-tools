@@ -50,6 +50,10 @@ export class ClusterDataProvider extends DataProvider {
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async buildTree(): Promise<ClusterNode[]> {
+		console.log('started cluster buildTree');
+
+		const t1 = Date.now();
+
 		setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
 		setVSCodeContext(ContextId.NoClusters, false);
 		setVSCodeContext(ContextId.LoadingClusters, true);
@@ -64,10 +68,9 @@ export class ClusterDataProvider extends DataProvider {
 			return [];
 		}
 
+
 		const clusterNodes: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
-		process.nextTick(() => {});
-
 
 		if (kubeConfig.getContexts().length === 0) {
 			setVSCodeContext(ContextId.NoClusters, true);
@@ -79,17 +82,6 @@ export class ClusterDataProvider extends DataProvider {
 			if (context.name === kubeConfig.getCurrentContext()) {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
-				// load flux system deployments
-				const fluxControllers = await getFluxControllers();
-				if (fluxControllers) {
-					clusterNode.expand();
-					revealClusterNode(clusterNode, {
-						expand: true,
-					});
-					for (const deployment of fluxControllers) {
-						clusterNode.addChild(new ClusterDeploymentNode(deployment));
-					}
-				}
 			}
 			clusterNodes.push(clusterNode);
 		}
@@ -103,6 +95,8 @@ export class ClusterDataProvider extends DataProvider {
 		setVSCodeContext(ContextId.LoadingClusters, false);
 		this.clusterNodes = clusterNodes;
 
+		const t2 = Date.now();
+		console.log('cluster buildTree ∆', t2 - t1);
 		return clusterNodes;
 	}
 

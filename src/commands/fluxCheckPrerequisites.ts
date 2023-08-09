@@ -1,4 +1,4 @@
-import { shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
 import { enabledFluxChecks } from 'extension';
 
 /**

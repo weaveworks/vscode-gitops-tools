@@ -1,7 +1,7 @@
 import safesh from 'shell-escape-tag';
 import { window } from 'vscode';
 
-import { shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
 import { telemetry } from 'extension';
 import { FluxSource, FluxTreeResources, FluxWorkload } from 'types/fluxCliTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
@@ -136,7 +136,7 @@ class FluxTools {
 
 		if (treeShellResult.code !== 0) {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_TREE);
-			window.showErrorMessage(`Failed to get resources created by the workload ${name}. ERROR: ${treeShellResult?.stderr}`);
+			window.showErrorMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${treeShellResult?.stderr}`);
 			return;
 		}
 

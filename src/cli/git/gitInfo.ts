@@ -3,7 +3,7 @@ import path from 'path';
 import { window } from 'vscode';
 
 import { checkGitVersion } from 'cli/checkVersions';
-import { shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
 import { makeSSHUrlFromGitUrl } from 'commands/createSource';
 import { GitRepository } from 'types/flux/gitRepository';
 import { getGitRepositories } from 'cli/kubernetes/kubectlGet';
