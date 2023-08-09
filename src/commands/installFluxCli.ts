@@ -6,13 +6,14 @@ import path from 'path';
 import request from 'request';
 import { commands, window } from 'vscode';
 
-import { Platform, shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
+import { Platform } from 'cli/shell/exec';
 import { output } from 'cli/shell/output';
 import { runTerminalCommand } from 'cli/shell/terminal';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { GlobalStateKey } from 'data/globalState';
 import { globalState } from 'extension';
 import { Errorable, failed } from 'types/errorable';
-import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { appendToPathEnvironmentVariableWindows, createDir, deleteFile, downloadFile, getAppdataPath, moveFile, readFile, unzipFile } from 'utils/fsUtils';
 
 const fluxGitHubUserProject = 'fluxcd/flux2';

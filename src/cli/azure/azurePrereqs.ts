@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 
-import { shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { AzureClusterProvider } from './azureTools';
 

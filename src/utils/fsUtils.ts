@@ -4,7 +4,7 @@ import fs from 'fs';
 import https from 'https';
 import path from 'path';
 
-import { shell } from 'cli/shell/exec';
+import * as shell from 'cli/shell/exec';
 import { Errorable } from 'types/errorable';
 
 /**

@@ -1,12 +1,13 @@
 import { commands, Uri, window } from 'vscode';
 
+import * as shell from 'cli/shell/exec';
 import { enabledWGE, telemetry } from 'extension';
 import { Errorable, failed } from 'types/errorable';
 import { CommandId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { parseJson } from 'utils/jsonUtils';
-import { shell, shellCodeError } from './shell/exec';
 import { clusterDataProvider } from 'ui/treeviews/treeViews';
+import { parseJson } from 'utils/jsonUtils';
+import { shellCodeError } from './shell/exec';
 
 interface KubectlVersion {
 	major: string;

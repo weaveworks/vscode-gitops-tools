@@ -34,11 +34,12 @@ export async function syncKubeConfig(forceReloadResourceKinds = false) {
 	const newKubeConfig = new k8s.KubeConfig();
 	newKubeConfig.loadFromString(configShellResult.stdout, {onInvalidEntry: ActionOnInvalid.FILTER});
 
+
 	if (kcTextChanged(kubeConfig, newKubeConfig)) {
 		const contextsListChanged = kcContextsListChanged(kubeConfig, newKubeConfig);
 		const contextChanged = kcCurrentContextChanged(kubeConfig, newKubeConfig);
 
-		// load the changed kubeconfig globally so that subsequent commands use the new config
+		// load the changed kubeconfig globally so that the following code use the new config
 		kubeConfig.loadFromString(configShellResult.stdout);
 
 		if(contextsListChanged) {
@@ -46,7 +47,7 @@ export async function syncKubeConfig(forceReloadResourceKinds = false) {
 		}
 
 		if(contextChanged || forceReloadResourceKinds) {
-			await loadAvailableResourceKinds();
+			loadAvailableResourceKinds();
 		}
 
 		if(contextChanged) {
