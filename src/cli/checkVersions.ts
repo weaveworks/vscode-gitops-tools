@@ -1,7 +1,7 @@
 import { commands, Uri, window } from 'vscode';
 
 import * as shell from 'cli/shell/exec';
-import { enabledWGE, telemetry, enabledFluxChecks, suppressDebugMessages } from 'extension';
+import { enabledFluxChecks, enabledWGE, suppressDebugMessages, telemetry } from 'extension';
 import { Errorable, failed } from 'types/errorable';
 import { CommandId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
