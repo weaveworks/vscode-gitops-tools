@@ -83,7 +83,7 @@ export async function getFluxVersion(): Promise<Errorable<string>> {
 
 	if (fluxVersionShellResult.code === 0) {
 		fluxVersion = parseJson(fluxVersionShellResult.stdout.trim()).flux;
-		clusterDataProvider.refreshCurrentNode();
+		clusterDataProvider.redrawCurrentNode();
 
 		return {
 			succeeded: true,

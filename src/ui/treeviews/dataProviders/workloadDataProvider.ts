@@ -17,7 +17,7 @@ import { refreshWorkloadsTreeView } from '../treeViews';
 import { DataProvider } from './dataProvider';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
 
-/**
+/**-
  * Defines data provider for loading Kustomizations
  * and Helm Releases in Workloads Tree View.
  */
@@ -27,6 +27,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
    * @returns Workload tree nodes to display.
    */
 	async buildTree(): Promise<NamespaceNode[]> {
+		return [];
 		statusBar.startLoadingTree();
 
 		const workloadNodes: WorkloadNode[] = [];

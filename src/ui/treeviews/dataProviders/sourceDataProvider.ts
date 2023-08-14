@@ -24,6 +24,7 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
    * @returns Source tree view items to display.
    */
 	async buildTree(): Promise<NamespaceNode[]> {
+		return [];
 		statusBar.startLoadingTree();
 
 		const treeNodes: SourceNode[] = [];

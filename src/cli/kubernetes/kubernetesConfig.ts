@@ -36,31 +36,33 @@ export async function syncKubeConfig(forceReloadResourceKinds = false) {
 
 
 	if (kcTextChanged(kubeConfig, newKubeConfig)) {
-		const contextsListChanged = kcContextsListChanged(kubeConfig, newKubeConfig);
-		const contextChanged = kcCurrentContextChanged(kubeConfig, newKubeConfig);
-
-		// load the changed kubeconfig globally so that the following code use the new config
-		kubeConfig.loadFromString(configShellResult.stdout);
-
-		if(contextsListChanged) {
-			refreshClustersTreeView();
-		}
-
-		if(contextChanged || forceReloadResourceKinds) {
-			loadAvailableResourceKinds();
-		}
-
-		if(contextChanged) {
-			console.log('currentContext changed', kubeConfig.getCurrentContext());
-			vscodeOnCurrentContextChanged();
-			await restartKubeProxy();
-			// give proxy a chance to start
-			setTimeout(() => {
-				refreshAllTreeViews();
-			}, 100);
-		}
+		await kubeconfigChanged(newKubeConfig,  forceReloadResourceKinds);
 	} else if(forceReloadResourceKinds) {
-		await loadAvailableResourceKinds();
+		loadAvailableResourceKinds();
+	}
+}
+
+async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig,  forceReloadResourceKinds: boolean) {
+	const contextsListChanged = kcContextsListChanged(kubeConfig, newKubeConfig);
+	const contextChanged = kcCurrentContextChanged(kubeConfig, newKubeConfig);
+
+	// load the changed kubeconfig globally so that the following code use the new config
+	kubeConfig.loadFromString(newKubeConfig.exportConfig(), {onInvalidEntry: ActionOnInvalid.FILTER});
+
+	if (contextChanged || forceReloadResourceKinds) {
+		loadAvailableResourceKinds();
+	}
+
+	if (contextChanged) {
+		console.log('currentContext changed', kubeConfig.getCurrentContext());
+		vscodeOnCurrentContextChanged();
+		await restartKubeProxy();
+		// give proxy a chance to start
+		setTimeout(() => {
+			refreshAllTreeViews();
+		}, 100);
+	} else if (contextsListChanged) {
+		refreshClustersTreeView();
 	}
 }
 

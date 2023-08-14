@@ -193,6 +193,10 @@ export async function execWithOutput(
 			childProcess.on('exit', (code: number) => {
 				output.send('\n', { newline: 'none', revealOutputView: false });
 
+				if(code === null) {
+					stderr = `exec '${cmd}' timed out.\nSTDERR: ${stderr}`;
+				}
+
 				resolve({
 					code,
 					stdout,

@@ -108,9 +108,9 @@ async function initData() {
 	// schedule load start for tree view data for the event loop
 	// then k8s proxy client is more likely to be ready
 	// to avoid using the slower kubectl client
-	setTimeout(() => {
-		createTreeViews();
-	}, 100);
+	// setTimeout(() => {
+	createTreeViews();
+	// }, 100);
 
 }
 
