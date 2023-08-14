@@ -10,12 +10,5 @@ import { window } from 'vscode';
  * @param clusterNode target cluster node (from tree node context menu)
  */
 export async function fluxCheck(clusterNode: ClusterNode) {
-	if(enabledFluxChecks()) {
-		shell.execWithOutput(safesh`flux check --context ${clusterNode.context.name}`);
-	} else {
-		// user called for health checking, notify them it isn't being performed
-		if(!suppressDebugMessages()) {
-			window.showInformationMessage('DEBUG: not running `flux check`');
-		}
-	}
+	shell.execWithOutput(safesh`flux check --context ${clusterNode.context.name}`);
 }

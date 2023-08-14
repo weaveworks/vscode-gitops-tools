@@ -3,17 +3,17 @@ import { ExtensionMode, MarkdownString } from 'vscode';
 
 
 import { fluxVersion } from 'cli/checkVersions';
+import { fluxTools } from 'cli/flux/fluxTools';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
+import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { extensionContext, globalState, setVSCodeContext } from 'extension';
-import { result } from 'types/errorable';
 import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { NodeContext } from 'types/nodeContext';
+import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
 import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
-import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
-import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { ClusterDeploymentNode } from './clusterDeploymentNode';
 
 /**
@@ -83,7 +83,9 @@ export class ClusterNode extends TreeNode {
 				this.addChild(new ClusterDeploymentNode(deployment));
 			}
 		} else {
-			this.addChild(new TreeNode('Flux controllers not found'));
+			const notFound = new TreeNode('Flux controllers not found');
+			notFound.setIcon('warning');
+			this.addChild(notFound);
 		}
 
 		const clusterMetadata = globalState.getClusterMetadata(this.cluster?.name || this.context.name);
@@ -103,8 +105,43 @@ export class ClusterNode extends TreeNode {
 			this.setIcon('cloud');
 		}
 
-		clusterDataProvider.refresh(this);
+		clusterDataProvider.redraw();
+		this.updateDeploymentStatus();
 	}
+
+	/**
+	 * Update deployment status for flux controllers.
+	 * Get status from running flux commands instead of kubectl.
+	 */
+	private async updateDeploymentStatus() {
+		if (this.children.length === 0) {
+			return;
+		}
+		const fluxCheckResult = await fluxTools.check(this.context.name);
+		if (!fluxCheckResult) {
+			return;
+		}
+
+		// Match controllers fetched with flux with controllers
+		// fetched with kubectl and update tree nodes.
+		for (const clusterController of (this.children as ClusterDeploymentNode[])) {
+			for (const controller of fluxCheckResult.controllers) {
+				const clusterControllerName = clusterController.resource.metadata.name?.trim();
+				const deploymentName = controller.name.trim();
+
+				if (clusterControllerName === deploymentName) {
+					clusterController.description = controller.status;
+					if (controller.success) {
+						clusterController.setStatus('success');
+					} else {
+						clusterController.setStatus('failure');
+					}
+				}
+			}
+			clusterDataProvider.redraw(this);
+		}
+	}
+
 
 	get isCurrent(): boolean {
 		return this.context.name === kubeConfig.getCurrentContext();

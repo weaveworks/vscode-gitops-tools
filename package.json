@@ -324,17 +324,22 @@
 			{
 				"view": "gitops.views.sources",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources.",
-				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected"
+				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.sources",
 				"contents": "Loading Sources ...",
-				"when": "gitops:loadingSources && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+				"when": "gitops:loadingSources && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.sources",
 				"contents": "No sources.",
-				"when": "!gitops:loadingSources && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noSources"
+				"when": "!gitops:loadingSources && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noSources && !gitops:clusterUnreachable"
+			},
+			{
+				"view": "gitops.views.sources",
+				"contents": "Cluster unreachable",
+				"when": "gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.sources",
@@ -344,17 +349,22 @@
 			{
 				"view": "gitops.views.workloads",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads.",
-				"when": "gitops:currentClusterGitOpsNotEnabled"
+				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.workloads",
 				"contents": "Loading Workloads ...",
-				"when": "gitops:loadingWorkloads && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+				"when": "gitops:loadingWorkloads && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.workloads",
 				"contents": "No workloads.",
-				"when": "!gitops:loadingWorkloads && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noWorkloads"
+				"when": "!gitops:loadingWorkloads && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noWorkloads && !gitops:clusterUnreachable"
+			},
+			{
+				"view": "gitops.views.workloads",
+				"contents": "Cluster unreachable",
+				"when": "gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.workloads",
