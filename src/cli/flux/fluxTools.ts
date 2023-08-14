@@ -2,7 +2,7 @@ import safesh from 'shell-escape-tag';
 import { window } from 'vscode';
 
 import * as shell from 'cli/shell/exec';
-import { telemetry } from 'extension';
+import { enabledFluxChecks, telemetry } from 'extension';
 import { FluxSource, FluxTreeResources, FluxWorkload } from 'types/fluxCliTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
@@ -64,7 +64,9 @@ class FluxTools {
 	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
 	async check(context: string): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
-		// cannot observe extension.enabledFluxChecks here, return type is specific;
+		if (!enabledFluxChecks()) {
+			return undefined;
+		}
 
 		const result = await shell.execWithOutput(safesh`flux check --context ${context}`, { revealOutputView: false });
 

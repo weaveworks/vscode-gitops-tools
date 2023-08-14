@@ -3,19 +3,18 @@ import { ExtensionMode, MarkdownString } from 'vscode';
 
 
 import { fluxVersion } from 'cli/checkVersions';
+import { fluxTools } from 'cli/flux/fluxTools';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
+import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { extensionContext, globalState, setVSCodeContext } from 'extension';
-import { result } from 'types/errorable';
 import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { NodeContext } from 'types/nodeContext';
+import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
 import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
-import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
-import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { ClusterDeploymentNode } from './clusterDeploymentNode';
-import { fluxTools } from 'cli/flux/fluxTools';
 
 /**
  * Defines Cluster context tree view item for displaying

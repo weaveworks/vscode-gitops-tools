@@ -9,7 +9,7 @@ import { Errorable, failed } from 'types/errorable';
  * (only when flux was not found).
  */
 
-export async function promptToInstallFlux(): Promise<Errorable<null>> {
+export async function checkInstalledFluxVersion(): Promise<Errorable<null>> {
 	const version = await getFluxVersion();
 	if (failed(version)) {
 		showInstallFluxNotification();

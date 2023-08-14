@@ -24,8 +24,6 @@ export class ClusterDataProvider extends DataProvider {
 		console.log('cluster refresh', treeItem);
 
 		if (!treeItem) {
-			// Only clear all root nodes when no node was passed
-			// this.treeItems = null;
 			this.clusterNodes = [];
 			this.loadData();
 		}
@@ -57,22 +55,7 @@ export class ClusterDataProvider extends DataProvider {
 			return [new TreeNode('Loading kubeconfig ...')];
 		}
 		return this.clusterNodes;
-
-		// if (!this.treeItems) {
-		// 	this.treeItems = await this.buildTree();
-		// }
-
-		// if (element instanceof TreeNode) {
-		// 	return element.children;
-		// }
-
-		// if (!element && this.treeItems) {
-		// 	return this.treeItems;
-		// }
-
-		// return [];
 	}
-
 
 
 	/**
