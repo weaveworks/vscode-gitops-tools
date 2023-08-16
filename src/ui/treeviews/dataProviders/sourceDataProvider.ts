@@ -1,17 +1,16 @@
 import { getBuckets, getGitRepositories, getHelmRepositories, getOciRepositories } from 'cli/kubernetes/kubectlGet';
+import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { groupNodesByNamespace } from '../../../utils/treeNodeUtils';
-import { NamespaceNode } from '../nodes/namespaceNode';
 import { BucketNode } from '../nodes/source/bucketNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';
 import { OCIRepositoryNode } from '../nodes/source/ociRepositoryNode';
 import { SourceNode } from '../nodes/source/sourceNode';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
-import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 
 /**
  * Defines Sources data provider for loading Git/Helm repositories
@@ -62,7 +61,6 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 		setVSCodeContext(ContextId.NoSources, sourceNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		[this.nodes] = await groupNodesByNamespace(sourceNodes, this.expandNewTree);
-		this.expandNewTree = false;
+		[this.nodes] = await groupNodesByNamespace(sourceNodes, false);
 	}
 }

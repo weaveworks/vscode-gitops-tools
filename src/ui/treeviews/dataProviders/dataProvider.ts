@@ -12,8 +12,6 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
 
 
-	public expandNewTree = false;
-
 	public async refresh(treeItem?: TreeItem) {
 		console.log(`${this.constructor.name} refresh`, treeItem);
 

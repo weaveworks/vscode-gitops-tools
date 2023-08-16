@@ -3,11 +3,9 @@ import { sourceDataProvider, sourceTreeView, workloadDataProvider } from 'ui/tre
 import { TreeItemCollapsibleState } from 'vscode';
 
 export async function expandAllSources() {
-	sourceDataProvider.expandNewTree = true;
-	sourceDataProvider.refresh();
+	sourceDataProvider.expandAll();
 }
 
 export async function expandAllWorkloads() {
-	workloadDataProvider.expandNewTree = true;
-	workloadDataProvider.refresh();
+	sourceDataProvider.expandAll();
 }

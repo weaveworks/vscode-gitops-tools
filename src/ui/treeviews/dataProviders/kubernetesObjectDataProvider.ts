@@ -1,10 +1,11 @@
 import { getNamespace } from 'cli/kubernetes/kubectlGetNamespace';
 import { GitRepository } from 'types/flux/gitRepository';
-import { KubernetesObject, Namespace } from 'types/kubernetes/kubernetesTypes';
+import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { groupNodesByNamespace, sortNodes } from 'utils/treeNodeUtils';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
+import { TreeNode } from '../nodes/treeNode';
 import { DataProvider } from './dataProvider';
-import { sortNodes } from 'utils/treeNodeUtils';
 
 /**
  * Superclass for data providers that group objects by namespace: Source and Workload data providers
@@ -96,6 +97,21 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 				this._onDidChangeTreeData.fire(undefined);
 			}
 		}
+	}
+
+	async expandAll() {
+		const resourceNodes: TreeNode[] = [];
+
+		this.nodes.forEach(node => {
+			if (node instanceof NamespaceNode) {
+				const children = node.children as TreeNode[];
+				resourceNodes.push(...children);
+			}
+		});
+
+		// rebuild top level nodes or the tree will not redraw
+		[this.nodes] = await groupNodesByNamespace(resourceNodes, true);
+		this.redraw();
 	}
 
 }
