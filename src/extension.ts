@@ -92,7 +92,10 @@ async function initData() {
 	initKubeConfigWatcher();
 	kubeProxyKeepAlive();
 
-	createTreeViews();
+	// wait for kubectl proxy to start for faster initial tree view loading
+	setTimeout(() => {
+		createTreeViews();
+	}, 200);
 }
 
 function listenExtensionConfigChanged() {

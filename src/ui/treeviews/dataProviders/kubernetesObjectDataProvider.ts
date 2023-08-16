@@ -12,7 +12,7 @@ import { sortNodes } from 'utils/treeNodeUtils';
 export abstract class KubernetesObjectDataProvider extends DataProvider {
 
 	public namespaceNodeTreeItems(): NamespaceNode[] {
-		return (this.treeItems?.filter(node => node instanceof NamespaceNode) as NamespaceNode[] || []);
+		return (this.nodes?.filter(node => node instanceof NamespaceNode) as NamespaceNode[] || []);
 	}
 
 	private findNamespaceNode(nsName?: string): NamespaceNode | undefined {
@@ -41,8 +41,8 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 				return;
 			}
 			namespaceNode = new NamespaceNode(ns);
-			this.treeItems?.push(namespaceNode);
-			sortNodes(this.treeItems);
+			this.nodes?.push(namespaceNode);
+			sortNodes(this.nodes);
 			namespaceNode.expand();
 			this._onDidChangeTreeData.fire(undefined);
 		}
@@ -92,7 +92,7 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 				this._onDidChangeTreeData.fire(namespaceNode);
 			} else {
 				// namespace has no more children. should be removed
-				this.treeItems?.splice(this.treeItems?.indexOf(namespaceNode), 1);
+				this.nodes?.splice(this.nodes?.indexOf(namespaceNode), 1);
 				this._onDidChangeTreeData.fire(undefined);
 			}
 		}

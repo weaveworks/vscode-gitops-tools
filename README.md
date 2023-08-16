@@ -145,9 +145,9 @@ We rely on the Kubernetes extension to discover and connect to clusters. If you 
 
 Confirm that your configuration context shows in a terminal running `kubectl config get-contexts`
 
+### _Switching from an unreachable cluster context to a working cluster_
 
-
-
+Unreachable or laggy clusters can create long running that cluster resource queries that finish after switching to a working cluster context. This can lead to the slow cluster data overwriting current cluster treeview. **Clusters** -> **Refresh** button will reinitialize the views with current data. Timeout settings can be adjusted under **GitOps** section in VSCode Settings.
 
 
 

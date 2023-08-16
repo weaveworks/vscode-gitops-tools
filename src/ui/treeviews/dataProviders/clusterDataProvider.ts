@@ -12,26 +12,10 @@ import { DataProvider } from './dataProvider';
  * and contexts in GitOps Clusters tree view.
  */
 export class ClusterDataProvider extends DataProvider {
-	private clusterNodes: ClusterNode[] = [];
-	private loading = false;
+	protected nodes: ClusterNode[] = [];
 
 	public getCurrentClusterNode(): ClusterNode | undefined {
-		return this.clusterNodes.find(c => c.context.name === kubeConfig?.getCurrentContext());
-	}
-
-
-	public async refresh(treeItem?: TreeItem) {
-		console.log('cluster refresh', treeItem);
-
-		if (!treeItem) {
-			this.clusterNodes = [];
-			this.loadData();
-		}
-		this.redraw(treeItem);
-	}
-
-	public async redraw(treeItem?: TreeItem) {
-		this._onDidChangeTreeData.fire(treeItem);
+		return this.nodes.find(c => c.context.name === kubeConfig?.getCurrentContext());
 	}
 
 	public redrawCurrentNode() {
@@ -50,18 +34,10 @@ export class ClusterDataProvider extends DataProvider {
 	}
 
 
-	private async getRootNodes(): Promise<TreeNode[]> {
-		if (this.loading) {
-			return [new TreeNode('Loading kubeconfig ...')];
-		}
-		return this.clusterNodes;
-	}
-
-
 	/**
 	 * Check if the cluster node exists or not.
 	 */
-	public includesTreeNode(treeItem: TreeItem, clusterNodes: TreeNode[] = this.clusterNodes) {
+	public includesTreeNode(treeItem: TreeItem, clusterNodes: TreeNode[] = this.nodes) {
 		for (const clusterNode of clusterNodes) {
 			if (treeItem === clusterNode) {
 				return true;
@@ -74,20 +50,11 @@ export class ClusterDataProvider extends DataProvider {
 		return false;
 	}
 
+
 	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
-	async loadData() {
-		console.log('started cluster loadData');
-		if(this.loading) {
-			return;
-		}
-
-		await this.loadClusterNodes();
-		this.loading = false;
-	}
-
-	async loadClusterNodes() {
+	async loadRootNodes() {
 		console.log('started loadClusterNodes');
 
 		const t1 = Date.now();
@@ -96,23 +63,22 @@ export class ClusterDataProvider extends DataProvider {
 		setVSCodeContext(ContextId.NoClusters, false);
 		setVSCodeContext(ContextId.LoadingClusters, true);
 		statusBar.startLoadingTree();
-		this.clusterNodes = [];
+		this.nodes = [];
 
 		if (!kubeConfig) {
 			setVSCodeContext(ContextId.NoClusters, false);
 			setVSCodeContext(ContextId.FailedToLoadClusterContexts, true);
 			setVSCodeContext(ContextId.LoadingClusters, false);
 			statusBar.stopLoadingTree();
-			return [];
+			return;
 		}
 
 
-		const clusterNodes: ClusterNode[] = [];
 		let currentContextTreeItem: ClusterNode | undefined;
 
 		if (kubeConfig.getContexts().length === 0) {
 			setVSCodeContext(ContextId.NoClusters, true);
-			return [];
+			return;
 		}
 
 		for (const context of kubeConfig.getContexts()) {
@@ -121,7 +87,7 @@ export class ClusterDataProvider extends DataProvider {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 			}
-			clusterNodes.push(clusterNode);
+			this.nodes.push(clusterNode);
 		}
 
 		// Update async status of the deployments (flux commands take a while to run)
@@ -129,12 +95,9 @@ export class ClusterDataProvider extends DataProvider {
 
 		statusBar.stopLoadingTree();
 		setVSCodeContext(ContextId.LoadingClusters, false);
-		this.clusterNodes = clusterNodes;
 
 		const t2 = Date.now();
 		console.log('loadClusterNodes ∆', t2 - t1);
-		// return clusterNodes;
-		return;
 	}
 
 }

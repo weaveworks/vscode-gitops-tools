@@ -126,8 +126,8 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 				return [new TreeNode('Loading...')];
 			}
 		} else {
-			this.treeItems = await this.buildTree();
-			return this.treeItems;
+			this.nodes = await this.buildTree();
+			return this.nodes;
 		}
 	}
 }

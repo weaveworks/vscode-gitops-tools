@@ -23,11 +23,10 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
    * Creates Source tree view items for the currently selected kubernetes cluster.
    * @returns Source tree view items to display.
    */
-	async buildTree(): Promise<NamespaceNode[]> {
-		return [];
+	async loadRootNodes() {
 		statusBar.startLoadingTree();
 
-		const treeNodes: SourceNode[] = [];
+		const sourceNodes: SourceNode[] = [];
 
 		setVSCodeContext(ContextId.LoadingSources, true);
 
@@ -42,29 +41,28 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 
 		// add git repositories to the tree
 		for (const gitRepository of sortByMetadataName(gitRepositories)) {
-			treeNodes.push(new GitRepositoryNode(gitRepository));
+			sourceNodes.push(new GitRepositoryNode(gitRepository));
 		}
 
 		// add oci repositories to the tree
 		for (const ociRepository of sortByMetadataName(ociRepositories)) {
-			treeNodes.push(new OCIRepositoryNode(ociRepository));
+			sourceNodes.push(new OCIRepositoryNode(ociRepository));
 		}
 
 		for (const helmRepository of sortByMetadataName(helmRepositories)) {
-			treeNodes.push(new HelmRepositoryNode(helmRepository));
+			sourceNodes.push(new HelmRepositoryNode(helmRepository));
 		}
 
 		// add buckets to the tree
 		for (const bucket of sortByMetadataName(buckets)) {
-			treeNodes.push(new BucketNode(bucket));
+			sourceNodes.push(new BucketNode(bucket));
 		}
 
 		setVSCodeContext(ContextId.LoadingSources, false);
-		setVSCodeContext(ContextId.NoSources, treeNodes.length === 0);
+		setVSCodeContext(ContextId.NoSources, sourceNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		const [groupedNodes] = await groupNodesByNamespace(treeNodes, this.expandNewTree);
+		[this.nodes] = await groupNodesByNamespace(sourceNodes, this.expandNewTree);
 		this.expandNewTree = false;
-		return groupedNodes;
 	}
 }

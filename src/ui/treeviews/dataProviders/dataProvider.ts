@@ -5,22 +5,25 @@ import { TreeNode } from '../nodes/treeNode';
  * Defines tree view data provider base class for all GitOps tree views.
  */
 export class DataProvider implements TreeDataProvider<TreeItem> {
-	protected treeItems: TreeItem[] | null = null;
+	protected nodes: TreeNode[] = [];
+	protected loading = false;
+
 	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
 
 
 	public expandNewTree = false;
 
-	/**
-	 * Reloads tree view item and its children.
-	 * @param treeItem Tree item to refresh.
-	 */
 	public async refresh(treeItem?: TreeItem) {
+		console.log(`${this.constructor.name} refresh`, treeItem);
+
 		if (!treeItem) {
-			// Only clear all root nodes when no node was passed
-			this.treeItems = null;
+			this.reloadData();
 		}
+		this.redraw(treeItem);
+	}
+
+	public async redraw(treeItem?: TreeItem) {
 		this._onDidChangeTreeData.fire(treeItem);
 	}
 
@@ -45,34 +48,50 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		return null;
 	}
 
-	/**
-	 * Gets children for the specified tree element.
-	 * Creates new tree view items for the root node.
-	 * @param element The tree element to get children for.
-	 * @returns Tree element children or empty array.
-	 */
 	public async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-		if (!this.treeItems) {
-			this.treeItems = await this.buildTree();
-		}
-
-		if (element instanceof TreeNode) {
+		if(!element) {
+			return this.getRootNodes();
+		} else if (element instanceof TreeNode) {
 			return element.children;
-		}
-
-		if (!element && this.treeItems) {
-			return this.treeItems;
 		}
 
 		return [];
 	}
 
-	/**
-	 * Creates initial tree view items collection.
-	 * @returns
-	 */
-	buildTree(): Promise<TreeNode[]> {
-		return Promise.resolve([]);
+
+	protected async getRootNodes(): Promise<TreeNode[]> {
+		if (this.loading) {
+			return [];
+		}
+		return this.nodes;
 	}
+
+	async reloadData() {
+		console.log(`started ${this.constructor.name} reloadData`);
+		if(this.loading) {
+			return;
+		}
+
+		this.nodes = [];
+		this.loading = true;
+		await this.loadRootNodes();
+		this.loading = false;
+		this.redraw();
+	}
+
+	async loadRootNodes() {
+		this.nodes = [];
+	}
+
+
+
+
+	// /**
+	//  * Creates initial tree view items collection.
+	//  * @returns
+	//  */
+	// buildTree(): Promise<TreeNode[]> {
+	// 	return Promise.resolve([]);
+	// }
 
 }

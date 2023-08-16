@@ -74,7 +74,7 @@ class FluxTools {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CHECK);
 			const stderr = result?.stderr;
 			if (stderr) {
-				window.showErrorMessage(String(result?.stderr || ''));
+				window.showWarningMessage(String(result?.stderr || ''));
 			}
 			return undefined;
 		}

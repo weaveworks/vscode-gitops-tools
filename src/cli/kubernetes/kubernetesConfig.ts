@@ -72,6 +72,7 @@ async function vscodeOnCurrentContextChanged() {
 	setVSCodeContext(ContextId.NoSources, false);
 	setVSCodeContext(ContextId.NoWorkloads, false);
 	setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
+	setVSCodeContext(ContextId.ClusterUnreachable, false);
 }
 
 /**
