@@ -1,4 +1,4 @@
-import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
+import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { TreeNode } from '../nodes/treeNode';
 
 /**
@@ -6,6 +6,8 @@ import { TreeNode } from '../nodes/treeNode';
  */
 export class DataProvider implements TreeDataProvider<TreeItem> {
 	protected nodes: TreeNode[] = [];
+	protected collapsibleStates = new Map<string, TreeItemCollapsibleState>();
+
 	protected loading = false;
 
 	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
@@ -73,9 +75,11 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 			return;
 		}
 
-		this.nodes = [];
 		this.loading = true;
+		this.saveCollapsibleStates();
+		this.nodes = [];
 		await this.loadRootNodes();
+		this.loadCollapsibleStates();
 		this.loading = false;
 		this.redraw();
 
@@ -87,7 +91,28 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		this.nodes = [];
 	}
 
+	saveCollapsibleStates() {
+		this.collapsibleStates.clear();
 
+		for(const node of this.nodes) {
+			const name = node.resource?.metadata?.name;
+			if(name) {
+				this.collapsibleStates.set(name, node.collapsibleState || TreeItemCollapsibleState.Collapsed);
+			}
+		}
+	}
+
+	loadCollapsibleStates() {
+		for(const node of this.nodes) {
+			const name = node.resource?.metadata?.name;
+			if(name) {
+				const state = this.collapsibleStates.get(name);
+				if(state) {
+					node.collapsibleState = state;
+				}
+			}
+		}
+	}
 
 
 	// /**
