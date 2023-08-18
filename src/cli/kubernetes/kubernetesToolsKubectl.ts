@@ -50,7 +50,7 @@ export async function invokeKubectlCommand(command: string, printOutput = true):
 	const t1 = Date.now();
 	kubectlShellResult = await shell.exec(commandWithArgs);
 	const t2 = Date.now();
-	console.log(`${command} ∆`,  t2 - t1);
+	console.log(`exec ${command} ∆`,  t2 - t1);
 
 
 	if(printOutput) {

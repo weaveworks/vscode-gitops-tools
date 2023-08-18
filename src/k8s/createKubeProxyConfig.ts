@@ -1,5 +1,4 @@
 import * as k8s from '@kubernetes/client-node';
-import { ActionOnInvalid } from '@kubernetes/client-node/dist/config_types';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 
@@ -9,7 +8,11 @@ export function createProxyConfig(port: number) {
 		server: `http://127.0.0.1:${port}`,
 	};
 
-	const user = kubeConfig.getCurrentUser();
+	const user = kubeConfig.getCurrentUser() as any;
+	if(user) {
+		user['exec'] = undefined;
+	}
+
 
 	const context = {
 		name: kubeConfig.getCurrentContext(),

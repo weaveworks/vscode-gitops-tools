@@ -49,6 +49,8 @@ async function createInformer(kc: k8s.KubeConfig, receiver: KubernetesObjectData
 
 	try {
 		await informer.start();
+		console.log('*- informer started', kind);
+
 		registerInformerEvents(informer, receiver);
 		informers.push(informer);
 	} catch (error) {
@@ -58,6 +60,7 @@ async function createInformer(kc: k8s.KubeConfig, receiver: KubernetesObjectData
 
 function registerInformerEvents(informer: k8s.Informer<KubernetesObject>, receiver: KubernetesObjectDataProvider) {
 	informer?.on('add', (obj: KubernetesObject) => {
+
 		receiver.add(obj);
 	});
 
@@ -70,7 +73,6 @@ function registerInformerEvents(informer: k8s.Informer<KubernetesObject>, receiv
 	});
 
 	informer?.on('error', (err: Error) => {
-		console.log('*- informer Error', err);
 		destroyInformers();
 	});
 }

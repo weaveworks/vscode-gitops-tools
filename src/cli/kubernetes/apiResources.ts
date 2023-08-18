@@ -2,6 +2,7 @@ import { telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { createK8sClients } from 'k8s/client';
 
 
 type KindApiParams = {
@@ -73,4 +74,5 @@ export async function loadAvailableResourceKinds() {
 	});
 
 	console.log('apiResources loaded');
+	createK8sClients();
 }

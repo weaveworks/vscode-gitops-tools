@@ -216,6 +216,7 @@ function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: strin
 			cmd = `wsl ${cmd}`;
 		}
 		const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => {
+			// console.warn('RESOLVE', cmd, code, stdout, stderr);
 			resolve({code : code, stdout : stdout, stderr : stderr});
 		});
 		setExecTimeoutKill(proc);
