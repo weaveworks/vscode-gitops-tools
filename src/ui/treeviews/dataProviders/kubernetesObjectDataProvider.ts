@@ -45,21 +45,23 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 			this.nodes?.push(namespaceNode);
 			sortNodes(this.nodes);
 			namespaceNode.expand();
-			this._onDidChangeTreeData.fire(undefined);
+			this.redraw();
 		}
 
 
 		if(namespaceNode.findChildByResource(object)) {
 			this.update(object);
+			namespaceNode.updateLabel();
+			this.redraw(namespaceNode);
 			return;
 		}
 
 		const resourceNode = new GitRepositoryNode(object as GitRepository);
 		namespaceNode.addChild(resourceNode);
 		sortNodes(namespaceNode.children);
-		namespaceNode.updateLabel();
 
-		this._onDidChangeTreeData.fire(namespaceNode);
+		namespaceNode.updateLabel();
+		this.redraw(namespaceNode);
 	}
 
 	public update(object: KubernetesObject) {
@@ -72,7 +74,8 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 		if(node && node.resource) {
 			node.resource = object;
 			node.updateStatus();
-			this._onDidChangeTreeData.fire(node);
+			namespaceNode.updateLabel();
+			this.redraw(namespaceNode);
 		}
 	}
 
@@ -90,11 +93,11 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 			if(namespaceNode.children.length > 0) {
 				// namespace has other children
 				namespaceNode.updateLabel();
-				this._onDidChangeTreeData.fire(namespaceNode);
+				this.redraw(namespaceNode);
 			} else {
 				// namespace has no more children. should be removed
 				this.nodes?.splice(this.nodes?.indexOf(namespaceNode), 1);
-				this._onDidChangeTreeData.fire(undefined);
+				this.redraw(undefined);
 			}
 		}
 	}

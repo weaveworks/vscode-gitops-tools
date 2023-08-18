@@ -115,12 +115,4 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	}
 
 
-	// /**
-	//  * Creates initial tree view items collection.
-	//  * @returns
-	//  */
-	// buildTree(): Promise<TreeNode[]> {
-	// 	return Promise.resolve([]);
-	// }
-
 }
