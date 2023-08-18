@@ -300,8 +300,8 @@
 				},
 				"gitops.execTimeout": {
 					"type": "string",
-					"default": "0",
-					"description": "Seconds until SIGKILL for every shell exec (except `kubectl proxy`). Set to 0 for no timeout."
+					"default": "60",
+					"description": "Seconds until SIGTERM for every shell exec (except `kubectl proxy`). Set to 0 for no timeout."
 				}
 			}
 		},
