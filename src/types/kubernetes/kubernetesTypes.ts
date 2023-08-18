@@ -78,5 +78,3 @@ export interface LocalObjectReference {
 export interface KubernetesJSON {
 	[key: string]: unknown;
 }
-
-

@@ -6,11 +6,31 @@ import { NamespaceNode } from '../nodes/namespaceNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { TreeNode } from '../nodes/treeNode';
 import { DataProvider } from './dataProvider';
+import { ApiState, apiState } from 'cli/kubernetes/apiResources';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { clusterDataProvider } from '../treeViews';
 
 /**
  * Superclass for data providers that group objects by namespace: Source and Workload data providers
  */
 export abstract class KubernetesObjectDataProvider extends DataProvider {
+
+	protected async getRootNodes(): Promise<TreeNode[]> {
+		if(apiState === ApiState.Loading) {
+			return infoNodes(InfoNode.LoadingApi);
+		}
+
+		if(apiState === ApiState.ClusterUnreachable) {
+			return infoNodes(InfoNode.ClusterUnreachable);
+		}
+
+		// return empty array so that vscode welcome view with embedded link "Enable Gitops ..." is shown
+		if(clusterDataProvider.currentContextIsGitOpsNotEnabled()) {
+			return [];
+		}
+
+		return super.getRootNodes();
+	}
 
 	public namespaceNodeTreeItems(): NamespaceNode[] {
 		return (this.nodes?.filter(node => node instanceof NamespaceNode) as NamespaceNode[] || []);
@@ -45,21 +65,23 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 			this.nodes?.push(namespaceNode);
 			sortNodes(this.nodes);
 			namespaceNode.expand();
-			this._onDidChangeTreeData.fire(undefined);
+			this.redraw();
 		}
 
 
 		if(namespaceNode.findChildByResource(object)) {
 			this.update(object);
+			namespaceNode.updateLabel();
+			this.redraw(namespaceNode);
 			return;
 		}
 
 		const resourceNode = new GitRepositoryNode(object as GitRepository);
 		namespaceNode.addChild(resourceNode);
 		sortNodes(namespaceNode.children);
-		namespaceNode.updateLabel();
 
-		this._onDidChangeTreeData.fire(namespaceNode);
+		namespaceNode.updateLabel();
+		this.redraw(namespaceNode);
 	}
 
 	public update(object: KubernetesObject) {
@@ -72,7 +94,8 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 		if(node && node.resource) {
 			node.resource = object;
 			node.updateStatus();
-			this._onDidChangeTreeData.fire(node);
+			namespaceNode.updateLabel();
+			this.redraw(namespaceNode);
 		}
 	}
 
@@ -90,11 +113,11 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 			if(namespaceNode.children.length > 0) {
 				// namespace has other children
 				namespaceNode.updateLabel();
-				this._onDidChangeTreeData.fire(namespaceNode);
+				this.redraw(namespaceNode);
 			} else {
 				// namespace has no more children. should be removed
 				this.nodes?.splice(this.nodes?.indexOf(namespaceNode), 1);
-				this._onDidChangeTreeData.fire(undefined);
+				this.redraw(undefined);
 			}
 		}
 	}
@@ -110,7 +133,7 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 		});
 
 		// rebuild top level nodes or the tree will not redraw
-		[this.nodes] = await groupNodesByNamespace(resourceNodes, true);
+		[this.nodes] = await groupNodesByNamespace(resourceNodes, true, true);
 		this.redraw();
 	}
 

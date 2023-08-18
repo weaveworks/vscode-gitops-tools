@@ -1,12 +1,15 @@
+// kills them dead even if child processes are not joined correctly
+import tkill from 'tree-kill';
+import isRunning from 'is-running';
+
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
 import { Progress, ProgressLocation, window, workspace } from 'vscode';
 
+
 import { GlobalStateKey } from 'data/globalState';
 import { globalState } from 'extension';
 import { output } from './output';
-
-// 🚧 WORK IN PROGRESS.
 
 /**
  * Ignore `"vs-kubernetes.use-wsl" setting.
@@ -212,7 +215,10 @@ function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: strin
 		if (getUseWsl()) {
 			cmd = `wsl ${cmd}`;
 		}
-		const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => resolve({code : code, stdout : stdout, stderr : stderr}));
+		const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => {
+			// console.warn('RESOLVE', cmd, code, stdout, stderr);
+			resolve({code : code, stdout : stdout, stderr : stderr});
+		});
 		setExecTimeoutKill(proc);
 		if (stdin) {
 			proc.stdin?.end(stdin);
@@ -242,7 +248,16 @@ function setExecTimeoutKill(proc: ChildProcess) {
 
 	setTimeout(() => {
 		if (proc.exitCode === null) {
-			proc.kill(9);
+			console.warn('timeout SIGTERM', proc.pid, proc.spawnargs.join(' '));
+			// make sure all child processes are killed
+			tkill(proc.pid, 15);
+
+			setTimeout(() => {
+				if (isRunning(proc.pid)) {
+					console.warn('timeout SIGKILL', proc.pid, proc.spawnargs.join(' '));
+					tkill(proc.pid, 9);
+				}
+			}, 2000);
 		}
 	}, timeoutSeconds * 1000);
 }

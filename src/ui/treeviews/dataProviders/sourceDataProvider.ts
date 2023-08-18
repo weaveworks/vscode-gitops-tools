@@ -4,7 +4,7 @@ import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
-import { groupNodesByNamespace } from '../../../utils/treeNodeUtils';
+import { groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { BucketNode } from '../nodes/source/bucketNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';
@@ -20,14 +20,11 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 
 	/**
    * Creates Source tree view items for the currently selected kubernetes cluster.
-   * @returns Source tree view items to display.
    */
 	async loadRootNodes() {
 		statusBar.startLoadingTree();
 
 		const sourceNodes: SourceNode[] = [];
-
-		setVSCodeContext(ContextId.LoadingSources, true);
 
 		// Fetch all sources asynchronously and at once
 		const [gitRepositories, ociRepositories, helmRepositories, buckets, _] = await Promise.all([
@@ -57,10 +54,8 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 			sourceNodes.push(new BucketNode(bucket));
 		}
 
-		setVSCodeContext(ContextId.LoadingSources, false);
-		setVSCodeContext(ContextId.NoSources, sourceNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		[this.nodes] = await groupNodesByNamespace(sourceNodes, false);
+		[this.nodes] = await groupNodesByNamespace(sourceNodes, false, true);
 	}
 }

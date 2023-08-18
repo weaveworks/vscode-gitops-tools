@@ -105,14 +105,12 @@ export async function getFluxControllers(context?: string): Promise<Deployment[]
 
 	if (fluxDeploymentShellResult?.code !== 0) {
 		console.warn(`Failed to get flux controllers: ${fluxDeploymentShellResult?.stderr}`);
-		setVSCodeContext(ContextId.ClusterUnreachable, true);
 
 		if (fluxDeploymentShellResult?.stderr && !notAnErrorServerNotRunning.test(fluxDeploymentShellResult.stderr)) {
 			telemetry.sendError(TelemetryError.FAILED_TO_GET_FLUX_CONTROLLERS);
 		}
 		return [];
 	}
-	setVSCodeContext(ContextId.ClusterUnreachable, false);
 
 
 	return parseJsonItems(fluxDeploymentShellResult.stdout);
@@ -129,11 +127,11 @@ export async function getChildrenOfWorkload(
 	workload: 'kustomize' | 'helm',
 	name: string,
 	namespace: string,
-): Promise<KubernetesObject[]> {
+): Promise<KubernetesObject[] | undefined> {
 	// return [];
 	const resourceKinds = getAvailableResourcePlurals();
 	if (!resourceKinds) {
-		return [];
+		return;
 	}
 
 	const labelNameSelector = `-l ${workload}.toolkit.fluxcd.io/name=${name}`;
@@ -145,7 +143,7 @@ export async function getChildrenOfWorkload(
 	if (!shellResult || shellResult.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
 		window.showErrorMessage(`Failed to get ${workload} created resources: ${shellResult?.stderr}`);
-		return [];
+		return;
 	}
 
 	return parseJsonItems(shellResult.stdout);

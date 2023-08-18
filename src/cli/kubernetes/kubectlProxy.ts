@@ -1,12 +1,12 @@
-import * as k8s from '@kubernetes/client-node';
+import { KubeConfig } from '@kubernetes/client-node';
 import { ChildProcess } from 'child_process';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import * as shell from 'cli/shell/exec';
-import { createK8sClients, destroyK8sClients } from 'k8s/client';
+import { destroyK8sClients } from 'k8s/client';
 import { createProxyConfig } from 'k8s/createKubeProxyConfig';
 
 // let isConnecting = false;
 export let proxyProc: ChildProcess | undefined;
+export let kubeProxyConfig: KubeConfig | undefined;
 
 // tries to keep alive the `kubectl proxy` process
 // if process dies or errors out it will be stopped
@@ -50,10 +50,8 @@ function procListen(p: ChildProcess) {
 		console.log(`~proxy ${p.pid} STDOUT: ${data}`);
 		if(data.includes('Starting to serve on')) {
 			const port = parseInt(data.split(':')[1].trim());
-			const proxyKc = createProxyConfig(port);
-			console.log('kubeproxy config ready');
-
-			createK8sClients(proxyKc);
+			kubeProxyConfig = createProxyConfig(port);
+			console.log('~kubeproxy config ready');
 		}
 	});
 
@@ -71,10 +69,11 @@ export async function stopKubeProxy() {
 			proxyProc.kill();
 		}
 		proxyProc = undefined;
+		kubeProxyConfig = undefined;
 
 		destroyK8sClients();
 		// isConnecting = false;
-		console.log('stopped kube proxy');
+		console.log('~stopped kube proxy');
 	}
 
 }

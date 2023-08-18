@@ -163,7 +163,7 @@
 				"command": "gitops.createKustomization",
 				"title": "Create Kustomization from Path",
 				"icon": "$(add)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled",
 				"category": "GitOps"
 			},
 			{
@@ -171,28 +171,28 @@
 				"title": "Add Source",
 				"category": "GitOps",
 				"icon": "$(add)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.addKustomization",
 				"title": "Add Kustomization",
 				"category": "GitOps",
 				"icon": "$(add)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.expandAllSources",
 				"title": "Expand All",
 				"category": "GitOps",
 				"icon": "$(expand-all)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:noSources"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.expandAllWorkloads",
 				"title": "Expand All",
 				"category": "GitOps",
 				"icon": "$(expand-all)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:noWorkloads"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.deleteWorkload",
@@ -217,7 +217,12 @@
 			},
 			{
 				"command": "gitops.editor.openResource",
-				"title": "View Config",
+				"title": "Open Resource",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.editor.openKubeconfig",
+				"title": "Open Kubeconfig",
 				"category": "GitOps"
 			},
 			{
@@ -300,80 +305,21 @@
 				},
 				"gitops.execTimeout": {
 					"type": "string",
-					"default": "0",
-					"description": "Seconds until SIGKILL for every shell exec (except `kubectl proxy`). Set to 0 for no timeout."
+					"default": "60",
+					"description": "Seconds until SIGTERM for every shell exec (except `kubectl proxy`). Set to 0 for no timeout."
 				}
 			}
 		},
 		"viewsWelcome": [
 			{
-				"view": "gitops.views.clusters",
-				"contents": "Loading Clusters ...",
-				"when": "gitops:loadingClusters"
-			},
-			{
-				"view": "gitops.views.clusters",
-				"contents": "No clusters.",
-				"when": "!gitops:loadingClusters && gitops:noClusters"
-			},
-			{
-				"view": "gitops.views.clusters",
-				"contents": "Failed to load cluster contexts.",
-				"when": "!gitops:loadingClusters && gitops:failedToLoadClusterContexts"
-			},
-			{
 				"view": "gitops.views.sources",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources.",
-				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.sources",
-				"contents": "Loading Sources ...",
-				"when": "gitops:loadingSources && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.sources",
-				"contents": "No sources.",
-				"when": "!gitops:loadingSources && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noSources && !gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.sources",
-				"contents": "Cluster unreachable",
-				"when": "gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.sources",
-				"contents": "Select GitOps Cluster to view Sources.",
-				"when": "gitops:noClusterSelected"
+				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.workloads",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads.",
 				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.workloads",
-				"contents": "Loading Workloads ...",
-				"when": "gitops:loadingWorkloads && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.workloads",
-				"contents": "No workloads.",
-				"when": "!gitops:loadingWorkloads && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noWorkloads && !gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.workloads",
-				"contents": "Cluster unreachable",
-				"when": "gitops:clusterUnreachable"
-			},
-			{
-				"view": "gitops.views.workloads",
-				"contents": "Select GitOps Cluster to view Workloads.",
-				"when": "gitops:noClusterSelected"
-			},
-			{
-				"view": "gitops.views.documentation",
-				"contents": "Loading Topics ..."
 			}
 		],
 		"menus": {
@@ -385,6 +331,11 @@
 				},
 				{
 					"command": "extension.vsKubernetesUseKubeconfig",
+					"group": "1",
+					"when": "view == gitops.views.clusters"
+				},
+				{
+					"command": "gitops.editor.openKubeconfig",
 					"group": "1",
 					"when": "view == gitops.views.clusters"
 				},
@@ -624,6 +575,7 @@
 	],
 	"devDependencies": {
 		"@types/git-url-parse": "^9.0.1",
+		"@types/is-running": "^2.1.0",
 		"@types/mocha": "^9.1.0",
 		"@types/node": "14.x",
 		"@types/semver": "^7.3.9",
@@ -651,9 +603,11 @@
 		"@kubernetes/client-node": "^0.18.1",
 		"@types/ws": "^8.5.4",
 		"@vscode/extension-telemetry": "^0.4.7",
+		"bufferutil": "^4.0.7",
 		"change-case": "^4.1.2",
 		"extract-zip": "^2.0.1",
 		"git-url-parse": "^13.0.0",
+		"is-running": "^2.1.0",
 		"jose": ">=2.0.6",
 		"lite-deep-equal": "^1.0.6",
 		"parse-path": ">=5.0.0",
@@ -663,6 +617,8 @@
 		"shelljs": "^0.8.5",
 		"tinytim": "^0.1.1",
 		"tough-cookie": ">=4.1.3",
+		"tree-kill": "^1.2.2",
+		"utf-8-validate": "^6.0.3",
 		"uuid": "^9.0.0",
 		"vite": ">=2.9.16",
 		"vscode-kubernetes-tools-api": "^1.3.0",
