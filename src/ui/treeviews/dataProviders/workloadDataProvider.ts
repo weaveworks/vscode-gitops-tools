@@ -7,7 +7,7 @@ import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
-import { TreeNode } from '../nodes/treeNode';
+import { TreeNode, TreeNodeIcon } from '../nodes/treeNode';
 import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
@@ -61,6 +61,8 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	 * @param workloadNode target workload node
 	 */
 	async updateWorkloadChildren(workloadNode: WorkloadNode) {
+		workloadNode.children = [new TreeNode('Loading...')];
+
 		if (workloadNode instanceof KustomizationNode) {
 			this.updateKustomizationChildren(workloadNode);
 		} else if (workloadNode instanceof HelmReleaseNode) {
@@ -73,12 +75,19 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const namespace = node.resource.metadata?.namespace || '';
 		const resourceTree = await fluxTools.tree(name, namespace);
 
-		if (!resourceTree || !resourceTree.resources) {
+		if (!resourceTree) {
+			node.children = [failedToLoad()];
+			this.redraw(node);
+			return;
+		}
+
+		if (!resourceTree.resources) {
 			node.children = [new TreeNode('No Resources')];
 			this.redraw(node);
 			return;
 		}
 
+		node.children = [];
 		await addFluxTreeToNode(node, resourceTree.resources);
 		this.redraw(node);
 	}
@@ -90,9 +99,16 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
 
-		if (!workloadChildren || workloadChildren.length === 0) {
+		if (!workloadChildren) {
+			node.children = [failedToLoad()];
+			this.redraw(node);
+			return;
+		}
+
+		if (workloadChildren.length === 0) {
 			node.children = [new TreeNode('No Resources')];
 			this.redraw(node);
+			return;
 		}
 
 		const childrenNodes = workloadChildren.map(child => new AnyResourceNode(child));
@@ -101,4 +117,10 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		this.redraw(node);
 	}
+}
+
+function failedToLoad() {
+	const node = new TreeNode('Failed to load');
+	node.setIcon(TreeNodeIcon.Disconnected);
+	return node;
 }

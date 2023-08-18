@@ -8,7 +8,7 @@ export function createProxyConfig(port: number) {
 		server: `http://127.0.0.1:${port}`,
 	};
 
-	const user = kubeConfig.getCurrentUser() as any;
+	const user = {...kubeConfig.getCurrentUser()};
 	if(user) {
 		user['exec'] = undefined;
 	}

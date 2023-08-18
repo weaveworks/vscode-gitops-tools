@@ -67,7 +67,7 @@ class FluxTools {
 		if (!enabledFluxChecks()) {
 			return undefined;
 		}
-
+		console.warn('NOOOOO flux check');
 		const result = await shell.execWithOutput(safesh`flux check --context ${context}`, { revealOutputView: false });
 
 		if (result.code !== 0) {

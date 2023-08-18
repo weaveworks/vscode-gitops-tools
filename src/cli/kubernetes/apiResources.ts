@@ -1,8 +1,9 @@
-import { telemetry } from 'extension';
+import { setVSCodeContext, telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { createK8sClients } from 'k8s/client';
+import { ContextId } from 'types/extensionIds';
 
 
 type KindApiParams = {
@@ -45,6 +46,7 @@ export async function loadAvailableResourceKinds() {
 	if (kindsShellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
 		console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
+		setVSCodeContext(ContextId.ClusterUnreachable, true);
 		return;
 	}
 
@@ -74,5 +76,7 @@ export async function loadAvailableResourceKinds() {
 	});
 
 	console.log('apiResources loaded');
+
+	setVSCodeContext(ContextId.ClusterUnreachable, false);
 	createK8sClients();
 }
