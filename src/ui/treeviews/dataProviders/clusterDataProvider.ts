@@ -55,7 +55,7 @@ export class ClusterDataProvider extends DataProvider {
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async loadRootNodes() {
-		console.log('started loadClusterNodes');
+		console.log('+ started loadClusterNodes');
 
 		const t1 = Date.now();
 
@@ -97,7 +97,6 @@ export class ClusterDataProvider extends DataProvider {
 		setVSCodeContext(ContextId.LoadingClusters, false);
 
 		const t2 = Date.now();
-		console.log('loadClusterNodes ∆', t2 - t1);
+		console.log('+ loadClusterNodes ∆', t2 - t1);
 	}
-
 }

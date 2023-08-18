@@ -93,9 +93,9 @@ async function initData() {
 	kubeProxyKeepAlive();
 
 	// wait for kubectl proxy to start for faster initial tree view loading
-	setTimeout(() => {
-		createTreeViews();
-	}, 200);
+	// setTimeout(() => {
+	createTreeViews();
+	// }, 200);
 }
 
 function listenExtensionConfigChanged() {

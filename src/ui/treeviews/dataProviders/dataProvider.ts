@@ -13,7 +13,8 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 
 
 	public async refresh(treeItem?: TreeItem) {
-		console.log(`${this.constructor.name} refresh`, treeItem);
+		const allStr = treeItem ? 'ALL' : treeItem;
+		console.log(`## ${this.constructor.name} refresh`, allStr);
 
 		if (!treeItem) {
 			this.reloadData();
@@ -21,7 +22,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		this.redraw(treeItem);
 	}
 
-	public async redraw(treeItem?: TreeItem) {
+	public redraw(treeItem?: TreeItem) {
 		this._onDidChangeTreeData.fire(treeItem);
 	}
 
@@ -65,7 +66,9 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	}
 
 	async reloadData() {
-		console.log(`started ${this.constructor.name} reloadData`);
+		const t1 = Date.now();
+
+		console.log(`# started ${this.constructor.name} reloadData`);
 		if(this.loading) {
 			return;
 		}
@@ -75,6 +78,9 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		await this.loadRootNodes();
 		this.loading = false;
 		this.redraw();
+
+		const t2 = Date.now();
+		console.log(`# finished ${this.constructor.name} reloadData ∆`, t2 - t1);
 	}
 
 	async loadRootNodes() {
