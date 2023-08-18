@@ -3,18 +3,14 @@ import { getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/k
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
-import { Namespace } from 'types/kubernetes/kubernetesTypes';
 import { statusBar } from 'ui/statusBar';
-import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
+import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
-import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
-import { refreshWorkloadsTreeView } from '../treeViews';
-import { DataProvider } from './dataProvider';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
 
 /**-
@@ -24,10 +20,8 @@ import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
 export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	/**
    * Creates Workload tree nodes for the currently selected kubernetes cluster.
-   * @returns Workload tree nodes to display.
    */
-	async buildTree(): Promise<NamespaceNode[]> {
-		return [];
+	async loadRootNodes() {
 		statusBar.startLoadingTree();
 
 		const workloadNodes: WorkloadNode[] = [];
@@ -58,10 +52,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		setVSCodeContext(ContextId.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		const [groupedNodes] = await groupNodesByNamespace(workloadNodes, false);
-		// this.expandNewTree = false;
-
-		return groupedNodes;
+		[this.nodes] = await groupNodesByNamespace(workloadNodes, false, true);
 	}
 
 	/**
@@ -84,12 +75,12 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		if (!resourceTree || !resourceTree.resources) {
 			node.children = [new TreeNode('No Resources')];
-			refreshWorkloadsTreeView(node);
+			this.redraw(node);
 			return;
 		}
 
-		addFluxTreeToNode(node, resourceTree.resources);
-		refreshWorkloadsTreeView(node);
+		await addFluxTreeToNode(node, resourceTree.resources);
+		this.redraw(node);
 	}
 
 
@@ -97,37 +88,17 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const name = node.resource.metadata?.name || '';
 		const namespace = node.resource.metadata?.namespace || '';
 
-		// const targetNamespace = node.resource.spec.targetNamespace;
 		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
-
 
 		if (!workloadChildren || workloadChildren.length === 0) {
 			node.children = [new TreeNode('No Resources')];
-			refreshWorkloadsTreeView(node);
-			return;
+			this.redraw(node);
 		}
 
 		const childrenNodes = workloadChildren.map(child => new AnyResourceNode(child));
 		const [groupedNodes, clusterScopedNodes] = await groupNodesByNamespace(childrenNodes);
 		node.children = [...groupedNodes, ...clusterScopedNodes];
 
-		refreshWorkloadsTreeView(node);
-	}
-
-	/**
-	 * This is called when the tree node is being expanded.
-	 * @param workloadNode target node or undefined when at the root level.
-	 */
-	async getChildren(workloadNode?: KustomizationNode | HelmReleaseNode) {
-		if (workloadNode) {
-			if (workloadNode.children.length) {
-				return workloadNode.children;
-			} else {
-				return [new TreeNode('Loading...')];
-			}
-		} else {
-			this.nodes = await this.buildTree();
-			return this.nodes;
-		}
+		this.redraw(node);
 	}
 }

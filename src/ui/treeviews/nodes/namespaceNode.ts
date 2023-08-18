@@ -27,7 +27,7 @@ export class NamespaceNode extends TreeNode {
 		return [Kind.Namespace];
 	}
 
-	updateLabel() {
+	updateLabel(withIcons = true) {
 		if(this.collapsibleState === TreeItemCollapsibleState.Collapsed) {
 			const totalLength = this.children.length;
 			let readyLength = 0;
@@ -43,10 +43,12 @@ export class NamespaceNode extends TreeNode {
 			const lengthLabel = totalLength === readyLength ? `${totalLength}` : `${readyLength}/${totalLength}`;
 			this.label = `${this.resource.metadata?.name} (${lengthLabel})`;
 
-			if(readyLength === totalLength) {
-				this.setIcon(TreeNodeIcon.Success);
-			} else {
-				this.setIcon(TreeNodeIcon.Error);
+			if(withIcons) {
+				if(readyLength === totalLength) {
+					this.setIcon(TreeNodeIcon.Success);
+				} else {
+					this.setIcon(TreeNodeIcon.Warning);
+				}
 			}
 		} else {
 			this.label = `${this.resource.metadata?.name}`;

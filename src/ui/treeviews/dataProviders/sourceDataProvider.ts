@@ -20,7 +20,6 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 
 	/**
    * Creates Source tree view items for the currently selected kubernetes cluster.
-   * @returns Source tree view items to display.
    */
 	async loadRootNodes() {
 		statusBar.startLoadingTree();
@@ -61,6 +60,6 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 		setVSCodeContext(ContextId.NoSources, sourceNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		[this.nodes] = await groupNodesByNamespace(sourceNodes, false);
+		[this.nodes] = await groupNodesByNamespace(sourceNodes, false, true);
 	}
 }

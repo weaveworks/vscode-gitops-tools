@@ -77,7 +77,7 @@ export class ClusterNode extends TreeNode {
 			// load flux system deployments
 			this.expand();
 			revealClusterNode(this, {
-				expand: true,
+				expand: false,
 			});
 			for (const deployment of fluxControllers) {
 				this.addChild(new ClusterDeploymentNode(deployment));

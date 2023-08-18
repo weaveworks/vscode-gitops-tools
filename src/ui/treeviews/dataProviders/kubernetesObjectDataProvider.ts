@@ -113,7 +113,7 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 		});
 
 		// rebuild top level nodes or the tree will not redraw
-		[this.nodes] = await groupNodesByNamespace(resourceNodes, true);
+		[this.nodes] = await groupNodesByNamespace(resourceNodes, true, true);
 		this.redraw();
 	}
 
