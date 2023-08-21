@@ -1,7 +1,7 @@
 # GitOps Tools for Visual Studio Code
 
-[![VSCode Marketplace Link](https://vsmarketplacebadges.dev/version-short/weaveworks.vscode-gitops-tools.png)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
-[![Install Counter](https://vsmarketplacebadges.dev/installs/weaveworks.vscode-gitops-tools.png)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
+[![VSCode Marketplace Link](https://img.shields.io/visual-studio-marketplace/v/weaveworks.vscode-gitops-tools)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
+[![Install Counter](https://img.shields.io/visual-studio-marketplace/i/weaveworks.vscode-gitops-tools)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
 
 Weaveworks [GitOps Tools Extension](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) provides an intuitive way to manage, troubleshoot and operate your Kubernetes environment following the GitOps operating model. GitOps accelerates your development lifecycle and simplifies your continuous delivery pipelines. The extension is built on Flux (a CNCF open source project). To learn more about the Flux GitOps toolkit, visit [fluxcd.io]
 
@@ -145,11 +145,9 @@ We rely on the Kubernetes extension to discover and connect to clusters. If you 
 
 Confirm that your configuration context shows in a terminal running `kubectl config get-contexts`
 
+### _Switching from an unreachable cluster context to a working cluster_
 
-
-
-
-
+Unreachable or laggy clusters can create long running that cluster resource queries that finish after switching to a working cluster context. This can lead to the slow cluster data overwriting the current cluster treeview. **Clusters** -> **Refresh** button will reinitialize the views with current data. Timeout settings can be adjusted under **GitOps** section in VSCode Settings.
 
 # Data and Telemetry
 

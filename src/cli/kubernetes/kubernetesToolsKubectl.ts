@@ -1,6 +1,7 @@
 import { window, workspace } from 'vscode';
 import * as kubernetes from 'vscode-kubernetes-tools-api';
 
+import * as shell from 'cli/shell/exec';
 import { output } from 'cli/shell/output';
 import { telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';
@@ -45,8 +46,11 @@ export async function invokeKubectlCommand(command: string, printOutput = true):
 	}
 
 	let kubectlShellResult;
-	const commandWithArgs = `${command} --request-timeout ${getRequestTimeout()}`;
-	kubectlShellResult = await kubectl.invokeCommand(commandWithArgs);
+	const commandWithArgs = `kubectl ${command} --request-timeout ${getRequestTimeout()}`;
+	const t1 = Date.now();
+	kubectlShellResult = await shell.exec(commandWithArgs);
+	const t2 = Date.now();
+	console.log(`exec ${command} ∆`,  t2 - t1);
 
 
 	if(printOutput) {
@@ -75,6 +79,6 @@ export async function invokeKubectlCommand(command: string, printOutput = true):
 
 
 function getRequestTimeout(): string {
-	return workspace.getConfiguration('gitops').get('kubectlTimeout') || '20s';
+	return workspace.getConfiguration('gitops').get('kubectlRequestTimeout') || '20s';
 }
 

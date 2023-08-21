@@ -3,8 +3,8 @@ import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vs
 import { kubeProxyKeepAlive, stopKubeProxy } from 'cli/kubernetes/kubectlProxy';
 import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
-import { checkFluxPrerequisites, checkWGEVersion } from './cli/checkVersions';
-import { shell } from './cli/shell/exec';
+import { checkWGEVersion } from './cli/checkVersions';
+import * as shell from './cli/shell/exec';
 import { registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
@@ -13,7 +13,7 @@ import { Telemetry } from './data/telemetry';
 import { succeeded } from './types/errorable';
 import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensionIds';
 import { TelemetryEvent } from './types/telemetryEventNames';
-import { promptToInstallFlux } from './ui/promptToInstallFlux';
+import { checkInstalledFluxVersion } from './ui/promptToInstallFlux';
 import { statusBar } from './ui/statusBar';
 import { clusterDataProvider, createTreeViews, sourceDataProvider, workloadDataProvider } from './ui/treeviews/treeViews';
 
@@ -45,19 +45,10 @@ export async function activate(context: ExtensionContext) {
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
-	await syncKubeConfig(true);
-	await initKubeConfigWatcher();
-
-	// schedule load start for tree view data for the event loop
-	// then k8s proxy client is more likely to be ready
-	// to avoid the slower kubectl client
-	setTimeout(() => {
-		createTreeViews();
-	}, 100);
+	initData();
 
 	// register gitops commands
 	registerCommands(context);
-	kubeProxyKeepAlive();
 
 	telemetry.send(TelemetryEvent.Startup);
 
@@ -80,12 +71,8 @@ export async function activate(context: ExtensionContext) {
 	}
 
 
-	// show error notification if flux is not installed
-	const fluxFoundResult = await promptToInstallFlux();
-	if (succeeded(fluxFoundResult)) {
-		// check flux prerequisites
-		checkFluxPrerequisites();
-	}
+	// check version and show 'Install Flux?' dialog if flux is not installed
+	checkInstalledFluxVersion();
 
 	checkWGEVersion();
 
@@ -98,6 +85,17 @@ export async function activate(context: ExtensionContext) {
 		}};
 
 	return api;
+}
+
+async function initData() {
+	syncKubeConfig(true);
+	initKubeConfigWatcher();
+	kubeProxyKeepAlive();
+
+	// wait for kubectl proxy to start for faster initial tree view loading
+	// setTimeout(() => {
+	createTreeViews();
+	// }, 200);
 }
 
 function listenExtensionConfigChanged() {
@@ -119,21 +117,12 @@ export function enabledWGE(): boolean {
 }
 
 export function enabledFluxChecks(): boolean {
-	let ret = workspace.getConfiguration('gitops').get('doFluxCheck');
-	if(ret === false) {
-		return false;
-	} else {
-		return true;
-	}
+	return workspace.getConfiguration('gitops').get('doFluxCheck') || false;
+
 }
 
 export function suppressDebugMessages(): boolean {
-	let ret = workspace.getConfiguration('gitops').get('suppressDebugMessages');
-	if(ret === true) {
-		return true;
-	} else {
-		return false;
-	}
+	return workspace.getConfiguration('gitops').get('suppressDebugMessages') || false;
 }
 
 

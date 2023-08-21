@@ -3,30 +3,25 @@ import { getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/k
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
-import { Namespace } from 'types/kubernetes/kubernetesTypes';
 import { statusBar } from 'ui/statusBar';
-import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
+import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
-import { NamespaceNode } from '../nodes/namespaceNode';
-import { TreeNode } from '../nodes/treeNode';
+import { TreeNode, TreeNodeIcon } from '../nodes/treeNode';
 import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
-import { refreshWorkloadsTreeView } from '../treeViews';
-import { DataProvider } from './dataProvider';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
 
-/**
+/**-
  * Defines data provider for loading Kustomizations
  * and Helm Releases in Workloads Tree View.
  */
 export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	/**
    * Creates Workload tree nodes for the currently selected kubernetes cluster.
-   * @returns Workload tree nodes to display.
    */
-	async buildTree(): Promise<NamespaceNode[]> {
+	async loadRootNodes() {
 		statusBar.startLoadingTree();
 
 		const workloadNodes: WorkloadNode[] = [];
@@ -57,10 +52,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		setVSCodeContext(ContextId.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
-		const [groupedNodes] = await groupNodesByNamespace(workloadNodes, this.expandNewTree);
-		this.expandNewTree = false;
-
-		return groupedNodes;
+		[this.nodes] = await groupNodesByNamespace(workloadNodes, false, true);
 	}
 
 	/**
@@ -69,6 +61,8 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	 * @param workloadNode target workload node
 	 */
 	async updateWorkloadChildren(workloadNode: WorkloadNode) {
+		workloadNode.children = [new TreeNode('Loading...')];
+
 		if (workloadNode instanceof KustomizationNode) {
 			this.updateKustomizationChildren(workloadNode);
 		} else if (workloadNode instanceof HelmReleaseNode) {
@@ -81,14 +75,21 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const namespace = node.resource.metadata?.namespace || '';
 		const resourceTree = await fluxTools.tree(name, namespace);
 
-		if (!resourceTree || !resourceTree.resources) {
-			node.children = [new TreeNode('No Resources')];
-			refreshWorkloadsTreeView(node);
+		if (!resourceTree) {
+			node.children = [failedToLoad()];
+			this.redraw(node);
 			return;
 		}
 
-		addFluxTreeToNode(node, resourceTree.resources);
-		refreshWorkloadsTreeView(node);
+		if (!resourceTree.resources) {
+			node.children = [new TreeNode('No Resources')];
+			this.redraw(node);
+			return;
+		}
+
+		node.children = [];
+		await addFluxTreeToNode(node, resourceTree.resources);
+		this.redraw(node);
 	}
 
 
@@ -96,13 +97,17 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const name = node.resource.metadata?.name || '';
 		const namespace = node.resource.metadata?.namespace || '';
 
-		// const targetNamespace = node.resource.spec.targetNamespace;
 		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
 
+		if (!workloadChildren) {
+			node.children = [failedToLoad()];
+			this.redraw(node);
+			return;
+		}
 
-		if (!workloadChildren || workloadChildren.length === 0) {
+		if (workloadChildren.length === 0) {
 			node.children = [new TreeNode('No Resources')];
-			refreshWorkloadsTreeView(node);
+			this.redraw(node);
 			return;
 		}
 
@@ -110,23 +115,12 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const [groupedNodes, clusterScopedNodes] = await groupNodesByNamespace(childrenNodes);
 		node.children = [...groupedNodes, ...clusterScopedNodes];
 
-		refreshWorkloadsTreeView(node);
+		this.redraw(node);
 	}
+}
 
-	/**
-	 * This is called when the tree node is being expanded.
-	 * @param workloadNode target node or undefined when at the root level.
-	 */
-	async getChildren(workloadNode?: KustomizationNode | HelmReleaseNode) {
-		if (workloadNode) {
-			if (workloadNode.children.length) {
-				return workloadNode.children;
-			} else {
-				return [new TreeNode('Loading...')];
-			}
-		} else {
-			this.treeItems = await this.buildTree();
-			return this.treeItems;
-		}
-	}
+function failedToLoad() {
+	const node = new TreeNode('Failed to load');
+	node.setIcon(TreeNodeIcon.Disconnected);
+	return node;
 }

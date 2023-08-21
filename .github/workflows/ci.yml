@@ -15,7 +15,7 @@ jobs:
 
       - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # pin@v3
         with:
-          node-version: '19'
+          node-version: '20'
 
       - run: npm install
 

@@ -34,7 +34,7 @@ export async function addFluxTreeToNode(node: TreeNode, resourceTree: FluxTreeRe
 }
 
 // returns grouped by namespace, and ugroupable (cluster scoped) nodes
-export async function groupNodesByNamespace(nodes: TreeNode[], expandAll = false): Promise<[NamespaceNode[], TreeNode[]]>  {
+export async function groupNodesByNamespace(nodes: TreeNode[], expandAll = false, withIcons = false): Promise<[NamespaceNode[], TreeNode[]]>  {
 	const namespaces: Namespace[] = getCachedNamespaces();
 	const namespaceNodes: NamespaceNode[] = [];
 
@@ -51,7 +51,7 @@ export async function groupNodesByNamespace(nodes: TreeNode[], expandAll = false
 				}
 			});
 			nsNode.collapsibleState = expandAll ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.Collapsed;
-			nsNode.updateLabel();
+			nsNode.updateLabel(withIcons);
 
 			namespaceNodes.push(nsNode);
 		}

@@ -83,6 +83,7 @@ export const enum CommandId {
 export const enum ContextId {
 	NoClusterSelected = 'gitops:noClusterSelected',
 	CurrentClusterGitOpsNotEnabled = 'gitops:currentClusterGitOpsNotEnabled',
+	ClusterUnreachable = 'gitops:clusterUnreachable',
 
 	LoadingClusters = 'gitops:loadingClusters',
 	LoadingSources = 'gitops:loadingSources',

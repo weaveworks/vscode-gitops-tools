@@ -26,7 +26,7 @@ export async function k8sList<T extends FluxObject>(kind: Kind): Promise<T[] | u
 
 export async function k8sListNamespaces(): Promise<Namespace[] | undefined> {
 	if(!k8sCoreApi) {
-		console.log('k8sList no k8sCustomApi');
+		console.log('k8sList no k8sCoreApi');
 		return;
 	}
 

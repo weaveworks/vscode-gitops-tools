@@ -1,12 +1,15 @@
+// kills them dead even if child processes are not joined correctly
+import tkill from 'tree-kill';
+import isRunning from 'is-running';
+
 import { ChildProcess } from 'child_process';
 import * as shelljs from 'shelljs';
 import { Progress, ProgressLocation, window, workspace } from 'vscode';
 
+
 import { GlobalStateKey } from 'data/globalState';
 import { globalState } from 'extension';
 import { output } from './output';
-
-// 🚧 WORK IN PROGRESS.
 
 /**
  * Ignore `"vs-kubernetes.use-wsl" setting.
@@ -60,14 +63,14 @@ export type ShellHandler = (code: number, stdout: string, stderr: string)=> void
 /**
  * Return `true` when user has windows OS.
  */
-function isWindows(): boolean {
+export function isWindows(): boolean {
 	return (process.platform === WINDOWS) && !getUseWsl();
 }
 
 /**
  * Return `true` when user has Unix OS.
  */
-function isUnix(): boolean {
+export function isUnix(): boolean {
 	return !isWindows();
 }
 
@@ -75,7 +78,7 @@ function isUnix(): boolean {
  * Return user platform.
  * For WSL - return Linux.
  */
-function platform(): Platform {
+export function platform(): Platform {
 	if (getUseWsl()) {
 		return Platform.Linux;
 	}
@@ -115,7 +118,9 @@ function execOpts({ cwd }: { cwd?: string; } = {}): shelljs.ExecOptions {
 	return opts;
 }
 
-async function exec(cmd: string, { cwd, callback }: { cwd?: string; callback?: ProcCallback;} = {}): Promise<ShellResult> {
+export async function exec(
+	cmd: string,
+	{ cwd, callback }: { cwd?: string; callback?: ProcCallback; } = {}): Promise<ShellResult> {
 	try {
 		return await execCore(cmd, execOpts({ cwd }), callback);
 	} catch (e) {
@@ -133,7 +138,7 @@ async function exec(cmd: string, { cwd, callback }: { cwd?: string; callback?: P
  * Execute command in cli and send the text to vscode output view.
  * @param cmd CLI command string
  */
-async function execWithOutput(
+export async function execWithOutput(
 	cmd: string,
 	{
 		revealOutputView = true,
@@ -168,6 +173,7 @@ async function execWithOutput(
 				cwd: cwd,
 				env: execOpts().env,
 			});
+			setExecTimeoutKill(childProcess);
 
 			let stdout = '';
 			let stderr = '';
@@ -190,6 +196,10 @@ async function execWithOutput(
 			childProcess.on('exit', (code: number) => {
 				output.send('\n', { newline: 'none', revealOutputView: false });
 
+				if(code === null) {
+					stderr = `exec '${cmd}' timed out.\nSTDERR: ${stderr}`;
+				}
+
 				resolve({
 					code,
 					stdout,
@@ -205,7 +215,11 @@ function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: strin
 		if (getUseWsl()) {
 			cmd = `wsl ${cmd}`;
 		}
-		const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => resolve({code : code, stdout : stdout, stderr : stderr}));
+		const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) => {
+			// console.warn('RESOLVE', cmd, code, stdout, stderr);
+			resolve({code : code, stdout : stdout, stderr : stderr});
+		});
+		setExecTimeoutKill(proc);
 		if (stdin) {
 			proc.stdin?.end(stdin);
 		}
@@ -215,7 +229,7 @@ function execCore(cmd: string, opts: any, callback?: ProcCallback, stdin?: strin
 	});
 }
 
-function execProc(cmd: string): ChildProcess {
+export function execProc(cmd: string): ChildProcess {
 	const opts = execOpts();
 	if (getUseWsl()) {
 		cmd = `wsl ${cmd}`;
@@ -225,12 +239,26 @@ function execProc(cmd: string): ChildProcess {
 	return proc;
 }
 
-export const shell = {
-	isWindows : isWindows,
-	isUnix : isUnix,
-	platform : platform,
-	exec : exec,
-	execProc: execProc,
-	// execCore : execCore,
-	execWithOutput: execWithOutput,
-};
+function setExecTimeoutKill(proc: ChildProcess) {
+	const timeout = workspace.getConfiguration('gitops').get('execTimeout') as string;
+	const timeoutSeconds = parseInt(timeout);
+	if (isNaN(timeoutSeconds) || timeoutSeconds === 0) {
+		return;
+	}
+
+	setTimeout(() => {
+		if (proc.exitCode === null) {
+			console.warn('timeout SIGTERM', proc.pid, proc.spawnargs.join(' '));
+			// make sure all child processes are killed
+			tkill(proc.pid, 15);
+
+			setTimeout(() => {
+				if (isRunning(proc.pid)) {
+					console.warn('timeout SIGKILL', proc.pid, proc.spawnargs.join(' '));
+					tkill(proc.pid, 9);
+				}
+			}, 2000);
+		}
+	}, timeoutSeconds * 1000);
+}
+

@@ -1,18 +1,17 @@
 import { Uri, env, window } from 'vscode';
 
 import { fluxTools } from 'cli/flux/fluxTools';
-import { ShellResult, shell, shellCodeError } from 'cli/shell/exec';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import * as shell from 'cli/shell/exec';
+import { ShellResult, shellCodeError } from 'cli/shell/exec';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { ClusterMetadata } from 'data/globalState';
 import { globalState, telemetry } from 'extension';
-import { failed } from 'types/errorable';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
-import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { parseJson } from 'utils/jsonUtils';
 import { checkAzurePrerequisites } from './azurePrereqs';
 import { getAzureMetadata } from './getAzureMetadata';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 export type AzureClusterProvider = ClusterProvider.AKS | ClusterProvider.AzureARC;
 

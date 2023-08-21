@@ -1,6 +1,6 @@
 import safesh from 'shell-escape-tag';
 
-import { telemetry } from 'extension';
+import { setVSCodeContext, telemetry } from 'extension';
 import { k8sList } from 'k8s/list';
 import { Bucket } from 'types/flux/bucket';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
@@ -15,6 +15,7 @@ import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { getAvailableResourcePlurals } from './apiResources';
 import { window } from 'vscode';
+import { ContextId } from 'types/extensionIds';
 /**
  * RegExp for the Error that should not be sent in telemetry.
  * Server doesn't have a resource type = when GitOps not enabled
@@ -104,11 +105,13 @@ export async function getFluxControllers(context?: string): Promise<Deployment[]
 
 	if (fluxDeploymentShellResult?.code !== 0) {
 		console.warn(`Failed to get flux controllers: ${fluxDeploymentShellResult?.stderr}`);
+
 		if (fluxDeploymentShellResult?.stderr && !notAnErrorServerNotRunning.test(fluxDeploymentShellResult.stderr)) {
 			telemetry.sendError(TelemetryError.FAILED_TO_GET_FLUX_CONTROLLERS);
 		}
 		return [];
 	}
+
 
 	return parseJsonItems(fluxDeploymentShellResult.stdout);
 }
@@ -124,11 +127,11 @@ export async function getChildrenOfWorkload(
 	workload: 'kustomize' | 'helm',
 	name: string,
 	namespace: string,
-): Promise<KubernetesObject[]> {
+): Promise<KubernetesObject[] | undefined> {
 	// return [];
 	const resourceKinds = getAvailableResourcePlurals();
 	if (!resourceKinds) {
-		return [];
+		return;
 	}
 
 	const labelNameSelector = `-l ${workload}.toolkit.fluxcd.io/name=${name}`;
@@ -140,7 +143,7 @@ export async function getChildrenOfWorkload(
 	if (!shellResult || shellResult.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
 		window.showErrorMessage(`Failed to get ${workload} created resources: ${shellResult?.stderr}`);
-		return [];
+		return;
 	}
 
 	return parseJsonItems(shellResult.stdout);
