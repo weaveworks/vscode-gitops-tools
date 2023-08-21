@@ -64,7 +64,7 @@ export function createTreeViews() {
 		showCollapseAll: true,
 	});
 
-
+	documentationDataProvider.refresh();
 }
 
 function listenCollapsableState() {

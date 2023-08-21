@@ -370,10 +370,6 @@
 				"view": "gitops.views.workloads",
 				"contents": "Select GitOps Cluster to view Workloads.",
 				"when": "gitops:noClusterSelected"
-			},
-			{
-				"view": "gitops.views.documentation",
-				"contents": "Loading Topics ..."
 			}
 		],
 		"menus": {

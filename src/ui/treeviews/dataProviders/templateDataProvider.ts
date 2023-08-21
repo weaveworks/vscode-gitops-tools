@@ -5,7 +5,7 @@ import { DataProvider } from './dataProvider';
 
 export class TemplateDataProvider extends DataProvider {
 
-	async buildTree(): Promise<GitOpsTemplateNode[]> {
+	async loadRootNodes() {
 		const nodes = [];
 
 		const templates = await getGitOpsTemplates();
@@ -14,6 +14,6 @@ export class TemplateDataProvider extends DataProvider {
 			nodes.push(new GitOpsTemplateNode(template));
 		}
 
-		return nodes;
+		this.nodes = nodes;
 	}
 }
