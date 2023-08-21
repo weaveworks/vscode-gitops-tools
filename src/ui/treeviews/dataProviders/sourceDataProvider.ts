@@ -4,7 +4,7 @@ import { setVSCodeContext } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
-import { groupNodesByNamespace } from '../../../utils/treeNodeUtils';
+import { groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { BucketNode } from '../nodes/source/bucketNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';

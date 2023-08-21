@@ -81,18 +81,7 @@ export const enum CommandId {
  * GitOps context types.
  */
 export const enum ContextId {
-	NoClusterSelected = 'gitops:noClusterSelected',
 	CurrentClusterGitOpsNotEnabled = 'gitops:currentClusterGitOpsNotEnabled',
-	ClusterUnreachable = 'gitops:clusterUnreachable',
-
-	LoadingClusters = 'gitops:loadingClusters',
-	LoadingSources = 'gitops:loadingSources',
-	LoadingWorkloads = 'gitops:loadingWorkloads',
-
-	FailedToLoadClusterContexts = 'gitops:failedToLoadClusterContexts',
-	NoClusters = 'gitops:noClusters',
-	NoSources = 'gitops:noSources',
-	NoWorkloads = 'gitops:noWorkloads',
 
 	IsDev = 'gitops:isDev',
 	IsWGE = 'gitops:isWGE',

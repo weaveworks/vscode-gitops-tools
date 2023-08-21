@@ -66,8 +66,6 @@ export class ClusterDataProvider extends DataProvider {
 		this.nodes = [];
 
 		if (!kubeConfig) {
-			setVSCodeContext(ContextId.NoClusters, false);
-			setVSCodeContext(ContextId.FailedToLoadClusterContexts, true);
 			setVSCodeContext(ContextId.LoadingClusters, false);
 			statusBar.stopLoadingTree();
 			return;

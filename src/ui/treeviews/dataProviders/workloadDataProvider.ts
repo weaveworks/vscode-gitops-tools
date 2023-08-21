@@ -76,7 +76,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const resourceTree = await fluxTools.tree(name, namespace);
 
 		if (!resourceTree) {
-			node.children = [failedToLoad()];
+			node.children = [this.makeFailedToLoadNode()];
 			this.redraw(node);
 			return;
 		}
@@ -100,7 +100,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
 
 		if (!workloadChildren) {
-			node.children = [failedToLoad()];
+			node.children = [this.makeFailedToLoadNode()];
 			this.redraw(node);
 			return;
 		}
@@ -119,8 +119,3 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	}
 }
 
-function failedToLoad() {
-	const node = new TreeNode('Failed to load');
-	node.setIcon(TreeNodeIcon.Disconnected);
-	return node;
-}
