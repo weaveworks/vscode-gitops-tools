@@ -34,20 +34,20 @@ export type Pod = Required<k8s.V1Pod> & {
  */
 export const enum Kind {
 	List = 'List',
-	Bucket = 'Bucket',
-	GitRepository = 'GitRepository',
-	OCIRepository = 'OCIRepository',
-	HelmRepository = 'HelmRepository',
-	HelmRelease = 'HelmRelease',
-	Kustomization = 'Kustomization',
-	Deployment = 'Deployment',
+	Bucket = 'Bucket.source.toolkit.fluxcd.io',
+	GitRepository = 'GitRepository.source.toolkit.fluxcd.io',
+	OCIRepository = 'OCIRepository.source.toolkit.fluxcd.io',
+	HelmRepository = 'HelmRepository.source.toolkit.fluxcd.io',
+	HelmRelease = 'HelmRelease.helm.toolkit.fluxcd.io',
+	Kustomization = 'Kustomization.kustomize.toolkit.fluxcd.io',
+	Deployment = 'Deployment.apps',
 	Namespace = 'Namespace',
 	Node = 'Node',
 	Pod = 'Pod',
 
 	ConfigMap = 'ConfigMap',
 
-	GitOpsTemplate = 'GitOpsTemplate',
+	GitOpsTemplate = 'GitOpsTemplate.templates.weave.works',
 }
 
 
@@ -78,5 +78,3 @@ export interface LocalObjectReference {
 export interface KubernetesJSON {
 	[key: string]: unknown;
 }
-
-
