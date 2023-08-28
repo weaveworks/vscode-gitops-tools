@@ -4,13 +4,22 @@ import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { createK8sClients } from 'k8s/client';
 import { ContextId } from 'types/extensionIds';
+import { refreshAllTreeViews, refreshResourcesTreeViews } from 'commands/refreshTreeViews';
+import { restartKubeProxy } from './kubectlProxy';
 
+export enum ApiState {
+	Loading,
+	Loaded,
+	ClusterUnreachable,
+}
 
 type KindApiParams = {
 	plural: string; // configmaps, deployments, gitrepositories, ...
 	group: string; // '', apps, source.toolkit.fluxcd.io, ...
 	version: string; // v1, v1beta2, ...
 };
+
+export let apiState: ApiState = ApiState.Loading;
 
 /*
  * Current cluster supported kubernetes resource kinds.
@@ -41,12 +50,13 @@ export function getAPIParams(kind: Kind): KindApiParams | undefined {
 
 export async function loadAvailableResourceKinds() {
 	apiResources = undefined;
+	apiState = ApiState.Loading;
 
 	const kindsShellResult = await invokeKubectlCommand('api-resources --verbs=list -o wide');
 	if (kindsShellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
 		console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
-		setVSCodeContext(ContextId.ClusterUnreachable, true);
+		apiState = ApiState.ClusterUnreachable;
 		return;
 	}
 
@@ -77,6 +87,12 @@ export async function loadAvailableResourceKinds() {
 
 	console.log('apiResources loaded');
 
-	setVSCodeContext(ContextId.ClusterUnreachable, false);
+	apiState = ApiState.Loaded;
 	createK8sClients();
+	await restartKubeProxy();
+
+	// give proxy init callbacks time to fire
+	setTimeout(() => {
+		refreshResourcesTreeViews();
+	}, 100);
 }

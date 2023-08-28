@@ -6,11 +6,21 @@ import { NamespaceNode } from '../nodes/namespaceNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { TreeNode } from '../nodes/treeNode';
 import { DataProvider } from './dataProvider';
+import { ApiState, apiState } from 'cli/kubernetes/apiResources';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 
 /**
  * Superclass for data providers that group objects by namespace: Source and Workload data providers
  */
 export abstract class KubernetesObjectDataProvider extends DataProvider {
+
+	protected async getRootNodes(): Promise<TreeNode[]> {
+		if(apiState === ApiState.Loading) {
+			return infoNodes(InfoNode.LoadingApi);
+		}
+
+		return super.getRootNodes();
+	}
 
 	public namespaceNodeTreeItems(): NamespaceNode[] {
 		return (this.nodes?.filter(node => node instanceof NamespaceNode) as NamespaceNode[] || []);

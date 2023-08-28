@@ -59,23 +59,12 @@ export class ClusterDataProvider extends DataProvider {
 
 		const t1 = Date.now();
 
-		setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
-		setVSCodeContext(ContextId.NoClusters, false);
-		setVSCodeContext(ContextId.LoadingClusters, true);
+
 		statusBar.startLoadingTree();
-		this.nodes = [];
-
-		if (!kubeConfig) {
-			setVSCodeContext(ContextId.LoadingClusters, false);
-			statusBar.stopLoadingTree();
-			return;
-		}
-
 
 		let currentContextTreeItem: ClusterNode | undefined;
 
 		if (kubeConfig.getContexts().length === 0) {
-			setVSCodeContext(ContextId.NoClusters, true);
 			return;
 		}
 
@@ -92,7 +81,6 @@ export class ClusterDataProvider extends DataProvider {
 		currentContextTreeItem?.updateNodeContext();
 
 		statusBar.stopLoadingTree();
-		setVSCodeContext(ContextId.LoadingClusters, false);
 
 		const t2 = Date.now();
 		console.log('+ loadClusterNodes ∆', t2 - t1);

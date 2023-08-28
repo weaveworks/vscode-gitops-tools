@@ -16,7 +16,7 @@ import { loadKubeConfigPath } from './kubernetesConfigWatcher';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
 
-export const kubeConfig: k8s.KubeConfig  = new k8s.KubeConfig();
+export const kubeConfig: k8s.KubeConfig = new k8s.KubeConfig();
 
 // reload the kubeconfig via kubernetes-tools. fire events if things have changed
 export async function syncKubeConfig(forceReloadResourceKinds = false) {
@@ -42,12 +42,16 @@ export async function syncKubeConfig(forceReloadResourceKinds = false) {
 	}
 }
 
-async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig,  forceReloadResourceKinds: boolean) {
+async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig, forceReloadResourceKinds: boolean) {
 	const contextsListChanged = kcContextsListChanged(kubeConfig, newKubeConfig);
 	const contextChanged = kcCurrentContextChanged(kubeConfig, newKubeConfig);
 
 	// load the changed kubeconfig globally so that the following code use the new config
 	kubeConfig.loadFromString(newKubeConfig.exportConfig(), {onInvalidEntry: ActionOnInvalid.FILTER});
+
+	if (contextChanged || contextsListChanged) {
+		refreshClustersTreeView();
+	}
 
 	if (contextChanged || forceReloadResourceKinds) {
 		loadAvailableResourceKinds();
@@ -55,24 +59,8 @@ async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig,  forceReloadReso
 
 	if (contextChanged) {
 		console.log('currentContext changed', kubeConfig.getCurrentContext());
-		vscodeOnCurrentContextChanged();
-		await restartKubeProxy();
-		// give proxy a chance to start
-		setTimeout(() => {
-			refreshAllTreeViews();
-		}, 100);
-	} else if (contextsListChanged) {
-		refreshClustersTreeView();
+		setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
 	}
-}
-
-async function vscodeOnCurrentContextChanged() {
-	setVSCodeContext(ContextId.NoClusterSelected, false);
-	setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
-	setVSCodeContext(ContextId.NoSources, false);
-	setVSCodeContext(ContextId.NoWorkloads, false);
-	setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
-	setVSCodeContext(ContextId.ClusterUnreachable, false);
 }
 
 /**

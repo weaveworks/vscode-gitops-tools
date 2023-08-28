@@ -1,5 +1,8 @@
+import { ApiState, apiState } from 'cli/kubernetes/apiResources';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { TreeNode, TreeNodeIcon } from '../nodes/treeNode';
+import { TreeNode } from '../nodes/treeNode';
+
 
 /**
  * Defines tree view data provider base class for all GitOps tree views.
@@ -15,8 +18,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 
 
 	public async refresh(treeItem?: TreeItem) {
-		const allStr = treeItem ? 'ALL' : treeItem;
-		console.log(`## ${this.constructor.name} refresh`, allStr);
+		console.log(`## ${this.constructor.name} refresh`, treeItem ? treeItem : 'ALL');
 
 		if (!treeItem) {
 			this.reloadData();
@@ -61,9 +63,16 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 
 
 	protected async getRootNodes(): Promise<TreeNode[]> {
-		if (this.loading) {
-			return [];
+		if(apiState === ApiState.ClusterUnreachable) {
+			return infoNodes(InfoNode.ClusterUnreachable);
 		}
+		if (this.loading) {
+			return infoNodes(InfoNode.Loading);
+		}
+		if(this.nodes.length === 0) {
+			return infoNodes(InfoNode.NoResources);
+		}
+
 		return this.nodes;
 	}
 
@@ -114,31 +123,8 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		}
 	}
 
-	makeFailedToLoadNode() {
-		const node = new TreeNode('Failed to load');
-		node.setIcon(TreeNodeIcon.Disconnected);
-		return node;
-	}
-
-	makeNoResourcesNode() {
-		const node = new TreeNode('No Resources');
-		return node;
-	}
-
-	makeLoadingNode() {
-		const node = new TreeNode('Loading...');
-		return node;
-	}
-
-
-	makeClusterUnreachableNode() {
-		const node = new TreeNode('Cluster unreachable');
-		node.setIcon(TreeNodeIcon.Disconnected);
-		return node;
-	}
-
-
-
 
 
 }
+
+

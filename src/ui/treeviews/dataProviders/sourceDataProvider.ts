@@ -26,8 +26,6 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 
 		const sourceNodes: SourceNode[] = [];
 
-		setVSCodeContext(ContextId.LoadingSources, true);
-
 		// Fetch all sources asynchronously and at once
 		const [gitRepositories, ociRepositories, helmRepositories, buckets, _] = await Promise.all([
 			getGitRepositories(),
@@ -56,8 +54,6 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 			sourceNodes.push(new BucketNode(bucket));
 		}
 
-		setVSCodeContext(ContextId.LoadingSources, false);
-		setVSCodeContext(ContextId.NoSources, sourceNodes.length === 0);
 		statusBar.stopLoadingTree();
 
 		[this.nodes] = await groupNodesByNamespace(sourceNodes, false, true);
