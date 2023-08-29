@@ -1,4 +1,4 @@
-import { MarkdownString, ThemeColor, ThemeIcon } from 'vscode';
+import { MarkdownString, ThemeColor, ThemeIcon, TreeItemCollapsibleState } from 'vscode';
 
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
@@ -17,6 +17,7 @@ export class GitOpsTemplateNode extends TreeNode {
 		this.resource = template;
 
 		this.setIcon(new ThemeIcon('notebook-render-output', new ThemeColor('editorWidget.foreground')));
+		this.collapsibleState = TreeItemCollapsibleState.None;
 	}
 
 	get tooltip() {
