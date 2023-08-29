@@ -7,7 +7,7 @@ import { syncKubeConfig } from './kubernetesConfig';
 
 
 let fsWacher: vscode.FileSystemWatcher | undefined;
-let kubeConfigPath: string | undefined;
+export let kubeConfigPath: string | undefined;
 
 export async function loadKubeConfigPath(): Promise<string | undefined> {
 	const configuration = await kubernetes.extension.configuration.v1_1;

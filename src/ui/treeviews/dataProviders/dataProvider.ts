@@ -2,6 +2,7 @@ import { ApiState, apiState } from 'cli/kubernetes/apiResources';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { TreeNode } from '../nodes/treeNode';
+import { KubeConfigState, kubeConfigState } from 'cli/kubernetes/kubernetesConfig';
 
 
 /**
@@ -16,7 +17,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
 
-
+	/* if treeItem is undefined, refresh all tree items */
 	public async refresh(treeItem?: TreeItem) {
 		console.log(`## ${this.constructor.name} refresh`, treeItem ? treeItem : 'ALL');
 
@@ -26,7 +27,9 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		this.redraw(treeItem);
 	}
 
+	/* if treeItem is undefined, redraw all tree items */
 	public redraw(treeItem?: TreeItem) {
+
 		this._onDidChangeTreeData.fire(treeItem);
 	}
 
@@ -63,10 +66,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 
 
 	protected async getRootNodes(): Promise<TreeNode[]> {
-		if(apiState === ApiState.ClusterUnreachable) {
-			return infoNodes(InfoNode.ClusterUnreachable);
-		}
-		if (this.loading) {
+		if (this.loading || kubeConfigState === KubeConfigState.Loading) {
 			return infoNodes(InfoNode.Loading);
 		}
 		if(this.nodes.length === 0) {

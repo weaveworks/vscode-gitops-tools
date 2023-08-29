@@ -163,7 +163,7 @@
 				"command": "gitops.createKustomization",
 				"title": "Create Kustomization from Path",
 				"icon": "$(add)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled",
 				"category": "GitOps"
 			},
 			{
@@ -171,28 +171,28 @@
 				"title": "Add Source",
 				"category": "GitOps",
 				"icon": "$(add)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.addKustomization",
 				"title": "Add Kustomization",
 				"category": "GitOps",
 				"icon": "$(add)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.expandAllSources",
 				"title": "Expand All",
 				"category": "GitOps",
 				"icon": "$(expand-all)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:noSources"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.expandAllWorkloads",
 				"title": "Expand All",
 				"category": "GitOps",
 				"icon": "$(expand-all)",
-				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && !gitops:noWorkloads"
+				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.deleteWorkload",
@@ -312,34 +312,14 @@
 		},
 		"viewsWelcome": [
 			{
-				"view": "gitops.views.clusters",
-				"contents": "Failed to load cluster contexts.",
-				"when": "gitops:failedToLoadClusterContexts"
-			},
-			{
 				"view": "gitops.views.sources",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources.",
-				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected"
-			},
-
-			{
-				"view": "gitops.views.sources",
-				"contents": "Select GitOps Cluster to view Sources.",
-				"when": "gitops:noClusterSelected"
+				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
 			},
 			{
 				"view": "gitops.views.workloads",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads.",
-				"when": "gitops:currentClusterGitOpsNotEnabled"
-			},
-			{
-				"view": "gitops.views.workloads",
-				"contents": "Select GitOps Cluster to view Workloads.",
-				"when": "gitops:noClusterSelected"
-			},
-			{
-				"view": "gitops.views.documentation",
-				"contents": "Loading Topics ..."
+				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
 			}
 		],
 		"menus": {

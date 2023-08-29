@@ -6,6 +6,7 @@ import { createK8sClients } from 'k8s/client';
 import { ContextId } from 'types/extensionIds';
 import { refreshAllTreeViews, refreshResourcesTreeViews } from 'commands/refreshTreeViews';
 import { restartKubeProxy } from './kubectlProxy';
+import { clusterDataProvider } from 'ui/treeviews/treeViews';
 
 export enum ApiState {
 	Loading,
@@ -57,6 +58,9 @@ export async function loadAvailableResourceKinds() {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
 		console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
 		apiState = ApiState.ClusterUnreachable;
+		setVSCodeContext(ContextId.ClusterUnreachable, true);
+		clusterDataProvider.updateCurrentContextChildNodes();
+		refreshResourcesTreeViews();
 		return;
 	}
 
@@ -88,6 +92,9 @@ export async function loadAvailableResourceKinds() {
 	console.log('apiResources loaded');
 
 	apiState = ApiState.Loaded;
+	setVSCodeContext(ContextId.ClusterUnreachable, false);
+	clusterDataProvider.updateCurrentContextChildNodes();
+
 	createK8sClients();
 	await restartKubeProxy();
 

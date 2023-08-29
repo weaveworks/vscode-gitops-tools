@@ -83,6 +83,7 @@ export const enum CommandId {
  */
 export const enum ContextId {
 	CurrentClusterGitOpsNotEnabled = 'gitops:currentClusterGitOpsNotEnabled',
+	ClusterUnreachable = 'gitops:clusterUnreachable',
 
 	IsDev = 'gitops:isDev',
 	IsWGE = 'gitops:isWGE',

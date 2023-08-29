@@ -65,6 +65,7 @@ export class ClusterDataProvider extends DataProvider {
 		let currentContextTreeItem: ClusterNode | undefined;
 
 		if (kubeConfig.getContexts().length === 0) {
+			statusBar.stopLoadingTree();
 			return;
 		}
 
@@ -77,12 +78,23 @@ export class ClusterDataProvider extends DataProvider {
 			this.nodes.push(clusterNode);
 		}
 
-		// Update async status of the deployments (flux commands take a while to run)
-		currentContextTreeItem?.updateNodeContext();
-
 		statusBar.stopLoadingTree();
 
 		const t2 = Date.now();
 		console.log('+ loadClusterNodes ∆', t2 - t1);
+	}
+
+	public updateCurrentContextChildNodes() {
+		const currentContextTreeItem = this.getCurrentClusterNode();
+		currentContextTreeItem?.updateNodeChildren();
+	}
+
+	public currentContextIsGitOpsNotEnabled() {
+		const node = this.getCurrentClusterNode();
+		// undefined is not false
+		if(node && typeof node.isGitOpsEnabled === 'boolean') {
+			return !node.isGitOpsEnabled;
+		}
+		return false;
 	}
 }

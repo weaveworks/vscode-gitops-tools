@@ -67,7 +67,6 @@ class FluxTools {
 		if (!enabledFluxChecks()) {
 			return undefined;
 		}
-		console.warn('NOOOOO flux check');
 		const result = await shell.execWithOutput(safesh`flux check --context ${context}`, { revealOutputView: false });
 
 		if (result.code !== 0) {
@@ -134,11 +133,17 @@ class FluxTools {
 	 */
 	async tree(name: string, namespace: string): Promise<undefined | FluxTreeResources> {
 
-		const treeShellResult = await shell.exec(`flux tree kustomization ${name} -n ${namespace} -o json`);
+		const cmd = `flux tree kustomization ${name} -n ${namespace} -o json`;
+		const treeShellResult = await shell.exec(cmd);
 
 		if (treeShellResult.code !== 0) {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_TREE);
-			window.showErrorMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${treeShellResult?.stderr}`);
+			let errorData = treeShellResult.stderr;
+			if (treeShellResult.code === null) {
+				errorData += `Command '${cmd}' timed out`;
+			}
+			// + (treeShellResult.code === null ? 'Command timed out' : '';
+			window.showErrorMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${errorData}`);
 			return;
 		}
 
