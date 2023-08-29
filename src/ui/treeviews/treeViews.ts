@@ -1,9 +1,9 @@
-import { TreeItem, TreeItemCollapsibleState, TreeView, window } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, TreeView, commands, window } from 'vscode';
 
 import { isAzureProvider } from 'cli/azure/azureTools';
-import { globalState } from 'extension';
+import { globalState, setVSCodeContext } from 'extension';
 import { Errorable } from 'types/errorable';
-import { TreeViewId } from 'types/extensionIds';
+import { CommandId, ContextId, TreeViewId } from 'types/extensionIds';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
@@ -119,6 +119,9 @@ export function refreshClustersTreeView(node?: TreeNode) {
  * Reloads sources tree view for the selected cluster.
  */
 export function refreshSourcesTreeView(node?: TreeNode) {
+	// const g = await commands.executeCommand('getContext', ContextId.CurrentClusterGitOpsNotEnabled);
+	// const u = await commands.executeCommand('getContext', ContextId.ClusterUnreachable);
+
 	sourceDataProvider.refresh(node);
 }
 

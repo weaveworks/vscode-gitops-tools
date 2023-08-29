@@ -10,69 +10,79 @@ import { ContextId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { refreshClustersTreeView } from 'ui/treeviews/treeViews';
 import { kcContextsListChanged, kcCurrentContextChanged, kcTextChanged } from 'utils/kubeConfigCompare';
-import { loadAvailableResourceKinds } from './apiResources';
+import { loadAvailableResourceKinds as loadApiResources } from './apiResources';
 import { restartKubeProxy } from './kubectlProxy';
 import { loadKubeConfigPath } from './kubernetesConfigWatcher';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
+export enum KubeConfigState {
+	/* effectively KubeConfigState.Loading has meaning obnly at the extension init
+	 * because subsequent kubeconfig updates are swapped-in atomically. but we keep track of it anyway
+	*/
+	Loading,
+	Loaded,
+	Failed,
+	NoContextSelected,
+}
 
-export const kubeConfig: k8s.KubeConfig  = new k8s.KubeConfig();
+export let kubeConfigState: KubeConfigState = KubeConfigState.Loading;
+
+export const kubeConfig: k8s.KubeConfig = new k8s.KubeConfig();
 
 // reload the kubeconfig via kubernetes-tools. fire events if things have changed
 export async function syncKubeConfig(forceReloadResourceKinds = false) {
 	console.log('syncKubeConfig');
 
+	kubeConfigState = KubeConfigState.Loading;
 	const configShellResult = await invokeKubectlCommand('config view');
 
 	if (configShellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_KUBECTL_CONFIG);
 		const path = await loadKubeConfigPath();
 		window.showErrorMessage(`Failed to load kubeconfig: ${path} ${shellCodeError(configShellResult)}`);
+		kubeConfigState = KubeConfigState.Failed;
 		return;
 	}
 
 	const newKubeConfig = new k8s.KubeConfig();
 	newKubeConfig.loadFromString(configShellResult.stdout, {onInvalidEntry: ActionOnInvalid.FILTER});
 
+	kubeConfigState = KubeConfigState.Loaded;
 
 	if (kcTextChanged(kubeConfig, newKubeConfig)) {
 		await kubeconfigChanged(newKubeConfig,  forceReloadResourceKinds);
 	} else if(forceReloadResourceKinds) {
-		loadAvailableResourceKinds();
+		loadApiResources();
 	}
 }
 
-async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig,  forceReloadResourceKinds: boolean) {
+
+
+async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig, forceReloadResourceKinds: boolean) {
 	const contextsListChanged = kcContextsListChanged(kubeConfig, newKubeConfig);
 	const contextChanged = kcCurrentContextChanged(kubeConfig, newKubeConfig);
 
 	// load the changed kubeconfig globally so that the following code use the new config
 	kubeConfig.loadFromString(newKubeConfig.exportConfig(), {onInvalidEntry: ActionOnInvalid.FILTER});
 
-	if (contextChanged || forceReloadResourceKinds) {
-		loadAvailableResourceKinds();
+	console.log(kubeConfig.currentContext);
+	if(!currentContextExists()) {
+		kubeConfigState = KubeConfigState.NoContextSelected;
 	}
+
 
 	if (contextChanged) {
 		console.log('currentContext changed', kubeConfig.getCurrentContext());
-		vscodeOnCurrentContextChanged();
-		await restartKubeProxy();
-		// give proxy a chance to start
-		setTimeout(() => {
-			refreshAllTreeViews();
-		}, 100);
+		setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
+		setVSCodeContext(ContextId.ClusterUnreachable, false);
+	}
+
+	if (contextChanged || forceReloadResourceKinds) {
+		refreshClustersTreeView();
+		loadApiResources();
 	} else if (contextsListChanged) {
 		refreshClustersTreeView();
 	}
-}
-
-async function vscodeOnCurrentContextChanged() {
-	setVSCodeContext(ContextId.NoClusterSelected, false);
-	setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
-	setVSCodeContext(ContextId.NoSources, false);
-	setVSCodeContext(ContextId.NoWorkloads, false);
-	setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
-	setVSCodeContext(ContextId.ClusterUnreachable, false);
 }
 
 /**
@@ -98,5 +108,11 @@ export async function setCurrentContext(contextName: string): Promise<undefined 
 	return {
 		isChanged: true,
 	};
+}
+
+
+function currentContextExists() {
+	const name = kubeConfig.currentContext;
+	return !!kubeConfig.getContexts().find(context => context.name === name);
 }
 

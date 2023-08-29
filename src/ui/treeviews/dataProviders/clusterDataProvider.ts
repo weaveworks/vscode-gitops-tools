@@ -59,25 +59,13 @@ export class ClusterDataProvider extends DataProvider {
 
 		const t1 = Date.now();
 
-		setVSCodeContext(ContextId.FailedToLoadClusterContexts, false);
-		setVSCodeContext(ContextId.NoClusters, false);
-		setVSCodeContext(ContextId.LoadingClusters, true);
+
 		statusBar.startLoadingTree();
-		this.nodes = [];
-
-		if (!kubeConfig) {
-			setVSCodeContext(ContextId.NoClusters, false);
-			setVSCodeContext(ContextId.FailedToLoadClusterContexts, true);
-			setVSCodeContext(ContextId.LoadingClusters, false);
-			statusBar.stopLoadingTree();
-			return;
-		}
-
 
 		let currentContextTreeItem: ClusterNode | undefined;
 
 		if (kubeConfig.getContexts().length === 0) {
-			setVSCodeContext(ContextId.NoClusters, true);
+			statusBar.stopLoadingTree();
 			return;
 		}
 
@@ -90,13 +78,23 @@ export class ClusterDataProvider extends DataProvider {
 			this.nodes.push(clusterNode);
 		}
 
-		// Update async status of the deployments (flux commands take a while to run)
-		currentContextTreeItem?.updateNodeContext();
-
 		statusBar.stopLoadingTree();
-		setVSCodeContext(ContextId.LoadingClusters, false);
 
 		const t2 = Date.now();
 		console.log('+ loadClusterNodes ∆', t2 - t1);
+	}
+
+	public updateCurrentContextChildNodes() {
+		const currentContextTreeItem = this.getCurrentClusterNode();
+		currentContextTreeItem?.updateNodeChildren();
+	}
+
+	public currentContextIsGitOpsNotEnabled() {
+		const node = this.getCurrentClusterNode();
+		// undefined is not false
+		if(node && typeof node.isGitOpsEnabled === 'boolean') {
+			return !node.isGitOpsEnabled;
+		}
+		return false;
 	}
 }

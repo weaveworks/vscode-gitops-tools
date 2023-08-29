@@ -12,6 +12,7 @@ import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 
 /**-
  * Defines data provider for loading Kustomizations
@@ -25,8 +26,6 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		statusBar.startLoadingTree();
 
 		const workloadNodes: WorkloadNode[] = [];
-
-		setVSCodeContext(ContextId.LoadingWorkloads, true);
 
 		const [kustomizations, helmReleases, _] = await Promise.all([
 			// Fetch all workloads
@@ -48,8 +47,6 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 			this.updateWorkloadChildren(node);
 		}
 
-		setVSCodeContext(ContextId.LoadingWorkloads, false);
-		setVSCodeContext(ContextId.NoWorkloads, workloadNodes.length === 0);
 		statusBar.stopLoadingTree();
 
 		[this.nodes] = await groupNodesByNamespace(workloadNodes, false, true);
@@ -76,7 +73,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const resourceTree = await fluxTools.tree(name, namespace);
 
 		if (!resourceTree) {
-			node.children = [failedToLoad()];
+			node.children = infoNodes(InfoNode.FailedToLoad);
 			this.redraw(node);
 			return;
 		}
@@ -100,7 +97,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
 
 		if (!workloadChildren) {
-			node.children = [failedToLoad()];
+			node.children = infoNodes(InfoNode.FailedToLoad);
 			this.redraw(node);
 			return;
 		}
@@ -119,8 +116,3 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	}
 }
 
-function failedToLoad() {
-	const node = new TreeNode('Failed to load');
-	node.setIcon(TreeNodeIcon.Disconnected);
-	return node;
-}

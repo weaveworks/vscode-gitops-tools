@@ -1,5 +1,9 @@
+import { ApiState, apiState } from 'cli/kubernetes/apiResources';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { TreeNode } from '../nodes/treeNode';
+import { KubeConfigState, kubeConfigState } from 'cli/kubernetes/kubernetesConfig';
+
 
 /**
  * Defines tree view data provider base class for all GitOps tree views.
@@ -13,10 +17,9 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
 
-
+	/* if treeItem is undefined, refresh all tree items */
 	public async refresh(treeItem?: TreeItem) {
-		const allStr = treeItem ? 'ALL' : treeItem;
-		console.log(`## ${this.constructor.name} refresh`, allStr);
+		console.log(`## ${this.constructor.name} refresh`, treeItem ? treeItem : 'ALL');
 
 		if (!treeItem) {
 			this.reloadData();
@@ -24,7 +27,9 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		this.redraw(treeItem);
 	}
 
+	/* if treeItem is undefined, redraw all tree items */
 	public redraw(treeItem?: TreeItem) {
+
 		this._onDidChangeTreeData.fire(treeItem);
 	}
 
@@ -61,9 +66,13 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 
 
 	protected async getRootNodes(): Promise<TreeNode[]> {
-		if (this.loading) {
-			return [];
+		if (this.loading || kubeConfigState === KubeConfigState.Loading) {
+			return infoNodes(InfoNode.Loading);
 		}
+		if(this.nodes.length === 0) {
+			return infoNodes(InfoNode.NoResources);
+		}
+
 		return this.nodes;
 	}
 
@@ -115,4 +124,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 	}
 
 
+
 }
+
+
