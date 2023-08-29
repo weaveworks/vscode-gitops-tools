@@ -49,6 +49,11 @@ async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig, forceReloadResou
 	// load the changed kubeconfig globally so that the following code use the new config
 	kubeConfig.loadFromString(newKubeConfig.exportConfig(), {onInvalidEntry: ActionOnInvalid.FILTER});
 
+	console.log(kubeConfig.currentContext);
+	if(!currentContextExists()) {
+		kubeConfigState = KubeConfigState.NoContextSelected;
+	}
+
 	if (contextChanged || contextsListChanged) {
 		refreshClustersTreeView();
 	}

@@ -217,7 +217,12 @@
 			},
 			{
 				"command": "gitops.editor.openResource",
-				"title": "View Config",
+				"title": "Open Resource",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.editor.openKubeconfig",
+				"title": "Open Kubeconfig",
 				"category": "GitOps"
 			},
 			{
@@ -346,6 +351,11 @@
 				},
 				{
 					"command": "extension.vsKubernetesUseKubeconfig",
+					"group": "1",
+					"when": "view == gitops.views.clusters"
+				},
+				{
+					"command": "gitops.editor.openKubeconfig",
 					"group": "1",
 					"when": "view == gitops.views.clusters"
 				},

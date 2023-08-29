@@ -61,6 +61,7 @@ export const enum CommandId {
 
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
+	EditorOpenKubeconfig = 'gitops.editor.openKubeconfig',
 
 	// webview
 	ShowLogs = 'gitops.editor.showLogs',
