@@ -9,7 +9,7 @@ import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
-import { Deployment, Kind, KubernetesObject, Pod } from 'types/kubernetes/kubernetesTypes';
+import { Deployment, FullyQualifiedKinds, Kind, KubernetesObject, Pod } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
@@ -49,9 +49,9 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 		return list as T[];
 	}
 
+	let fqKind = FullyQualifiedKinds[kind];
 
-	const shellResult = await invokeKubectlCommand(`get ${kind} -A -o json`);
-
+	const shellResult = await invokeKubectlCommand(`get ${fqKind} -A -o json`);
 	if (shellResult?.code !== 0) {
 		console.warn(`Failed to \`kubectl get ${kind} -A\`: ${shellResult?.stderr}`);
 		if (shellResult?.stderr && !notAnErrorServerDoesntHaveResourceTypeRegExp.test(shellResult.stderr)) {
@@ -181,4 +181,3 @@ export async function getPodsOfADeployment(name = '', namespace = ''): Promise<P
 
 	return parseJsonItems(podResult?.stdout);
 }
-
