@@ -75,7 +75,7 @@ export const FullyQualifiedKinds: KindMapType = {
 	GitRepository: FullyKind.GitRepository,
 	OCIRepository: FullyKind.OCIRepository,
 	HelmRepository: FullyKind.HelmRepository,
-	HelmReleases: FullyKind.HelmRelease,
+	HelmRelease: FullyKind.HelmRelease,
 	Kustomization: FullyKind.Kustomization,
 	GitOpsTemplate: FullyKind.GitOpsTemplate,
 	List: FullyKind.List,
