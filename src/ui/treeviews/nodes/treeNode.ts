@@ -2,7 +2,7 @@ import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemColla
 
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
-import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { Kind, FullyQualifiedKinds, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
@@ -141,6 +141,22 @@ export class TreeNode extends TreeItem {
 			.join('');
 	}
 
+	fullyQualifyKind(): string {
+		let stringKind = '';
+		if(this.resource) {
+			stringKind = this.resource.kind as string;
+		}
+		if (stringKind) {
+			let typedKind: Kind = stringKind as Kind;
+			let fqKind = FullyQualifiedKinds[typedKind];
+
+			if(fqKind !== '') {
+				stringKind = fqKind as string;
+			}
+		}
+		return stringKind;
+	}
+
 	// @ts-ignore
 	get tooltip(): string | MarkdownString {
 		if (this.resource) {
@@ -152,9 +168,10 @@ export class TreeNode extends TreeItem {
 	get command(): Command | undefined {
 		// Set click event handler to load kubernetes resource as yaml file in editor.
 		if (this.resource) {
+			let stringKind = this.fullyQualifyKind();
 			const resourceUri = getResourceUri(
 				this.resource.metadata?.namespace,
-				`${this.resource.kind}/${this.resource.metadata?.name}`,
+				`${stringKind}/${this.resource.metadata?.name}`,
 				FileTypes.Yaml,
 			);
 
