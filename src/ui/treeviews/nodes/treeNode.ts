@@ -147,7 +147,7 @@ export class TreeNode extends TreeItem {
 			stringKind = this.resource.kind as string;
 		}
 		if (stringKind) {
-			let typedKind : Kind = stringKind as Kind;
+			let typedKind: Kind = stringKind as Kind;
 			let fqKind = FullyQualifiedKinds[typedKind];
 
 			if(fqKind !== '') {
