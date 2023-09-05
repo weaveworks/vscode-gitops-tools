@@ -52,9 +52,6 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 	let fqKind = FullyQualifiedKinds[kind];
 
 	const shellResult = await invokeKubectlCommand(`get ${fqKind} -A -o json`);
-	// if (kind == Kind.HelmRelease) {
-	// 	console.warn("HelmRelease is not fully qualified, put your debugger instance here");
-	// }
 	if (shellResult?.code !== 0) {
 		console.warn(`Failed to \`kubectl get ${kind} -A\`: ${shellResult?.stderr}`);
 		if (shellResult?.stderr && !notAnErrorServerDoesntHaveResourceTypeRegExp.test(shellResult.stderr)) {
