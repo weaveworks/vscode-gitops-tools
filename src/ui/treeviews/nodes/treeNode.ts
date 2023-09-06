@@ -2,7 +2,7 @@ import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemColla
 
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
-import { Kind, FullyQualifiedKinds, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { KubernetesObject, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
@@ -142,19 +142,7 @@ export class TreeNode extends TreeItem {
 	}
 
 	fullyQualifyKind(): string {
-		let stringKind = '';
-		if(this.resource) {
-			stringKind = this.resource.kind as string;
-		}
-		if (stringKind) {
-			let typedKind: Kind = stringKind as Kind;
-			let fqKind = FullyQualifiedKinds[typedKind];
-
-			if(fqKind !== '') {
-				stringKind = fqKind as string;
-			}
-		}
-		return stringKind;
+		return qualifyToolkitKind(this.resource?.kind || '');
 	}
 
 	// @ts-ignore

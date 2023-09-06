@@ -50,41 +50,20 @@ export const enum Kind {
 	GitOpsTemplate = 'GitOpsTemplate',
 }
 
-export const enum FullyKind {
-	Bucket = 'Buckets.source.toolkit.fluxcd.io',
-	GitRepository = 'GitRepositories.source.toolkit.fluxcd.io',
-	OCIRepository = 'OCIRepositories.source.toolkit.fluxcd.io',
-	HelmRepository = 'HelmRepositories.source.toolkit.fluxcd.io',
-	HelmRelease = 'HelmReleases.helm.toolkit.fluxcd.io',
-	Kustomization = 'Kustomizations.kustomize.toolkit.fluxcd.io',
-	GitOpsTemplate = 'GitOpsTemplates.templates.weave.works',
-	List = '',
-	Deployment = '',
-	Node = '',
-	Pod = '',
-	Namespace = '',
-	ConfigMap = '',
+const fullKinds: Record<string, string> = {
+	Bucket: 'Buckets.source.toolkit.fluxcd.io',
+	GitRepository: 'GitRepositories.source.toolkit.fluxcd.io',
+	OCIRepository: 'OCIRepositories.source.toolkit.fluxcd.io',
+	HelmRepository: 'HelmRepositories.source.toolkit.fluxcd.io',
+	HelmRelease: 'HelmReleases.helm.toolkit.fluxcd.io',
+	Kustomization: 'Kustomizations.kustomize.toolkit.fluxcd.io',
+	GitOpsTemplate: 'GitOpsTemplates.templates.weave.works',
+};
+
+export function qualifyToolkitKind(kind: string): string {
+	return fullKinds[kind] || kind;
 }
 
-type KindMapType = {
-	[id in Kind]: FullyKind;
-};
-
-export const FullyQualifiedKinds: KindMapType = {
-	Bucket: FullyKind.Bucket,
-	GitRepository: FullyKind.GitRepository,
-	OCIRepository: FullyKind.OCIRepository,
-	HelmRepository: FullyKind.HelmRepository,
-	HelmRelease: FullyKind.HelmRelease,
-	Kustomization: FullyKind.Kustomization,
-	GitOpsTemplate: FullyKind.GitOpsTemplate,
-	List: FullyKind.List,
-	Deployment: FullyKind.Deployment,
-	Node: FullyKind.Node,
-	Pod: FullyKind.Pod,
-	Namespace: FullyKind.Namespace,
-	ConfigMap: FullyKind.ConfigMap,
-};
 
 export const enum SourceKind {
 	Bucket = 'Bucket',
