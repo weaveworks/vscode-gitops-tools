@@ -9,7 +9,7 @@ import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
-import { Deployment, FullyQualifiedKinds, Kind, KubernetesObject, Pod } from 'types/kubernetes/kubernetesTypes';
+import { Deployment, Kind, KubernetesObject, Pod, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
@@ -49,7 +49,7 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 		return list as T[];
 	}
 
-	let fqKind = FullyQualifiedKinds[kind];
+	let fqKind = qualifyToolkitKind(kind);
 
 	const shellResult = await invokeKubectlCommand(`get ${fqKind} -A -o json`);
 	if (shellResult?.code !== 0) {
