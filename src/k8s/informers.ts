@@ -19,7 +19,6 @@ export function createInformers(kc: k8s.KubeConfig) {
 		createInformer(kc, workloadDataProvider, kind);
 	});
 
-	console.log('*- informers started');
 }
 
 export function destroyInformers() {
@@ -73,7 +72,6 @@ function registerInformerEvents(informer: k8s.Informer<KubernetesObject>, receiv
 	});
 
 	informer?.on('error', (err: Error) => {
-		console.log('*- informer Error', err);
 		destroyInformers();
 	});
 }

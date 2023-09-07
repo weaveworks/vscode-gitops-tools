@@ -1,8 +1,6 @@
-import { ContextId } from 'types/extensionIds';
 import { documentationLinks } from '../documentationConfig';
 import { DocumentationNode } from '../nodes/documentationNode';
 import { DataProvider } from './dataProvider';
-import { setVSCodeContext } from 'extension';
 
 /**
  * Defines data provider for Documentation tree view.

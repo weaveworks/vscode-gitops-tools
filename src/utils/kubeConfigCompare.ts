@@ -1,5 +1,5 @@
-import deepEqual from 'lite-deep-equal';
 import * as k8s from '@kubernetes/client-node';
+import deepEqual from 'lite-deep-equal';
 
 export function kcTextChanged(kc1: k8s.KubeConfig, kc2: k8s.KubeConfig): boolean {
 	// exportConfig() will omit tokens and certs

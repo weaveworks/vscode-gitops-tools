@@ -1,7 +1,5 @@
 import { getBuckets, getGitRepositories, getHelmRepositories, getOciRepositories } from 'cli/kubernetes/kubectlGet';
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
-import { setVSCodeContext } from 'extension';
-import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { groupNodesByNamespace } from 'utils/treeNodeUtils';

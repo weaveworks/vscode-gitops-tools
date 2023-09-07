@@ -1,9 +1,8 @@
 import { Uri, window, workspace } from 'vscode';
 
+import { kubeConfigPath } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { kubeConfigPath } from 'cli/kubernetes/kubernetesConfigWatcher';
 
 /**
  * Open resource in the editor

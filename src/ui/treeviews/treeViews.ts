@@ -1,9 +1,9 @@
-import { TreeItem, TreeItemCollapsibleState, TreeView, commands, window } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, TreeView, window } from 'vscode';
 
 import { isAzureProvider } from 'cli/azure/azureTools';
-import { globalState, setVSCodeContext } from 'extension';
+import { globalState } from 'extension';
 import { Errorable } from 'types/errorable';
-import { CommandId, ContextId, TreeViewId } from 'types/extensionIds';
+import { TreeViewId } from 'types/extensionIds';
 import { ClusterDataProvider } from './dataProviders/clusterDataProvider';
 import { DocumentationDataProvider } from './dataProviders/documentationDataProvider';
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
