@@ -1,19 +1,17 @@
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { statusBar } from 'ui/statusBar';
-import { TreeItem } from 'vscode';
 import { ClusterNode } from '../nodes/cluster/clusterNode';
-import { TreeNode } from '../nodes/treeNode';
-import { DataProvider } from './dataProvider';
+import { SimpleDataProvider } from './simpleDataProvider';
 
 /**
  * Defines Clusters data provider for loading configured kubernetes clusters
  * and contexts in GitOps Clusters tree view.
  */
-export class ClusterDataProvider extends DataProvider {
-	protected nodes: ClusterNode[] = [];
+export class ClusterDataProvider extends SimpleDataProvider {
 
 	public getCurrentClusterNode(): ClusterNode | undefined {
-		return this.nodes.find(c => c.context.name === kubeConfig?.getCurrentContext());
+		const nodes = this.nodes as ClusterNode[];
+		return nodes.find(c => c.context.name === kubeConfig?.getCurrentContext());
 	}
 
 	public redrawCurrentNode() {
@@ -21,30 +19,18 @@ export class ClusterDataProvider extends DataProvider {
 	}
 
 
-	public async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-		if(!element) {
-			return this.getRootNodes();
-		} else if (element instanceof TreeNode) {
-			return element.children;
-		}
-
-		return [];
-	}
-
-
-
-
 	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async loadRootNodes() {
 		statusBar.startLoadingTree();
+		const clusterNodes: ClusterNode[] = [];
 
 		let currentContextTreeItem: ClusterNode | undefined;
 
 		if (kubeConfig.getContexts().length === 0) {
 			statusBar.stopLoadingTree();
-			return;
+			return [];
 		}
 
 		for (const context of kubeConfig.getContexts()) {
@@ -53,10 +39,12 @@ export class ClusterDataProvider extends DataProvider {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 			}
-			this.nodes.push(clusterNode);
+			clusterNodes.push(clusterNode);
 		}
 
 		statusBar.stopLoadingTree();
+
+		return clusterNodes;
 	}
 
 	public updateCurrentContextChildNodes() {

@@ -1,5 +1,6 @@
 import { getBuckets, getGitRepositories, getHelmRepositories, getOciRepositories } from 'cli/kubernetes/kubectlGet';
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
+import { ContextData } from 'data/contextData';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { groupNodesByNamespace } from 'utils/treeNodeUtils';
@@ -15,6 +16,10 @@ import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
  * and Buckets in GitOps Sources tree view.
  */
 export class SourceDataProvider extends KubernetesObjectDataProvider {
+
+	protected viewData(contextData: ContextData) {
+		return contextData.viewData.source;
+	}
 
 	/**
    * Creates Source tree view items for the currently selected kubernetes cluster.
@@ -54,6 +59,7 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 
 		statusBar.stopLoadingTree();
 
-		[this.nodes] = await groupNodesByNamespace(sourceNodes, false, true);
+		const [groupedNodes] = await groupNodesByNamespace(sourceNodes, false, true);
+		return groupedNodes;
 	}
 }

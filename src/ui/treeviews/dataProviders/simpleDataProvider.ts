@@ -1,18 +1,21 @@
-import { KubeConfigState, kubeConfig, kubeConfigState } from 'cli/kubernetes/kubernetesConfig';
+import { KubeConfigState, kubeConfigState } from 'cli/kubernetes/kubernetesConfig';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
-import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { TreeNode } from '../nodes/treeNode';
 
 
 /**`
  * Defines tree view data provider base class for all GitOps tree views.
  */
-export class DataProvider implements TreeDataProvider<TreeItem> {
-	protected nodes: TreeNode[] = [];
-	protected collapsibleStates = new Map<string, TreeItemCollapsibleState>();
+export class SimpleDataProvider implements TreeDataProvider<TreeItem> {
+	private _nodes: TreeNode[] = [];
+
+	get nodes() {
+		return this._nodes;
+	}
+
 
 	protected loading = false;
-	protected loadingContext = '';
 
 	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined> = this._onDidChangeTreeData.event;
@@ -57,7 +60,7 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 
 	// give nodes for vscode to render based on async data loading state
 	protected async getRootNodes(): Promise<TreeNode[]> {
-		if (this.isLoadingCurrentContext() || kubeConfigState === KubeConfigState.Loading) {
+		if (this.loading || kubeConfigState === KubeConfigState.Loading) {
 			return infoNodes(InfoNode.Loading);
 		}
 		if(this.nodes.length === 0) {
@@ -67,59 +70,23 @@ export class DataProvider implements TreeDataProvider<TreeItem> {
 		return this.nodes;
 	}
 
-	isLoadingCurrentContext() {
-		return this.loading && this.loadingContext === kubeConfig.currentContext;
-	}
 
 	public async reload() {
-		if(this.isLoadingCurrentContext()) {
+		if(this.loading) {
 			return;
 		}
 
-		this.loadingContext = kubeConfig.currentContext;
-		const contextNameClosure = kubeConfig.currentContext;
-
-		console.log(`start loading ${kubeConfig.currentContext} ${this.constructor.name}`);
-
 		this.loading = true;
-		this.saveCollapsibleStates();
-		this.nodes = [];
-		await this.loadRootNodes();
-		this.loadCollapsibleStates();
+		this._nodes = [];
+		this._nodes = await this.loadRootNodes();
 		this.loading = false;
-		console.log(`finish loading ${kubeConfig.currentContext} ${this.constructor.name}`);
 
 		this.redraw();
 	}
 
-	async loadRootNodes() {
-		this.nodes = [];
+	async loadRootNodes(): Promise<TreeNode[]> {
+		return [];
 	}
-
-	saveCollapsibleStates() {
-		this.collapsibleStates.clear();
-
-		for(const node of this.nodes) {
-			const name = node.resource?.metadata?.name;
-			if(name) {
-				this.collapsibleStates.set(name, node.collapsibleState || TreeItemCollapsibleState.Collapsed);
-			}
-		}
-	}
-
-	loadCollapsibleStates() {
-		for(const node of this.nodes) {
-			const name = node.resource?.metadata?.name;
-			if(name) {
-				const state = this.collapsibleStates.get(name);
-				if(state) {
-					node.collapsibleState = state;
-				}
-			}
-		}
-	}
-
-
 
 }
 
