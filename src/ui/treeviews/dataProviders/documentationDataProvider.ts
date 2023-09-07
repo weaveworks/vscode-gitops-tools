@@ -1,11 +1,15 @@
 import { documentationLinks } from '../documentationConfig';
 import { DocumentationNode } from '../nodes/documentationNode';
-import { DataProvider } from './dataProvider';
+import { SimpleDataProvider } from './simpleDataProvider';
 
 /**
  * Defines data provider for Documentation tree view.
  */
-export class DocumentationDataProvider extends DataProvider {
+export class DocumentationDataProvider extends SimpleDataProvider {
+
+	protected async getRootNodes() {
+		return this.nodes;
+	}
 
 	/**
 	 * Creates documentation tree view from documenation links config.
@@ -23,6 +27,6 @@ export class DocumentationDataProvider extends DataProvider {
 			treeNodes.push(treeNode);
 		}
 
-		this.nodes = treeNodes;
+		return treeNodes;
 	}
 }
