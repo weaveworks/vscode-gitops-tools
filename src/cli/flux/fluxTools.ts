@@ -143,7 +143,7 @@ class FluxTools {
 				errorData += `Command '${cmd}' timed out`;
 			}
 			// + (treeShellResult.code === null ? 'Command timed out' : '';
-			window.showErrorMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${errorData}`);
+			window.showWarningMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${errorData}`);
 			return;
 		}
 

@@ -1,9 +1,13 @@
 import { getGitOpsTemplates } from 'cli/kubernetes/kubectlGet';
+import { ContextData } from 'data/contextData';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { GitOpsTemplateNode } from '../nodes/gitOpsTemplateNode';
-import { DataProvider } from './dataProvider';
+import { AsyncDataProvider } from './asyncDataProvider';
 
-export class TemplateDataProvider extends DataProvider {
+export class TemplateDataProvider extends AsyncDataProvider {
+	protected viewData(contextData: ContextData) {
+		return contextData.viewData.template;
+	}
 
 	async loadRootNodes() {
 		const nodes = [];
@@ -14,6 +18,6 @@ export class TemplateDataProvider extends DataProvider {
 			nodes.push(new GitOpsTemplateNode(template));
 		}
 
-		this.nodes = nodes;
+		return nodes;
 	}
 }

@@ -10,7 +10,6 @@ import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
 import { GlobalState, GlobalStateKey } from './data/globalState';
 import { Telemetry } from './data/telemetry';
-import { succeeded } from './types/errorable';
 import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensionIds';
 import { TelemetryEvent } from './types/telemetryEventNames';
 import { checkInstalledFluxVersion } from './ui/promptToInstallFlux';
@@ -105,7 +104,6 @@ function listenExtensionConfigChanged() {
 		}
 
 		const selected = await window.showInformationMessage('Configuration changed. Reload VS Code to apply?', 'Reload');
-		console.log(e);
 		if(selected === 'Reload') {
 			await commands.executeCommand(CommandId.VSCodeReload);
 		}

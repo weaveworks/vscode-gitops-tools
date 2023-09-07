@@ -1,9 +1,8 @@
 import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
-import { TreeNode, TreeNodeIcon } from './treeNode';
 import { TreeItemCollapsibleState } from 'vscode';
 import { SourceNode } from './source/sourceNode';
+import { TreeNode, TreeNodeIcon } from './treeNode';
 import { WorkloadNode } from './workload/workloadNode';
-import { read } from 'fs';
 
 /**
  * Defines any kubernetes resourse.

@@ -10,7 +10,7 @@ import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode
 import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
 import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
 import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
-import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { getCurrentClusterInfo, reloadSourcesTreeView, reloadWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**
  * Resume source or workload reconciliation and refresh its Tree View.
@@ -47,11 +47,11 @@ export async function resume(node: GitRepositoryNode | HelmReleaseNode | HelmRep
 	}
 
 	if (node instanceof GitRepositoryNode || node instanceof OCIRepositoryNode || node instanceof HelmRepositoryNode) {
-		refreshSourcesTreeView();
+		reloadSourcesTreeView();
 		if (currentClusterInfo.result.isAzure) {
-			refreshWorkloadsTreeView();
+			reloadWorkloadsTreeView();
 		}
 	} else {
-		refreshWorkloadsTreeView();
+		reloadWorkloadsTreeView();
 	}
 }

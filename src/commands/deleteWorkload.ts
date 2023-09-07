@@ -2,6 +2,7 @@ import { window } from 'vscode';
 
 import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { FluxWorkload } from 'types/fluxCliTypes';
@@ -9,8 +10,7 @@ import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryEvent } from 'types/telemetryEventNames';
 import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
 import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
-import { getCurrentClusterInfo, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { getCurrentClusterInfo, reloadWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 
 /**
@@ -73,5 +73,5 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 		await fluxTools.delete(workloadType, workloadName, workloadNamespace);
 	}
 
-	refreshWorkloadsTreeView();
+	reloadWorkloadsTreeView();
 }

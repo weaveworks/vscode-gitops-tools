@@ -4,19 +4,20 @@ import { ExtensionMode, MarkdownString } from 'vscode';
 
 import { fluxVersion } from 'cli/checkVersions';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { ApiState } from 'cli/kubernetes/apiResources';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { currentContextData } from 'data/contextData';
 import { extensionContext, globalState, setVSCodeContext } from 'extension';
 import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { NodeContext } from 'types/nodeContext';
 import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
-import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
-import { TreeNode, TreeNodeIcon } from '../treeNode';
-import { ClusterDeploymentNode } from './clusterDeploymentNode';
-import { ApiState, apiState } from 'cli/kubernetes/apiResources';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
+import { TreeNode } from '../treeNode';
+import { ClusterDeploymentNode } from './clusterDeploymentNode';
 
 /**
  * Defines Cluster context tree view item for displaying
@@ -98,11 +99,16 @@ export class ClusterNode extends TreeNode {
 	}
 
 	private async updateControllersNodes() {
-		if(apiState === ApiState.ClusterUnreachable) {
+		const contextData = currentContextData();
+		if(contextData.contextName !== this.context.name) {
+			return;
+		}
+
+		if(contextData.apiState === ApiState.ClusterUnreachable) {
 			this.children = infoNodes(InfoNode.ClusterUnreachable);
 			return;
 		}
-		if(apiState === ApiState.Loading) {
+		if(contextData.apiState === ApiState.Loading) {
 			this.children = infoNodes(InfoNode.LoadingApi);
 			return;
 		}
@@ -132,7 +138,12 @@ export class ClusterNode extends TreeNode {
 	 * Get status from running flux commands instead of kubectl.
 	 */
 	private async updateControllersStatus() {
-		if (this.children.length === 0 || apiState === ApiState.ClusterUnreachable) {
+		const contextData = currentContextData();
+		if(contextData.contextName !== this.context.name) {
+			return;
+		}
+
+		if (this.children.length === 0 || contextData.apiState === ApiState.ClusterUnreachable) {
 			return;
 		}
 		const fluxCheckResult = await fluxTools.check(this.context.name);

@@ -1,5 +1,5 @@
 import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { refreshClustersTreeView, refreshSourcesTreeView, refreshTemplatesTreeView, refreshWorkloadsTreeView } from '../ui/treeviews/treeViews';
+import { reloadClustersTreeView, reloadSourcesTreeView, reloadTemplatesTreeView, reloadWorkloadsTreeView, sourceDataProvider, templateDateProvider, workloadDataProvider } from '../ui/treeviews/treeViews';
 
 /**
  * Clicked button on the cluster tree view
@@ -11,9 +11,8 @@ export async function refreshAllTreeViewsCommand() {
 }
 
 export async function refreshAllTreeViews() {
-	console.log('refreshAllTreeViews');
 
-	refreshClustersTreeView();
+	reloadClustersTreeView();
 	refreshResourcesTreeViews();
 }
 
@@ -26,7 +25,13 @@ export function refreshResourcesTreeViewsCommand() {
 }
 
 export function refreshResourcesTreeViews() {
-	refreshSourcesTreeView();
-	refreshWorkloadsTreeView();
-	refreshTemplatesTreeView();
+	reloadSourcesTreeView();
+	reloadWorkloadsTreeView();
+	reloadTemplatesTreeView();
+}
+
+export function redrawhResourcesTreeViews() {
+	sourceDataProvider.redraw();
+	workloadDataProvider.redraw();
+	templateDateProvider.redraw();
 }

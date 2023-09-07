@@ -1,37 +1,17 @@
 import { getNamespace } from 'cli/kubernetes/kubectlGetNamespace';
+import { currentContextData } from 'data/contextData';
 import { GitRepository } from 'types/flux/gitRepository';
 import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { groupNodesByNamespace, sortNodes } from 'utils/treeNodeUtils';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { TreeNode } from '../nodes/treeNode';
-import { DataProvider } from './dataProvider';
-import { ApiState, apiState } from 'cli/kubernetes/apiResources';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
-import { clusterDataProvider } from '../treeViews';
+import { AsyncDataProvider } from './asyncDataProvider';
 
 /**
  * Superclass for data providers that group objects by namespace: Source and Workload data providers
  */
-export abstract class KubernetesObjectDataProvider extends DataProvider {
-
-	protected async getRootNodes(): Promise<TreeNode[]> {
-		if(apiState === ApiState.Loading) {
-			return infoNodes(InfoNode.LoadingApi);
-		}
-
-		if(apiState === ApiState.ClusterUnreachable) {
-			return infoNodes(InfoNode.ClusterUnreachable);
-		}
-
-		// return empty array so that vscode welcome view with embedded link "Enable Gitops ..." is shown
-		if(clusterDataProvider.currentContextIsGitOpsNotEnabled()) {
-			return [];
-		}
-
-		return super.getRootNodes();
-	}
-
+export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 	public namespaceNodeTreeItems(): NamespaceNode[] {
 		return (this.nodes?.filter(node => node instanceof NamespaceNode) as NamespaceNode[] || []);
 	}
@@ -49,8 +29,6 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 	}
 
 	public async add(object: KubernetesObject) {
-		console.log('add', object);
-
 		if(!object.metadata?.namespace) {
 			return;
 		}
@@ -100,8 +78,6 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 	}
 
 	public delete(object: KubernetesObject) {
-		console.log('delete', object);
-
 		const namespaceNode = this.findParentNamespaceNode(object);
 		if(!namespaceNode) {
 			return;
@@ -133,7 +109,8 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 		});
 
 		// rebuild top level nodes or the tree will not redraw
-		[this.nodes] = await groupNodesByNamespace(resourceNodes, true, true);
+		const viewData = this.viewData(currentContextData());
+		[viewData.nodes] = await groupNodesByNamespace(resourceNodes, true, true);
 		this.redraw();
 	}
 
