@@ -1,4 +1,4 @@
-import { refreshResourcesTreeViews } from 'commands/refreshTreeViews';
+import { redrawhResourcesTreeViews, refreshResourcesTreeViews } from 'commands/refreshTreeViews';
 import { setVSCodeContext, telemetry } from 'extension';
 import { createK8sClients } from 'k8s/client';
 import { ContextId } from 'types/extensionIds';
@@ -52,6 +52,8 @@ export function getAPIParams(kind: Kind): KindApiParams | undefined {
 export async function loadAvailableResourceKinds() {
 	apiResources = undefined;
 	apiState = ApiState.Loading;
+	// will set their content to Loading API...
+	redrawhResourcesTreeViews();
 
 	const kindsShellResult = await invokeKubectlCommand('api-resources --verbs=list -o wide');
 	if (kindsShellResult?.code !== 0) {
@@ -92,6 +94,7 @@ export async function loadAvailableResourceKinds() {
 	console.log('apiResources loaded');
 
 	apiState = ApiState.Loaded;
+	redrawhResourcesTreeViews();
 	setVSCodeContext(ContextId.ClusterUnreachable, false);
 	clusterDataProvider.updateCurrentContextChildNodes();
 

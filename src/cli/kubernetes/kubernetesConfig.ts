@@ -7,7 +7,7 @@ import { shellCodeError } from 'cli/shell/exec';
 import { setVSCodeContext, telemetry } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { refreshClustersTreeView } from 'ui/treeviews/treeViews';
+import { reloadClustersTreeView } from 'ui/treeviews/treeViews';
 import { kcContextsListChanged, kcCurrentContextChanged, kcTextChanged } from 'utils/kubeConfigCompare';
 import { loadAvailableResourceKinds as loadApiResources } from './apiResources';
 import { loadKubeConfigPath } from './kubernetesConfigWatcher';
@@ -73,10 +73,10 @@ async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig, forceReloadResou
 	}
 
 	if (contextChanged || forceReloadResourceKinds) {
-		refreshClustersTreeView();
+		reloadClustersTreeView();
 		loadApiResources();
 	} else if (contextsListChanged) {
-		refreshClustersTreeView();
+		reloadClustersTreeView();
 	}
 }
 
