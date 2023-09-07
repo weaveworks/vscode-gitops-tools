@@ -1,4 +1,3 @@
-import * as vscode from 'vscode';
 import { GitOpsTemplateNode } from 'ui/treeviews/nodes/gitOpsTemplateNode';
 import { openCreateFromTemplatePanel } from 'ui/webviews/createFromTemplate/openWebview';
 

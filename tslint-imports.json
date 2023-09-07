@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "tslint-etc"
+  ],
+  "rules": {
+    "no-unused-declaration": true
+  }
+}
+// https://wesleygrimes.com/angular/2019/02/14/how-to-use-tslint-to-autoremove-all-unused-imports-in-a-typescript-project
+// npm install -g typescript tslint tslint-etc
+// tslint --config tslint-imports.json --fix --project .

@@ -5,8 +5,6 @@ import { Uri, WebviewPanel, workspace } from 'vscode';
 export async function receiveMessage(message: any, panel: WebviewPanel) {
 	switch (message.action) {
 		case 'show-yaml':
-			// actionYAML(message.data);
-			console.log(message.data);
 			const data = message.data;
 
 			renderTemplates(data.template, data.values);

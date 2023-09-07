@@ -1,24 +1,27 @@
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/kubernetes/kubectlGet';
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
-import { setVSCodeContext } from 'extension';
-import { ContextId } from 'types/extensionIds';
+import { ContextData } from 'data/contextData';
 import { statusBar } from 'ui/statusBar';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
-import { TreeNode, TreeNodeIcon } from '../nodes/treeNode';
+import { TreeNode } from '../nodes/treeNode';
 import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 
 /**-
  * Defines data provider for loading Kustomizations
  * and Helm Releases in Workloads Tree View.
  */
 export class WorkloadDataProvider extends KubernetesObjectDataProvider {
+	protected viewData(contextData: ContextData) {
+		return contextData.viewData.workload;
+	}
+
 	/**
    * Creates Workload tree nodes for the currently selected kubernetes cluster.
    */
@@ -49,7 +52,8 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		statusBar.stopLoadingTree();
 
-		[this.nodes] = await groupNodesByNamespace(workloadNodes, false, true);
+		const [groupedNodes] = await groupNodesByNamespace(workloadNodes, false, true);
+		return groupedNodes;
 	}
 
 	/**

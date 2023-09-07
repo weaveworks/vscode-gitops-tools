@@ -1,12 +1,12 @@
+import { redrawhResourcesTreeViews, refreshResourcesTreeViews } from 'commands/refreshTreeViews';
+import { currentContextData } from 'data/contextData';
 import { setVSCodeContext, telemetry } from 'extension';
-import { TelemetryError } from 'types/telemetryEventNames';
-import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { createK8sClients } from 'k8s/client';
 import { ContextId } from 'types/extensionIds';
-import { refreshAllTreeViews, refreshResourcesTreeViews } from 'commands/refreshTreeViews';
-import { restartKubeProxy } from './kubectlProxy';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryError } from 'types/telemetryEventNames';
 import { clusterDataProvider } from 'ui/treeviews/treeViews';
+import { restartKubeProxy } from './kubectlProxy';
+import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
 export enum ApiState {
 	Loading,
@@ -14,26 +14,22 @@ export enum ApiState {
 	ClusterUnreachable,
 }
 
-type KindApiParams = {
+export type KindApiParams = {
 	plural: string; // configmaps, deployments, gitrepositories, ...
 	group: string; // '', apps, source.toolkit.fluxcd.io, ...
 	version: string; // v1, v1beta2, ...
 };
 
-export let apiState: ApiState = ApiState.Loading;
 
-/*
- * Current cluster supported kubernetes resource kinds.
- */
-let apiResources: Map<Kind, KindApiParams> | undefined;
 
 /**
  * Return all available kubernetes resource kinds
  */
 export function getAvailableResourcePlurals(): string[] | undefined {
+	const context = currentContextData();
 	const plurals: string[] = [];
-	if(apiResources) {
-		apiResources.forEach((value, key) => {
+	if(context.apiResources) {
+		context.apiResources.forEach((value, key) => {
 			plurals.push(value.plural);
 		});
 
@@ -43,24 +39,30 @@ export function getAvailableResourcePlurals(): string[] | undefined {
 
 
 export function getAPIParams(kind: Kind): KindApiParams | undefined {
-	if(apiResources) {
-		return apiResources.get(kind);
+	const context = currentContextData();
+
+	if(context.apiResources) {
+		return context.apiResources.get(kind);
 	}
 }
 
 
 export async function loadAvailableResourceKinds() {
-	apiResources = undefined;
-	apiState = ApiState.Loading;
+	const context = currentContextData();
+	context.apiResources = undefined;
+	context.apiState = ApiState.Loading;
+	// will set their content to Loading API...
+	redrawhResourcesTreeViews();
 
 	const kindsShellResult = await invokeKubectlCommand('api-resources --verbs=list -o wide');
 	if (kindsShellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_AVAILABLE_RESOURCE_KINDS);
 		console.warn(`Failed to get resource kinds: ${kindsShellResult?.stderr}`);
-		apiState = ApiState.ClusterUnreachable;
+		context.apiState = ApiState.ClusterUnreachable;
 		setVSCodeContext(ContextId.ClusterUnreachable, true);
 		clusterDataProvider.updateCurrentContextChildNodes();
 		refreshResourcesTreeViews();
+		redrawhResourcesTreeViews();
 		return;
 	}
 
@@ -68,7 +70,7 @@ export async function loadAvailableResourceKinds() {
 		.split('\n')
 		.filter(line => line.length).slice(1);
 
-	apiResources = new Map<Kind, KindApiParams>();
+	context.apiResources = new Map<Kind, KindApiParams>();
 
 	lines.map(line => {
 		let cols = line.split(/\s+/);
@@ -86,16 +88,15 @@ export async function loadAvailableResourceKinds() {
 			version = group;
 			group = '';
 		}
-		apiResources?.set(kind, { plural, group, version });
+		context.apiResources?.set(kind, { plural, group, version });
 	});
 
 	console.log('apiResources loaded');
 
-	apiState = ApiState.Loaded;
+	context.apiState = ApiState.Loaded;
 	setVSCodeContext(ContextId.ClusterUnreachable, false);
 	clusterDataProvider.updateCurrentContextChildNodes();
 
-	createK8sClients();
 	await restartKubeProxy();
 
 	// give proxy init callbacks time to fire

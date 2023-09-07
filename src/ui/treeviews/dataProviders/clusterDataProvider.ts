@@ -1,21 +1,17 @@
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { setVSCodeContext } from 'extension';
-import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
-import { TreeItem } from 'vscode';
 import { ClusterNode } from '../nodes/cluster/clusterNode';
-import { TreeNode } from '../nodes/treeNode';
-import { DataProvider } from './dataProvider';
+import { SimpleDataProvider } from './simpleDataProvider';
 
 /**
  * Defines Clusters data provider for loading configured kubernetes clusters
  * and contexts in GitOps Clusters tree view.
  */
-export class ClusterDataProvider extends DataProvider {
-	protected nodes: ClusterNode[] = [];
+export class ClusterDataProvider extends SimpleDataProvider {
 
 	public getCurrentClusterNode(): ClusterNode | undefined {
-		return this.nodes.find(c => c.context.name === kubeConfig?.getCurrentContext());
+		const nodes = this.nodes as ClusterNode[];
+		return nodes.find(c => c.context.name === kubeConfig?.getCurrentContext());
 	}
 
 	public redrawCurrentNode() {
@@ -23,50 +19,18 @@ export class ClusterDataProvider extends DataProvider {
 	}
 
 
-	public async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-		if(!element) {
-			return this.getRootNodes();
-		} else if (element instanceof TreeNode) {
-			return element.children;
-		}
-
-		return [];
-	}
-
-
-	/**
-	 * Check if the cluster node exists or not.
-	 */
-	public includesTreeNode(treeItem: TreeItem, clusterNodes: TreeNode[] = this.nodes) {
-		for (const clusterNode of clusterNodes) {
-			if (treeItem === clusterNode) {
-				return true;
-			}
-			const includesInNested = this.includesTreeNode(treeItem, clusterNode.children);
-			if (includesInNested) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-
 	/**
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async loadRootNodes() {
-		console.log('+ started loadClusterNodes');
-
-		const t1 = Date.now();
-
-
 		statusBar.startLoadingTree();
+		const clusterNodes: ClusterNode[] = [];
 
 		let currentContextTreeItem: ClusterNode | undefined;
 
 		if (kubeConfig.getContexts().length === 0) {
 			statusBar.stopLoadingTree();
-			return;
+			return [];
 		}
 
 		for (const context of kubeConfig.getContexts()) {
@@ -75,13 +39,12 @@ export class ClusterDataProvider extends DataProvider {
 				currentContextTreeItem = clusterNode;
 				clusterNode.makeCollapsible();
 			}
-			this.nodes.push(clusterNode);
+			clusterNodes.push(clusterNode);
 		}
 
 		statusBar.stopLoadingTree();
 
-		const t2 = Date.now();
-		console.log('+ loadClusterNodes ∆', t2 - t1);
+		return clusterNodes;
 	}
 
 	public updateCurrentContextChildNodes() {
