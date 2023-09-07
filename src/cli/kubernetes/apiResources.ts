@@ -98,7 +98,6 @@ export async function loadAvailableResourceKinds() {
 	setVSCodeContext(ContextId.ClusterUnreachable, false);
 	clusterDataProvider.updateCurrentContextChildNodes();
 
-	createK8sClients();
 	await restartKubeProxy();
 
 	// give proxy init callbacks time to fire
