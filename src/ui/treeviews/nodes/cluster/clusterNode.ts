@@ -4,6 +4,7 @@ import { ExtensionMode, MarkdownString } from 'vscode';
 
 import { fluxVersion } from 'cli/checkVersions';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { ApiState, apiState } from 'cli/kubernetes/apiResources';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { getFluxControllers } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
@@ -12,11 +13,10 @@ import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { NodeContext } from 'types/nodeContext';
 import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
-import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
-import { TreeNode, TreeNodeIcon } from '../treeNode';
-import { ClusterDeploymentNode } from './clusterDeploymentNode';
-import { ApiState, apiState } from 'cli/kubernetes/apiResources';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
+import { TreeNode } from '../treeNode';
+import { ClusterDeploymentNode } from './clusterDeploymentNode';
 
 /**
  * Defines Cluster context tree view item for displaying

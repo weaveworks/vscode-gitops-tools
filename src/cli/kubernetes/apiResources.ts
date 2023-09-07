@@ -1,12 +1,12 @@
+import { refreshResourcesTreeViews } from 'commands/refreshTreeViews';
 import { setVSCodeContext, telemetry } from 'extension';
-import { TelemetryError } from 'types/telemetryEventNames';
-import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { createK8sClients } from 'k8s/client';
 import { ContextId } from 'types/extensionIds';
-import { refreshAllTreeViews, refreshResourcesTreeViews } from 'commands/refreshTreeViews';
-import { restartKubeProxy } from './kubectlProxy';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryError } from 'types/telemetryEventNames';
 import { clusterDataProvider } from 'ui/treeviews/treeViews';
+import { restartKubeProxy } from './kubectlProxy';
+import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
 export enum ApiState {
 	Loading,

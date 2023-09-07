@@ -1,6 +1,4 @@
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { setVSCodeContext } from 'extension';
-import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
 import { TreeItem } from 'vscode';
 import { ClusterNode } from '../nodes/cluster/clusterNode';
@@ -55,11 +53,6 @@ export class ClusterDataProvider extends DataProvider {
    * Creates Clusters tree view items from local kubernetes config.
    */
 	async loadRootNodes() {
-		console.log('+ started loadClusterNodes');
-
-		const t1 = Date.now();
-
-
 		statusBar.startLoadingTree();
 
 		let currentContextTreeItem: ClusterNode | undefined;
@@ -79,9 +72,6 @@ export class ClusterDataProvider extends DataProvider {
 		}
 
 		statusBar.stopLoadingTree();
-
-		const t2 = Date.now();
-		console.log('+ loadClusterNodes ∆', t2 - t1);
 	}
 
 	public updateCurrentContextChildNodes() {

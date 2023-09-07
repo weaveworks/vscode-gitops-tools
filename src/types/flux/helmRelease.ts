@@ -1,5 +1,5 @@
 import { Condition, Kind, KubernetesJSON, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
-import { DependsOn, KustomizationKubeConfig, Kustomization, NamespacedObjectKindReference } from './kustomization';
+import { DependsOn, Kustomization, KustomizationKubeConfig, NamespacedObjectKindReference } from './kustomization';
 
 /**
  * Helm release info object.

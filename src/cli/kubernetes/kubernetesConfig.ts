@@ -4,14 +4,12 @@ import { window } from 'vscode';
 import * as k8s from '@kubernetes/client-node';
 import { ActionOnInvalid } from '@kubernetes/client-node/dist/config_types';
 import { shellCodeError } from 'cli/shell/exec';
-import { refreshAllTreeViews } from 'commands/refreshTreeViews';
 import { setVSCodeContext, telemetry } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { refreshClustersTreeView } from 'ui/treeviews/treeViews';
 import { kcContextsListChanged, kcCurrentContextChanged, kcTextChanged } from 'utils/kubeConfigCompare';
 import { loadAvailableResourceKinds as loadApiResources } from './apiResources';
-import { restartKubeProxy } from './kubectlProxy';
 import { loadKubeConfigPath } from './kubernetesConfigWatcher';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
@@ -31,7 +29,6 @@ export const kubeConfig: k8s.KubeConfig = new k8s.KubeConfig();
 
 // reload the kubeconfig via kubernetes-tools. fire events if things have changed
 export async function syncKubeConfig(forceReloadResourceKinds = false) {
-	console.log('syncKubeConfig');
 
 	kubeConfigState = KubeConfigState.Loading;
 	const configShellResult = await invokeKubectlCommand('config view');
@@ -65,14 +62,12 @@ async function kubeconfigChanged(newKubeConfig: k8s.KubeConfig, forceReloadResou
 	// load the changed kubeconfig globally so that the following code use the new config
 	kubeConfig.loadFromString(newKubeConfig.exportConfig(), {onInvalidEntry: ActionOnInvalid.FILTER});
 
-	console.log(kubeConfig.currentContext);
 	if(!currentContextExists()) {
 		kubeConfigState = KubeConfigState.NoContextSelected;
 	}
 
 
 	if (contextChanged) {
-		console.log('currentContext changed', kubeConfig.getCurrentContext());
 		setVSCodeContext(ContextId.CurrentClusterGitOpsNotEnabled, false);
 		setVSCodeContext(ContextId.ClusterUnreachable, false);
 	}

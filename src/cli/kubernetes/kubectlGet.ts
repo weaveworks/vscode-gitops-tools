@@ -1,6 +1,6 @@
 import safesh from 'shell-escape-tag';
 
-import { setVSCodeContext, telemetry } from 'extension';
+import { telemetry } from 'extension';
 import { k8sList } from 'k8s/list';
 import { Bucket } from 'types/flux/bucket';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
@@ -12,10 +12,9 @@ import { OCIRepository } from 'types/flux/ociRepository';
 import { Deployment, Kind, KubernetesObject, Pod, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
-import { invokeKubectlCommand } from './kubernetesToolsKubectl';
-import { getAvailableResourcePlurals } from './apiResources';
 import { window } from 'vscode';
-import { ContextId } from 'types/extensionIds';
+import { getAvailableResourcePlurals } from './apiResources';
+import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 /**
  * RegExp for the Error that should not be sent in telemetry.
  * Server doesn't have a resource type = when GitOps not enabled
@@ -41,11 +40,8 @@ export async function getResource(name: string, namespace: string, kind: string)
 }
 
 export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: Kind, telemetryError: TelemetryError): Promise<T[]> {
-	const t1 = Date.now();
-
 	const list = await k8sList(kind);
 	if(list !== undefined) {
-		console.log(`k8sList ${kind}`, list.length, '  ∆', Date.now() - t1);
 		return list as T[];
 	}
 
@@ -61,7 +57,6 @@ export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind
 	}
 
 	const items = parseJsonItems(shellResult.stdout);
-	console.log(`kubectl get ${kind}`, items.length, '  ∆', Date.now() - t1);
 	return items as T[];
 }
 

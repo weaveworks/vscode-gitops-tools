@@ -11,7 +11,6 @@ export async function refreshAllTreeViewsCommand() {
 }
 
 export async function refreshAllTreeViews() {
-	console.log('refreshAllTreeViews');
 
 	refreshClustersTreeView();
 	refreshResourcesTreeViews();

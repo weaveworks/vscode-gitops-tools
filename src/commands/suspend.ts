@@ -1,16 +1,16 @@
 import { window } from 'vscode';
 
-import { AzureClusterProvider, azureTools, isAzureProvider } from 'cli/azure/azureTools';
-import { failed } from 'types/errorable';
+import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { failed } from 'types/errorable';
 import { FluxSource, FluxWorkload } from 'types/fluxCliTypes';
 import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
-import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
 import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
-import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
 import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
 import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 /**
  * Suspend source or workload reconciliation and refresh its Tree View.

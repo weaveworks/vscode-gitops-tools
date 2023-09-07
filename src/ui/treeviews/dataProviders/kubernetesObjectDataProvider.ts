@@ -1,14 +1,14 @@
+import { ApiState, apiState } from 'cli/kubernetes/apiResources';
 import { getNamespace } from 'cli/kubernetes/kubectlGetNamespace';
 import { GitRepository } from 'types/flux/gitRepository';
 import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { groupNodesByNamespace, sortNodes } from 'utils/treeNodeUtils';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { TreeNode } from '../nodes/treeNode';
-import { DataProvider } from './dataProvider';
-import { ApiState, apiState } from 'cli/kubernetes/apiResources';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { clusterDataProvider } from '../treeViews';
+import { DataProvider } from './dataProvider';
 
 /**
  * Superclass for data providers that group objects by namespace: Source and Workload data providers
@@ -49,8 +49,6 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 	}
 
 	public async add(object: KubernetesObject) {
-		console.log('add', object);
-
 		if(!object.metadata?.namespace) {
 			return;
 		}
@@ -100,8 +98,6 @@ export abstract class KubernetesObjectDataProvider extends DataProvider {
 	}
 
 	public delete(object: KubernetesObject) {
-		console.log('delete', object);
-
 		const namespaceNode = this.findParentNamespaceNode(object);
 		if(!namespaceNode) {
 			return;

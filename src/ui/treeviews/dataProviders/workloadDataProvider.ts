@@ -1,18 +1,16 @@
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/kubernetes/kubectlGet';
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
-import { setVSCodeContext } from 'extension';
-import { ContextId } from 'types/extensionIds';
 import { statusBar } from 'ui/statusBar';
+import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
-import { TreeNode, TreeNodeIcon } from '../nodes/treeNode';
+import { TreeNode } from '../nodes/treeNode';
 import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
 import { KubernetesObjectDataProvider } from './kubernetesObjectDataProvider';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 
 /**-
  * Defines data provider for loading Kustomizations
