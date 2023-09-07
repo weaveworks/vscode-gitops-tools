@@ -1,7 +1,7 @@
 import { KubeConfig } from '@kubernetes/client-node';
 import { ChildProcess } from 'child_process';
 import * as shell from 'cli/shell/exec';
-import { destroyK8sClients } from 'k8s/client';
+import { createK8sClients, destroyK8sClients } from 'k8s/client';
 import { createProxyConfig } from 'k8s/createKubeProxyConfig';
 
 export let proxyProc: ChildProcess | undefined;
@@ -46,6 +46,7 @@ function procListen(p: ChildProcess) {
 		if(data.includes('Starting to serve on')) {
 			const port = parseInt(data.split(':')[1].trim());
 			kubeProxyConfig = createProxyConfig(port);
+			createK8sClients();
 		}
 	});
 
