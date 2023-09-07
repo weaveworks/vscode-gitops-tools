@@ -2,6 +2,7 @@ import { window } from 'vscode';
 
 import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { telemetry } from 'extension';
 import { failed } from 'types/errorable';
 import { FluxSource } from 'types/fluxCliTypes';
@@ -11,8 +12,7 @@ import { BucketNode } from 'ui/treeviews/nodes/source/bucketNode';
 import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
 import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
-import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { getCurrentClusterInfo, reloadSourcesTreeView, reloadWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 /**
  * Delete a source
@@ -54,10 +54,10 @@ export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepository
 
 	if (currentClusterInfo.result.isAzure) {
 		await azureTools.deleteSource(sourceName, contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
-		refreshWorkloadsTreeView();
+		reloadWorkloadsTreeView();
 	} else {
 		await fluxTools.delete(sourceType, sourceName, sourceNamespace);
 	}
 
-	refreshSourcesTreeView();
+	reloadSourcesTreeView();
 }

@@ -5,7 +5,7 @@ import { telemetry } from 'extension';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryEvent } from 'types/telemetryEventNames';
-import { refreshSourcesTreeView, refreshWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { reloadSourcesTreeView, reloadWorkloadsTreeView } from 'ui/treeviews/treeViews';
 import { splitNamespacedFluxObject } from 'utils/namespacedFluxObject';
 import { ParamsDictionary } from 'utils/typeUtils';
 
@@ -51,8 +51,8 @@ async function createGitSourceAzure(source: ParamsDictionary, kustomization: Par
 
 	setTimeout(() => {
 		// Wait a bit for the repository to have a failed state in case of SSH url
-		refreshSourcesTreeView();
-		refreshWorkloadsTreeView();
+		reloadSourcesTreeView();
+		reloadWorkloadsTreeView();
 	}, 1000);
 
 	showDeployKeyNotificationIfNeeded(args.url, deployKey);
@@ -83,8 +83,8 @@ async function createBucketSourceAzure(source: ParamsDictionary, kustomization: 
 	await azureTools.createSourceBucket(args);
 
 	setTimeout(() => {
-		refreshSourcesTreeView();
-		refreshWorkloadsTreeView();
+		reloadSourcesTreeView();
+		reloadWorkloadsTreeView();
 	}, 1000);
 }
 

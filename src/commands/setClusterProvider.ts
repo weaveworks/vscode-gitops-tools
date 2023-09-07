@@ -5,7 +5,7 @@ import { ClusterMetadata } from 'data/globalState';
 import { globalState } from 'extension';
 import { KnownClusterProviders, knownClusterProviders } from 'types/kubernetes/clusterProvider';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
-import { refreshClustersTreeView } from 'ui/treeviews/treeViews';
+import { reloadClustersTreeView } from 'ui/treeviews/treeViews';
 import { refreshAllTreeViews } from './refreshTreeViews';
 
 export async function setClusterProvider(clusterNode: ClusterNode) {
@@ -37,7 +37,7 @@ export async function setClusterProvider(clusterNode: ClusterNode) {
 		if(clusterNode.context.name === kubeConfig.getCurrentContext()) {
 			refreshAllTreeViews();
 		} else {
-			refreshClustersTreeView();
+			reloadClustersTreeView();
 		}
 	}
 }

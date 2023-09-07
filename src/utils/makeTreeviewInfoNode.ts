@@ -1,3 +1,4 @@
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { TreeNode, TreeNodeIcon } from '../ui/treeviews/nodes/treeNode';
 
 
@@ -28,7 +29,8 @@ export function infoNode(type: InfoNode) {
 		case InfoNode.LoadingApi:
 			return new TreeNode('Loading API...');
 		case InfoNode.ClusterUnreachable:
-			node = new TreeNode('Cluster unreachable');
+			const name = kubeConfig.currentContext;
+			node = new TreeNode(`Cluster ${name} unreachable`);
 			node.setIcon(TreeNodeIcon.Disconnected);
 			return node;
 	}

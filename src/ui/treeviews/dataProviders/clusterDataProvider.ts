@@ -32,21 +32,6 @@ export class ClusterDataProvider extends DataProvider {
 	}
 
 
-	/**
-	 * Check if the cluster node exists or not.
-	 */
-	public includesTreeNode(treeItem: TreeItem, clusterNodes: TreeNode[] = this.nodes) {
-		for (const clusterNode of clusterNodes) {
-			if (treeItem === clusterNode) {
-				return true;
-			}
-			const includesInNested = this.includesTreeNode(treeItem, clusterNode.children);
-			if (includesInNested) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 
 	/**
