@@ -3,14 +3,12 @@ import { window } from 'vscode';
 import { azureTools, isAzureProvider } from 'cli/azure/azureTools';
 import { fluxTools } from 'cli/flux/fluxTools';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
 import { disableConfirmations, telemetry } from 'extension';
-import { failed } from 'types/errorable';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
-import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
-import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 
 
 

@@ -1,6 +1,8 @@
 import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
-import { TreeNode } from './treeNode';
 import { TreeItemCollapsibleState } from 'vscode';
+import { SourceNode } from './source/sourceNode';
+import { TreeNode, TreeNodeIcon } from './treeNode';
+import { WorkloadNode } from './workload/workloadNode';
 
 /**
  * Defines any kubernetes resourse.
@@ -24,9 +26,29 @@ export class NamespaceNode extends TreeNode {
 		return [Kind.Namespace];
 	}
 
-	updateLabel() {
+	updateLabel(withIcons = true) {
 		if(this.collapsibleState === TreeItemCollapsibleState.Collapsed) {
-			this.label = `${this.resource.metadata?.name} (${this.children.length})`;
+			const totalLength = this.children.length;
+			let readyLength = 0;
+			for(const child of this.children) {
+				if(child instanceof SourceNode || child instanceof WorkloadNode) {
+					if(!child.isReconcileFailed) {
+						readyLength++;
+					}
+				} else {
+					readyLength++;
+				}
+			}
+			const lengthLabel = totalLength === readyLength ? `${totalLength}` : `${readyLength}/${totalLength}`;
+			this.label = `${this.resource.metadata?.name} (${lengthLabel})`;
+
+			if(withIcons) {
+				if(readyLength === totalLength) {
+					this.setIcon(TreeNodeIcon.Success);
+				} else {
+					this.setIcon(TreeNodeIcon.Warning);
+				}
+			}
 		} else {
 			this.label = `${this.resource.metadata?.name}`;
 		}

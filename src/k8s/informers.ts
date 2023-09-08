@@ -18,6 +18,7 @@ export function createInformers(kc: k8s.KubeConfig) {
 	FluxWorkloadKinds.forEach(kind => {
 		createInformer(kc, workloadDataProvider, kind);
 	});
+
 }
 
 export function destroyInformers() {
@@ -58,6 +59,7 @@ async function createInformer(kc: k8s.KubeConfig, receiver: KubernetesObjectData
 
 function registerInformerEvents(informer: k8s.Informer<KubernetesObject>, receiver: KubernetesObjectDataProvider) {
 	informer?.on('add', (obj: KubernetesObject) => {
+
 		receiver.add(obj);
 	});
 
@@ -70,7 +72,6 @@ function registerInformerEvents(informer: k8s.Informer<KubernetesObject>, receiv
 	});
 
 	informer?.on('error', (err: Error) => {
-		console.log('*- informer Error', err);
 		destroyInformers();
 	});
 }

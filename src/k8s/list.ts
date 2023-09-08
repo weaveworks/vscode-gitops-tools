@@ -6,12 +6,10 @@ import { k8sCoreApi, k8sCustomApi } from './client';
 export async function k8sList<T extends FluxObject>(kind: Kind): Promise<T[] | undefined> {
 	const api = getAPIParams(kind);
 	if(!api) {
-		console.log('k8sList no apiParams');
 		return;
 	}
 
 	if(!k8sCustomApi) {
-		console.log('k8sList no k8sCustomApi');
 		return;
 	}
 
@@ -26,14 +24,11 @@ export async function k8sList<T extends FluxObject>(kind: Kind): Promise<T[] | u
 
 export async function k8sListNamespaces(): Promise<Namespace[] | undefined> {
 	if(!k8sCoreApi) {
-		console.log('k8sList no k8sCustomApi');
 		return;
 	}
 
 	try	{
-		const t1 = Date.now();
 		const result = await k8sCoreApi.listNamespace();
-		console.log('k8sList Namespace ∆', Date.now() - t1);
 
 		const kbody = result.body as KubernetesListObject<Namespace>;
 		return kbody.items.map(ns => {

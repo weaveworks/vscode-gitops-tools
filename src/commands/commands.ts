@@ -20,7 +20,7 @@ import { fluxReconcileRepositoryForPath } from './fluxReconcileGitRepositoryForP
 import { fluxReconcileSourceCommand } from './fluxReconcileSource';
 import { fluxReconcileWorkload, fluxReconcileWorkloadWithSource } from './fluxReconcileWorkload';
 import { installFluxCli } from './installFluxCli';
-import { openResource } from './openResource';
+import { openResource, openKubeconfig } from './openResource';
 import { pullGitRepository } from './pullGitRepository';
 import { resume } from './resume';
 import { setClusterProvider } from './setClusterProvider';
@@ -82,6 +82,7 @@ export function registerCommands(context: ExtensionContext) {
 
 	// editor
 	registerCommand(CommandId.EditorOpenResource, openResource);
+	registerCommand(CommandId.EditorOpenKubeconfig, openKubeconfig);
 
 	// webview
 	registerCommand(CommandId.ShowLogs, showLogs);

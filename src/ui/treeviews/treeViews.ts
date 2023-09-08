@@ -9,7 +9,6 @@ import { DocumentationDataProvider } from './dataProviders/documentationDataProv
 import { SourceDataProvider } from './dataProviders/sourceDataProvider';
 import { WorkloadDataProvider } from './dataProviders/workloadDataProvider';
 import { ClusterNode } from './nodes/cluster/clusterNode';
-import { TreeNode } from './nodes/treeNode';
 
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
@@ -64,7 +63,7 @@ export function createTreeViews() {
 		showCollapseAll: true,
 	});
 
-
+	documentationDataProvider.reload();
 }
 
 function listenCollapsableState() {
@@ -72,7 +71,7 @@ function listenCollapsableState() {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
 			e.element.updateLabel();
-			sourceDataProvider.refresh(e.element);
+			sourceDataProvider.redraw(e.element);
 		}
 	});
 
@@ -80,7 +79,7 @@ function listenCollapsableState() {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 			e.element.updateLabel();
-			sourceDataProvider.refresh(e.element);
+			sourceDataProvider.redraw(e.element);
 		}
 	});
 
@@ -89,7 +88,7 @@ function listenCollapsableState() {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
 			e.element.updateLabel();
-			workloadDataProvider.refresh(e.element);
+			workloadDataProvider.redraw(e.element);
 		}
 	});
 
@@ -97,7 +96,7 @@ function listenCollapsableState() {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 			e.element.updateLabel();
-			workloadDataProvider.refresh(e.element);
+			workloadDataProvider.redraw(e.element);
 		}
 	});
 }
@@ -107,33 +106,29 @@ function listenCollapsableState() {
  * When an argument is passed - only that tree item
  * and its children are updated.
  */
-export function refreshClustersTreeView(node?: TreeNode) {
-	if (node && !clusterDataProvider.includesTreeNode(node)) {
-		// Trying to refresh old (non-existent) cluster context node
-		return;
-	}
-	clusterDataProvider.refresh(node);
+export function reloadClustersTreeView() {
+	clusterDataProvider.reload();
 }
 
 /**
  * Reloads sources tree view for the selected cluster.
  */
-export function refreshSourcesTreeView(node?: TreeNode) {
-	sourceDataProvider.refresh(node);
+export function reloadSourcesTreeView() {
+	sourceDataProvider.reload();
 }
 
 /**
  * Reloads workloads tree view for the selected cluster.
  */
-export function refreshWorkloadsTreeView(node?: TreeNode) {
-	workloadDataProvider.refresh(node);
+export function reloadWorkloadsTreeView() {
+	workloadDataProvider.reload();
 }
 
 /**
  * Reloads workloads tree view for the selected cluster.
  */
-export function refreshTemplatesTreeView(node?: TreeNode) {
-	templateDateProvider.refresh(node);
+export function reloadTemplatesTreeView() {
+	templateDateProvider.reload();
 }
 
 /**

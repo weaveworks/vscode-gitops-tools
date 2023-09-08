@@ -7,6 +7,6 @@ import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
 export async function setCurrentKubernetesContext(clusterContext: ClusterNode): Promise<void> {
 	const setContextResult = await setCurrentContext(clusterContext.context.name);
 	if (setContextResult?.isChanged) {
-		syncKubeConfig();
+		await syncKubeConfig();
 	}
 }

@@ -6,9 +6,9 @@ import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { ConfigMap, Node } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
-import { getFluxControllers, notAnErrorServerNotRunning } from './kubectlGet';
-import { invokeKubectlCommand } from './kubernetesToolsKubectl';
+import { notAnErrorServerNotRunning } from './kubectlGet';
 import { kubeConfig } from './kubernetesConfig';
+import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 
 /**
  * Try to detect known cluster providers. Returns user selected cluster type if that is set.

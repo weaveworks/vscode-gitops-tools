@@ -47,11 +47,7 @@ export async function invokeKubectlCommand(command: string, printOutput = true):
 
 	let kubectlShellResult;
 	const commandWithArgs = `kubectl ${command} --request-timeout ${getRequestTimeout()}`;
-	const t1 = Date.now();
 	kubectlShellResult = await shell.exec(commandWithArgs);
-	const t2 = Date.now();
-	console.log(`${command} ∆`,  t2 - t1);
-
 
 	if(printOutput) {
 		output.send(`> kubectl ${command}`, {

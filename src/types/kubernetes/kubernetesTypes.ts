@@ -50,6 +50,20 @@ export const enum Kind {
 	GitOpsTemplate = 'GitOpsTemplate',
 }
 
+const fullKinds: Record<string, string> = {
+	Bucket: 'Buckets.source.toolkit.fluxcd.io',
+	GitRepository: 'GitRepositories.source.toolkit.fluxcd.io',
+	OCIRepository: 'OCIRepositories.source.toolkit.fluxcd.io',
+	HelmRepository: 'HelmRepositories.source.toolkit.fluxcd.io',
+	HelmRelease: 'HelmReleases.helm.toolkit.fluxcd.io',
+	Kustomization: 'Kustomizations.kustomize.toolkit.fluxcd.io',
+	GitOpsTemplate: 'GitOpsTemplates.templates.weave.works',
+};
+
+export function qualifyToolkitKind(kind: string): string {
+	return fullKinds[kind] || kind;
+}
+
 
 export const enum SourceKind {
 	Bucket = 'Bucket',
@@ -78,5 +92,3 @@ export interface LocalObjectReference {
 export interface KubernetesJSON {
 	[key: string]: unknown;
 }
-
-

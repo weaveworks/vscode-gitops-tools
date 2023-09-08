@@ -69,6 +69,7 @@ suite('Extension Test Suite', () => {
 
 	// Flux should be uninstalled after tests are done
 	after(async function() {
+		this.timeout(4000); // default 2000ms is too brief, sometimes takes longer
 		let cluster = await getTreeItem(api.data.clusterTreeViewProvider, currentContext);
 		await vscode.commands.executeCommand('gitops.flux.uninstall', cluster);
 	});

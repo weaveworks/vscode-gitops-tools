@@ -2,7 +2,7 @@ import safesh from 'shell-escape-tag';
 import { window } from 'vscode';
 
 import * as shell from 'cli/shell/exec';
-import { telemetry } from 'extension';
+import { enabledFluxChecks, telemetry } from 'extension';
 import { FluxSource, FluxTreeResources, FluxWorkload } from 'types/fluxCliTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson } from 'utils/jsonUtils';
@@ -64,13 +64,16 @@ class FluxTools {
 	 * https://github.com/fluxcd/flux2/blob/main/cmd/flux/check.go
 	 */
 	async check(context: string): Promise<{ prerequisites: FluxPrerequisite[]; controllers: FluxController[]; } | undefined> {
+		if (!enabledFluxChecks()) {
+			return undefined;
+		}
 		const result = await shell.execWithOutput(safesh`flux check --context ${context}`, { revealOutputView: false });
 
 		if (result.code !== 0) {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CHECK);
 			const stderr = result?.stderr;
 			if (stderr) {
-				window.showErrorMessage(String(result?.stderr || ''));
+				window.showWarningMessage(String(result?.stderr || ''));
 			}
 			return undefined;
 		}
@@ -130,11 +133,17 @@ class FluxTools {
 	 */
 	async tree(name: string, namespace: string): Promise<undefined | FluxTreeResources> {
 
-		const treeShellResult = await shell.exec(`flux tree kustomization ${name} -n ${namespace} -o json`);
+		const cmd = `flux tree kustomization ${name} -n ${namespace} -o json`;
+		const treeShellResult = await shell.exec(cmd);
 
 		if (treeShellResult.code !== 0) {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_TREE);
-			window.showErrorMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${treeShellResult?.stderr}`);
+			let errorData = treeShellResult.stderr;
+			if (treeShellResult.code === null) {
+				errorData += `Command '${cmd}' timed out`;
+			}
+			// + (treeShellResult.code === null ? 'Command timed out' : '';
+			window.showWarningMessage(`Failed to get resources created by the kustomization ${name}. ERROR: ${errorData}`);
 			return;
 		}
 

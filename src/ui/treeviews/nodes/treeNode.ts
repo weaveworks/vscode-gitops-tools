@@ -2,7 +2,7 @@ import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemColla
 
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
-import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { KubernetesObject, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
@@ -11,6 +11,7 @@ export const enum TreeNodeIcon {
 	Error = 'error',
 	Warning = 'warning',
 	Success = 'success',
+	Disconnected = 'disconnected',
 	Unknown = 'unknown',
 }
 
@@ -74,6 +75,8 @@ export class TreeNode extends TreeItem {
 			this.iconPath = new ThemeIcon('error', new ThemeColor('editorError.foreground'));
 		} else if (icon === TreeNodeIcon.Warning) {
 			this.iconPath = new ThemeIcon('warning', new ThemeColor('editorWarning.foreground'));
+		} else if (icon === TreeNodeIcon.Disconnected) {
+			this.iconPath = new ThemeIcon('sync-ignored', new ThemeColor('editorError.foreground'));
 		} else if (icon === TreeNodeIcon.Success) {
 			this.iconPath = new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen'));
 		} else if (icon === TreeNodeIcon.Unknown) {
@@ -138,6 +141,10 @@ export class TreeNode extends TreeItem {
 			.join('');
 	}
 
+	fullyQualifyKind(): string {
+		return qualifyToolkitKind(this.resource?.kind || '');
+	}
+
 	// @ts-ignore
 	get tooltip(): string | MarkdownString {
 		if (this.resource) {
@@ -149,9 +156,10 @@ export class TreeNode extends TreeItem {
 	get command(): Command | undefined {
 		// Set click event handler to load kubernetes resource as yaml file in editor.
 		if (this.resource) {
+			let stringKind = this.fullyQualifyKind();
 			const resourceUri = getResourceUri(
 				this.resource.metadata?.namespace,
-				`${this.resource.kind}/${this.resource.metadata?.name}`,
+				`${stringKind}/${this.resource.metadata?.name}`,
 				FileTypes.Yaml,
 			);
 

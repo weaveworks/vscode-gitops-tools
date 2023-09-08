@@ -1,5 +1,6 @@
 import { Uri, window, workspace } from 'vscode';
 
+import { kubeConfigPath } from 'cli/kubernetes/kubernetesConfigWatcher';
 import { telemetry } from 'extension';
 import { TelemetryError } from 'types/telemetryEventNames';
 
@@ -17,4 +18,10 @@ export async function openResource(uri: Uri): Promise<void> {
 		window.showErrorMessage(`Error loading document: ${error}`);
 		telemetry.sendError(TelemetryError.FAILED_TO_OPEN_RESOURCE);
 	});
+}
+
+export async function openKubeconfig() {
+	if (kubeConfigPath) {
+		openResource(Uri.file(kubeConfigPath));
+	}
 }
