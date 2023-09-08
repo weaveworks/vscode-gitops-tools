@@ -40,6 +40,7 @@ export class Telemetry {
 		this.context = context;
 		const key = '9a491deb-120a-4a6e-8893-f528d4f6bd9c';
 		this.reporter = new TelemetryReporter(extensionId, extensionVersion, key);
+		context.subscriptions.push(this.reporter);
 	}
 
 	/**
