@@ -37,10 +37,9 @@ export class Telemetry {
 	private reporter: TelemetryReporter;
 
 	constructor(context: ExtensionContext, extensionVersion: string, extensionId: string) {
-		// second and third arguments are no longer accepted by TelemetryReporter constructor
 		this.context = context;
 		const key = '9a491deb-120a-4a6e-8893-f528d4f6bd9c';
-		this.reporter = new TelemetryReporter(key);
+		this.reporter = new TelemetryReporter(extensionId, extensionVersion, key);
 		context.subscriptions.push(this.reporter);
 	}
 
@@ -89,7 +88,7 @@ export class Telemetry {
 			error = new Error(eventName);
 		}
 
-		this.reporter.sendTelemetryEvent(String(error), {
+		this.reporter.sendTelemetryException(error, {
 			name: eventName,
 		});
 
