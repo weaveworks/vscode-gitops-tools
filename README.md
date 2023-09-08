@@ -29,7 +29,7 @@ Once you have satisfied these requirements you can find and install GitOps Tools
 
 ### kubectl proxy
 
-This extension uses two different methods to get information from the Kubernetes cluster. It preferentially will run `kubectl proxy -p 0` for your selecced cluster and will use the proxy with a javascript client for faster performance and real-time updates. This also requires `watch` RBAC for Flux resources. If the proxy client connection can't be established the extension will fall back to `kubectl get` for querying the cluster.
+This extension uses two different methods to get information from the Kubernetes cluster. It preferentially will run `kubectl proxy -p 0` for your selected cluster and will use the proxy with a javascript client for faster performance and real-time updates. This also requires `watch` RBAC for Flux resources. If the proxy client connection can't be established the extension will fall back to `kubectl get` for querying the cluster.
 
 
 # Features
