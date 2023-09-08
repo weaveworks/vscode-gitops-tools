@@ -18,7 +18,7 @@ The current release notes are always published on the Releases page, by automati
 * Add timeout configuration to GitOps Tools preferences
 * Update github actions workflows, Kind, Kubernetes version for testing
 * Responsive UI tested with oidc-login
-* Kubectl api-resources controls async cluster treeview loading
+* Kubectl api-resources controls async resource treeview loading
 * Edge rebase @ 0.25.1-edge.7 (#463)
 
 # v0.25.0
