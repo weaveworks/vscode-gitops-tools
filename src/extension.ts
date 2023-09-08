@@ -42,6 +42,7 @@ export async function activate(context: ExtensionContext) {
 
 	globalState = new GlobalState(context);
 
+	// Note: the second and third arguments are thrown away
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
 	initData();
