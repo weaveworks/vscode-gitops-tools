@@ -27,12 +27,15 @@ There are a few requirements before installing and using the extension:
 
 Once you have satisfied these requirements you can find and install GitOps Tools in the [Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) by searching for "**fluxcd**" or "**gitops**".
 
+### kubectl proxy
 
+This extension uses two different methods to get information from the Kubernetes cluster. It preferentially will run `kubectl proxy -p 0` for your selecced cluster and will use the proxy with a javascript client for faster performance and real-time updates. This also requires `watch` RBAC for Flux resources. If the proxy client connection can't be established the extension will fall back to `kubectl get` for querying the cluster.
 
 
 # Features
 - Configure, visualize and manage Flux resources
 - Tree views for Clusters, Sources, and Workloads
+- Observe Flux resource updates in the cluster in real-time
 - Select clusters and examine installed [GitOps Toolkit components](https://fluxcd.io/docs/components/)
 - Enable and Disable GitOps (install/uninstall Flux) on clusters
 - Create, view and edit sources (git, OCI, Helm and Bucket), and workloads (Kustomization and HelmRelease)
@@ -42,6 +45,7 @@ Once you have satisfied these requirements you can find and install GitOps Tools
 - Clone GitRepository source to user machine and open them in the editor
 - Preview sources, workloads and other objects information with tooltips
 - Open remote resources as `.yaml` files in the editor
+- Open and edit the kubeconfig file
 - Trace Kubernetes objects created by workloads
 - Watch Flux controller logs and `flux` CLI commands for diagnostics
 - Documentation links for [Flux](https://fluxcd.io/docs) and [Weave GitOps](https://docs.gitops.weave.works/docs/intro/) embedded in the extension
@@ -149,6 +153,13 @@ Confirm that your configuration context shows in a terminal running `kubectl con
 
 
 
+
+
+### _Timeouts and flux check warnings_
+
+The extension has timeout options that can make be adjusted in VSCode settings to match your cluster network constraints. The default timeout for any data query operation is 60 seconds.
+
+`flux check` command can also be disabled in the settings. This will stop `flux check` warnings about old versions but will disable Flux controller status icons in the the Clusters treeview.
 
 
 # Data and Telemetry
