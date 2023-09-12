@@ -4,6 +4,10 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.25.2
+
+* Live update for all flux types and UI fixes (#479)
+
 # v0.25.1
 
 * README for release (#473)
