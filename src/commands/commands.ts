@@ -1,10 +1,10 @@
 import { commands, Disposable, ExtensionContext, Uri, window } from 'vscode';
 
 import { showOutputChannel } from 'cli/shell/output';
+import { refreshAllTreeViewsCommand, refreshResourcesTreeViewsCommand } from 'commands/refreshTreeViews';
 import { telemetry } from 'extension';
 import { CommandId } from 'types/extensionIds';
 import { TelemetryError } from 'types/telemetryEventNames';
-import { refreshAllTreeViewsCommand, refreshResourcesTreeViewsCommand } from 'commands/refreshTreeViews';
 import { addKustomization } from './addKustomization';
 import { addSource } from './addSource';
 import { copyResourceName } from './copyResourceName';
@@ -14,13 +14,15 @@ import { createKustomizationForPath } from './createKustomizationForPath';
 import { deleteSource } from './deleteSource';
 import { deleteWorkload } from './deleteWorkload';
 import { fluxDisableGitOps, fluxEnableGitOps } from './enableDisableGitOps';
+import { expandAllSources, expandAllWorkloads } from './expandAll';
 import { fluxCheck } from './fluxCheck';
 import { checkFluxPrerequisites } from './fluxCheckPrerequisites';
 import { fluxReconcileRepositoryForPath } from './fluxReconcileGitRepositoryForPath';
 import { fluxReconcileSourceCommand } from './fluxReconcileSource';
 import { fluxReconcileWorkload, fluxReconcileWorkloadWithSource } from './fluxReconcileWorkload';
 import { installFluxCli } from './installFluxCli';
-import { openResource, openKubeconfig } from './openResource';
+import { kubectlApplyKustomization, kubectlApplyPath, kubectlDeletePath } from './kubectlApply';
+import { openKubeconfig, openResource } from './openResource';
 import { pullGitRepository } from './pullGitRepository';
 import { resume } from './resume';
 import { setClusterProvider } from './setClusterProvider';
@@ -32,7 +34,6 @@ import { showNewUserGuide } from './showNewUserGuide';
 import { showWorkloadsHelpMessage } from './showWorkloadsHelpMessage';
 import { suspend } from './suspend';
 import { trace } from './trace';
-import { expandAllSources, expandAllWorkloads } from './expandAll';
 
 
 let _context: ExtensionContext;
@@ -76,6 +77,11 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.CopyResourceName, copyResourceName);
 	registerCommand(CommandId.AddSource, addSource);
 	registerCommand(CommandId.AddKustomization, addKustomization);
+	registerCommand(CommandId.KubectlApplyPath, kubectlApplyPath);
+	registerCommand(CommandId.KubectlDeletePath, kubectlDeletePath);
+	registerCommand(CommandId.KubectlApplyKustomization, kubectlApplyKustomization);
+
+
 	registerCommand(CommandId.ExpandAllSources, expandAllSources);
 	registerCommand(CommandId.ExpandAllWorkloads, expandAllWorkloads);
 

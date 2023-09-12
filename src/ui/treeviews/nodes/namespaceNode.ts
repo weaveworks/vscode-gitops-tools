@@ -27,28 +27,31 @@ export class NamespaceNode extends TreeNode {
 	}
 
 	updateLabel(withIcons = true) {
-		if(this.collapsibleState === TreeItemCollapsibleState.Collapsed) {
-			const totalLength = this.children.length;
-			let readyLength = 0;
-			for(const child of this.children) {
-				if(child instanceof SourceNode || child instanceof WorkloadNode) {
-					if(!child.isReconcileFailed) {
-						readyLength++;
-					}
-				} else {
+		const totalLength = this.children.length;
+		let readyLength = 0;
+		for(const child of this.children) {
+			if(child instanceof SourceNode || child instanceof WorkloadNode) {
+				if(!child.isReconcileFailed) {
 					readyLength++;
 				}
+			} else {
+				readyLength++;
 			}
+		}
+
+		if(withIcons) {
+			if(readyLength === totalLength) {
+				this.setIcon(TreeNodeIcon.Success);
+			} else {
+				this.setIcon(TreeNodeIcon.Warning);
+			}
+		} else {
+			this.setIcon(undefined);
+		}
+
+		if(this.collapsibleState === TreeItemCollapsibleState.Collapsed) {
 			const lengthLabel = totalLength === readyLength ? `${totalLength}` : `${readyLength}/${totalLength}`;
 			this.label = `${this.resource.metadata?.name} (${lengthLabel})`;
-
-			if(withIcons) {
-				if(readyLength === totalLength) {
-					this.setIcon(TreeNodeIcon.Success);
-				} else {
-					this.setIcon(TreeNodeIcon.Warning);
-				}
-			}
 		} else {
 			this.label = `${this.resource.metadata?.name}`;
 		}

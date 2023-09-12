@@ -70,7 +70,7 @@ export class TreeNode extends TreeItem {
 	 * relative file path `resouces/icons/(dark|light)/${icon}.svg`
 	 * @param icon Theme icon, uri or light/dark svg icon path.
 	 */
-	setIcon(icon: string | ThemeIcon | Uri | TreeNodeIcon) {
+	setIcon(icon: string | ThemeIcon | Uri | TreeNodeIcon | undefined) {
 		if (icon === TreeNodeIcon.Error) {
 			this.iconPath = new ThemeIcon('error', new ThemeColor('editorError.foreground'));
 		} else if (icon === TreeNodeIcon.Warning) {
