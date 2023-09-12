@@ -156,7 +156,7 @@
 			},
 			{
 				"command": "gitops.views.createGitRepository",
-				"title": "Create GitRepository from Path",
+				"title": "Create Source from Path",
 				"category": "GitOps"
 			},
 			{
@@ -322,6 +322,12 @@
 				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
 			}
 		],
+		"submenus": [
+			{
+				"id": "gitops.explorer",
+				"label": "GitOps"
+			}
+		],
 		"menus": {
 			"view/title": [
 				{
@@ -471,17 +477,24 @@
 					"when": "view == gitops.views.templates"
 				}
 			],
-			"explorer/context": [
+			"gitops.explorer": [
 				{
 					"command": "gitops.views.createGitRepository"
 				},
 				{
-					"command": "gitops.flux.reconcileRepository"
+					"command": "gitops.flux.reconcileRepository",
+					"when": "explorerResourceIsFolder"
 				},
 				{
 					"command": "gitops.createKustomization"
 				}
 			],
+			"explorer/context": [
+				{
+					"submenu": "gitops.explorer"
+				}
+			],
+
 			"commandPalette": [
 				{
 					"command": "gitops.editor.openResource",
