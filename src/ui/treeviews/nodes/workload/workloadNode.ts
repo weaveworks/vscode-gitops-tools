@@ -2,11 +2,11 @@ import { MarkdownString } from 'vscode';
 
 import { HelmRelease } from 'types/flux/helmRelease';
 import { Kustomization } from 'types/flux/kustomization';
+import { FluxWorkloadObject } from 'types/flux/object';
 import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from '../treeNode';
-import { FluxWorkloadObject } from 'types/flux/object';
 
 /**
  * Base class for all Workload tree view items.
