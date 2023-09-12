@@ -59,6 +59,11 @@ export const enum CommandId {
 	AddSource = 'gitops.addSource',
 	AddKustomization = 'gitops.addKustomization',
 
+	KubectlApplyPath = 'gitops.kubectlApplyPath',
+	KubectlDeletePath = 'gitops.kubectlDeletePath',
+	KubectlApplyKustomization = 'gitops.kubectlApplyKustomization',
+
+
 	// editor
 	EditorOpenResource = 'gitops.editor.openResource',
 	EditorOpenKubeconfig = 'gitops.editor.openKubeconfig',

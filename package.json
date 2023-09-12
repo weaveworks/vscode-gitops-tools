@@ -163,7 +163,21 @@
 				"command": "gitops.createKustomization",
 				"title": "Create Kustomization from Path",
 				"icon": "$(add)",
-				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.kubectlApplyPath",
+				"title": "Apply (kubectl apply -f)",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.kubectlDeletePath",
+				"title": "Delete (kubectl delete -f)",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.kubectlApplyKustomization",
+				"title": "Apply Kustomization Directory (kubectl apply -k)",
 				"category": "GitOps"
 			},
 			{
@@ -479,14 +493,31 @@
 			],
 			"gitops.explorer": [
 				{
-					"command": "gitops.views.createGitRepository"
+					"command": "gitops.kubectlApplyPath",
+					"group": "1"
 				},
 				{
-					"command": "gitops.flux.reconcileRepository",
+					"command": "gitops.kubectlDeletePath",
+					"group": "1"
+				},
+				{
+					"command": "gitops.kubectlApplyKustomization",
+					"group": "1",
 					"when": "explorerResourceIsFolder"
 				},
 				{
-					"command": "gitops.createKustomization"
+					"command": "gitops.views.createGitRepository",
+					"group": "2"
+				},
+				{
+					"command": "gitops.flux.reconcileRepository",
+					"when": "explorerResourceIsFolder",
+					"group": "2"
+				},
+				{
+					"command": "gitops.createKustomization",
+					"group": "2"
+
 				}
 			],
 			"explorer/context": [
