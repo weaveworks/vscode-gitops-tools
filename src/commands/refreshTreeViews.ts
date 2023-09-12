@@ -30,7 +30,7 @@ export function refreshResourcesTreeViews() {
 	reloadTemplatesTreeView();
 }
 
-export function redrawhResourcesTreeViews() {
+export function redrawResourcesTreeViews() {
 	sourceDataProvider.redraw();
 	workloadDataProvider.redraw();
 	templateDateProvider.redraw();
