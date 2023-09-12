@@ -1,10 +1,9 @@
 import { getNamespace } from 'cli/kubernetes/kubectlGetNamespace';
 import { currentContextData } from 'data/contextData';
-import { GitRepository } from 'types/flux/gitRepository';
 import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { groupNodesByNamespace, sortNodes } from 'utils/treeNodeUtils';
+import { makeTreeNode } from '../nodes/makeTreeNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
-import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { TreeNode } from '../nodes/treeNode';
 import { AsyncDataProvider } from './asyncDataProvider';
 
@@ -42,26 +41,31 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 			namespaceNode = new NamespaceNode(ns);
 			this.nodes?.push(namespaceNode);
 			sortNodes(this.nodes);
-			namespaceNode.expand();
-			this.redraw();
+			setTimeout(() => {
+				namespaceNode!.updateLabel();
+				namespaceNode!.expand();
+				this.redraw(namespaceNode);
+			}, 0);
 		}
 
 
 		if(namespaceNode.findChildByResource(object)) {
 			this.update(object);
 			namespaceNode.updateLabel();
-			this.redraw(namespaceNode);
+			this.redraw();
+			return;
+		}
+
 		const resourceNode = makeTreeNode(object);
 		if(!resourceNode) {
 			return;
 		}
 
-		const resourceNode = new GitRepositoryNode(object as GitRepository);
 		namespaceNode.addChild(resourceNode);
 		sortNodes(namespaceNode.children);
 
 		namespaceNode.updateLabel();
-		this.redraw(namespaceNode);
+		this.redraw();
 	}
 
 	public update(object: KubernetesObject) {
@@ -74,8 +78,12 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 		if(node && node.resource) {
 			node.resource = object;
 			node.updateStatus();
-			namespaceNode.updateLabel();
-			this.redraw(namespaceNode);
+
+			setTimeout(() => {
+				namespaceNode!.updateLabel();
+				this.redraw(namespaceNode);
+			}, 0);
+
 		}
 	}
 

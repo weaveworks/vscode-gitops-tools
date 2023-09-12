@@ -118,8 +118,6 @@ export class ClusterNode extends TreeNode {
 
 		this.children = [];
 		if (this.isGitOpsEnabled) {
-			// load flux system deployments
-			this.expand();
 			revealClusterNode(this, {
 				expand: false,
 			});
