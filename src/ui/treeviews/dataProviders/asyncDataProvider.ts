@@ -73,7 +73,6 @@ export class AsyncDataProvider extends SimpleDataProvider{
 		viewData.nodes = await this.loadRootNodes();
 		viewData.loadCollapsibleStates();
 		viewData.loading = false;
-		console.log(`finish loading ${context.contextName} ${this.constructor.name}`);
 
 		this.nodes.forEach(node => {
 			if(node instanceof NamespaceNode) {
