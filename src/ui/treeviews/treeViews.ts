@@ -87,7 +87,8 @@ function listenCollapsableState() {
 	workloadTreeView.onDidCollapseElement(e => {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
-			e.element.updateLabel();
+			const showIcons = workloadDataProvider.nodes.includes(e.element);
+			e.element.updateLabel(showIcons);
 			workloadDataProvider.redraw(e.element);
 		}
 	});
@@ -95,7 +96,8 @@ function listenCollapsableState() {
 	workloadTreeView.onDidExpandElement(e => {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
-			e.element.updateLabel();
+			const showIcons = workloadDataProvider.nodes.includes(e.element);
+			e.element.updateLabel(showIcons);
 			workloadDataProvider.redraw(e.element);
 		}
 	});
