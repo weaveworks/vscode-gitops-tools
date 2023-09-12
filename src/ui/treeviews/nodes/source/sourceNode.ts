@@ -3,12 +3,12 @@ import { MarkdownString } from 'vscode';
 import { Bucket } from 'types/flux/bucket';
 import { GitRepository } from 'types/flux/gitRepository';
 import { HelmRepository } from 'types/flux/helmRepository';
+import { FluxSourceObject } from 'types/flux/object';
 import { OCIRepository } from 'types/flux/ociRepository';
 import { Condition } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { shortenRevision } from 'utils/stringUtils';
 import { TreeNode, TreeNodeIcon } from '../treeNode';
-import { FluxSourceObject } from 'types/flux/object';
 
 /**
  * Base class for all the Source tree view items.

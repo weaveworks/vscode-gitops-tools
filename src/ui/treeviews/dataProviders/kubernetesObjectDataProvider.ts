@@ -51,6 +51,8 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 			this.update(object);
 			namespaceNode.updateLabel();
 			this.redraw(namespaceNode);
+		const resourceNode = makeTreeNode(object);
+		if(!resourceNode) {
 			return;
 		}
 

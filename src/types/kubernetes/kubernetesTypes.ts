@@ -33,22 +33,22 @@ export type Pod = Required<k8s.V1Pod> & {
  * Defines supported Kubernetes object kinds.
  */
 export const enum Kind {
-	List = 'List',
 	Bucket = 'Bucket',
 	GitRepository = 'GitRepository',
 	OCIRepository = 'OCIRepository',
 	HelmRepository = 'HelmRepository',
 	HelmRelease = 'HelmRelease',
 	Kustomization = 'Kustomization',
-	Deployment = 'Deployment',
+	GitOpsTemplate = 'GitOpsTemplate',
+
 	Namespace = 'Namespace',
+	Deployment = 'Deployment',
 	Node = 'Node',
 	Pod = 'Pod',
 
 	ConfigMap = 'ConfigMap',
-
-	GitOpsTemplate = 'GitOpsTemplate',
 }
+
 
 const fullKinds: Record<string, string> = {
 	Bucket: 'Buckets.source.toolkit.fluxcd.io',
