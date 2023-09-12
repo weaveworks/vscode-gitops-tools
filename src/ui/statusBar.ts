@@ -6,7 +6,6 @@ class StatusBar {
 	private statusBarItemName = 'gitops';
 
 	private numberOfLoadingTreeViews = 0;
-	private loadingWasHidden = false;
 
 	constructor() {
 		this.statusBarItem = window.createStatusBarItem(
@@ -14,7 +13,7 @@ class StatusBar {
 			StatusBarAlignment.Left,
 			-1e10,// align to the right
 		);
-		this.statusBarItem.text = '$(sync~spin) GitOps: Initializing Tree Views';
+		this.statusBarItem.text = '$(sync~spin) GitOps: Loading Resources';
 	}
 
 	/**
@@ -22,10 +21,6 @@ class StatusBar {
 	 * (only at the extension initialization (once))
 	 */
 	startLoadingTree(): void {
-		if (this.loadingWasHidden) {
-			return;
-		}
-
 		this.numberOfLoadingTreeViews++;
 		this.statusBarItem.show();
 	}
@@ -38,9 +33,7 @@ class StatusBar {
 		this.numberOfLoadingTreeViews--;
 
 		if (this.numberOfLoadingTreeViews === 0) {
-			this.loadingWasHidden = true;
 			this.statusBarItem.hide();
-			this.statusBarItem.dispose();
 		}
 	}
 
