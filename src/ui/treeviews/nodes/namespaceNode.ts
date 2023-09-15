@@ -29,19 +29,25 @@ export class NamespaceNode extends TreeNode {
 	updateLabel(withIcons = true) {
 		const totalLength = this.children.length;
 		let readyLength = 0;
+		let loadingLength = 0;
 		for(const child of this.children) {
 			if(child instanceof SourceNode || child instanceof WorkloadNode) {
-				if(!child.isReconcileFailed) {
+				if(child.resourceIsReady) {
 					readyLength++;
+				} else if(child.resourceIsProgressing) {
+					loadingLength++;
 				}
 			} else {
 				readyLength++;
 			}
 		}
 
+		const validLength = readyLength + loadingLength;
 		if(withIcons) {
 			if(readyLength === totalLength) {
 				this.setIcon(TreeNodeIcon.Success);
+			} else if(validLength === totalLength) {
+				this.setIcon(TreeNodeIcon.Progressing);
 			} else {
 				this.setIcon(TreeNodeIcon.Warning);
 			}
@@ -50,7 +56,7 @@ export class NamespaceNode extends TreeNode {
 		}
 
 		if(this.collapsibleState === TreeItemCollapsibleState.Collapsed) {
-			const lengthLabel = totalLength === readyLength ? `${totalLength}` : `${readyLength}/${totalLength}`;
+			const lengthLabel = totalLength === validLength ? `${totalLength}` : `${validLength}/${totalLength}`;
 			this.label = `${this.resource.metadata?.name} (${lengthLabel})`;
 		} else {
 			this.label = `${this.resource.metadata?.name}`;
