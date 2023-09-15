@@ -14,8 +14,7 @@ export class ToolkitNode extends TreeNode {
 	reconcileState: ReconcileState = ReconcileState.Progressing;
 
 	constructor(resource: FluxObject) {
-		const label = resource.metadata?.name || 'unknown';
-		super(`${resource.kind}: ${label}`);
+		super(`${resource.kind}: ${resource.metadata?.name || 'unknown'}`);
 
 		this.resource = resource;
 		this.updateStatus();
