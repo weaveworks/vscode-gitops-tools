@@ -50,6 +50,7 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 
 		for (const helmRepository of sortByMetadataName(helmRepositories)) {
 			sourceNodes.push(new HelmRepositoryNode(helmRepository));
+			const x = new HelmRepositoryNode(helmRepository);
 		}
 
 		// add buckets to the tree

@@ -25,9 +25,13 @@ export function infoNode(type: InfoNode) {
 		case InfoNode.NoResources:
 			return new TreeNode('No Resources');
 		case InfoNode.Loading:
-			return new TreeNode('Loading...');
+			node = new TreeNode('Loading...');
+			node.setIcon(TreeNodeIcon.Loading);
+			return node;
 		case InfoNode.LoadingApi:
-			return new TreeNode('Loading API...');
+			node = new TreeNode('Loading API...');
+			node.setIcon(TreeNodeIcon.Loading);
+			return node;
 		case InfoNode.ClusterUnreachable:
 			const name = kubeConfig.currentContext;
 			node = new TreeNode(`Cluster ${name} unreachable`);

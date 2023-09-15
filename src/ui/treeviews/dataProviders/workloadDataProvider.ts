@@ -62,7 +62,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	 * @param workloadNode target workload node
 	 */
 	async updateWorkloadChildren(workloadNode: WorkloadNode) {
-		workloadNode.children = [new TreeNode('Loading...')];
+		workloadNode.children = infoNodes(InfoNode.Loading);
 
 		if (workloadNode instanceof KustomizationNode) {
 			this.updateKustomizationChildren(workloadNode);
