@@ -4,6 +4,19 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.25.3
+
+* Merge pull request for weaveworks/rebase-0.25-edge (#484)
+* Upgrade @vscode/extension-telemetry
+* Bump vscode engine version
+* Pin extension telemetry @ 0.6.x until we can resolve #477
+* Added kubectl apply right-click option and keyboard shortcut for open file
+* Remove extraneous console.log in case of performance impact
+* Refactoring toolkitNode
+* Added loading spinners to "Loading..."
+* No icons for nested namespaces
+* Update node labels after refresh
+
 # v0.25.2
 
 * Live update for all flux types and UI fixes (#479)
