@@ -14,7 +14,7 @@
 	"publisher": "weaveworks",
 	"icon": "resources/icons/gitops-logo.png",
 	"engines": {
-		"vscode": "^1.63.0",
+		"vscode": "^1.82.0",
 		"npm": ">=7.0.0"
 	},
 	"categories": [
@@ -644,7 +644,7 @@
 	"dependencies": {
 		"@kubernetes/client-node": "^0.18.1",
 		"@types/ws": "^8.5.4",
-		"@vscode/extension-telemetry": "^0.4.7",
+		"@vscode/extension-telemetry": "^0.6.0",
 		"bufferutil": "^4.0.7",
 		"change-case": "^4.1.2",
 		"extract-zip": "^2.0.1",

@@ -1,5 +1,5 @@
-import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { Kustomization } from 'types/flux/kustomization';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from 'types/nodeContext';
 import { WorkloadNode } from './workloadNode';
 
@@ -7,19 +7,14 @@ import { WorkloadNode } from './workloadNode';
  * Defines Kustomization tree view item for display in GitOps Workload tree view.
  */
 export class KustomizationNode extends WorkloadNode {
-	/**
-	 * Kustomize kubernetes resource object
-	 */
-	resource: Kustomization;
+	resource!: Kustomization;
 
 	/**
 	 * Creates new app kustomization tree view item for display.
 	 * @param kustomization Kustomize kubernetes object info.
 	 */
 	constructor(kustomization: Kustomization) {
-		super(kustomization.metadata?.name || '', kustomization);
-
-		this.resource = kustomization;
+		super(kustomization);
 
 		this.makeCollapsible();
 	}

@@ -12,6 +12,8 @@ export const enum TreeNodeIcon {
 	Warning = 'warning',
 	Success = 'success',
 	Disconnected = 'disconnected',
+	Progressing = 'progressing',
+	Loading = 'loading',
 	Unknown = 'unknown',
 }
 
@@ -77,6 +79,10 @@ export class TreeNode extends TreeItem {
 			this.iconPath = new ThemeIcon('warning', new ThemeColor('editorWarning.foreground'));
 		} else if (icon === TreeNodeIcon.Disconnected) {
 			this.iconPath = new ThemeIcon('sync-ignored', new ThemeColor('editorError.foreground'));
+		} else if (icon === TreeNodeIcon.Progressing) {
+			this.iconPath = new ThemeIcon('sync~spin', new ThemeColor('terminal.ansiGreen'));
+		} else if (icon === TreeNodeIcon.Loading) {
+			this.iconPath = new ThemeIcon('loading~spin', new ThemeColor('foreground'));
 		} else if (icon === TreeNodeIcon.Success) {
 			this.iconPath = new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen'));
 		} else if (icon === TreeNodeIcon.Unknown) {

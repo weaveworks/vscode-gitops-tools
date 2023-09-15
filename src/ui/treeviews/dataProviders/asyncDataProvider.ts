@@ -2,6 +2,7 @@ import { ApiState } from 'cli/kubernetes/apiResources';
 import { KubeConfigState, kubeConfigState } from 'cli/kubernetes/kubernetesConfig';
 import { ContextData, ViewData, currentContextData } from 'data/contextData';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 import { clusterDataProvider } from '../treeViews';
 import { SimpleDataProvider } from './simpleDataProvider';
@@ -72,8 +73,12 @@ export class AsyncDataProvider extends SimpleDataProvider{
 		viewData.nodes = await this.loadRootNodes();
 		viewData.loadCollapsibleStates();
 		viewData.loading = false;
-		console.log(`finish loading ${context.contextName} ${this.constructor.name}`);
 
+		this.nodes.forEach(node => {
+			if(node instanceof NamespaceNode) {
+				node.updateLabel();
+			}
+		});
 		this.redraw();
 	}
 
