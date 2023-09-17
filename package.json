@@ -9,7 +9,8 @@
 		"Juozas Gaigalas <juozasgaigalas@gmail.com>",
 		"Alexander <usernamehw@gmail.com>",
 		"Taras Novak <taras.novak@randomfractals.com>",
-		"Leonardo Murillo <leonardo@weave.works>"
+		"Leonardo Murillo <leonardo@weave.works>",
+		"Seth Falco <seth@falco.fun>"
 	],
 	"publisher": "weaveworks",
 	"icon": "resources/icons/gitops-logo.png",
@@ -321,6 +322,11 @@
 					"type": "string",
 					"default": "60",
 					"description": "Seconds until SIGTERM for every shell exec (except `kubectl proxy`). Set to 0 for no timeout."
+				},
+				"gitops.ignoreConfigRecommendations": {
+					"type": "boolean",
+					"default": false,
+					"description": "Stop recommending changes to editor or extension settings."
 				}
 			}
 		},
