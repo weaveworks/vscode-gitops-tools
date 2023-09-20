@@ -1,5 +1,5 @@
 import { FluxObject } from 'types/flux/object';
-import { Condition } from 'types/kubernetes/kubernetesTypes';
+import { Condition, Kind } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { TreeNode, TreeNodeIcon } from '../treeNode';
 
@@ -29,7 +29,7 @@ export class ToolkitNode extends TreeNode {
 		if (condition?.status === 'True') {
 			this.reconcileState = ReconcileState.Ready;
 			this.setIcon(TreeNodeIcon.Success);
-		} else if (condition?.reason === 'Progressing') {
+		} else if (condition?.reason === 'Progressing' || condition?.reason === 'Promoting' || condition?.reason === 'Finalising') {
 			this.reconcileState = ReconcileState.Progressing;
 			this.setIcon(TreeNodeIcon.Progressing);
 		} else {
@@ -79,6 +79,9 @@ export class ToolkitNode extends TreeNode {
 
 		if (!this.resourceIsReady) {
 			revisionOrError = `${this.readyOrFirstCondition?.reason || ''}`;
+			if(this.resource.kind === Kind.Canary) {
+				revisionOrError = `${revisionOrError} ${this.resource.status?.canaryWeight}%`;
+			}
 		} else {
 			revisionOrError = this.revision;
 		}
