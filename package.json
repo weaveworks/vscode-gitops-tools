@@ -94,6 +94,11 @@
 				"category": "GitOps"
 			},
 			{
+				"command": "gitops.openwge",
+				"title": "Open in Weave Gitops...",
+				"category": "GitOps"
+			},
+			{
 				"command": "gitops.resume",
 				"title": "Resume",
 				"category": "GitOps"
@@ -451,6 +456,11 @@
 					"command": "gitops.suspend",
 					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository|Canary;)/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
+				},
+				{
+					"command": "gitops.openwge",
+					"when": "viewItem =~ /(Canary;)/",
+					"group": "3"
 				},
 				{
 					"command": "gitops.resume",
