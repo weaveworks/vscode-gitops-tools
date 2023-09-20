@@ -85,12 +85,15 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 
 		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
 	} else if (kubernetesObject.kind === Kind.Canary) {
-		// const sourceRef = `${kubernetesObject.spec?.chart?.spec?.sourceRef?.kind}/${kubernetesObject.spec?.chart?.spec?.sourceRef?.name}.${kubernetesObject.spec?.chart?.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
-		// createMarkdownTableRow('source', sourceRef, markdown);
-
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
-		// createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);
-		createMarkdownTableRow('WIP', 'WIP', markdown);
+
+		createMarkdownTableRow('phase', kubernetesObject.status.phase, markdown);
+		createMarkdownTableRow('failedChecks', kubernetesObject.status.failedChecks, markdown);
+		createMarkdownTableRow('canaryWeight', kubernetesObject.status.canaryWeight, markdown);
+		createMarkdownTableRow('iterations', kubernetesObject.status.iterations, markdown);
+		createMarkdownTableRow('lastAppliedSpec', kubernetesObject.status.lastAppliedSpec, markdown);
+		createMarkdownTableRow('lastPromotedSpec', kubernetesObject.status.lastPromotedSpec, markdown);
+		createMarkdownTableRow('lastTransitionTime', kubernetesObject.status.lastTransitionTime, markdown);
 
 		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
 	} else if (kubernetesObject.kind === Kind.Deployment) {
