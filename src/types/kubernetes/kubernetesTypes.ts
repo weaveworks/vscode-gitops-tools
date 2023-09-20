@@ -40,6 +40,7 @@ export const enum Kind {
 	HelmRelease = 'HelmRelease',
 	Kustomization = 'Kustomization',
 	GitOpsTemplate = 'GitOpsTemplate',
+	Canary = 'Canary',
 
 	Namespace = 'Namespace',
 	Deployment = 'Deployment',
@@ -64,13 +65,6 @@ export function qualifyToolkitKind(kind: string): string {
 	return fullKinds[kind] || kind;
 }
 
-
-export const enum SourceKind {
-	Bucket = 'Bucket',
-	GitRepository = 'GitRepository',
-	OCIRepository = 'OCIRepository',
-	HelmRepository = 'HelmRepository',
-}
 
 /*
  * LocalObjectReference contains enough information
