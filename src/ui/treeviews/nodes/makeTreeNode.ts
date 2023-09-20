@@ -8,6 +8,7 @@ import { GitRepositoryNode } from './source/gitRepositoryNode';
 import { HelmRepositoryNode } from './source/helmRepositoryNode';
 import { OCIRepositoryNode } from './source/ociRepositoryNode';
 import { TreeNode } from './treeNode';
+import { CanaryNode } from './workload/canaryNode';
 import { HelmReleaseNode } from './workload/helmReleaseNode';
 import { KustomizationNode } from './workload/kustomizationNode';
 
@@ -19,6 +20,7 @@ const nodeConstructors  = {
 	'HelmRepository': HelmRepositoryNode,
 	'HelmRelease': HelmReleaseNode,
 	'Kustomization': KustomizationNode,
+	'Canary': CanaryNode,
 	'GitOpsTemplate': GitOpsTemplateNode,
 
 	'Namespace': NamespaceNode,

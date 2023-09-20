@@ -2,6 +2,7 @@ import * as k8s from '@kubernetes/client-node';
 import { MarkdownString } from 'vscode';
 
 import { Bucket } from 'types/flux/bucket';
+import { Canary } from 'types/flux/canary';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { GitRepository } from 'types/flux/gitRepository';
 import { HelmRelease } from 'types/flux/helmRelease';
@@ -11,7 +12,7 @@ import { OCIRepository } from 'types/flux/ociRepository';
 import { Deployment, Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { shortenRevision } from './stringUtils';
 
-export type KnownTreeNodeResources = Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomization | Deployment | GitOpsTemplate;
+export type KnownTreeNodeResources = Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomization | Deployment | GitOpsTemplate | Canary;
 
 
 export function createContextMarkdownTable(context: k8s.Context, cluster?: k8s.Cluster): MarkdownString {
@@ -81,6 +82,15 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
 		createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);
+
+		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
+	} else if (kubernetesObject.kind === Kind.Canary) {
+		// const sourceRef = `${kubernetesObject.spec?.chart?.spec?.sourceRef?.kind}/${kubernetesObject.spec?.chart?.spec?.sourceRef?.name}.${kubernetesObject.spec?.chart?.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
+		// createMarkdownTableRow('source', sourceRef, markdown);
+
+		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
+		// createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);
+		createMarkdownTableRow('WIP', 'WIP', markdown);
 
 		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
 	} else if (kubernetesObject.kind === Kind.Deployment) {

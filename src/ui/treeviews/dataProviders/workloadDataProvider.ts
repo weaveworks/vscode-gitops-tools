@@ -1,5 +1,5 @@
 import { fluxTools } from 'cli/flux/fluxTools';
-import { getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/kubernetes/kubectlGet';
+import { getCanaries, getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/kubernetes/kubectlGet';
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { ContextData } from 'data/contextData';
 import { statusBar } from 'ui/statusBar';
@@ -8,6 +8,7 @@ import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { addFluxTreeToNode, groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../nodes/anyResourceNode';
 import { TreeNode } from '../nodes/treeNode';
+import { CanaryNode } from '../nodes/workload/canaryNode';
 import { HelmReleaseNode } from '../nodes/workload/helmReleaseNode';
 import { KustomizationNode } from '../nodes/workload/kustomizationNode';
 import { WorkloadNode } from '../nodes/workload/workloadNode';
@@ -30,10 +31,11 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		const workloadNodes: WorkloadNode[] = [];
 
-		const [kustomizations, helmReleases, _] = await Promise.all([
+		const [kustomizations, helmReleases, canaries, _] = await Promise.all([
 			// Fetch all workloads
 			getKustomizations(),
 			getHelmReleases(),
+			getCanaries(),
 			// Cache namespaces to group the nodes
 			getNamespaces(),
 		]);
@@ -44,6 +46,10 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		for (const helmRelease of sortByMetadataName(helmReleases)) {
 			workloadNodes.push(new HelmReleaseNode(helmRelease));
+		}
+
+		for (const canary of sortByMetadataName(canaries)) {
+			workloadNodes.push(new CanaryNode(canary));
 		}
 
 		for (const node of workloadNodes) {
@@ -68,6 +74,8 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 			this.updateKustomizationChildren(workloadNode);
 		} else if (workloadNode instanceof HelmReleaseNode) {
 			this.updateHelmReleaseChildren(workloadNode);
+		} else if (workloadNode instanceof CanaryNode) {
+			this.updateCanaryChildren(workloadNode);
 		}
 	}
 
@@ -118,5 +126,12 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 
 		this.redraw(node);
 	}
+
+	async updateCanaryChildren(node: CanaryNode) {
+		node.children = [new TreeNode('WIP')];
+		this.redraw(node);
+		return;
+	}
+
 }
 

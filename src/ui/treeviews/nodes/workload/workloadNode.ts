@@ -1,5 +1,4 @@
 import { FluxWorkloadObject } from 'types/flux/object';
-import { shortenRevision } from 'utils/stringUtils';
 import { ToolkitNode } from '../source/toolkitNode';
 
 /**
@@ -8,7 +7,4 @@ import { ToolkitNode } from '../source/toolkitNode';
 export class WorkloadNode extends ToolkitNode {
 	resource!: FluxWorkloadObject;
 
-	get revision() {
-		return shortenRevision(this.resource.status.lastAppliedRevision);
-	}
 }

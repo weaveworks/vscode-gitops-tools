@@ -1,6 +1,7 @@
 import { Kustomization } from 'types/flux/kustomization';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from 'types/nodeContext';
+import { shortenRevision } from 'utils/stringUtils';
 import { WorkloadNode } from './workloadNode';
 
 /**
@@ -17,6 +18,10 @@ export class KustomizationNode extends WorkloadNode {
 		super(kustomization);
 
 		this.makeCollapsible();
+	}
+
+	get revision() {
+		return shortenRevision(this.resource.status.lastAppliedRevision);
 	}
 
 	get contexts() {

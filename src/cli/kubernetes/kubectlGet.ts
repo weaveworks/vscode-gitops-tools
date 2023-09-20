@@ -3,6 +3,7 @@ import safesh from 'shell-escape-tag';
 import { telemetry } from 'extension';
 import { k8sList } from 'k8s/list';
 import { Bucket } from 'types/flux/bucket';
+import { Canary } from 'types/flux/canary';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { GitRepository } from 'types/flux/gitRepository';
 import { HelmRelease } from 'types/flux/helmRelease';
@@ -83,6 +84,11 @@ export async function getKustomizations(): Promise<Kustomization[]> {
 
 export async function getHelmReleases(): Promise<HelmRelease[]> {
 	return getResourcesAllNamespaces(Kind.HelmRelease, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
+}
+
+export async function getCanaries(): Promise<Canary[]> {
+	return getResourcesAllNamespaces(Kind.Canary, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
+	// return [];
 }
 
 export async function getGitOpsTemplates(): Promise<GitOpsTemplate[]> {

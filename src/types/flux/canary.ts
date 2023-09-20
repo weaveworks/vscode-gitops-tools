@@ -7,7 +7,7 @@ export interface Canary extends KubernetesObject {
 
 	readonly spec: CanarySpec;
 
-	readonly status?: CanaryStatus;
+	readonly status: CanaryStatus;
 }
 
 type CanarySpec = any;

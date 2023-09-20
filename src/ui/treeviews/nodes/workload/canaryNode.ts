@@ -12,6 +12,11 @@ export class CanaryNode extends WorkloadNode {
 		this.makeCollapsible();
 	}
 
+	get revision() {
+		// return shortenRevision(this.resource.status.lastAppliedRevision);
+		return `${this.resource.status.phase} ${this.resource.status.lastAppliedSpec || ''}`;
+	}
+
 	get contexts() {
 		const contextsArr: string[] = [Kind.Canary];
 		contextsArr.push(
