@@ -124,4 +124,11 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 		this.redraw();
 	}
 
+
+	// async updateNodeChildren(node: TreeNode) {
+	// 	if(node instanceof Canary) {
+	// 		await node.updateChildren();
+	// 	}
+	// }
+
 }

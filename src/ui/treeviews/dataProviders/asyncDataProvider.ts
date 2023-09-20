@@ -10,7 +10,7 @@ import { SimpleDataProvider } from './simpleDataProvider';
 /**`
  * Defines tree view data provider base class for all GitOps tree views.
  */
-export class AsyncDataProvider extends SimpleDataProvider{
+export class AsyncDataProvider extends SimpleDataProvider {
 	get nodes() {
 		return this.viewData(currentContextData()).nodes;
 	}
