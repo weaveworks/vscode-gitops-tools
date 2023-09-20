@@ -94,7 +94,7 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.openwge",
+				"command": "gitops.openWge",
 				"title": "Open in Weave Gitops...",
 				"category": "GitOps"
 			},
@@ -458,7 +458,7 @@
 					"group": "navigation@1"
 				},
 				{
-					"command": "gitops.openwge",
+					"command": "gitops.openWge",
 					"when": "viewItem =~ /(Canary;)/",
 					"group": "3"
 				},

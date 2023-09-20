@@ -23,6 +23,7 @@ import { fluxReconcileWorkload, fluxReconcileWorkloadWithSource } from './fluxRe
 import { installFluxCli } from './installFluxCli';
 import { kubectlApplyKustomization, kubectlApplyPath, kubectlDeletePath } from './kubectlApply';
 import { openKubeconfig, openResource } from './openResource';
+import { openWgeCanary } from './openWge';
 import { pullGitRepository } from './pullGitRepository';
 import { resume } from './resume';
 import { setClusterProvider } from './setClusterProvider';
@@ -102,6 +103,8 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.InstallFluxCli, installFluxCli);
 	registerCommand(CommandId.ShowGlobalState, showGlobalState);
 	registerCommand(CommandId.CreateFromTemplate, createFromTemplate);
+
+	registerCommand(CommandId.OpenWge, openWgeCanary);
 }
 
 /**
