@@ -1,5 +1,5 @@
 import { fluxTools } from 'cli/flux/fluxTools';
-import { getCanaries, getChildrenOfWorkload, getHelmReleases, getKustomizations } from 'cli/kubernetes/kubectlGet';
+import { getCanaries, getCanaryChildren, getHelmReleaseChildren, getHelmReleases, getKustomizations } from 'cli/kubernetes/kubectlGet';
 import { getNamespaces } from 'cli/kubernetes/kubectlGetNamespace';
 import { ContextData } from 'data/contextData';
 import { statusBar } from 'ui/statusBar';
@@ -106,7 +106,7 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 		const name = node.resource.metadata?.name || '';
 		const namespace = node.resource.metadata?.namespace || '';
 
-		const workloadChildren = await getChildrenOfWorkload('helm', name, namespace);
+		const workloadChildren = await getHelmReleaseChildren(name, namespace);
 
 		if (!workloadChildren) {
 			node.children = infoNodes(InfoNode.FailedToLoad);
@@ -128,7 +128,29 @@ export class WorkloadDataProvider extends KubernetesObjectDataProvider {
 	}
 
 	async updateCanaryChildren(node: CanaryNode) {
-		node.children = [new TreeNode('WIP')];
+		// deployment/<targetRef.name>-primary
+		if(!node.resource.metadata?.name) {
+			return;
+		}
+		const [children, primary] = await Promise.all([getCanaryChildren(node.resource.metadata.name), getCanaryChildren(`${node.resource.metadata.name}-primary`)]);
+		const workloadChildren = [...children, ...primary];
+
+		if (!workloadChildren) {
+			node.children = infoNodes(InfoNode.FailedToLoad);
+			this.redraw(node);
+			return;
+		}
+
+		if (workloadChildren.length === 0) {
+			node.children = [new TreeNode('No Resources')];
+			this.redraw(node);
+			return;
+		}
+
+		const childrenNodes = workloadChildren.map(child => new AnyResourceNode(child));
+		const [groupedNodes, clusterScopedNodes] = await groupNodesByNamespace(childrenNodes);
+		node.children = [...groupedNodes, ...clusterScopedNodes];
+
 		this.redraw(node);
 		return;
 	}

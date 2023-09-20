@@ -124,8 +124,7 @@ export async function getFluxControllers(context?: string): Promise<Deployment[]
  * @param name name of the kustomize/helmRelease object
  * @param namespace namespace of the kustomize/helmRelease object
  */
-export async function getChildrenOfWorkload(
-	workload: 'kustomize' | 'helm',
+export async function getHelmReleaseChildren(
 	name: string,
 	namespace: string,
 ): Promise<KubernetesObject[] | undefined> {
@@ -135,16 +134,40 @@ export async function getChildrenOfWorkload(
 		return;
 	}
 
-	const labelNameSelector = `-l ${workload}.toolkit.fluxcd.io/name=${name}`;
-	const labelNamespaceSelector = `-l ${workload}.toolkit.fluxcd.io/namespace=${namespace}`;
+	const labelNameSelector = `-l helm.toolkit.fluxcd.io/name=${name}`;
+	const labelNamespaceSelector = `-l helm.toolkit.fluxcd.io/namespace=${namespace}`;
 
 	const query = `get ${resourceKinds.join(',')} ${labelNameSelector} ${labelNamespaceSelector} -A -o json`;
 	const shellResult = await invokeKubectlCommand(query);
 
 	if (!shellResult || shellResult.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
-		window.showErrorMessage(`Failed to get ${workload} created resources: ${shellResult?.stderr}`);
+		window.showErrorMessage(`Failed to get HelmRelease created resources: ${shellResult?.stderr}`);
 		return;
+	}
+
+	return parseJsonItems(shellResult.stdout);
+}
+
+
+export async function getCanaryChildren(
+	name: string,
+): Promise<KubernetesObject[]> {
+	// return [];
+	const resourceKinds = getAvailableResourcePlurals();
+	if (!resourceKinds) {
+		return [];
+	}
+
+	const labelNameSelector = `-l app=${name}`;
+
+	const query = `get ${resourceKinds.join(',')} ${labelNameSelector} -A -o json`;
+	const shellResult = await invokeKubectlCommand(query);
+
+	if (!shellResult || shellResult.code !== 0) {
+		telemetry.sendError(TelemetryError.FAILED_TO_GET_CHILDREN_OF_A_WORKLOAD);
+		window.showErrorMessage(`Failed to get HelmRelease created resources: ${shellResult?.stderr}`);
+		return [];
 	}
 
 	return parseJsonItems(shellResult.stdout);
