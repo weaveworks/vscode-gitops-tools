@@ -4,6 +4,11 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.25.4
+
+* Fix spawning and not killing `kubectl proxy` processes (#491)
+* Recommend settings for log viewer (#487)
+
 # v0.25.3
 
 * Merge pull request for weaveworks/rebase-0.25-edge (#484)
