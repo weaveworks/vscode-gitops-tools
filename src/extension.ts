@@ -30,6 +30,7 @@ export let extensionContext: ExtensionContext;
 export let globalState: GlobalState;
 /** Methods to report telemetry over Application Insights (Exceptions or Custom Events). */
 export let telemetry: Telemetry | any;
+export let isActive = true;
 
 /**
  * Called when GitOps extension is activated.
@@ -128,6 +129,7 @@ export function suppressDebugMessages(): boolean {
  * Called when extension is deactivated.
  */
 export function deactivate() {
+	isActive = false;
 	telemetry?.dispose();
 	statusBar?.dispose();
 	stopKubeProxy();
