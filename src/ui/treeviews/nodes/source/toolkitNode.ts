@@ -1,7 +1,8 @@
 import { FluxObject } from 'types/flux/object';
 import { Condition, Kind } from 'types/kubernetes/kubernetesTypes';
+import { CommonIcon } from 'ui/icons';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
-import { TreeNode, TreeNodeIcon } from '../treeNode';
+import { TreeNode } from '../treeNode';
 
 export enum ReconcileState {
 	Ready,
@@ -28,13 +29,13 @@ export class ToolkitNode extends TreeNode {
 		const condition = this.readyOrFirstCondition;
 		if (condition?.status === 'True') {
 			this.reconcileState = ReconcileState.Ready;
-			this.setIcon(TreeNodeIcon.Success);
+			this.setCommonIcon(CommonIcon.Success);
 		} else if (condition?.reason === 'Progressing' || condition?.reason === 'Promoting' || condition?.reason === 'Finalising') {
 			this.reconcileState = ReconcileState.Progressing;
-			this.setIcon(TreeNodeIcon.Progressing);
+			this.setCommonIcon(CommonIcon.Progressing);
 		} else {
 			this.reconcileState = ReconcileState.Failed;
-			this.setIcon(TreeNodeIcon.Error);
+			this.setCommonIcon(CommonIcon.Error);
 		}
 	}
 

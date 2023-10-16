@@ -1,21 +1,12 @@
-import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { Command, MarkdownString, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
 import { KubernetesObject, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
+import { CommonIcon, themeIcon } from 'ui/icons';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
-
-export const enum TreeNodeIcon {
-	Error = 'error',
-	Warning = 'warning',
-	Success = 'success',
-	Disconnected = 'disconnected',
-	Progressing = 'progressing',
-	Loading = 'loading',
-	Unknown = 'unknown',
-}
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
@@ -72,22 +63,8 @@ export class TreeNode extends TreeItem {
 	 * relative file path `resouces/icons/(dark|light)/${icon}.svg`
 	 * @param icon Theme icon, uri or light/dark svg icon path.
 	 */
-	setIcon(icon: string | ThemeIcon | Uri | TreeNodeIcon | undefined) {
-		if (icon === TreeNodeIcon.Error) {
-			this.iconPath = new ThemeIcon('error', new ThemeColor('editorError.foreground'));
-		} else if (icon === TreeNodeIcon.Warning) {
-			this.iconPath = new ThemeIcon('warning', new ThemeColor('editorWarning.foreground'));
-		} else if (icon === TreeNodeIcon.Disconnected) {
-			this.iconPath = new ThemeIcon('sync-ignored', new ThemeColor('editorError.foreground'));
-		} else if (icon === TreeNodeIcon.Progressing) {
-			this.iconPath = new ThemeIcon('sync~spin', new ThemeColor('terminal.ansiGreen'));
-		} else if (icon === TreeNodeIcon.Loading) {
-			this.iconPath = new ThemeIcon('loading~spin', new ThemeColor('foreground'));
-		} else if (icon === TreeNodeIcon.Success) {
-			this.iconPath = new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen'));
-		} else if (icon === TreeNodeIcon.Unknown) {
-			this.iconPath = new ThemeIcon('circle-large-outline');
-		} else if (typeof icon === 'string') {
+	setIcon(icon: string | ThemeIcon | Uri |undefined) {
+		if (typeof icon === 'string') {
 			this.iconPath = {
 				light: asAbsolutePath(`resources/icons/light/${icon}.svg`),
 				dark: asAbsolutePath(`resources/icons/dark/${icon}.svg`),
@@ -96,6 +73,11 @@ export class TreeNode extends TreeItem {
 			this.iconPath = icon;
 		}
 	}
+
+	setCommonIcon(icon: CommonIcon) {
+		this.iconPath = themeIcon(icon);
+	}
+
 
 	/**
 	 * Add new tree view item to the children collection.

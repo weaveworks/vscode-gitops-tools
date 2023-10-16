@@ -1,5 +1,6 @@
 import { Deployment, Kind } from 'types/kubernetes/kubernetesTypes';
-import { TreeNode, TreeNodeIcon } from '../treeNode';
+import { CommonIcon } from 'ui/icons';
+import { TreeNode } from '../treeNode';
 
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.
@@ -18,7 +19,7 @@ export class ClusterDeploymentNode extends TreeNode {
 
 		this.label = this.getImageName(deployment);
 
-		this.setIcon(TreeNodeIcon.Unknown);
+		this.setCommonIcon(CommonIcon.Unknown);
 	}
 
 	/**
@@ -37,9 +38,9 @@ export class ClusterDeploymentNode extends TreeNode {
 	 */
 	setStatus(status: 'success' | 'failure') {
 		if (status === 'success') {
-			this.setIcon(TreeNodeIcon.Success);
+			this.setCommonIcon(CommonIcon.Success);
 		} else if (status === 'failure') {
-			this.setIcon(TreeNodeIcon.Warning);
+			this.setCommonIcon(CommonIcon.Warning);
 		}
 	}
 

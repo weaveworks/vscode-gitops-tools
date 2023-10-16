@@ -1,7 +1,8 @@
 import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
+import { CommonIcon } from 'ui/icons';
 import { TreeItemCollapsibleState } from 'vscode';
 import { SourceNode } from './source/sourceNode';
-import { TreeNode, TreeNodeIcon } from './treeNode';
+import { TreeNode } from './treeNode';
 import { WorkloadNode } from './workload/workloadNode';
 
 /**
@@ -45,11 +46,11 @@ export class NamespaceNode extends TreeNode {
 		const validLength = readyLength + loadingLength;
 		if(withIcons) {
 			if(readyLength === totalLength) {
-				this.setIcon(TreeNodeIcon.Success);
+				this.setCommonIcon(CommonIcon.Success);
 			} else if(validLength === totalLength) {
-				this.setIcon(TreeNodeIcon.Progressing);
+				this.setCommonIcon(CommonIcon.Progressing);
 			} else {
-				this.setIcon(TreeNodeIcon.Warning);
+				this.setCommonIcon(CommonIcon.Warning);
 			}
 		} else {
 			this.setIcon(undefined);
