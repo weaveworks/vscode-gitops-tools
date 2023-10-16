@@ -3,7 +3,7 @@ import { MarkdownString, ThemeColor, ThemeIcon, TreeItemCollapsibleState } from 
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { createMarkdownTable } from 'utils/markdownUtils';
-import { TreeNode } from './treeNode';
+import { TreeNode } from '../treeNode';
 
 /**
  * Base class for all the Source tree view items.

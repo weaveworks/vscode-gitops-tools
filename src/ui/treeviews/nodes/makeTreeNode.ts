@@ -1,13 +1,13 @@
 import { KubernetesObject } from '@kubernetes/client-node';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { AnyResourceNode } from './anyResourceNode';
-import { GitOpsTemplateNode } from './gitOpsTemplateNode';
 import { NamespaceNode } from './namespaceNode';
 import { BucketNode } from './source/bucketNode';
 import { GitRepositoryNode } from './source/gitRepositoryNode';
 import { HelmRepositoryNode } from './source/helmRepositoryNode';
 import { OCIRepositoryNode } from './source/ociRepositoryNode';
 import { TreeNode } from './treeNode';
+import { GitOpsTemplateNode } from './wge/gitOpsTemplateNode';
 import { CanaryNode } from './workload/canaryNode';
 import { HelmReleaseNode } from './workload/helmReleaseNode';
 import { KustomizationNode } from './workload/kustomizationNode';

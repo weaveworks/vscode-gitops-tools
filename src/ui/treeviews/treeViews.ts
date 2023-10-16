@@ -13,14 +13,14 @@ import { ClusterNode } from './nodes/cluster/clusterNode';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
-import { TemplateDataProvider } from './dataProviders/templateDataProvider';
+import { WgeDataProvider } from './dataProviders/wgeDataProvider';
 import { NamespaceNode } from './nodes/namespaceNode';
 
 export let clusterDataProvider = new ClusterDataProvider();
 export let sourceDataProvider = new SourceDataProvider();
 export let workloadDataProvider = new WorkloadDataProvider();
 export let documentationDataProvider = new DocumentationDataProvider();
-export let templateDateProvider = new TemplateDataProvider();
+export let templateDateProvider = new WgeDataProvider();
 
 let clusterTreeView: TreeView<TreeItem>;
 export let sourceTreeView: TreeView<TreeItem>;
@@ -52,7 +52,7 @@ export function createTreeViews() {
 
 
 	// WGE templates
-	templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
+	templateTreeView = window.createTreeView(TreeViewId.WgeView, {
 		treeDataProvider: templateDateProvider,
 		showCollapseAll: true,
 	});

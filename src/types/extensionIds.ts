@@ -9,7 +9,7 @@ export const enum TreeViewId {
 	ClustersView = 'gitops.views.clusters',
 	SourcesView = 'gitops.views.sources',
 	WorkloadsView = 'gitops.views.workloads',
-	TemplatesView = 'gitops.views.templates',
+	WgeView = 'gitops.views.wge',
 	DocumentationView = 'gitops.views.documentation',
 }
 

@@ -290,8 +290,8 @@
 					"name": "Workloads"
 				},
 				{
-					"id": "gitops.views.templates",
-					"name": "Templates",
+					"id": "gitops.views.wge",
+					"name": "Weave GitOps",
 					"when": "config.gitops.weaveGitopsEnterprise"
 				},
 				{
@@ -393,7 +393,7 @@
 				{
 					"command": "gitops.views.refreshResourcesTreeView",
 					"group": "navigation@1",
-					"when": "view == gitops.views.templates"
+					"when": "view == gitops.views.wge"
 				},
 				{
 					"command": "gitops.views.showWorkloadsHelpMessage",
@@ -504,7 +504,7 @@
 				{
 					"command": "gitops.views.createFromTemplate",
 					"group": "1",
-					"when": "view == gitops.views.templates"
+					"when": "view == gitops.views.wge"
 				}
 			],
 			"gitops.explorer": [
