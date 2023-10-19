@@ -16,7 +16,7 @@ export class ContextData {
 	// Current cluster supported kubernetes resource kinds.
 	public apiResources: Map<Kind, KindApiParams> | undefined;
 
-	public wgePortalUrl?: string;
+	public wgePortalHost?: string;
 
 	constructor(contextName: string) {
 		this.contextName = contextName;
@@ -74,7 +74,7 @@ export async function loadContextData() {
 
 	const wgeHelmRelease = await getResource<HelmRelease>('weave-gitops-enterprise', 'flux-system', Kind.HelmRelease);
 	if(!wgeHelmRelease) {
-		context.wgePortalUrl = undefined;
+		context.wgePortalHost = undefined;
 		return;
 	}
 
@@ -82,5 +82,5 @@ export async function loadContextData() {
 	const hosts = values?.ingress?.hosts;
 	const host = hosts?.[0];
 
-	context.wgePortalUrl = host;
+	context.wgePortalHost = host;
 }

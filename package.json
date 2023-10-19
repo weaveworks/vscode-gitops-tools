@@ -94,11 +94,6 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.openWge",
-				"title": "Open in Weave Gitops...",
-				"category": "GitOps"
-			},
-			{
 				"command": "gitops.resume",
 				"title": "Resume",
 				"category": "GitOps"
@@ -263,6 +258,11 @@
 			{
 				"command": "gitops.views.createFromTemplate",
 				"title": "Create from Template",
+				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.openInWgePortal",
+				"title": "Open in Weave Gitops Enterprise...",
 				"category": "GitOps"
 			}
 		],
@@ -458,11 +458,6 @@
 					"group": "navigation@1"
 				},
 				{
-					"command": "gitops.openWge",
-					"when": "viewItem =~ /(Canary;)/",
-					"group": "3"
-				},
-				{
 					"command": "gitops.resume",
 					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository|Canary;)/ && viewItem =~ /suspend;/",
 					"group": "navigation@1"
@@ -504,7 +499,12 @@
 				{
 					"command": "gitops.views.createFromTemplate",
 					"group": "1",
-					"when": "view == gitops.views.wge"
+					"when": "view == gitops.views.wge && viewItem =~ /GitOpsTemplate;/"
+				},
+				{
+					"command": "gitops.views.openInWgePortal",
+					"group": "1",
+					"when": "view == gitops.views.wge && viewItem =~ /GitOpsTemplate;|Canary;|Pipeline;|GitOpsSet;/"
 				}
 			],
 			"gitops.explorer": [

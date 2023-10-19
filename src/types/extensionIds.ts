@@ -80,7 +80,7 @@ export const enum CommandId {
 	InstallFluxCli = 'gitops.installFluxCli',
 	ShowGlobalState = 'gitops.dev.showGlobalState',
 	CreateFromTemplate = 'gitops.views.createFromTemplate',
-	OpenWge = 'gitops.openWge',
+	OpenInWgePortal = 'gitops.views.openInWgePortal',
 }
 
 
