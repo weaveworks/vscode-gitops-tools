@@ -1,9 +1,9 @@
 import { getAPIParams } from 'cli/kubernetes/apiResources';
-import { FluxObject } from 'types/flux/object';
+import { ToolkitObject } from 'types/flux/object';
 import { Kind, KubernetesListObject, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { k8sCoreApi, k8sCustomApi } from './client';
 
-export async function k8sList<T extends FluxObject>(kind: Kind): Promise<T[] | undefined> {
+export async function k8sList<T extends ToolkitObject>(kind: Kind): Promise<T[] | undefined> {
 	const api = getAPIParams(kind);
 	if(!api) {
 		return;

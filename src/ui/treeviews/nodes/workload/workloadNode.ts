@@ -6,5 +6,4 @@ import { ToolkitNode } from '../source/toolkitNode';
  */
 export class WorkloadNode extends ToolkitNode {
 	resource!: FluxWorkloadObject;
-
 }

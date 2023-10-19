@@ -6,10 +6,12 @@ import { Bucket } from 'types/flux/bucket';
 import { Canary } from 'types/flux/canary';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { GitRepository } from 'types/flux/gitRepository';
+import { GitOpsSet } from 'types/flux/gitopsset';
 import { HelmRelease } from 'types/flux/helmRelease';
 import { HelmRepository } from 'types/flux/helmRepository';
 import { Kustomization } from 'types/flux/kustomization';
 import { OCIRepository } from 'types/flux/ociRepository';
+import { Pipeline } from 'types/flux/pipeline';
 import { Deployment, Kind, KubernetesObject, Pod, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
@@ -86,13 +88,20 @@ export async function getHelmReleases(): Promise<HelmRelease[]> {
 	return getResourcesAllNamespaces(Kind.HelmRelease, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
 }
 
-export async function getCanaries(): Promise<Canary[]> {
-	return getResourcesAllNamespaces(Kind.Canary, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
-	// return [];
-}
-
 export async function getGitOpsTemplates(): Promise<GitOpsTemplate[]> {
 	return getResourcesAllNamespaces(Kind.GitOpsTemplate, TelemetryError.FAILED_TO_GET_GITOPSTEMPLATES);
+}
+
+export async function getCanaries(): Promise<Canary[]> {
+	return getResourcesAllNamespaces(Kind.Canary, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
+}
+
+export async function getPipelines(): Promise<Pipeline[]> {
+	return getResourcesAllNamespaces(Kind.Pipeline, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
+}
+
+export async function getGitOpsSet(): Promise<GitOpsSet[]> {
+	return getResourcesAllNamespaces(Kind.GitOpsSet, TelemetryError.FAILED_TO_GET_HELM_RELEASES);
 }
 
 

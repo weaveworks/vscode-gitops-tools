@@ -41,6 +41,8 @@ export const enum Kind {
 	Kustomization = 'Kustomization',
 	GitOpsTemplate = 'GitOpsTemplate',
 	Canary = 'Canary',
+	Pipeline = 'Pipeline',
+	GitOpsSet = 'GitOpsSet',
 
 	Namespace = 'Namespace',
 	Deployment = 'Deployment',
@@ -58,7 +60,11 @@ const fullKinds: Record<string, string> = {
 	HelmRepository: 'HelmRepositories.source.toolkit.fluxcd.io',
 	HelmRelease: 'HelmReleases.helm.toolkit.fluxcd.io',
 	Kustomization: 'Kustomizations.kustomize.toolkit.fluxcd.io',
+
 	GitOpsTemplate: 'GitOpsTemplates.templates.weave.works',
+	Canary: 'Canaries.flagger.app',
+	Pipeline: 'Pipelines.pipelines.weave.works',
+	GitOpsSet: 'GitOpsSets.templates.weave.works',
 };
 
 export function qualifyToolkitKind(kind: string): string {

@@ -1,18 +1,12 @@
 import * as k8s from '@kubernetes/client-node';
 import { MarkdownString } from 'vscode';
 
-import { Bucket } from 'types/flux/bucket';
-import { Canary } from 'types/flux/canary';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
-import { GitRepository } from 'types/flux/gitRepository';
-import { HelmRelease } from 'types/flux/helmRelease';
-import { HelmRepository } from 'types/flux/helmRepository';
-import { Kustomization } from 'types/flux/kustomization';
-import { OCIRepository } from 'types/flux/ociRepository';
+import { ToolkitObject } from 'types/flux/object';
 import { Deployment, Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { shortenRevision } from './stringUtils';
 
-export type KnownTreeNodeResources = Namespace | Bucket | GitRepository | OCIRepository | HelmRepository | HelmRelease | Kustomization | Deployment | GitOpsTemplate | Canary;
+export type KnownTreeNodeResources = Namespace | Deployment | ToolkitObject | GitOpsTemplate;
 
 
 export function createContextMarkdownTable(context: k8s.Context, cluster?: k8s.Cluster): MarkdownString {
@@ -94,8 +88,6 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('lastAppliedSpec', kubernetesObject.status.lastAppliedSpec, markdown);
 		createMarkdownTableRow('lastPromotedSpec', kubernetesObject.status.lastPromotedSpec, markdown);
 		createMarkdownTableRow('lastTransitionTime', kubernetesObject.status.lastTransitionTime, markdown);
-
-		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
 	} else if (kubernetesObject.kind === Kind.Deployment) {
 		createMarkdownTableRow('spec.paused', kubernetesObject.spec?.paused, markdown);
 		createMarkdownTableRow('spec.minReadySeconds', kubernetesObject.spec?.minReadySeconds, markdown);

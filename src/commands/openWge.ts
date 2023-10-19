@@ -1,4 +1,4 @@
-import { CanaryNode } from 'ui/treeviews/nodes/workload/canaryNode';
+import { CanaryNode } from 'ui/treeviews/nodes/wge/canaryNode';
 import { env, Uri } from 'vscode';
 
 export function openWgeCanary(node: CanaryNode) {

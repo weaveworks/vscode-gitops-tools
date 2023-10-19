@@ -1,4 +1,4 @@
-import { FluxObject } from 'types/flux/object';
+import { ToolkitObject } from 'types/flux/object';
 import { Condition, Kind } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon } from 'ui/icons';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
@@ -11,10 +11,10 @@ export enum ReconcileState {
 }
 
 export class ToolkitNode extends TreeNode {
-	resource: FluxObject;
+	resource: ToolkitObject;
 	reconcileState: ReconcileState = ReconcileState.Progressing;
 
-	constructor(resource: FluxObject) {
+	constructor(resource: ToolkitObject) {
 		super(`${resource.kind}: ${resource.metadata?.name || 'unknown'}`);
 
 		this.resource = resource;
@@ -75,7 +75,6 @@ export class ToolkitNode extends TreeNode {
 
 	// @ts-ignore
 	get description() {
-		const isSuspendIcon = this.resource.spec?.suspend ? '⏸ ' : '';
 		let revisionOrError = '';
 
 		if (!this.resourceIsReady) {
@@ -87,10 +86,18 @@ export class ToolkitNode extends TreeNode {
 			revisionOrError = this.revision;
 		}
 
-		return `${isSuspendIcon}${revisionOrError}`;
+		return `${this.isSuspendIcon}${revisionOrError}`;
 	}
 
 	get revision(): string {
 		return 'unknown';
 	}
+
+	get isSuspendIcon(): string {
+		if(this.resource.kind !== Kind.Pipeline) {
+			return this.resource.spec?.suspend ? '⏸ ' : '';
+		}
+		return '';
+	}
+
 }
