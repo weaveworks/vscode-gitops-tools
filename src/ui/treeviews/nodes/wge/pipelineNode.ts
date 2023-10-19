@@ -1,6 +1,6 @@
 import { Pipeline } from 'types/flux/pipeline';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { ToolkitNode } from '../source/toolkitNode';
+import { ToolkitNode } from '../toolkitNode';
 
 export class PipelineNode extends ToolkitNode {
 	resource!: Pipeline;

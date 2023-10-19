@@ -2,7 +2,7 @@ import { ToolkitObject } from 'types/flux/object';
 import { Condition, Kind } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon } from 'ui/icons';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
-import { TreeNode } from '../treeNode';
+import { TreeNode } from './treeNode';
 
 export enum ReconcileState {
 	Ready,

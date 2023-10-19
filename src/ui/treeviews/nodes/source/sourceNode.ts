@@ -1,7 +1,7 @@
 
 import { FluxSourceObject } from 'types/flux/object';
 import { shortenRevision } from 'utils/stringUtils';
-import { ToolkitNode } from './toolkitNode';
+import { ToolkitNode } from '../toolkitNode';
 /**
  * Base class for all the Source tree view items.
  */

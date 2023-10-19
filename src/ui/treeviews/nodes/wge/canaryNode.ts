@@ -1,7 +1,7 @@
 import { Canary } from 'types/flux/canary';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from 'types/nodeContext';
-import { ToolkitNode } from '../source/toolkitNode';
+import { ToolkitNode } from '../toolkitNode';
 
 export class CanaryNode extends ToolkitNode {
 	resource!: Canary;

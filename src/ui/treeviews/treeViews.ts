@@ -20,7 +20,7 @@ export let clusterDataProvider = new ClusterDataProvider();
 export let sourceDataProvider = new SourceDataProvider();
 export let workloadDataProvider = new WorkloadDataProvider();
 export let documentationDataProvider = new DocumentationDataProvider();
-export let templateDateProvider = new WgeDataProvider();
+export let wgeDateProvider = new WgeDataProvider();
 
 let clusterTreeView: TreeView<TreeItem>;
 export let sourceTreeView: TreeView<TreeItem>;
@@ -53,7 +53,7 @@ export function createTreeViews() {
 
 	// WGE templates
 	templateTreeView = window.createTreeView(TreeViewId.WgeView, {
-		treeDataProvider: templateDateProvider,
+		treeDataProvider: wgeDateProvider,
 		showCollapseAll: true,
 	});
 
@@ -130,7 +130,7 @@ export function reloadWorkloadsTreeView() {
  * Reloads workloads tree view for the selected cluster.
  */
 export function reloadTemplatesTreeView() {
-	templateDateProvider.reload();
+	wgeDateProvider.reload();
 }
 
 /**

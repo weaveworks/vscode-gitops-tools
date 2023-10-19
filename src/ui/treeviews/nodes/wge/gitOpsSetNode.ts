@@ -1,7 +1,7 @@
 import { GitOpsSet } from 'types/flux/gitopsset';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from 'types/nodeContext';
-import { ToolkitNode } from '../source/toolkitNode';
+import { ToolkitNode } from '../toolkitNode';
 
 export class GitOpsSetNode extends ToolkitNode {
 	resource!: GitOpsSet;

@@ -81,8 +81,4 @@ export class AsyncDataProvider extends SimpleDataProvider {
 		});
 		this.redraw();
 	}
-
-
 }
-
-

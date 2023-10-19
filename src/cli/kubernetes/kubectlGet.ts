@@ -1,7 +1,7 @@
 import safesh from 'shell-escape-tag';
 
 import { telemetry } from 'extension';
-import { k8sList } from 'k8s/list';
+import { k8sGet, k8sList } from 'k8s/list';
 import { Bucket } from 'types/flux/bucket';
 import { Canary } from 'types/flux/canary';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
@@ -32,14 +32,21 @@ export const notAnErrorServerNotRunning = /no connection could be made because t
  * @param namespace namespace of the target resource
  * @param kind kind of the target resource
  */
-export async function getResource(name: string, namespace: string, kind: string): Promise<undefined | KubernetesObject> {
-	const shellResult = await invokeKubectlCommand(`get ${kind}/${name} --namespace=${namespace} -o json`);
+export async function getResource<T extends KubernetesObject>(name: string, namespace: string, kind: Kind): Promise<undefined | T> {
+	const item = await k8sGet(name, namespace, kind);
+	if(item) {
+		return item as T;
+	}
+
+	let fqKind = qualifyToolkitKind(kind);
+
+	const shellResult = await invokeKubectlCommand(`get ${fqKind}/${name} --namespace=${namespace} -o json`);
 	if (shellResult?.code !== 0) {
 		telemetry.sendError(TelemetryError.FAILED_TO_GET_RESOURCE);
 		return;
 	}
 
-	return parseJson(shellResult.stdout);
+	return parseJson(shellResult.stdout) as T;
 }
 
 export async function getResourcesAllNamespaces<T extends KubernetesObject>(kind: Kind, telemetryError: TelemetryError): Promise<T[]> {

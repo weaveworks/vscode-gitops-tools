@@ -14,7 +14,7 @@ import { AsyncDataProvider } from './asyncDataProvider';
 
 export class WgeDataProvider extends AsyncDataProvider {
 	protected viewData(contextData: ContextData) {
-		return contextData.viewData.template;
+		return contextData.viewData.wge;
 	}
 
 	async loadRootNodes() {
@@ -79,7 +79,6 @@ export class WgeDataProvider extends AsyncDataProvider {
 		[gops.children] = await groupNodesByNamespace(gops.children, false, true);
 
 
-
 		return nodes;
 	}
 
@@ -117,3 +116,5 @@ export class WgeDataProvider extends AsyncDataProvider {
 	}
 
 }
+
+

@@ -1,10 +1,11 @@
 import { window } from 'vscode';
 
 import { fluxTools } from 'cli/flux/fluxTools';
+import { getResource } from 'cli/kubernetes/kubectlGet';
 import { telemetry } from 'extension';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { AnyResourceNode } from 'ui/treeviews/nodes/anyResourceNode';
 import { WorkloadNode } from 'ui/treeviews/nodes/workload/workloadNode';
-import { getResource } from 'cli/kubernetes/kubectlGet';
 
 /**
  * Run flux trace for the Workloads tree view node.
@@ -28,7 +29,7 @@ export async function trace(node: AnyResourceNode | WorkloadNode) {
 
 	// flux tree fetched items don't have the "apiVersion" property
 	if (!resourceApiVersion) {
-		const resource = await getResource(resourceName, resourceNamespace, resourceKind);
+		const resource = await getResource(resourceName, resourceNamespace, resourceKind as Kind);
 		const apiVersion = resource?.apiVersion;
 		if (!apiVersion && !apiVersion) {
 			window.showErrorMessage('"apiVersion" is required to run `flux trace`');

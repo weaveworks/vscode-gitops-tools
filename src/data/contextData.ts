@@ -1,10 +1,14 @@
+import { getResource } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { HelmRelease } from 'types/flux/helmRelease';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { TreeNode } from 'ui/treeviews/nodes/treeNode';
 import { TreeItemCollapsibleState } from 'vscode';
 import { ApiState, KindApiParams } from '../cli/kubernetes/apiResources';
 
-
+// a data store for each context defined in kubeconfig.
+// view data is stored here.
+// allows to safely switch contexts without laggy queries from previous context overwriting data in the global tree view
 export class ContextData {
 	public viewData: { [key: string]: ViewData; };
 	public contextName = '';
@@ -12,12 +16,14 @@ export class ContextData {
 	// Current cluster supported kubernetes resource kinds.
 	public apiResources: Map<Kind, KindApiParams> | undefined;
 
+	public wgePortalUrl?: string;
+
 	constructor(contextName: string) {
 		this.contextName = contextName;
 		this.viewData = {
 			'source': new ViewData(),
 			'workload': new ViewData(),
-			'template': new ViewData(),
+			'wge': new ViewData(),
 		};
 	}
 
@@ -61,4 +67,20 @@ export class ViewData {
 			}
 		}
 	}
+}
+
+export async function loadContextData() {
+	const context = currentContextData();
+
+	const wgeHelmRelease = await getResource<HelmRelease>('weave-gitops-enterprise', 'flux-system', Kind.HelmRelease);
+	if(!wgeHelmRelease) {
+		context.wgePortalUrl = undefined;
+		return;
+	}
+
+	const values = wgeHelmRelease.spec?.values as any;
+	const hosts = values?.ingress?.hosts;
+	const host = hosts?.[0];
+
+	context.wgePortalUrl = host;
 }
