@@ -1,6 +1,8 @@
 import { currentContextData } from 'data/contextData';
 import { ToolkitNode } from 'ui/treeviews/nodes/toolkitNode';
+import { CanaryNode } from 'ui/treeviews/nodes/wge/canaryNode';
 import { GitOpsTemplateNode } from 'ui/treeviews/nodes/wge/gitOpsTemplateNode';
+import { PipelineNode } from 'ui/treeviews/nodes/wge/pipelineNode';
 import { env, Uri } from 'vscode';
 
 export function openInWgePortal(node: ToolkitNode | GitOpsTemplateNode) {
@@ -15,14 +17,17 @@ export function openInWgePortal(node: ToolkitNode | GitOpsTemplateNode) {
 
 	let query = '';
 
-	switch (node.resource.kind) {
-		case 'GitOpsTemplate':
-			query = `gitops_templates/details?name=${name}&namespace=${namespace}`;
+	switch(node.constructor) {
+		case GitOpsTemplateNode:
+			// no narrowing type switch in typescript
+			if(node instanceof GitOpsTemplateNode && node.templateType === 'cluster') {
+				query = `templates/create?name=${name}&namespace=${namespace}`;
+			}
 			break;
-		case 'Pipeline':
+		case PipelineNode:
 			query = `pipelines/details/status?kind=Pipeline&name=${name}&namespace=${namespace}`;
 			break;
-		case 'Canary':
+		case CanaryNode:
 			query = `canary_details/details?clusterName=${clusterName}&name=${name}&namespace=${namespace}`;
 			break;
 

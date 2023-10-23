@@ -82,5 +82,5 @@ export async function loadContextData() {
 	const hosts = values?.ingress?.hosts;
 	const host = hosts?.[0];
 
-	context.wgePortalHost = host;
+	context.wgePortalHost = host.host;
 }
