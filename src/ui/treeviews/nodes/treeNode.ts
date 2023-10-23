@@ -169,8 +169,12 @@ export class TreeNode extends TreeItem {
 
 	// @ts-ignore
 	get contextValue() {
-		if (this.contexts.length) {
-			return this.joinContexts(this.contexts);
+		const cs = this.contexts;
+		if(this.resource?.kind) {
+			cs.push(this.resource.kind);
+		}
+		if(cs.length) {
+			return this.joinContexts(cs);
 		}
 	}
 }

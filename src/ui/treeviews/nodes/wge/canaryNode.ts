@@ -1,5 +1,4 @@
 import { Canary } from 'types/flux/canary';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from 'types/nodeContext';
 import { ToolkitNode } from '../toolkitNode';
 
@@ -18,10 +17,6 @@ export class CanaryNode extends ToolkitNode {
 	}
 
 	get contexts() {
-		const contextsArr: string[] = [Kind.Canary];
-		contextsArr.push(
-			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
-		);
-		return contextsArr;
+		return [NodeContext.HasWgePortal];
 	}
 }

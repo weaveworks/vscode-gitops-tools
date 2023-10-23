@@ -1,10 +1,15 @@
-import { MarkdownString, ThemeColor, ThemeIcon, TreeItemCollapsibleState } from 'vscode';
+import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
 
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { NodeContext } from 'types/nodeContext';
+import { themeIcon } from 'ui/icons';
 import { createMarkdownTable } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
 
+export enum TemplateType {
+	Cluster = 'cluster',
+	Application = 'application',
+}
 /**
  * Base class for all the Source tree view items.
  */
@@ -16,7 +21,11 @@ export class GitOpsTemplateNode extends TreeNode {
 
 		this.resource = template;
 
-		this.setIcon(new ThemeIcon('notebook-render-output', new ThemeColor('editorWidget.foreground')));
+		if(this.templateType === 'cluster') {
+			this.setIcon(themeIcon('server-environment'));
+		} else {
+			this.setIcon(themeIcon('preview', 'descriptionForeground'));
+		}
 		this.collapsibleState = TreeItemCollapsibleState.None;
 	}
 
@@ -24,9 +33,12 @@ export class GitOpsTemplateNode extends TreeNode {
 		return this.getMarkdownHover(this.resource);
 	}
 
+	get templateType(): TemplateType {
+		return this.resource.metadata?.labels?.['weave.works/template-type'] === 'cluster' ? TemplateType.Cluster : TemplateType.Application;
+	}
+
 	// @ts-ignore
 	get description() {
-		// return 'Description';
 		return false;
 	}
 
@@ -36,6 +48,6 @@ export class GitOpsTemplateNode extends TreeNode {
 	}
 
 	get contexts() {
-		return [Kind.GitOpsTemplate];
+		return this.templateType === TemplateType.Cluster ? [NodeContext.HasWgePortal] : [];
 	}
 }

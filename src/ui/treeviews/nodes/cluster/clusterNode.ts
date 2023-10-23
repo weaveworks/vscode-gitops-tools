@@ -214,7 +214,7 @@ export class ClusterNode extends TreeNode {
 	}
 
 	get contexts() {
-		const cs = [NodeContext.Cluster];
+		const cs = [];
 
 		if (typeof this.isGitOpsEnabled === 'boolean') {
 			cs.push(

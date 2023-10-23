@@ -504,7 +504,7 @@
 				{
 					"command": "gitops.views.openInWgePortal",
 					"group": "1",
-					"when": "view == gitops.views.wge && viewItem =~ /GitOpsTemplate;|Canary;|Pipeline;|GitOpsSet;/"
+					"when": "view == gitops.views.wge && viewItem =~ /hasWgePortal;/"
 				}
 			],
 			"gitops.explorer": [

@@ -1,6 +1,4 @@
 import { Kustomization } from 'types/flux/kustomization';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { NodeContext } from 'types/nodeContext';
 import { shortenRevision } from 'utils/stringUtils';
 import { WorkloadNode } from './workloadNode';
 
@@ -24,11 +22,4 @@ export class KustomizationNode extends WorkloadNode {
 		return shortenRevision(this.resource.status.lastAppliedRevision);
 	}
 
-	get contexts() {
-		const contextsArr: string[] = [Kind.Kustomization];
-		contextsArr.push(
-			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
-		);
-		return contextsArr;
-	}
 }

@@ -1,4 +1,4 @@
-import { Deployment, Kind } from 'types/kubernetes/kubernetesTypes';
+import { Deployment } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon } from 'ui/icons';
 import { TreeNode } from '../treeNode';
 
@@ -42,10 +42,6 @@ export class ClusterDeploymentNode extends TreeNode {
 		} else if (status === 'failure') {
 			this.setCommonIcon(CommonIcon.Warning);
 		}
-	}
-
-	get contexts() {
-		return [Kind.Deployment];
 	}
 }
 

@@ -1,5 +1,4 @@
 import { GitOpsSet } from 'types/flux/gitopsset';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { NodeContext } from 'types/nodeContext';
 import { ToolkitNode } from '../toolkitNode';
 
@@ -18,10 +17,6 @@ export class GitOpsSetNode extends ToolkitNode {
 	// }
 
 	get contexts() {
-		const contextsArr: string[] = [Kind.GitOpsSet];
-		contextsArr.push(
-			this.resource.spec.suspend ? NodeContext.Suspend : NodeContext.NotSuspend,
-		);
-		return contextsArr;
+		return [NodeContext.HasWgePortal];
 	}
 }

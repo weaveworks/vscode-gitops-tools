@@ -23,10 +23,6 @@ export class NamespaceNode extends TreeNode {
 		this.resource = namespace;
 	}
 
-	get contexts() {
-		return [Kind.Namespace];
-	}
-
 	updateLabel(withIcons = true) {
 		const totalLength = this.children.length;
 		let readyLength = 0;

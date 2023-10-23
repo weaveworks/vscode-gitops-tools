@@ -1,4 +1,5 @@
 import { FluxWorkloadObject } from 'types/flux/object';
+import { NodeContext } from 'types/nodeContext';
 import { ToolkitNode } from '../toolkitNode';
 
 /**
@@ -6,4 +7,8 @@ import { ToolkitNode } from '../toolkitNode';
  */
 export class WorkloadNode extends ToolkitNode {
 	resource!: FluxWorkloadObject;
+
+	get contexts() {
+		return this.resource.spec.suspend ? [NodeContext.Suspend] : [NodeContext.NotSuspend];
+	}
 }

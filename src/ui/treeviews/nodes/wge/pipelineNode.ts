@@ -1,5 +1,5 @@
 import { Pipeline } from 'types/flux/pipeline';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { NodeContext } from 'types/nodeContext';
 import { ToolkitNode } from '../toolkitNode';
 
 export class PipelineNode extends ToolkitNode {
@@ -11,13 +11,12 @@ export class PipelineNode extends ToolkitNode {
 		this.makeCollapsible();
 	}
 
-	// get revision() {
-	// 	// return shortenRevision(this.resource.status.lastAppliedRevision);
-	// 	return `${this.resource.status.phase} ${this.resource.status.lastAppliedSpec || ''}`;
-	// }
+	get revision() {
+		const condition = this.readyOrFirstCondition;
+		return condition?.lastTransitionTime ? `${condition?.lastTransitionTime.toLocaleString()}` : '';
+	}
 
 	get contexts() {
-		const contextsArr: string[] = [Kind.Pipeline];
-		return contextsArr;
+		return [NodeContext.HasWgePortal];
 	}
 }

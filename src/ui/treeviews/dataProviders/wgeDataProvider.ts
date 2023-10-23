@@ -55,7 +55,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		// PIPELINES
 		const ps = new TreeNode('Pipelines');
-		ps.setIcon(themeIcon('git-pull-request-draft'));
+		ps.setIcon(themeIcon('rocket'));
 		ps.makeCollapsible();
 		nodes.push(ps);
 
