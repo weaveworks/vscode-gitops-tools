@@ -1,6 +1,5 @@
 import { getCanaries, getCanaryChildren, getGitOpsSet, getGitOpsTemplates, getPipelines } from 'cli/kubernetes/kubectlGet';
 import { ContextData } from 'data/contextData';
-import { themeIcon } from 'ui/icons';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { groupNodesByNamespace } from 'utils/treeNodeUtils';
@@ -10,6 +9,7 @@ import { CanaryNode } from '../nodes/wge/canaryNode';
 import { GitOpsSetNode } from '../nodes/wge/gitOpsSetNode';
 import { GitOpsTemplateNode } from '../nodes/wge/gitOpsTemplateNode';
 import { PipelineNode } from '../nodes/wge/pipelineNode';
+import { CanariesContainerNode, GitOpsSetsContainerNode, PipelinesContainerNode, TemplatesContainerNode } from '../nodes/wge/wgeContainerNodes';
 import { AsyncDataProvider } from './asyncDataProvider';
 
 export class WgeDataProvider extends AsyncDataProvider {
@@ -31,9 +31,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 
 		// TEMPLATES
-		const ts = new TreeNode('Templates');
-		ts.setIcon(themeIcon('notebook-render-output'));
-		ts.makeCollapsible();
+		const ts = new TemplatesContainerNode();
 		nodes.push(ts);
 
 		for (const t of sortByMetadataName(templates)) {
@@ -42,9 +40,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 		}
 
 		// CANARIES
-		const cs = new TreeNode('Canaries');
-		cs.setIcon(themeIcon('symbol-null'));
-		cs.makeCollapsible();
+		const cs = new CanariesContainerNode();
 		nodes.push(cs);
 
 		for (const c of sortByMetadataName(canaries)) {
@@ -54,9 +50,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 		[cs.children] = await groupNodesByNamespace(cs.children, false, true);
 
 		// PIPELINES
-		const ps = new TreeNode('Pipelines');
-		ps.setIcon(themeIcon('rocket'));
-		ps.makeCollapsible();
+		const ps = new PipelinesContainerNode();
 		nodes.push(ps);
 
 		for (const p of sortByMetadataName(pipelines)) {
@@ -67,9 +61,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 
 		// GITOPSSETS
-		const gops = new TreeNode('GitOpsSets');
-		gops.setIcon(themeIcon('outline-view-icon'));
-		gops.makeCollapsible();
+		const gops = new GitOpsSetsContainerNode();
 		nodes.push(gops);
 
 		for (const g of sortByMetadataName(gitopssets)) {

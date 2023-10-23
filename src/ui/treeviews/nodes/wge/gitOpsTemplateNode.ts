@@ -50,4 +50,16 @@ export class GitOpsTemplateNode extends TreeNode {
 	get contexts() {
 		return this.templateType === TemplateType.Cluster ? [NodeContext.HasWgePortal] : [];
 	}
+
+
+	get wgePortalQuery() {
+		const name = this.resource.metadata?.name;
+		const namespace = this.resource.metadata?.namespace || 'default';
+
+		if (this.templateType === TemplateType.Application) {
+			return '';
+		}
+
+		return `templates/create?name=${name}&namespace=${namespace}`;
+	}
 }

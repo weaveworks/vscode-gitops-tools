@@ -19,4 +19,12 @@ export class PipelineNode extends ToolkitNode {
 	get contexts() {
 		return [NodeContext.HasWgePortal];
 	}
+
+
+	get wgePortalQuery() {
+		const name = this.resource.metadata?.name;
+		const namespace = this.resource.metadata?.namespace || 'default';
+
+		return `pipelines/details/status?kind=Pipeline&name=${name}&namespace=${namespace}`;
+	}
 }

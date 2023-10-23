@@ -19,4 +19,12 @@ export class GitOpsSetNode extends ToolkitNode {
 	get contexts() {
 		return [NodeContext.HasWgePortal];
 	}
+
+
+	get wgePortalQuery() {
+		const name = this.resource.metadata?.name;
+		const namespace = this.resource.metadata?.namespace || 'default';
+
+		return `gitopssets/details/status?kind=GitOpsSet&name=${name}&namespace=${namespace}`;
+	}
 }
