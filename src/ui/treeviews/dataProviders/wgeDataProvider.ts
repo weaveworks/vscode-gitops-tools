@@ -1,6 +1,6 @@
 import { getCanaries, getCanaryChildren, getGitOpsSet, getGitOpsTemplates, getPipelines } from 'cli/kubernetes/kubectlGet';
 import { ContextData } from 'data/contextData';
-import { CommonIcon } from 'ui/icons';
+import { themeIcon } from 'ui/icons';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { groupNodesByNamespace } from 'utils/treeNodeUtils';
@@ -32,7 +32,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		// TEMPLATES
 		const ts = new TreeNode('Templates');
-		ts.setCommonIcon(CommonIcon.Disconnected);
+		ts.setIcon(themeIcon('notebook-render-output'));
 		ts.makeCollapsible();
 		nodes.push(ts);
 
@@ -43,7 +43,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		// CANARIES
 		const cs = new TreeNode('Canaries');
-		cs.setCommonIcon(CommonIcon.Disconnected);
+		cs.setIcon(themeIcon('symbol-null'));
 		cs.makeCollapsible();
 		nodes.push(cs);
 
@@ -55,7 +55,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		// PIPELINES
 		const ps = new TreeNode('Pipelines');
-		ps.setCommonIcon(CommonIcon.Disconnected);
+		ps.setIcon(themeIcon('git-pull-request-draft'));
 		ps.makeCollapsible();
 		nodes.push(ps);
 
@@ -68,7 +68,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		// GITOPSSETS
 		const gops = new TreeNode('GitOpsSets');
-		gops.setCommonIcon(CommonIcon.Disconnected);
+		gops.setIcon(themeIcon('outline-view-icon'));
 		gops.makeCollapsible();
 		nodes.push(gops);
 

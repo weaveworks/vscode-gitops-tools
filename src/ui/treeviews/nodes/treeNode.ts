@@ -3,7 +3,7 @@ import { Command, MarkdownString, ThemeIcon, TreeItem, TreeItemCollapsibleState,
 import { CommandId } from 'types/extensionIds';
 import { FileTypes } from 'types/fileTypes';
 import { KubernetesObject, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
-import { CommonIcon, themeIcon } from 'ui/icons';
+import { CommonIcon, commonIcon } from 'ui/icons';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
@@ -75,7 +75,7 @@ export class TreeNode extends TreeItem {
 	}
 
 	setCommonIcon(icon: CommonIcon) {
-		this.iconPath = themeIcon(icon);
+		this.iconPath = commonIcon(icon);
 	}
 
 

@@ -10,6 +10,14 @@ export const enum CommonIcon {
 	Unknown = 'unknown',
 }
 
+export const IconColors: Record<string, string> = {
+	'error': 'editorError.foreground',
+	'warning': 'editorWarning.foreground',
+	'pass': 'terminal.ansiGreen',
+	'green': 'terminal.ansiGreen',
+	'foreground': 'foreground',
+};
+
 const IconDefinitions: Record<string, [string, string]> = {
 	[CommonIcon.Error]: ['error', 'editorError.foreground'],
 	[CommonIcon.Warning]: ['warning', 'editorWarning.foreground'],
@@ -20,8 +28,15 @@ const IconDefinitions: Record<string, [string, string]> = {
 	[CommonIcon.Unknown]: ['circle-large-outline', 'foreground'],
 };
 
-export function themeIcon(icon: CommonIcon) {
+export function commonIcon(icon: CommonIcon) {
 	const [id, color] = IconDefinitions[icon];
 	return new ThemeIcon(id, new ThemeColor(color));
+}
+
+
+export function themeIcon(icon: string, color?: string) {
+	color = color ?? 'foreground';
+	color = IconColors[color] ?? color;
+	return new ThemeIcon(icon, new ThemeColor(color));
 }
 
