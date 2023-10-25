@@ -1,5 +1,6 @@
 
 import { KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 import { TreeNode } from './treeNode';
 
 /**
@@ -8,8 +9,8 @@ import { TreeNode } from './treeNode';
 export class AnyResourceNode extends TreeNode {
 	resource: KubernetesObject;
 
-	constructor(anyResource: KubernetesObject) {
-		super(anyResource.metadata?.name || '');
+	constructor(anyResource: KubernetesObject, dataProvider: SimpleDataProvider) {
+		super(anyResource.metadata?.name || '', dataProvider);
 
 		this.description = anyResource.kind;
 

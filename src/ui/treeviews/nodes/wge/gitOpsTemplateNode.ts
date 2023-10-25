@@ -3,21 +3,21 @@ import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { NodeContext } from 'types/nodeContext';
 import { themeIcon } from 'ui/icons';
+import { wgeDateProvider } from 'ui/treeviews/treeViews';
 import { createMarkdownTable } from 'utils/markdownUtils';
 import { TreeNode } from '../treeNode';
 
 export enum TemplateType {
 	Cluster = 'cluster',
 	Application = 'application',
+	Pipeline = 'pipeline',
 }
-/**
- * Base class for all the Source tree view items.
- */
+
 export class GitOpsTemplateNode extends TreeNode {
 	resource: GitOpsTemplate;
 
 	constructor(template: GitOpsTemplate) {
-		super(template.metadata?.name || 'No name');
+		super(template.metadata?.name || 'No name', wgeDateProvider);
 
 		this.resource = template;
 
@@ -62,4 +62,6 @@ export class GitOpsTemplateNode extends TreeNode {
 
 		return `templates/create?name=${name}&namespace=${namespace}`;
 	}
+
+
 }

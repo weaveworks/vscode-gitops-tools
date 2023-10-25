@@ -3,7 +3,7 @@ import { CanaryNode } from 'ui/treeviews/nodes/wge/canaryNode';
 import { GitOpsSetNode } from 'ui/treeviews/nodes/wge/gitOpsSetNode';
 import { GitOpsTemplateNode } from 'ui/treeviews/nodes/wge/gitOpsTemplateNode';
 import { PipelineNode } from 'ui/treeviews/nodes/wge/pipelineNode';
-import { WgeContainerNode } from 'ui/treeviews/nodes/wge/wgeContainerNodes';
+import { WgeContainerNode } from 'ui/treeviews/nodes/wge/wgeNodes';
 import { env, Uri } from 'vscode';
 
 

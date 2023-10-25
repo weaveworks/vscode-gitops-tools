@@ -56,7 +56,7 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 			return;
 		}
 
-		const resourceNode = makeTreeNode(object);
+		const resourceNode = makeTreeNode(object, this);
 		if(!resourceNode) {
 			return;
 		}

@@ -1,15 +1,9 @@
 import { GitOpsSet } from 'types/flux/gitopsset';
 import { NodeContext } from 'types/nodeContext';
-import { ToolkitNode } from '../toolkitNode';
+import { WgeNode } from './wgeNodes';
 
-export class GitOpsSetNode extends ToolkitNode {
+export class GitOpsSetNode extends WgeNode {
 	resource!: GitOpsSet;
-
-	constructor(gos: GitOpsSet) {
-		super(gos);
-
-		this.makeCollapsible();
-	}
 
 	// get revision() {
 	// 	// return shortenRevision(this.resource.status.lastAppliedRevision);

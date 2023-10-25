@@ -7,6 +7,7 @@ import { CommonIcon, commonIcon } from 'ui/icons';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { getResourceUri } from 'utils/getResourceUri';
 import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
+import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
@@ -28,12 +29,23 @@ export class TreeNode extends TreeItem {
 	 */
 	children: TreeNode[] = [];
 
+
+	dataProvider?: SimpleDataProvider;
+
+	/*
+	 * async load children for the node
+	 */
+	async updateChildren() {
+		// no-op
+	}
+
 	/**
 	 * Creates new tree node.
 	 * @param label Tree node label
 	 */
-	constructor(label: string) {
+	constructor(label: string, dataProvider?: SimpleDataProvider) {
 		super(label, TreeItemCollapsibleState.None);
+		this.dataProvider = dataProvider;
 	}
 
 	/**
@@ -55,6 +67,11 @@ export class TreeNode extends TreeItem {
 	 */
 	updateStatus(): void {}
 
+	redraw() {
+		if(this.dataProvider) {
+			this.dataProvider.redraw(this);
+		}
+	}
 
 	/**
 	 * Sets tree view item icon.

@@ -2,6 +2,7 @@ import { ToolkitObject } from 'types/flux/object';
 import { Condition, Kind } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon } from 'ui/icons';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
+import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 import { TreeNode } from './treeNode';
 
 export enum ReconcileState {
@@ -14,8 +15,8 @@ export class ToolkitNode extends TreeNode {
 	resource: ToolkitObject;
 	reconcileState: ReconcileState = ReconcileState.Progressing;
 
-	constructor(resource: ToolkitObject) {
-		super(`${resource.kind}: ${resource.metadata?.name || 'unknown'}`);
+	constructor(resource: ToolkitObject, dataProvider?: SimpleDataProvider) {
+		super(`${resource.kind}: ${resource.metadata?.name || 'unknown'}`, dataProvider);
 
 		this.resource = resource;
 		this.updateStatus();

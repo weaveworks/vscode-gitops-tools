@@ -26,7 +26,7 @@ let clusterTreeView: TreeView<TreeItem>;
 export let sourceTreeView: TreeView<TreeItem>;
 let workloadTreeView: TreeView<TreeItem>;
 let documentationTreeView: TreeView<TreeItem>;
-let templateTreeView: TreeView<TreeItem>;
+let wgeTreeView: TreeView<TreeItem>;
 
 /**
  * Creates tree views for the GitOps sidebar.
@@ -52,7 +52,7 @@ export function createTreeViews() {
 
 
 	// WGE templates
-	templateTreeView = window.createTreeView(TreeViewId.WgeView, {
+	wgeTreeView = window.createTreeView(TreeViewId.WgeView, {
 		treeDataProvider: wgeDateProvider,
 		showCollapseAll: true,
 	});

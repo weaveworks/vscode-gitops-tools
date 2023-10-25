@@ -19,7 +19,8 @@ export async function addFluxTreeToNode(node: TreeNode, resourceTree: FluxTreeRe
 				name: resource.resource.Name,
 				namespace,
 			},
-		});
+
+		}, node.dataProvider!);
 
 		nodes.push(childNode);
 

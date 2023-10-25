@@ -1,5 +1,6 @@
 import { KubernetesObject } from '@kubernetes/client-node';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 import { AnyResourceNode } from './anyResourceNode';
 import { NamespaceNode } from './namespaceNode';
 import { BucketNode } from './source/bucketNode';
@@ -34,13 +35,13 @@ const nodeConstructors  = {
 	'ConfigMap': AnyResourceNode,
 };
 
-export function makeTreeNode(object: KubernetesObject): TreeNode | undefined {
+export function makeTreeNode(object: KubernetesObject, dataProvider: SimpleDataProvider): TreeNode | undefined {
 	if(!object.kind) {
 		return;
 	}
 
 	const constructor = nodeConstructors[object.kind as Kind];
 	if(constructor) {
-		return new constructor(object as any);
+		return new constructor(object as any, dataProvider);
 	}
 }

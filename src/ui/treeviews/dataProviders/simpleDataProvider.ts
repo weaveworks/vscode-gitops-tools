@@ -14,7 +14,6 @@ export class SimpleDataProvider implements TreeDataProvider<TreeItem> {
 		return this._nodes;
 	}
 
-
 	protected loading = false;
 
 	protected _onDidChangeTreeData: EventEmitter<TreeItem | undefined> = new EventEmitter<TreeItem | undefined>();

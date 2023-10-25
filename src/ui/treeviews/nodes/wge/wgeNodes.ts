@@ -1,10 +1,25 @@
 
 import { NodeContext } from 'types/nodeContext';
 import { themeIcon } from 'ui/icons';
+import { SimpleDataProvider } from 'ui/treeviews/dataProviders/simpleDataProvider';
+import { wgeDateProvider } from 'ui/treeviews/treeViews';
+import { ToolkitNode } from '../toolkitNode';
 import { TreeNode } from '../treeNode';
 
+export class WgeNode extends ToolkitNode {
+	dataProvider!: SimpleDataProvider;
+
+	constructor(object: any) {
+		super(object, wgeDateProvider);
+		this.makeCollapsible();
+	}
+}
 
 export class WgeContainerNode extends TreeNode {
+	constructor(object: any) {
+		super(object, wgeDateProvider);
+	}
+
 	get contexts() {
 		return [NodeContext.HasWgePortal];
 	}

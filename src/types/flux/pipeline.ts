@@ -66,7 +66,7 @@ declare interface TargetStatus {
 	error?: string;
 }
 
-declare interface Environment {
+export declare interface Environment {
 	name: string;
 	targets: Target[];
 	promotion?: Promotion;
