@@ -41,9 +41,9 @@ export async function resume(node: GitRepositoryNode | HelmReleaseNode | HelmRep
 			window.showInformationMessage('Not implemented on AKS/ARC', { modal: true });
 			return;
 		}
-		await azureTools.resume(node.resource.metadata?.name || '', contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		await azureTools.resume(node.resource.metadata.name, contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
-		await fluxTools.resume(fluxResourceType, node.resource.metadata?.name || '', node.resource.metadata?.namespace || '');
+		await fluxTools.resume(fluxResourceType, node.resource.metadata.name, node.resource.metadata.namespace || '');
 	}
 
 	if (node instanceof GitRepositoryNode || node instanceof OCIRepositoryNode || node instanceof HelmRepositoryNode) {

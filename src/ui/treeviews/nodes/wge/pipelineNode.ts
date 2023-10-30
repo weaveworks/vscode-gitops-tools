@@ -21,15 +21,15 @@ export class PipelineNode extends WgeNode {
 	}
 
 	get wgePortalQuery() {
-		const name = this.resource.metadata?.name;
-		const namespace = this.resource.metadata?.namespace || 'default';
+		const name = this.resource.metadata.name;
+		const namespace = this.resource.metadata.namespace || 'default';
 
 		return `pipelines/details/status?kind=Pipeline&name=${name}&namespace=${namespace}`;
 	}
 
 
 	async updateChildren() {
-		if(!this.resource.metadata?.name) {
+		if(!this.resource.metadata.name) {
 			return;
 		}
 
@@ -48,7 +48,7 @@ export class PipelineNode extends WgeNode {
 	async createAppRefNode(): Promise<TreeNode | undefined> {
 		const appKind = this.resource.spec.appRef.kind;
 		const appName = this.resource.spec.appRef.name;
-		const ns  = this.resource.metadata?.namespace;
+		const ns  = this.resource.metadata.namespace;
 
 		if(!appKind || !appName || !ns) {
 			return;

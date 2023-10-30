@@ -33,8 +33,8 @@ export class HelmReleaseNode extends WorkloadNode {
 		this.children = infoNodes(InfoNode.Loading);
 		this.redraw();
 
-		const name = this.resource.metadata?.name || '';
-		const namespace = this.resource.metadata?.namespace || '';
+		const name = this.resource.metadata.name;
+		const namespace = this.resource.metadata.namespace || '';
 
 		const workloadChildren = await getHelmReleaseChildren(name, namespace);
 

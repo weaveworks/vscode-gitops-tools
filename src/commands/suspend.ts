@@ -43,9 +43,9 @@ export async function suspend(node: GitRepositoryNode | HelmReleaseNode | Kustom
 			return;
 		}
 
-		await azureTools.suspend(node.resource.metadata?.name || '', contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		await azureTools.suspend(node.resource.metadata.name, contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
-		await fluxTools.suspend(fluxResourceType, node.resource.metadata?.name || '', node.resource.metadata?.namespace || '');
+		await fluxTools.suspend(fluxResourceType, node.resource.metadata.name, node.resource.metadata.namespace || '');
 	}
 
 	if (node instanceof GitRepositoryNode || node instanceof OCIRepositoryNode || node instanceof HelmRepositoryNode) {

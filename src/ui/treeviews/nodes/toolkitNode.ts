@@ -16,7 +16,7 @@ export class ToolkitNode extends KubernetesObjectNode {
 	reconcileState: ReconcileState = ReconcileState.Progressing;
 
 	constructor(resource: ToolkitObject, dataProvider?: SimpleDataProvider) {
-		super(resource, `${resource.kind}: ${resource.metadata?.name || 'unknown'}`, dataProvider);
+		super(resource, `${resource.kind}: ${resource.metadata.name}`, dataProvider);
 
 		this.updateStatus();
 	}

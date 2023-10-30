@@ -17,7 +17,7 @@ export class NamespaceNode extends KubernetesObjectNode {
 	resource: Namespace;
 
 	constructor(namespace: Namespace, dataProvider?: SimpleDataProvider) {
-		super(namespace, namespace.metadata?.name || '', dataProvider);
+		super(namespace, namespace.metadata.name, dataProvider);
 
 		this.description = Kind.Namespace;
 
@@ -55,9 +55,9 @@ export class NamespaceNode extends KubernetesObjectNode {
 
 		if(this.collapsibleState === TreeItemCollapsibleState.Collapsed) {
 			const lengthLabel = totalLength === validLength ? `${totalLength}` : `${validLength}/${totalLength}`;
-			this.label = `${this.resource.metadata?.name} (${lengthLabel})`;
+			this.label = `${this.resource.metadata.name} (${lengthLabel})`;
 		} else {
-			this.label = `${this.resource.metadata?.name}`;
+			this.label = `${this.resource.metadata.name}`;
 		}
 	}
 }

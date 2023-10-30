@@ -17,7 +17,7 @@ export class GitOpsTemplateNode extends TreeNode {
 	resource: GitOpsTemplate;
 
 	constructor(template: GitOpsTemplate) {
-		super(template.metadata?.name || 'No name', wgeDateProvider);
+		super(template.metadata.name, wgeDateProvider);
 
 		this.resource = template;
 
@@ -34,7 +34,7 @@ export class GitOpsTemplateNode extends TreeNode {
 	}
 
 	get templateType(): TemplateType {
-		return this.resource.metadata?.labels?.['weave.works/template-type'] === 'cluster' ? TemplateType.Cluster : TemplateType.Application;
+		return this.resource.metadata.labels?.['weave.works/template-type'] === 'cluster' ? TemplateType.Cluster : TemplateType.Application;
 	}
 
 	// @ts-ignore
@@ -53,8 +53,8 @@ export class GitOpsTemplateNode extends TreeNode {
 
 
 	get wgePortalQuery() {
-		const name = this.resource.metadata?.name;
-		const namespace = this.resource.metadata?.namespace || 'default';
+		const name = this.resource.metadata.name;
+		const namespace = this.resource.metadata.namespace || 'default';
 
 		if (this.templateType === TemplateType.Application) {
 			return '';

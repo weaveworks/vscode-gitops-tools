@@ -8,13 +8,13 @@ import { KubernetesObjectNode } from './kubernetesObjectNode';
  */
 export class AnyResourceNode extends KubernetesObjectNode {
 	constructor(anyResource: KubernetesObject, dataProvider: SimpleDataProvider) {
-		super(anyResource, anyResource.metadata?.name || '', dataProvider);
+		super(anyResource, anyResource.metadata.name || '', dataProvider);
 
 		this.description = anyResource.kind;
 	}
 
 	get tooltip() {
-		if(this.resource?.metadata?.namespace) {
+		if(this.resource.metadata.namespace) {
 			return `Namespace: ${this.resource.metadata.namespace}`;
 		} else {
 			return '';

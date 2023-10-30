@@ -16,8 +16,8 @@ export class GitOpsSetNode extends WgeNode {
 
 
 	get wgePortalQuery() {
-		const name = this.resource.metadata?.name;
-		const namespace = this.resource.metadata?.namespace || 'default';
+		const name = this.resource.metadata.name;
+		const namespace = this.resource.metadata.namespace || 'default';
 
 		return `gitopssets/details/status?kind=GitOpsSet&name=${name}&namespace=${namespace}`;
 	}

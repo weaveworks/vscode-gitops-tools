@@ -38,8 +38,8 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 
 	// Should exist on every object
 	createMarkdownTableRow('kind', kubernetesObject.kind, markdown);
-	createMarkdownTableRow('name', kubernetesObject.metadata?.name, markdown);
-	createMarkdownTableRow('namespace', kubernetesObject.metadata?.namespace, markdown);
+	createMarkdownTableRow('name', kubernetesObject.metadata.name, markdown);
+	createMarkdownTableRow('namespace', kubernetesObject.metadata.namespace, markdown);
 
 	// Object-specific properties
 	if (kubernetesObject.kind === Kind.GitRepository) {
@@ -63,7 +63,7 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.provider', kubernetesObject.spec?.provider, markdown);
 		createMarkdownTableRow('spec.insecure', kubernetesObject.spec?.insecure, markdown);
 	} else if (kubernetesObject.kind === Kind.Kustomization) {
-		const sourceRef = `${kubernetesObject.spec?.sourceRef?.kind}/${kubernetesObject.spec?.sourceRef?.name}.${kubernetesObject.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
+		const sourceRef = `${kubernetesObject.spec?.sourceRef?.kind}/${kubernetesObject.spec?.sourceRef?.name}.${kubernetesObject.spec?.sourceRef?.namespace || kubernetesObject.metadata.namespace}`;
 		createMarkdownTableRow('source', sourceRef, markdown);
 
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
@@ -71,7 +71,7 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 		createMarkdownTableRow('spec.force', kubernetesObject.spec?.force, markdown);
 		createMarkdownTableRow('spec.path', kubernetesObject.spec?.path, markdown);
 	} else if (kubernetesObject.kind === Kind.HelmRelease) {
-		const sourceRef = `${kubernetesObject.spec?.chart?.spec?.sourceRef?.kind}/${kubernetesObject.spec?.chart?.spec?.sourceRef?.name}.${kubernetesObject.spec?.chart?.spec?.sourceRef?.namespace || kubernetesObject.metadata?.namespace}`;
+		const sourceRef = `${kubernetesObject.spec?.chart?.spec?.sourceRef?.kind}/${kubernetesObject.spec?.chart?.spec?.sourceRef?.name}.${kubernetesObject.spec?.chart?.spec?.sourceRef?.namespace || kubernetesObject.metadata.namespace}`;
 		createMarkdownTableRow('source', sourceRef, markdown);
 
 		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);

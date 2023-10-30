@@ -21,7 +21,7 @@ export class KubernetesObjectNode extends TreeNode {
 	}
 
 	fullyQualifyKind(): string {
-		return qualifyToolkitKind(this.resource?.kind || '');
+		return qualifyToolkitKind(this.resource.kind);
 	}
 
 	// @ts-ignore
@@ -37,8 +37,8 @@ export class KubernetesObjectNode extends TreeNode {
 		if (this.resource) {
 			let stringKind = this.fullyQualifyKind();
 			const resourceUri = getResourceUri(
-				this.resource.metadata?.namespace,
-				`${stringKind}/${this.resource.metadata?.name}`,
+				this.resource.metadata.namespace,
+				`${stringKind}/${this.resource.metadata.name}`,
 				FileTypes.Yaml,
 			);
 
@@ -53,9 +53,9 @@ export class KubernetesObjectNode extends TreeNode {
 	findChildByResource(resource: KubernetesObject): KubernetesObjectNode | undefined {
 		const found = this.children.find(child => {
 			if (child instanceof KubernetesObjectNode) {
-				return child.resource.metadata?.name === resource.metadata?.name &&
+				return child.resource.metadata.name === resource.metadata.name &&
 					child.resource.kind === resource.kind &&
-					child.resource.metadata?.namespace === resource.metadata?.namespace;
+					child.resource.metadata.namespace === resource.metadata.namespace;
 			}
 		});
 		if (found) {
@@ -65,14 +65,6 @@ export class KubernetesObjectNode extends TreeNode {
 
 
 	get viewStateKey(): string {
-		if (this.resource.metadata?.uid) {
-			return this.resource.metadata?.uid;
-		}
-
-		const name = this.resource.metadata?.name;
-		if (!name) {
-			return '';
-		}
-		return `${this.resource.kind}/${this.resource.metadata?.name}.${this.resource.metadata?.namespace}`;
+		return this.resource.metadata.uid;
 	}
 }

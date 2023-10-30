@@ -21,8 +21,8 @@ export class CanaryNode extends WgeNode {
 	}
 
 	get wgePortalQuery() {
-		const name = this.resource.metadata?.name;
-		const namespace = this.resource.metadata?.namespace || 'default';
+		const name = this.resource.metadata.name;
+		const namespace = this.resource.metadata.namespace || 'default';
 		const clusterName = currentContextData().contextName;
 
 		return `canary_details/details?clusterName=${clusterName}&name=${name}&namespace=${namespace}`;
@@ -32,7 +32,7 @@ export class CanaryNode extends WgeNode {
 
 	async updateChildren() {
 		// deployment/<targetRef.name>-primary
-		if(!this.resource.metadata?.name) {
+		if(!this.resource.metadata.name) {
 			return;
 		}
 

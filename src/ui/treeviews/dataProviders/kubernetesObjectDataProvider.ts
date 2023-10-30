@@ -19,22 +19,22 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 		if(!nsName) {
 			return;
 		}
-		return this.namespaceNodeTreeItems().find(node => node.resource?.metadata?.name === nsName);
+		return this.namespaceNodeTreeItems().find(node => node.resource?.metadata.name === nsName);
 	}
 
 	private findParentNamespaceNode(object: KubernetesObject): NamespaceNode | undefined {
-		const nsName = object.metadata?.namespace;
+		const nsName = object.metadata.namespace;
 		return this.findNamespaceNode(nsName);
 	}
 
 	public async add(object: KubernetesObject) {
-		if(!object.metadata?.namespace) {
+		if(!object.metadata.namespace) {
 			return;
 		}
 
 		let namespaceNode = this.findParentNamespaceNode(object);
 		if(!namespaceNode) {
-			const ns = await getNamespace(object.metadata?.namespace);
+			const ns = await getNamespace(object.metadata.namespace);
 			if(!ns) {
 				return;
 			}
