@@ -49,18 +49,18 @@ export class ViewData {
 		this.collapsibleStates.clear();
 
 		for (const node of this.nodes) {
-			const name = node.resource?.metadata?.name;
-			if (name) {
-				this.collapsibleStates.set(name, node.collapsibleState || TreeItemCollapsibleState.Collapsed);
+			const key = node.viewStateKey;
+			if (key) {
+				this.collapsibleStates.set(key, node.collapsibleState || TreeItemCollapsibleState.Collapsed);
 			}
 		}
 	}
 
 	loadCollapsibleStates() {
 		for (const node of this.nodes) {
-			const name = node.resource?.metadata?.name;
-			if (name) {
-				const state = this.collapsibleStates.get(name);
+			const key = node.viewStateKey;
+			if (key) {
+				const state = this.collapsibleStates.get(key);
 				if (state) {
 					node.collapsibleState = state;
 				}
