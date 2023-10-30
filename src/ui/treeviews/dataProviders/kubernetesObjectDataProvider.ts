@@ -19,7 +19,7 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 		if(!nsName) {
 			return;
 		}
-		return this.namespaceNodeTreeItems().find(node => node.resource?.metadata.name === nsName);
+		return this.namespaceNodeTreeItems().find(node => node.resource.metadata.name === nsName);
 	}
 
 	private findParentNamespaceNode(object: KubernetesObject): NamespaceNode | undefined {

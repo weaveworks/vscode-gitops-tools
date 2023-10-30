@@ -63,8 +63,11 @@ export class KubernetesObjectNode extends TreeNode {
 		}
 	}
 
-
 	get viewStateKey(): string {
 		return this.resource.metadata.uid;
+	}
+
+	get contextType(): string | undefined {
+		return this.resource.kind;
 	}
 }

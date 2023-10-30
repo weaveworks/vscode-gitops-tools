@@ -139,15 +139,18 @@ export class TreeNode extends TreeItem {
 
 	/**
 	 *
-	 * Contexts for types of resources.
+	 * Context for types of resources.
 	 */
-	get contextsKind(): string[] {
-		return [];
+	get contextType(): string | undefined {
+		return;
 	}
 
 	// @ts-ignore
 	get contextValue() {
-		const cs = [...this.contexts, ...this.contextsKind];
+		const cs = [...this.contexts];
+		if(this.contextType) {
+			cs.push(this.contextType);
+		}
 		if(cs.length) {
 			return this.joinContexts(cs);
 		}
