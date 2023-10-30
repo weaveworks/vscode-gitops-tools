@@ -5,6 +5,7 @@ import { NodeContext } from 'types/nodeContext';
 import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { makeTreeNode } from '../makeTreeNode';
 import { TreeNode } from '../treeNode';
+import { PipelineEnvironmentNode } from './environmentNode';
 import { WgeNode } from './wgeNodes';
 
 export class PipelineNode extends WgeNode {
@@ -68,11 +69,9 @@ export class PipelineNode extends WgeNode {
 	async createEnvNodes(): Promise<TreeNode[]> {
 		const envNodes = [];
 		for(const env of this.resource.spec.environments) {
-			const envNode = new TreeNode(env.name);
-			envNode.description = env.namespace;
+			const envNode = new PipelineEnvironmentNode(env);
 			this.children.push(envNode);
 			envNodes.push(envNode);
-
 		}
 
 		return envNodes;

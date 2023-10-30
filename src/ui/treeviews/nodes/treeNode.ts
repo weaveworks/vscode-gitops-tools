@@ -1,23 +1,14 @@
-import { Command, MarkdownString, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
-import { CommandId } from 'types/extensionIds';
-import { FileTypes } from 'types/fileTypes';
-import { KubernetesObject, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon, commonIcon } from 'ui/icons';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
-import { getResourceUri } from 'utils/getResourceUri';
-import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
 import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
 export class TreeNode extends TreeItem {
-
-	/**
-	 * Kubernetes resource.
-	 */
-	resource?: KubernetesObject;
+	resource?: any;
 
 	/**
 	 * Reference to the parent node (if exists).
@@ -117,16 +108,6 @@ export class TreeNode extends TreeItem {
 		this.children = this.children.filter(c => c !== child);
 	}
 
-	findChildByResource(resource: KubernetesObject): TreeNode | undefined {
-		return this.children.find(child => {
-			if (child.resource) {
-				return child.resource.metadata?.name === resource.metadata?.name &&
-					child.resource.kind === resource.kind &&
-					child.resource.metadata?.namespace === resource.metadata?.namespace;
-			}
-		});
-	}
-
 
 	/**
 	 *
@@ -146,52 +127,45 @@ export class TreeNode extends TreeItem {
 			.join('');
 	}
 
-	fullyQualifyKind(): string {
-		return qualifyToolkitKind(this.resource?.kind || '');
-	}
-
-	// @ts-ignore
-	get tooltip(): string | MarkdownString {
-		if (this.resource) {
-			return createMarkdownTable(this.resource as KnownTreeNodeResources);
-		}
-	}
-
-	// @ts-ignore
-	get command(): Command | undefined {
-		// Set click event handler to load kubernetes resource as yaml file in editor.
-		if (this.resource) {
-			let stringKind = this.fullyQualifyKind();
-			const resourceUri = getResourceUri(
-				this.resource.metadata?.namespace,
-				`${stringKind}/${this.resource.metadata?.name}`,
-				FileTypes.Yaml,
-			);
-
-			return {
-				command: CommandId.EditorOpenResource,
-				arguments: [resourceUri],
-				title: 'View Resource',
-			};
-		}
-	}
-
 	/**
 	 * VSCode contexts to use for setting {@link contextValue}
 	 * of this tree node. Used for context/inline menus.
+	 *
+	 * Contexts are used to enable/disable menu items.
 	 */
 	get contexts(): string[] {
 		return [];
 	}
 
+	/**
+	 *
+	 * Contexts for types of resources.
+	 */
+	get contextsKind(): string[] {
+		return [];
+	}
+
 	// @ts-ignore
 	get contextValue() {
-		const cs = this.contexts;
-		if(this.resource?.kind) {
-			cs.push(this.resource.kind);
-		}
+		const cs = [...this.contexts, ...this.contextsKind];
 		if(cs.length) {
 			return this.joinContexts(cs);
 		}
 	}
+
+	// @ts-ignore
+	get tooltip(): string | MarkdownString {
+		return '';
+	}
+
+	// @ts-ignore
+	get command(): Command | undefined {}
+
+
+	get viewStateKey(): string {
+		return '';
+	}
 }
+
+
+

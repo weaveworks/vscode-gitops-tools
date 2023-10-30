@@ -2,14 +2,14 @@ import { Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon } from 'ui/icons';
 import { TreeItemCollapsibleState } from 'vscode';
 import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
+import { KubernetesObjectNode } from './kubernetesObjectNode';
 import { SourceNode } from './source/sourceNode';
-import { TreeNode } from './treeNode';
 import { WorkloadNode } from './workload/workloadNode';
 
 /**
  * Defines any kubernetes resourse.
  */
-export class NamespaceNode extends TreeNode {
+export class NamespaceNode extends KubernetesObjectNode {
 
 	/**
 	 * kubernetes resource metadata
@@ -17,7 +17,7 @@ export class NamespaceNode extends TreeNode {
 	resource: Namespace;
 
 	constructor(namespace: Namespace, dataProvider?: SimpleDataProvider) {
-		super(namespace.metadata?.name || '', dataProvider);
+		super(namespace, namespace.metadata?.name || '', dataProvider);
 
 		this.description = Kind.Namespace;
 

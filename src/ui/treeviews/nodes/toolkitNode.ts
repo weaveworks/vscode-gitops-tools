@@ -3,7 +3,7 @@ import { Condition, Kind } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon } from 'ui/icons';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
 import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
-import { TreeNode } from './treeNode';
+import { KubernetesObjectNode } from './kubernetesObjectNode';
 
 export enum ReconcileState {
 	Ready,
@@ -11,14 +11,13 @@ export enum ReconcileState {
 	Progressing,
 }
 
-export class ToolkitNode extends TreeNode {
-	resource: ToolkitObject;
+export class ToolkitNode extends KubernetesObjectNode {
+	resource!: ToolkitObject;
 	reconcileState: ReconcileState = ReconcileState.Progressing;
 
 	constructor(resource: ToolkitObject, dataProvider?: SimpleDataProvider) {
-		super(`${resource.kind}: ${resource.metadata?.name || 'unknown'}`, dataProvider);
+		super(resource, `${resource.kind}: ${resource.metadata?.name || 'unknown'}`, dataProvider);
 
-		this.resource = resource;
 		this.updateStatus();
 	}
 

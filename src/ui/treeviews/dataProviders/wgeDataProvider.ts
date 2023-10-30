@@ -50,8 +50,9 @@ export class WgeDataProvider extends AsyncDataProvider {
 		nodes.push(ps);
 
 		for (const p of sortByMetadataName(pipelines)) {
-			const node =  new PipelineNode(p);
+			const node = new PipelineNode(p);
 			ps.children.push(node);
+			node.updateChildren();
 		}
 		[ps.children] = await groupNodesByNamespace(ps.children, false, true);
 
