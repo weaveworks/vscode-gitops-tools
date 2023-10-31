@@ -1,4 +1,4 @@
-import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
+import { MarkdownString } from 'vscode';
 
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { NodeContext } from 'types/nodeContext';
@@ -29,7 +29,7 @@ export class GitOpsTemplateNode extends KubernetesObjectNode {
 			this.setIcon(themeIcon('rocket', 'descriptionForeground'));
 
 		}
-		this.collapsibleState = TreeItemCollapsibleState.None;
+		this.makeUncollapsible();
 	}
 
 	get tooltip() {

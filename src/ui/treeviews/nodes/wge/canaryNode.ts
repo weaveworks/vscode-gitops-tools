@@ -22,7 +22,7 @@ export class CanaryNode extends WgeNode {
 	get wgePortalQuery() {
 		const name = this.resource.metadata.name;
 		const namespace = this.resource.metadata.namespace || 'default';
-		const clusterName = currentContextData().contextName;
+		const clusterName = currentContextData().wgeClusterName;
 
 		return `canary_details/details?clusterName=${clusterName}&name=${name}&namespace=${namespace}`;
 	}

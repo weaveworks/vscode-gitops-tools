@@ -55,6 +55,11 @@ export class TreeNode extends TreeItem {
 		this.collapsibleState = TreeItemCollapsibleState.Collapsed;
 	}
 
+	makeUncollapsible() {
+		this.collapsibleState = TreeItemCollapsibleState.None;
+	}
+
+
 	/**
 	 * Expands a tree node and shows its children.
 	 */

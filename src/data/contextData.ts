@@ -19,6 +19,7 @@ export class ContextData {
 	public apiResources: Map<Kind, KindApiParams> | undefined;
 
 	public wgePortalHost?: string;
+	public wgeClusterName?: string;
 
 	constructor(contextName: string) {
 		this.contextName = contextName;
@@ -98,4 +99,5 @@ export async function loadContextData() {
 	const host = hosts?.[0];
 
 	context.wgePortalHost = host.host;
+	context.wgeClusterName = 'howard-moomboo-space';
 }
