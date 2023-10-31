@@ -27,7 +27,6 @@ export class GitOpsSetNode extends WgeNode {
 		const namespace = this.resource.metadata.namespace || 'default';
 		const clusterName = currentContextData().wgeClusterName;
 
-
 		return `gitopssets/object/details?clusterName=${clusterName}&name=${name}&namespace=${namespace}`;
 	}
 }

@@ -3,10 +3,11 @@ import { MarkdownString } from 'vscode';
 
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { ToolkitObject } from 'types/flux/object';
+import { Pipeline } from 'types/flux/pipeline';
 import { Deployment, Kind, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { shortenRevision } from './stringUtils';
 
-export type KnownTreeNodeResources = Namespace | Deployment | ToolkitObject | GitOpsTemplate;
+export type KnownTreeNodeResources = Namespace | Deployment | ToolkitObject | GitOpsTemplate | Pipeline;
 
 
 export function createContextMarkdownTable(context: k8s.Context, cluster?: k8s.Cluster): MarkdownString {
@@ -26,10 +27,10 @@ export function createContextMarkdownTable(context: k8s.Context, cluster?: k8s.C
 /**
  * Create markdown table for tree view item hovers.
  * 2 clumns, left aligned.
- * @param kubernetesObject Standard kubernetes object
+ * @param obj Standard kubernetes object
  * @returns vscode MarkdownString object
  */
-export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): MarkdownString {
+export function createMarkdownTable(obj: KnownTreeNodeResources): MarkdownString {
 	const markdown = new MarkdownString(undefined, true);
 	markdown.isTrusted = true;
 	// Create table header
@@ -37,74 +38,92 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	markdown.appendMarkdown(':--- | :---\n');
 
 	// Should exist on every object
-	createMarkdownTableRow('kind', kubernetesObject.kind, markdown);
-	createMarkdownTableRow('name', kubernetesObject.metadata.name, markdown);
-	createMarkdownTableRow('namespace', kubernetesObject.metadata.namespace, markdown);
+	createMarkdownTableRow('kind', obj.kind, markdown);
+	createMarkdownTableRow('name', obj.metadata.name, markdown);
+	createMarkdownTableRow('namespace', obj.metadata.namespace, markdown);
 
 	// Object-specific properties
-	if (kubernetesObject.kind === Kind.GitRepository) {
-		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
-		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
-		createMarkdownTableRow('spec.ref.commit', kubernetesObject.spec?.ref?.commit, markdown);
-		createMarkdownTableRow('spec.ref.branch', kubernetesObject.spec?.ref?.branch, markdown);
-		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
-		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
-	} else if (kubernetesObject.kind === Kind.OCIRepository) {
-		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
-		createMarkdownTableRow('spec.ref.digest', kubernetesObject.spec?.ref?.digest, markdown);
-		createMarkdownTableRow('spec.ref.semver', kubernetesObject.spec?.ref?.semver, markdown);
-		createMarkdownTableRow('spec.ref.tag', kubernetesObject.spec?.ref?.tag, markdown);
-	} else if (kubernetesObject.kind === Kind.HelmRepository) {
-		createMarkdownTableRow('spec.url', kubernetesObject.spec?.url, markdown);
-		createMarkdownTableRow('spec.type', kubernetesObject.spec?.type, markdown);
-	} else if (kubernetesObject.kind === Kind.Bucket) {
-		createMarkdownTableRow('spec.bucketName', kubernetesObject.spec?.bucketName, markdown);
-		createMarkdownTableRow('spec.endpoint', kubernetesObject.spec?.endpoint, markdown);
-		createMarkdownTableRow('spec.provider', kubernetesObject.spec?.provider, markdown);
-		createMarkdownTableRow('spec.insecure', kubernetesObject.spec?.insecure, markdown);
-	} else if (kubernetesObject.kind === Kind.Kustomization) {
-		const sourceRef = `${kubernetesObject.spec?.sourceRef?.kind}/${kubernetesObject.spec?.sourceRef?.name}.${kubernetesObject.spec?.sourceRef?.namespace || kubernetesObject.metadata.namespace}`;
+	if (obj.kind === Kind.GitRepository) {
+		createMarkdownTableRow('spec.suspend', obj.spec?.suspend === undefined ? false : obj.spec?.suspend, markdown);
+		createMarkdownTableRow('spec.url', obj.spec?.url, markdown);
+		createMarkdownTableRow('spec.ref.commit', obj.spec?.ref?.commit, markdown);
+		createMarkdownTableRow('spec.ref.branch', obj.spec?.ref?.branch, markdown);
+		createMarkdownTableRow('spec.ref.tag', obj.spec?.ref?.tag, markdown);
+		createMarkdownTableRow('spec.ref.semver', obj.spec?.ref?.semver, markdown);
+	} else if (obj.kind === Kind.OCIRepository) {
+		createMarkdownTableRow('spec.url', obj.spec?.url, markdown);
+		createMarkdownTableRow('spec.ref.digest', obj.spec?.ref?.digest, markdown);
+		createMarkdownTableRow('spec.ref.semver', obj.spec?.ref?.semver, markdown);
+		createMarkdownTableRow('spec.ref.tag', obj.spec?.ref?.tag, markdown);
+	} else if (obj.kind === Kind.HelmRepository) {
+		createMarkdownTableRow('spec.url', obj.spec?.url, markdown);
+		createMarkdownTableRow('spec.type', obj.spec?.type, markdown);
+	} else if (obj.kind === Kind.Bucket) {
+		createMarkdownTableRow('spec.bucketName', obj.spec?.bucketName, markdown);
+		createMarkdownTableRow('spec.endpoint', obj.spec?.endpoint, markdown);
+		createMarkdownTableRow('spec.provider', obj.spec?.provider, markdown);
+		createMarkdownTableRow('spec.insecure', obj.spec?.insecure, markdown);
+	} else if (obj.kind === Kind.Kustomization) {
+		const sourceRef = `${obj.spec?.sourceRef?.kind}/${obj.spec?.sourceRef?.name}.${obj.spec?.sourceRef?.namespace || obj.metadata.namespace}`;
 		createMarkdownTableRow('source', sourceRef, markdown);
 
-		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
-		createMarkdownTableRow('spec.prune', kubernetesObject.spec?.prune, markdown);
-		createMarkdownTableRow('spec.force', kubernetesObject.spec?.force, markdown);
-		createMarkdownTableRow('spec.path', kubernetesObject.spec?.path, markdown);
-	} else if (kubernetesObject.kind === Kind.HelmRelease) {
-		const sourceRef = `${kubernetesObject.spec?.chart?.spec?.sourceRef?.kind}/${kubernetesObject.spec?.chart?.spec?.sourceRef?.name}.${kubernetesObject.spec?.chart?.spec?.sourceRef?.namespace || kubernetesObject.metadata.namespace}`;
+		createMarkdownTableRow('spec.suspend', obj.spec?.suspend === undefined ? false : obj.spec?.suspend, markdown);
+		createMarkdownTableRow('spec.prune', obj.spec?.prune, markdown);
+		createMarkdownTableRow('spec.force', obj.spec?.force, markdown);
+		createMarkdownTableRow('spec.path', obj.spec?.path, markdown);
+	} else if (obj.kind === Kind.HelmRelease) {
+		const sourceRef = `${obj.spec?.chart?.spec?.sourceRef?.kind}/${obj.spec?.chart?.spec?.sourceRef?.name}.${obj.spec?.chart?.spec?.sourceRef?.namespace || obj.metadata.namespace}`;
 		createMarkdownTableRow('source', sourceRef, markdown);
 
-		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
-		createMarkdownTableRow('spec.chart.spec.chart', kubernetesObject.spec?.chart?.spec?.chart, markdown);
+		createMarkdownTableRow('spec.suspend', obj.spec?.suspend === undefined ? false : obj.spec?.suspend, markdown);
+		createMarkdownTableRow('spec.chart.spec.chart', obj.spec?.chart?.spec?.chart, markdown);
 
-		createMarkdownTableRow('spec.chart.spec.version', kubernetesObject.spec?.chart?.spec?.version, markdown);
-	} else if (kubernetesObject.kind === Kind.Canary) {
-		createMarkdownTableRow('spec.suspend', kubernetesObject.spec?.suspend === undefined ? false : kubernetesObject.spec?.suspend, markdown);
+		createMarkdownTableRow('spec.chart.spec.version', obj.spec?.chart?.spec?.version, markdown);
+	} else if (obj.kind === Kind.Canary) {
+		createMarkdownTableRow('spec.suspend', obj.spec?.suspend === undefined ? false : obj.spec?.suspend, markdown);
 
-		createMarkdownTableRow('phase', kubernetesObject.status.phase, markdown);
-		createMarkdownTableRow('failedChecks', kubernetesObject.status.failedChecks, markdown);
-		createMarkdownTableRow('canaryWeight', kubernetesObject.status.canaryWeight, markdown);
-		createMarkdownTableRow('iterations', kubernetesObject.status.iterations, markdown);
-		createMarkdownTableRow('lastAppliedSpec', kubernetesObject.status.lastAppliedSpec, markdown);
-		createMarkdownTableRow('lastPromotedSpec', kubernetesObject.status.lastPromotedSpec, markdown);
-		createMarkdownTableRow('lastTransitionTime', kubernetesObject.status.lastTransitionTime, markdown);
-	} else if (kubernetesObject.kind === Kind.Deployment) {
-		createMarkdownTableRow('spec.paused', kubernetesObject.spec?.paused, markdown);
-		createMarkdownTableRow('spec.minReadySeconds', kubernetesObject.spec?.minReadySeconds, markdown);
-		createMarkdownTableRow('spec.progressDeadlineSeconds', kubernetesObject.spec?.progressDeadlineSeconds, markdown);
+		createMarkdownTableRow('phase', obj.status.phase, markdown);
+		createMarkdownTableRow('failedChecks', obj.status.failedChecks, markdown);
+		createMarkdownTableRow('canaryWeight', obj.status.canaryWeight, markdown);
+		createMarkdownTableRow('iterations', obj.status.iterations, markdown);
+		createMarkdownTableRow('lastAppliedSpec', obj.status.lastAppliedSpec, markdown);
+		createMarkdownTableRow('lastPromotedSpec', obj.status.lastPromotedSpec, markdown);
+		createMarkdownTableRow('lastTransitionTime', obj.status.lastTransitionTime, markdown);
+	} else if (obj.kind === Kind.Deployment) {
+		createMarkdownTableRow('spec.paused', obj.spec?.paused, markdown);
+		createMarkdownTableRow('spec.minReadySeconds', obj.spec?.minReadySeconds, markdown);
+		createMarkdownTableRow('spec.progressDeadlineSeconds', obj.spec?.progressDeadlineSeconds, markdown);
+	} else if (obj.kind === Kind.Pipeline) {
+		if(obj.spec?.promotion?.manual) {
+			createMarkdownTableRow('promotion.manual', obj.spec?.promotion?.manual, markdown);
+		}
+
+		if(obj.spec?.promotion?.strategy.notification) {
+			createMarkdownTableRow('promotion.strategy.notification', true, markdown);
+		}
+
+		const strategy = obj.spec?.promotion?.strategy as any;
+		if(strategy['pull-request']) {
+			createMarkdownTableRow('pull-request.type', strategy['pull-request'].type, markdown);
+			createMarkdownTableRow('pull-request.url', strategy['pull-request'].url, markdown);
+			createMarkdownTableRow('pull-request.baseBranch', strategy['pull-request'].baseBranch, markdown);
+		}
+
+		createMarkdownTableRow('spec.appRef.kind', obj.spec?.appRef.kind, markdown);
+		createMarkdownTableRow('spec.appRef.name', obj.spec?.appRef.name, markdown);
 	}
 
 	// Should exist on multiple objects
-	if(kubernetesObject.spec) {
-		if ('interval' in kubernetesObject.spec) {
-			createMarkdownTableRow('spec.interval', kubernetesObject.spec?.interval, markdown);
+	if(obj.spec) {
+		if ('interval' in obj.spec) {
+			createMarkdownTableRow('spec.interval', obj.spec?.interval, markdown);
 		}
-		if ('timeout' in kubernetesObject.spec) {
-			createMarkdownTableRow('spec.timeout', kubernetesObject.spec?.timeout, markdown);
+		if ('timeout' in obj.spec) {
+			createMarkdownTableRow('spec.timeout', obj.spec?.timeout, markdown);
 		}
 	}
 
-	const fluxStatus = kubernetesObject.status as any;
+	const fluxStatus = obj.status as any;
 
 	if(fluxStatus?.lastAttemptedRevision) {
 		createMarkdownTableRow('attempted', shortenRevision(fluxStatus.lastAttemptedRevision), markdown);
@@ -115,8 +134,8 @@ export function createMarkdownTable(kubernetesObject: KnownTreeNodeResources): M
 	}
 
 
-	if(kubernetesObject.status?.conditions) {
-		const conditions = kubernetesObject.status.conditions as any[];
+	if(obj.status?.conditions) {
+		const conditions = obj.status.conditions as any[];
 		for (const c of conditions) {
 			if(c.type === 'SourceVerified' && c.status === 'True') {
 				const message = `${c.message.replace('verified signature of revision', 'verified').slice(0, 48)}...`;
