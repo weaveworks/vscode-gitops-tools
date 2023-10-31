@@ -2,10 +2,9 @@ import { getCanaryChildren } from 'cli/kubernetes/kubectlGet';
 import { currentContextData } from 'data/contextData';
 import { Canary } from 'types/flux/canary';
 import { NodeContext } from 'types/nodeContext';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { InfoLabel } from 'utils/makeTreeviewInfoNode';
 import { groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../anyResourceNode';
-import { TreeNode } from '../treeNode';
 import { WgeNode } from './wgeNodes';
 
 export class CanaryNode extends WgeNode {
@@ -36,20 +35,20 @@ export class CanaryNode extends WgeNode {
 			return;
 		}
 
-		this.children = infoNodes(InfoNode.Loading);
+		this.children = this.infoNodes(InfoLabel.Loading);
 		this.redraw();
 
 		const [children, primary] = await Promise.all([getCanaryChildren(this.resource.metadata.name), getCanaryChildren(`${this.resource.metadata.name}-primary`)]);
 		const canaryChildren = [...children, ...primary];
 
 		if (!canaryChildren) {
-			this.children = infoNodes(InfoNode.FailedToLoad);
+			this.children = this.infoNodes(InfoLabel.FailedToLoad);
 			this.redraw();
 			return;
 		}
 
 		if (canaryChildren.length === 0) {
-			this.children = [new TreeNode('No Resources')];
+			this.children = this.infoNodes(InfoLabel.NoResources);
 			this.redraw();
 			return;
 		}

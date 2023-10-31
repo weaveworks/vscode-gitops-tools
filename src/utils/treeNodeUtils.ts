@@ -45,7 +45,7 @@ export async function groupNodesByNamespace(nodes: TreeNode[], expandAll = false
 
 		const nsChildNodes = filterNodesForNamespace(nodes, nsName);
 		if (nsChildNodes.length > 0) {
-			const nsNode = new NamespaceNode(ns);
+			const nsNode = new NamespaceNode(ns, nsChildNodes[0].dataProvider);
 			nsChildNodes.forEach(childNode => {
 				// Don't add the namespace node as a child of itself
 				if(!(childNode.resource.kind === 'Namespace' && childNode.resource.metadata.name === nsName)) {

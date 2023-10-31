@@ -7,13 +7,18 @@ import { WgeNode } from './wgeNodes';
 export class PipelineNode extends WgeNode {
 	resource!: Pipeline;
 
+	constructor(pipeline: Pipeline) {
+		super(pipeline);
+	}
+
 	get revision() {
 		const condition = this.readyOrFirstCondition;
 		return condition?.lastTransitionTime ? `${condition?.lastTransitionTime.toLocaleString()}` : '';
 	}
 
 	get contexts() {
-		return [NodeContext.HasWgePortal];
+		const promotionContext = this.isManualPromotion ? NodeContext.ManualPromotion : NodeContext.AutoPromotion;
+		return [NodeContext.HasWgePortal, promotionContext];
 	}
 
 	get wgePortalQuery() {
@@ -29,7 +34,6 @@ export class PipelineNode extends WgeNode {
 		this.redraw();
 	}
 
-
 	async createEnvNodes(): Promise<TreeNode[]> {
 		const envNodes = [];
 		for(const env of this.resource.spec.environments) {
@@ -39,6 +43,15 @@ export class PipelineNode extends WgeNode {
 		}
 
 		return envNodes;
+	}
+
+
+	get isManualPromotion() {
+		return !!this.resource.spec?.promotion?.manual;
+	}
+
+	get isSuspendIcon(): string {
+		return this.isManualPromotion ? '⏸ ' : '';
 	}
 
 

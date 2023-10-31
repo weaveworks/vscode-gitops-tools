@@ -18,4 +18,8 @@ export const enum NodeContext {
 
 	// WGE
 	HasWgePortal = 'hasWgePortal',
+
+	// Pipeline
+	ManualPromotion = 'manualPromotion',
+	AutoPromotion = 'autoPromotion',
 }

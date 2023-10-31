@@ -2,7 +2,9 @@ import { getResource } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { HelmRelease } from 'types/flux/helmRelease';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { NamespaceNode } from 'ui/treeviews/nodes/namespaceNode';
 import { TreeNode } from 'ui/treeviews/nodes/treeNode';
+import { WgeContainerNode } from 'ui/treeviews/nodes/wge/wgeNodes';
 import { TreeItemCollapsibleState } from 'vscode';
 import { ApiState, KindApiParams } from '../cli/kubernetes/apiResources';
 
@@ -45,10 +47,19 @@ export class ViewData {
 	public collapsibleStates = new Map<string, TreeItemCollapsibleState>();
 	public loading = false;
 
+
+	get savedNodes() {
+		let nodes: TreeNode[] = [];
+		this.nodes.forEach(node => {
+			nodes = nodes.concat(node.children);
+		});
+		return nodes.concat(this.nodes);
+	}
+
 	saveCollapsibleStates() {
 		this.collapsibleStates.clear();
 
-		for (const node of this.nodes) {
+		for (const node of this.savedNodes) {
 			const key = node.viewStateKey;
 			if (key) {
 				this.collapsibleStates.set(key, node.collapsibleState || TreeItemCollapsibleState.Collapsed);
@@ -57,12 +68,16 @@ export class ViewData {
 	}
 
 	loadCollapsibleStates() {
-		for (const node of this.nodes) {
+		for (const node of this.savedNodes) {
 			const key = node.viewStateKey;
 			if (key) {
 				const state = this.collapsibleStates.get(key);
 				if (state) {
 					node.collapsibleState = state;
+					if(node instanceof NamespaceNode) {
+						const withIcons = !node.parent || node.parent instanceof WgeContainerNode;
+						node.updateLabel(withIcons);
+					}
 				}
 			}
 		}

@@ -14,16 +14,16 @@ import { CommandId, ContextId } from 'types/extensionIds';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { NodeContext } from 'types/nodeContext';
 import { clusterDataProvider, revealClusterNode } from 'ui/treeviews/treeViews';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { InfoLabel } from 'utils/makeTreeviewInfoNode';
 import { createContextMarkdownTable, createMarkdownHr } from 'utils/markdownUtils';
-import { TreeNode } from '../treeNode';
 import { ClusterDeploymentNode } from './clusterDeploymentNode';
+import { ClusterTreeNode } from './clusterTreeNode';
 
 /**
  * Defines Cluster context tree view item for displaying
  * kubernetes contexts inside the Clusters tree view.
  */
-export class ClusterNode extends TreeNode {
+export class ClusterNode extends ClusterTreeNode {
 
 	/**
 	 * Whether cluster is managed by AKS or Azure ARC
@@ -105,11 +105,11 @@ export class ClusterNode extends TreeNode {
 		}
 
 		if(contextData.apiState === ApiState.ClusterUnreachable) {
-			this.children = infoNodes(InfoNode.ClusterUnreachable);
+			this.children = this.infoNodes(InfoLabel.ClusterUnreachable);
 			return;
 		}
 		if(contextData.apiState === ApiState.Loading) {
-			this.children = infoNodes(InfoNode.LoadingApi);
+			this.children = this.infoNodes(InfoLabel.LoadingApi);
 			return;
 		}
 
@@ -125,7 +125,7 @@ export class ClusterNode extends TreeNode {
 				this.addChild(new ClusterDeploymentNode(deployment));
 			}
 		} else {
-			const notFound = new TreeNode('Flux controllers not found');
+			const notFound = new ClusterTreeNode('Flux controllers not found');
 			notFound.setIcon('warning');
 			this.addChild(notFound);
 		}

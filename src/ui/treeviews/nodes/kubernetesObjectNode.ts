@@ -14,7 +14,7 @@ export class KubernetesObjectNode extends TreeNode {
 	 */
 	resource: KubernetesObject;
 
-	constructor(resource: KubernetesObject, label: string, dataProvider?: SimpleDataProvider) {
+	constructor(resource: KubernetesObject, label: string, dataProvider: SimpleDataProvider) {
 		super(label, dataProvider);
 
 		this.resource = resource;
@@ -64,7 +64,8 @@ export class KubernetesObjectNode extends TreeNode {
 	}
 
 	get viewStateKey(): string {
-		return this.resource.metadata.uid;
+		const parentViewKey = this.parent?.viewStateKey;
+		return this.resource.metadata.uid + parentViewKey + this.dataProvider.guid;
 	}
 
 	get contextType(): string | undefined {

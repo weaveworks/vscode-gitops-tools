@@ -1,18 +1,18 @@
 import { getResource } from 'cli/kubernetes/kubectlGet';
-import { getNamespace } from 'cli/kubernetes/kubectlGetNamespace';
 import { GitOpsCluster } from 'types/flux/gitOpsCluster';
-import { Environment, Pipeline, Target } from 'types/flux/pipeline';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { wgeDateProvider } from 'ui/treeviews/treeViews';
+import { LocalAppReference, Pipeline, PipelineEnvironment, PipelineTarget } from 'types/flux/pipeline';
+import { Kind, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
+import { themeIcon } from 'ui/icons';
+import { wgeDataProvider } from 'ui/treeviews/treeViews';
 import { makeTreeNode } from '../makeTreeNode';
 import { TreeNode } from '../treeNode';
 
 export class PipelineEnvironmentNode extends TreeNode {
-	environment: Environment;
+	environment: PipelineEnvironment;
 	pipepine: Pipeline;
 
-	constructor(environment: Environment, pipeline: Pipeline) {
-		super(environment.name, wgeDateProvider);
+	constructor(environment: PipelineEnvironment, pipeline: Pipeline) {
+		super(environment.name, wgeDataProvider);
 
 		this.makeCollapsible();
 		this.environment = environment;
@@ -25,14 +25,15 @@ export class PipelineEnvironmentNode extends TreeNode {
 		const targets = this.environment.targets;
 		for(const target of targets) {
 			const targetCluster = await this.getTargetCluster(target);
-			const targetNode = new PipelineTargetNode(target, targetCluster);
+			const appRef = this.pipepine.spec.appRef;
+			const targetNode = new PipelineTargetNode(target, appRef, targetCluster);
 			targetNode.updateChildren();
 			this.addChild(targetNode);
 		}
 		this.redraw();
 	}
 
-	async getTargetCluster(target: Target): Promise<GitOpsCluster | undefined> {
+	async getTargetCluster(target: PipelineTarget): Promise<GitOpsCluster | undefined> {
 		if(target.clusterRef) {
 			const namespace = target.clusterRef.namespace || this.pipepine.metadata.namespace || 'default';
 			const cluster = await getResource<GitOpsCluster>(target.clusterRef.name, namespace, target.clusterRef.kind as Kind);
@@ -45,15 +46,17 @@ export class PipelineEnvironmentNode extends TreeNode {
 
 
 export class PipelineTargetNode extends TreeNode {
-	target: Target;
+	target: PipelineTarget;
 	targetCluster?: GitOpsCluster;
+	appRef: LocalAppReference;
 
-	constructor(target: Target, targetCluster?: GitOpsCluster) {
+	constructor(target: PipelineTarget, appRef: LocalAppReference, targetCluster?: GitOpsCluster) {
 		const clusterLabel = targetCluster ? `${targetCluster.metadata.name}.${targetCluster.metadata.namespace}` : '(this cluster)';
-		super(`${clusterLabel} ${target.namespace}`, wgeDateProvider);
+		super(`${clusterLabel} ${appRef.name}.${target.namespace}`, wgeDataProvider);
 
 		this.target = target;
 		this.targetCluster = targetCluster;
+		this.appRef = appRef;
 
 		this.makeCollapsible();
 
@@ -62,17 +65,20 @@ export class PipelineTargetNode extends TreeNode {
 
 	async updateChildren() {
 		if(this.targetCluster) {
-			const gopsClusterNode = makeTreeNode(this.targetCluster, wgeDateProvider);
+			const gopsClusterNode = makeTreeNode(this.targetCluster, wgeDataProvider);
 			this.addChild(gopsClusterNode);
 
-			const crossClusterNsNode = new TreeNode(this.target.namespace, wgeDateProvider);
-			crossClusterNsNode.description = `Namespace in ${this.targetCluster.metadata.name}`;
-			this.addChild(crossClusterNsNode);
+			const crossClusterAppNode = new TreeNode(`${this.appRef.name}.${this.target.namespace}`, wgeDataProvider);
+			crossClusterAppNode.description = `${this.appRef.kind} (in ${this.targetCluster.metadata.name})`;
+			crossClusterAppNode.setIcon(themeIcon('link-external', 'descriptionForeground'));
+			this.addChild(crossClusterAppNode);
 		} else {
-			// local target cluster
-			const localNamespace = await getNamespace(this.target.namespace);
-			if(localNamespace) {
-				this.addChild(makeTreeNode(localNamespace, wgeDateProvider));
+			const localHr = await getResource<KubernetesObject>(this.appRef.name, this.target.namespace, this.appRef.kind as Kind);
+			if(localHr) {
+				const localAppNode = makeTreeNode(localHr, wgeDataProvider);
+				localAppNode.label = `${this.appRef.kind}: ${this.appRef.name}.${this.target.namespace}`;
+				localAppNode.updateChildren();
+				this.addChild(localAppNode);
 			}
 		}
 

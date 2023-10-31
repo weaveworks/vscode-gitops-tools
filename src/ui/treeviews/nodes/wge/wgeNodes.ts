@@ -1,27 +1,31 @@
 
+import { ToolkitObject } from 'types/flux/object';
 import { NodeContext } from 'types/nodeContext';
 import { themeIcon } from 'ui/icons';
 import { SimpleDataProvider } from 'ui/treeviews/dataProviders/simpleDataProvider';
-import { wgeDateProvider } from 'ui/treeviews/treeViews';
+import { wgeDataProvider } from 'ui/treeviews/treeViews';
 import { ToolkitNode } from '../toolkitNode';
 import { TreeNode } from '../treeNode';
 
 export class WgeNode extends ToolkitNode {
 	dataProvider!: SimpleDataProvider;
 
-	constructor(object: any) {
-		super(object, wgeDateProvider);
+	constructor(object: ToolkitObject) {
+		super(object, wgeDataProvider);
+
+		// this.label = `${object.kind}: ${object.metadata.name}.${object.metadata.namespace}`;
+		this.label = `${object.metadata.name}`;
 		this.makeCollapsible();
 	}
 }
 
 export class WgeContainerNode extends TreeNode {
-	constructor(object: any) {
-		super(object, wgeDateProvider);
+	constructor(label: any) {
+		super(label, wgeDataProvider);
 	}
 
 	get contexts() {
-		return [NodeContext.HasWgePortal];
+		return [NodeContext.HasWgePortal, 'Container'];
 	}
 
 	get wgePortalQuery() {
@@ -41,6 +45,10 @@ export class TemplatesContainerNode extends WgeContainerNode {
 	get wgePortalQuery() {
 		return 'templates';
 	}
+
+	get viewStateKey() {
+		return 'TemplatesContainer';
+	}
 }
 
 
@@ -54,6 +62,10 @@ export class CanariesContainerNode extends WgeContainerNode {
 
 	get wgePortalQuery() {
 		return 'delivery';
+	}
+
+	get viewStateKey() {
+		return 'CanariesContainer';
 	}
 }
 
@@ -69,6 +81,10 @@ export class PipelinesContainerNode extends WgeContainerNode {
 	get wgePortalQuery() {
 		return 'pipelines';
 	}
+
+	get viewStateKey() {
+		return 'PipelinesContainer';
+	}
 }
 
 
@@ -82,5 +98,9 @@ export class GitOpsSetsContainerNode extends WgeContainerNode {
 
 	get wgePortalQuery() {
 		return 'gitopssets';
+	}
+
+	get viewStateKey() {
+		return 'GitOpsSetsContainer';
 	}
 }

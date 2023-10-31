@@ -4,6 +4,7 @@ import { TreeItemCollapsibleState } from 'vscode';
 import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 import { KubernetesObjectNode } from './kubernetesObjectNode';
 import { SourceNode } from './source/sourceNode';
+import { WgeNode } from './wge/wgeNodes';
 import { WorkloadNode } from './workload/workloadNode';
 
 /**
@@ -16,7 +17,7 @@ export class NamespaceNode extends KubernetesObjectNode {
 	 */
 	resource: Namespace;
 
-	constructor(namespace: Namespace, dataProvider?: SimpleDataProvider) {
+	constructor(namespace: Namespace, dataProvider: SimpleDataProvider) {
 		super(namespace, namespace.metadata.name, dataProvider);
 
 		this.description = Kind.Namespace;
@@ -29,7 +30,7 @@ export class NamespaceNode extends KubernetesObjectNode {
 		let readyLength = 0;
 		let loadingLength = 0;
 		for(const child of this.children) {
-			if(child instanceof SourceNode || child instanceof WorkloadNode) {
+			if(child instanceof SourceNode || child instanceof WorkloadNode || child instanceof WgeNode) {
 				if(child.resourceIsReady) {
 					readyLength++;
 				} else if(child.resourceIsProgressing) {

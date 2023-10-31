@@ -1,7 +1,7 @@
 import { getHelmReleaseChildren } from 'cli/kubernetes/kubectlGet';
 import { HelmRelease } from 'types/flux/helmRelease';
 import { SimpleDataProvider } from 'ui/treeviews/dataProviders/simpleDataProvider';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { InfoLabel } from 'utils/makeTreeviewInfoNode';
 import { shortenRevision } from 'utils/stringUtils';
 import { groupNodesByNamespace } from 'utils/treeNodeUtils';
 import { AnyResourceNode } from '../anyResourceNode';
@@ -30,7 +30,7 @@ export class HelmReleaseNode extends WorkloadNode {
 	}
 
 	async updateChildren() {
-		this.children = infoNodes(InfoNode.Loading);
+		this.children = this.infoNodes(InfoLabel.Loading);
 		this.redraw();
 
 		const name = this.resource.metadata.name;
@@ -39,13 +39,13 @@ export class HelmReleaseNode extends WorkloadNode {
 		const workloadChildren = await getHelmReleaseChildren(name, namespace);
 
 		if (!workloadChildren) {
-			this.children = infoNodes(InfoNode.FailedToLoad);
+			this.children = this.infoNodes(InfoLabel.FailedToLoad);
 			this.redraw();
 			return;
 		}
 
 		if (workloadChildren.length === 0) {
-			this.children = [new TreeNode('No Resources')];
+			this.children = [new TreeNode('No Resources', this.dataProvider)];
 			this.redraw();
 			return;
 		}

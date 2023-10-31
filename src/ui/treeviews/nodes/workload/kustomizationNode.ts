@@ -1,10 +1,9 @@
 import { fluxTools } from 'cli/flux/fluxTools';
 import { Kustomization } from 'types/flux/kustomization';
 import { SimpleDataProvider } from 'ui/treeviews/dataProviders/simpleDataProvider';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { InfoLabel } from 'utils/makeTreeviewInfoNode';
 import { shortenRevision } from 'utils/stringUtils';
 import { addFluxTreeToNode } from 'utils/treeNodeUtils';
-import { TreeNode } from '../treeNode';
 import { WorkloadNode } from './workloadNode';
 
 /**
@@ -30,7 +29,7 @@ export class KustomizationNode extends WorkloadNode {
 
 
 	async updateChildren() {
-		this.children = infoNodes(InfoNode.Loading);
+		this.children = this.infoNodes(InfoLabel.Loading);
 		this.redraw();
 
 		const name = this.resource.metadata.name;
@@ -38,13 +37,13 @@ export class KustomizationNode extends WorkloadNode {
 		const resourceTree = await fluxTools.tree(name, namespace);
 
 		if (!resourceTree) {
-			this.children = infoNodes(InfoNode.FailedToLoad);
+			this.children = this.infoNodes(InfoLabel.FailedToLoad);
 			this.redraw();
 			return;
 		}
 
 		if (!resourceTree.resources) {
-			this.children = [new TreeNode('No Resources')];
+			this.children = this.infoNodes(InfoLabel.NoResources);
 			this.redraw();
 			return;
 		}

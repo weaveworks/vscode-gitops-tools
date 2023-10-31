@@ -38,7 +38,7 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 			if(!ns) {
 				return;
 			}
-			namespaceNode = new NamespaceNode(ns);
+			namespaceNode = new NamespaceNode(ns, this);
 			this.nodes?.push(namespaceNode);
 			sortNodes(this.nodes);
 			setTimeout(() => {

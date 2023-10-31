@@ -7,7 +7,7 @@ export interface Pipeline extends KubernetesObject {
 }
 
 declare interface PipelineSpec {
-	environments: Environment[];
+	environments: PipelineEnvironment[];
 	appRef: LocalAppReference;
 	promotion?: Promotion;
 }
@@ -40,13 +40,13 @@ export enum GitProviderType {
 
 type NotificationPromotion = unknown;
 
-declare interface PipelineStatus {
+export declare interface PipelineStatus {
 	observedGeneration?: number;
 	conditions?: Condition[];
 	environments: { [key: string]: EnvironmentStatus | undefined;};
 }
 
-declare interface EnvironmentStatus {
+export declare interface EnvironmentStatus {
 	waitingApproval?: WaitingApproval;
 	targets?: TargetStatus[];
 }
@@ -55,29 +55,29 @@ declare interface WaitingApproval {
 	revision: string;
 }
 
-declare interface ClusterAppReference {
+export declare interface ClusterAppReference {
 	clusterRef?: CrossNamespaceClusterReference;
 }
 
-declare interface TargetStatus {
+export declare interface TargetStatus {
 	clusterAppRef: ClusterAppReference;
 	ready: boolean;
 	revision?: string;
 	error?: string;
 }
 
-export declare interface Environment {
+export declare interface PipelineEnvironment {
 	name: string;
-	targets: Target[];
+	targets: PipelineTarget[];
 	promotion?: Promotion;
 }
 
-export declare interface Target {
+export declare interface PipelineTarget {
 	namespace: string;
 	clusterRef?: CrossNamespaceClusterReference;
 }
 
-declare interface LocalAppReference {
+export declare interface LocalAppReference {
 	apiVersion: string;
 	kind: string;
 	name: string;

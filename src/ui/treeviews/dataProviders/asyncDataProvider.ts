@@ -1,7 +1,7 @@
 import { ApiState } from 'cli/kubernetes/apiResources';
 import { KubeConfigState, kubeConfigState } from 'cli/kubernetes/kubernetesConfig';
 import { ContextData, ViewData, currentContextData } from 'data/contextData';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { InfoLabel, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { NamespaceNode } from '../nodes/namespaceNode';
 import { TreeNode } from '../nodes/treeNode';
 import { clusterDataProvider } from '../treeViews';
@@ -30,11 +30,11 @@ export class AsyncDataProvider extends SimpleDataProvider {
 		const context = currentContextData();
 
 		if(context.apiState === ApiState.Loading) {
-			return infoNodes(InfoNode.LoadingApi);
+			return infoNodes(InfoLabel.LoadingApi, this);
 		}
 
 		if(context.apiState === ApiState.ClusterUnreachable) {
-			return infoNodes(InfoNode.ClusterUnreachable);
+			return infoNodes(InfoLabel.ClusterUnreachable, this);
 		}
 
 		// return empty array so that vscode welcome view with embedded link "Enable Gitops ..." is shown
@@ -43,11 +43,11 @@ export class AsyncDataProvider extends SimpleDataProvider {
 		}
 
 		if (this.currentViewData().loading || kubeConfigState === KubeConfigState.Loading) {
-			return infoNodes(InfoNode.Loading);
+			return infoNodes(InfoLabel.Loading, this);
 		}
 
 		if(this.currentViewData().nodes.length === 0) {
-			return infoNodes(InfoNode.NoResources);
+			return infoNodes(InfoLabel.NoResources, this);
 		}
 
 		return this.currentViewData().nodes;

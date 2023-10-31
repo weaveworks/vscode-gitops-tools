@@ -1,11 +1,11 @@
 import { Deployment } from 'types/kubernetes/kubernetesTypes';
 import { CommonIcon } from 'ui/icons';
-import { TreeNode } from '../treeNode';
+import { ClusterTreeNode } from './clusterTreeNode';
 
 /**
  * Defines deployment tree view item for display in GitOps Clusters tree view.
  */
-export class ClusterDeploymentNode extends TreeNode {
+export class ClusterDeploymentNode extends ClusterTreeNode {
 
 	/**
 	 * Cluster deployment kubernetes resource object

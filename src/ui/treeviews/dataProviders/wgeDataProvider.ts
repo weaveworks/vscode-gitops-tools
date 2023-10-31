@@ -65,7 +65,9 @@ export class WgeDataProvider extends AsyncDataProvider {
 			const node = new GitOpsSetNode(g);
 			gops.addChild(node);
 		}
+		// log(gops.children);
 		[gops.children] = await groupNodesByNamespace(gops.children, false, true);
+		// log(gops.children);
 
 		return nodes;
 	}

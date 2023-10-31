@@ -2,6 +2,7 @@ import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
 import { CommonIcon, commonIcon } from 'ui/icons';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
+import { InfoLabel, infoNode } from 'utils/makeTreeviewInfoNode';
 import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 
 /**
@@ -29,7 +30,7 @@ export class TreeNode extends TreeItem {
 		this._children.forEach(c => c.parent = this);
 	}
 
-	dataProvider?: SimpleDataProvider;
+	dataProvider: SimpleDataProvider;
 
 	/*
 	 * async load children for the node
@@ -42,7 +43,7 @@ export class TreeNode extends TreeItem {
 	 * Creates new tree node.
 	 * @param label Tree node label
 	 */
-	constructor(label: string, dataProvider?: SimpleDataProvider) {
+	constructor(label: string, dataProvider: SimpleDataProvider) {
 		super(label, TreeItemCollapsibleState.None);
 		this.dataProvider = dataProvider;
 	}
@@ -175,6 +176,15 @@ export class TreeNode extends TreeItem {
 
 	get viewStateKey(): string {
 		return '';
+	}
+
+
+	infoNodes(type: InfoLabel) {
+		return [this.infoNode(type)];
+	}
+
+	infoNode(type: InfoLabel) {
+		return infoNode(type, this.dataProvider);
 	}
 }
 

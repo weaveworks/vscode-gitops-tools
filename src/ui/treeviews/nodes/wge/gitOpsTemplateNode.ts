@@ -3,9 +3,9 @@ import { MarkdownString, TreeItemCollapsibleState } from 'vscode';
 import { GitOpsTemplate } from 'types/flux/gitOpsTemplate';
 import { NodeContext } from 'types/nodeContext';
 import { themeIcon } from 'ui/icons';
-import { wgeDateProvider } from 'ui/treeviews/treeViews';
+import { wgeDataProvider } from 'ui/treeviews/treeViews';
 import { createMarkdownTable } from 'utils/markdownUtils';
-import { TreeNode } from '../treeNode';
+import { KubernetesObjectNode } from '../kubernetesObjectNode';
 
 export enum TemplateType {
 	Cluster = 'cluster',
@@ -13,18 +13,21 @@ export enum TemplateType {
 	Pipeline = 'pipeline',
 }
 
-export class GitOpsTemplateNode extends TreeNode {
+export class GitOpsTemplateNode extends KubernetesObjectNode {
 	resource: GitOpsTemplate;
 
 	constructor(template: GitOpsTemplate) {
-		super(template.metadata.name, wgeDateProvider);
+		super(template, template.metadata.name, wgeDataProvider);
 
 		this.resource = template;
 
 		if(this.templateType === 'cluster') {
-			this.setIcon(themeIcon('server-environment'));
-		} else {
+			this.setIcon(themeIcon('server-environment', 'descriptionForeground'));
+		} else if (this.templateType === 'application') {
 			this.setIcon(themeIcon('preview', 'descriptionForeground'));
+		} else if (this.templateType === 'pipeline') {
+			this.setIcon(themeIcon('rocket', 'descriptionForeground'));
+
 		}
 		this.collapsibleState = TreeItemCollapsibleState.None;
 	}
@@ -34,7 +37,16 @@ export class GitOpsTemplateNode extends TreeNode {
 	}
 
 	get templateType(): TemplateType {
-		return this.resource.metadata.labels?.['weave.works/template-type'] === 'cluster' ? TemplateType.Cluster : TemplateType.Application;
+		switch(this.resource.metadata.labels?.['weave.works/template-type']){
+			case 'cluster':
+				return TemplateType.Cluster;
+			case 'application':
+				return TemplateType.Application;
+			case 'pipeline':
+				return TemplateType.Pipeline;
+			default:
+				return TemplateType.Application;
+		}
 	}
 
 	// @ts-ignore
@@ -48,7 +60,7 @@ export class GitOpsTemplateNode extends TreeNode {
 	}
 
 	get contexts() {
-		return this.templateType === TemplateType.Cluster ? [NodeContext.HasWgePortal] : [];
+		return [NodeContext.HasWgePortal];
 	}
 
 
@@ -56,9 +68,6 @@ export class GitOpsTemplateNode extends TreeNode {
 		const name = this.resource.metadata.name;
 		const namespace = this.resource.metadata.namespace || 'default';
 
-		if (this.templateType === TemplateType.Application) {
-			return '';
-		}
 
 		return `templates/create?name=${name}&namespace=${namespace}`;
 	}
