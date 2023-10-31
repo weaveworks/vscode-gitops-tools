@@ -331,7 +331,7 @@
 				"gitops.weaveGitopsEnterprise": {
 					"type": "boolean",
 					"default": false,
-					"description": "Enable WGE GitOpsTemplates feature"
+					"description": "Enable WGE features"
 				},
 				"gitops.kubectlRequestTimeout": {
 					"type": "string",

@@ -1,7 +1,7 @@
 import { getResource } from 'cli/kubernetes/kubectlGet';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { HelmRelease } from 'types/flux/helmRelease';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { ConfigMap, Kind } from 'types/kubernetes/kubernetesTypes';
 import { NamespaceNode } from 'ui/treeviews/nodes/namespaceNode';
 import { TreeNode } from 'ui/treeviews/nodes/treeNode';
 import { WgeContainerNode } from 'ui/treeviews/nodes/wge/wgeNodes';
@@ -18,7 +18,7 @@ export class ContextData {
 	// Current cluster supported kubernetes resource kinds.
 	public apiResources: Map<Kind, KindApiParams> | undefined;
 
-	public wgePortalHost?: string;
+	public portalUrl?: string;
 	public wgeClusterName?: string;
 
 	constructor(contextName: string) {
@@ -87,10 +87,20 @@ export class ViewData {
 
 export async function loadContextData() {
 	const context = currentContextData();
+	const config = await getResource('weave-gitops-interop', 'flux-system', Kind.ConfigMap) as ConfigMap;
 
+	if(config) {
+		context.portalUrl = config.data.portalUrl;
+		context.wgeClusterName = config.data.wgeClusterName;
+	}
+
+	context.portalUrl ??= await wgeHelmReleasePortalUrl();
+	context.wgeClusterName ??= kubeConfig.getCurrentCluster()?.name || kubeConfig.currentContext;
+}
+
+async function wgeHelmReleasePortalUrl() {
 	const wgeHelmRelease = await getResource<HelmRelease>('weave-gitops-enterprise', 'flux-system', Kind.HelmRelease);
 	if(!wgeHelmRelease) {
-		context.wgePortalHost = undefined;
 		return;
 	}
 
@@ -98,6 +108,7 @@ export async function loadContextData() {
 	const hosts = values?.ingress?.hosts;
 	const host = hosts?.[0];
 
-	context.wgePortalHost = host.host;
-	context.wgeClusterName = 'howard-moomboo-space';
+	if(host) {
+		return `https://${host.host}`;
+	}
 }

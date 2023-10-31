@@ -10,13 +10,13 @@ import { env, Uri } from 'vscode';
 type WgePortalNode = GitOpsTemplateNode | PipelineNode | CanaryNode | GitOpsSetNode | WgeContainerNode;
 
 export function openInWgePortal(node: WgePortalNode) {
-	const portalHost = currentContextData().wgePortalHost;
-	if(!portalHost) {
+	const portalUrl = currentContextData().portalUrl;
+	if(!portalUrl) {
 		return;
 	}
 
 	const query = node.wgePortalQuery;
-	const url = `https://${portalHost}/${query}`;
+	const url = `${portalUrl}/${query}`;
 
 	// const url = `https://${portalHost}/canary_details/details?clusterName=vcluster-howard-moomboo-stage%2Fhoward-moomboo-staging&name=${name}&namespace=${namespace}`;
 	env.openExternal(Uri.parse(url));
