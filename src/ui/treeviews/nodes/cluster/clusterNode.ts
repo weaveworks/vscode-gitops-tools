@@ -226,6 +226,8 @@ export class ClusterNode extends ClusterTreeNode {
 			this.isCurrent ? NodeContext.CurrentCluster : NodeContext.NotCurrentCluster,
 		);
 
+		cs.push(NodeContext.Cluster);
+
 		return cs;
 	}
 

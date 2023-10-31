@@ -79,8 +79,13 @@ export const enum CommandId {
 	ShowInstalledVersions = 'gitops.showInstalledVersions',
 	InstallFluxCli = 'gitops.installFluxCli',
 	ShowGlobalState = 'gitops.dev.showGlobalState',
-	CreateFromTemplate = 'gitops.views.createFromTemplate',
+
+	// wge
 	OpenInWgePortal = 'gitops.views.openInWgePortal',
+	CreateFromTemplate = 'gitops.views.createFromTemplate',
+	EnableAutoPromotion = 'gitops.autoPromotion',
+	DisableAutoPromotion = 'gitops.manualPromotion',
+	SetContextToGitopsCluster = 'gitops.views.setContextToGitopsCluster',
 }
 
 

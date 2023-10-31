@@ -18,7 +18,9 @@ export class GitOpsSetNode extends WgeNode {
 	}
 
 	get contexts() {
-		return [NodeContext.HasWgePortal];
+		const cs = this.resource.spec.suspend ? [NodeContext.Suspend] : [NodeContext.NotSuspend];
+		cs.push(NodeContext.HasWgePortal);
+		return cs;
 	}
 
 
@@ -29,4 +31,6 @@ export class GitOpsSetNode extends WgeNode {
 
 		return `gitopssets/object/details?clusterName=${clusterName}&name=${name}&namespace=${namespace}`;
 	}
+
+
 }

@@ -24,9 +24,11 @@ import { installFluxCli } from './installFluxCli';
 import { kubectlApplyKustomization, kubectlApplyPath, kubectlDeletePath } from './kubectlApply';
 import { openInWgePortal } from './openInWgePortal';
 import { openKubeconfig, openResource } from './openResource';
+import { setPipelineAutoPromotion, setPipelineManualPromotion } from './pipelineAutoPromotion';
 import { pullGitRepository } from './pullGitRepository';
 import { resume } from './resume';
 import { setClusterProvider } from './setClusterProvider';
+import { setContextToGitopsCluster } from './setContextToGops';
 import { setCurrentKubernetesContext } from './setCurrentKubernetesContext';
 import { showGlobalState } from './showGlobalState';
 import { showInstalledVersions } from './showInstalledVersions';
@@ -83,6 +85,8 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.KubectlApplyKustomization, kubectlApplyKustomization);
 
 
+
+
 	registerCommand(CommandId.ExpandAllSources, expandAllSources);
 	registerCommand(CommandId.ExpandAllWorkloads, expandAllWorkloads);
 
@@ -102,8 +106,13 @@ export function registerCommands(context: ExtensionContext) {
 	registerCommand(CommandId.ShowInstalledVersions, showInstalledVersions);
 	registerCommand(CommandId.InstallFluxCli, installFluxCli);
 	registerCommand(CommandId.ShowGlobalState, showGlobalState);
+
+	// wget
 	registerCommand(CommandId.CreateFromTemplate, createFromTemplate);
 	registerCommand(CommandId.OpenInWgePortal, openInWgePortal);
+	registerCommand(CommandId.EnableAutoPromotion, setPipelineAutoPromotion);
+	registerCommand(CommandId.DisableAutoPromotion, setPipelineManualPromotion);
+	registerCommand(CommandId.SetContextToGitopsCluster, setContextToGitopsCluster);
 }
 
 /**
