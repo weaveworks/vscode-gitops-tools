@@ -13,20 +13,21 @@ import { ClusterNode } from './nodes/cluster/clusterNode';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { ClusterInfo } from 'types/kubernetes/clusterProvider';
-import { TemplateDataProvider } from './dataProviders/templateDataProvider';
+import { WgeDataProvider } from './dataProviders/wgeDataProvider';
 import { NamespaceNode } from './nodes/namespaceNode';
+import { WgeContainerNode } from './nodes/wge/wgeNodes';
 
 export let clusterDataProvider = new ClusterDataProvider();
 export let sourceDataProvider = new SourceDataProvider();
 export let workloadDataProvider = new WorkloadDataProvider();
 export let documentationDataProvider = new DocumentationDataProvider();
-export let templateDateProvider = new TemplateDataProvider();
+export let wgeDataProvider = new WgeDataProvider();
 
 let clusterTreeView: TreeView<TreeItem>;
 export let sourceTreeView: TreeView<TreeItem>;
 let workloadTreeView: TreeView<TreeItem>;
 let documentationTreeView: TreeView<TreeItem>;
-let templateTreeView: TreeView<TreeItem>;
+let wgeTreeView: TreeView<TreeItem>;
 
 /**
  * Creates tree views for the GitOps sidebar.
@@ -48,14 +49,13 @@ export function createTreeViews() {
 		showCollapseAll: true,
 	});
 
-	listenCollapsableState();
-
-
-	// WGE templates
-	templateTreeView = window.createTreeView(TreeViewId.TemplatesView, {
-		treeDataProvider: templateDateProvider,
+	// WGE
+	wgeTreeView = window.createTreeView(TreeViewId.WgeView, {
+		treeDataProvider: wgeDataProvider,
 		showCollapseAll: true,
 	});
+
+	listenCollapsableState();
 
 	// create documentation links sidebar tree view
 	documentationTreeView = window.createTreeView(TreeViewId.DocumentationView, {
@@ -67,6 +67,30 @@ export function createTreeViews() {
 }
 
 function listenCollapsableState() {
+
+	// [workloadTreeView, sourceTreeView, wgeTreeView].forEach(treeview => {
+	// 	treeview.onDidCollapseElement(e => {
+	// 		if (e.element instanceof NamespaceNode) {
+	// 			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
+	// 			const provider = e.element.dataProvider;
+	// 			// top-level namespace nodes should get an icon
+	// 			const showIcons = provider.nodes.includes(e.element);
+	// 			e.element.updateLabel(showIcons);
+	// 			provider.redraw(e.element);
+	// 		}
+	// 	});
+
+	// 	treeview.onDidExpandElement(e => {
+	// 		if (e.element instanceof NamespaceNode) {
+	// 			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
+	// 			const provider = e.element.dataProvider;
+	// 			// top-level namespace nodes should get an icon
+	// 			const showIcons = provider.nodes.includes(e.element);
+	// 			e.element.updateLabel(showIcons);
+	// 			provider.redraw(e.element);
+	// 		}
+	// 	});
+	// });
 	sourceTreeView.onDidCollapseElement(e => {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
@@ -83,10 +107,10 @@ function listenCollapsableState() {
 		}
 	});
 
-
 	workloadTreeView.onDidCollapseElement(e => {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
+			// top-level namespace nodes should get an icon
 			const showIcons = workloadDataProvider.nodes.includes(e.element);
 			e.element.updateLabel(showIcons);
 			workloadDataProvider.redraw(e.element);
@@ -96,9 +120,31 @@ function listenCollapsableState() {
 	workloadTreeView.onDidExpandElement(e => {
 		if (e.element instanceof NamespaceNode) {
 			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
+			// top-level namespace nodes should get an icon
 			const showIcons = workloadDataProvider.nodes.includes(e.element);
 			e.element.updateLabel(showIcons);
 			workloadDataProvider.redraw(e.element);
+		}
+	});
+
+
+	wgeTreeView.onDidCollapseElement(e => {
+		if (e.element instanceof NamespaceNode) {
+			e.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
+			// top-level namespace nodes should get an icon
+			const showIcons = e.element.parent instanceof WgeContainerNode;
+			e.element.updateLabel(showIcons);
+			wgeDataProvider.redraw(e.element);
+		}
+	});
+
+	wgeTreeView.onDidExpandElement(e => {
+		if (e.element instanceof NamespaceNode) {
+			e.element.collapsibleState = TreeItemCollapsibleState.Expanded;
+			// top-level namespace nodes should get an icon
+			const showIcons = e.element.parent instanceof WgeContainerNode;
+			e.element.updateLabel(showIcons);
+			wgeDataProvider.redraw(e.element);
 		}
 	});
 }
@@ -129,8 +175,8 @@ export function reloadWorkloadsTreeView() {
 /**
  * Reloads workloads tree view for the selected cluster.
  */
-export function reloadTemplatesTreeView() {
-	templateDateProvider.reload();
+export function reloadWgeTreeView() {
+	wgeDataProvider.reload();
 }
 
 /**

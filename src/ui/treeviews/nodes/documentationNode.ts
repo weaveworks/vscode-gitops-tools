@@ -3,6 +3,7 @@ import { Uri } from 'vscode';
 import { CommandId } from 'types/extensionIds';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
 import { DocumentationLink } from '../documentationConfig';
+import { documentationDataProvider } from '../treeViews';
 import { TreeNode } from './treeNode';
 
 /**
@@ -18,7 +19,7 @@ export class DocumentationNode extends TreeNode {
 	newUserGuide?: boolean;
 
 	constructor(link: DocumentationLink, isParent = false) {
-		super(link.title);
+		super(link.title, documentationDataProvider);
 
 		this.title = link.title;
 		this.newUserGuide = link.newUserGuide;

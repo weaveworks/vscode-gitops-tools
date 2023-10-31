@@ -4,6 +4,7 @@ import * as kubernetes from 'vscode-kubernetes-tools-api';
 import * as shell from 'cli/shell/exec';
 import { output } from 'cli/shell/output';
 import { telemetry } from 'extension';
+import { KubernetesObject, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 
 /**
@@ -71,6 +72,19 @@ export async function invokeKubectlCommand(command: string, printOutput = true):
 	}
 
 	return kubectlShellResult;
+}
+
+export async function kubectlPatchNamespacedResource(resource: KubernetesObject, patch: string) {
+	const namespace = resource.metadata.namespace;
+	if(!namespace) {
+		return;
+	}
+
+	const name = resource.metadata.name;
+	const kind = qualifyToolkitKind(resource.kind);
+
+	const cmd = `kubectl patch ${kind} ${name} -n ${namespace} -p '${patch}' --type=merge`;
+	return shell.execWithOutput(cmd);
 }
 
 

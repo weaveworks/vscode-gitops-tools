@@ -1,5 +1,4 @@
 import { Bucket } from 'types/flux/bucket';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
 import { SourceNode } from './sourceNode';
 
 /**
@@ -10,8 +9,4 @@ export class BucketNode extends SourceNode {
 	 * Bucket kubernetes resource object
 	 */
 	resource!: Bucket;
-
-	get contexts() {
-		return [Kind.Bucket];
-	}
 }

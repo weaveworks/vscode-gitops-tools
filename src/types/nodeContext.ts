@@ -11,11 +11,15 @@ export const enum NodeContext {
 	ClusterGitOpsEnabled = 'clusterGitOpsEnabled',
 	ClusterGitOpsNotEnabled = 'clusterGitOpsNotEnabled',
 
-	// resource contexts
-	AzureFluxConfig = 'azureFluxConfig',
-	NotAzureFluxConfig = 'NotAzureFluxConfig',
 
 	// Generic context values
 	Suspend = 'suspend',
 	NotSuspend = 'notSuspend',
+
+	// WGE
+	HasWgePortal = 'hasWgePortal',
+
+	// Pipeline
+	ManualPromotion = 'manualPromotion',
+	AutoPromotion = 'autoPromotion',
 }

@@ -21,8 +21,8 @@ import { getCurrentClusterInfo, reloadSourcesTreeView, reloadWorkloadsTreeView }
  */
 export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepositoryNode | HelmRepositoryNode | BucketNode) {
 
-	const sourceName = sourceNode.resource.metadata?.name || '';
-	const sourceNamespace = sourceNode.resource.metadata?.namespace || '';
+	const sourceName = sourceNode.resource.metadata.name;
+	const sourceNamespace = sourceNode.resource.metadata.namespace || '';
 	const confirmButton = 'Delete';
 
 	const sourceType: FluxSource | 'unknown' = sourceNode.resource.kind === Kind.GitRepository ? 'source git' :

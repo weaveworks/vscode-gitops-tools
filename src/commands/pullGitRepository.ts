@@ -34,7 +34,7 @@ export async function pullGitRepository(sourceNode: GitRepositoryNode): Promise<
 		return;
 	}
 
-	const pickedFolderFsPath = path.join(pickedFolder[0].fsPath, sourceNode.resource.metadata?.name || 'gitRepository');
+	const pickedFolderFsPath = path.join(pickedFolder[0].fsPath, sourceNode.resource.metadata.name);
 
 	// precedence - commit > semver > tag > branch
 	const url = safesh.escape(sourceNode.resource.spec.url);

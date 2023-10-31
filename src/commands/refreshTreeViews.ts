@@ -1,5 +1,5 @@
 import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { reloadClustersTreeView, reloadSourcesTreeView, reloadTemplatesTreeView, reloadWorkloadsTreeView, sourceDataProvider, templateDateProvider, workloadDataProvider } from '../ui/treeviews/treeViews';
+import { reloadClustersTreeView, reloadSourcesTreeView, reloadWgeTreeView, reloadWorkloadsTreeView, sourceDataProvider, wgeDataProvider, workloadDataProvider } from '../ui/treeviews/treeViews';
 
 /**
  * Clicked button on the cluster tree view
@@ -27,11 +27,11 @@ export function refreshResourcesTreeViewsCommand() {
 export function refreshResourcesTreeViews() {
 	reloadSourcesTreeView();
 	reloadWorkloadsTreeView();
-	reloadTemplatesTreeView();
+	reloadWgeTreeView();
 }
 
 export function redrawResourcesTreeViews() {
 	sourceDataProvider.redraw();
 	workloadDataProvider.redraw();
-	templateDateProvider.redraw();
+	wgeDataProvider.redraw();
 }

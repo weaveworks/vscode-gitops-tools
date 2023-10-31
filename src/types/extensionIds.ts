@@ -9,7 +9,7 @@ export const enum TreeViewId {
 	ClustersView = 'gitops.views.clusters',
 	SourcesView = 'gitops.views.sources',
 	WorkloadsView = 'gitops.views.workloads',
-	TemplatesView = 'gitops.views.templates',
+	WgeView = 'gitops.views.wge',
 	DocumentationView = 'gitops.views.documentation',
 }
 
@@ -79,7 +79,13 @@ export const enum CommandId {
 	ShowInstalledVersions = 'gitops.showInstalledVersions',
 	InstallFluxCli = 'gitops.installFluxCli',
 	ShowGlobalState = 'gitops.dev.showGlobalState',
+
+	// wge
+	OpenInWgePortal = 'gitops.views.openInWgePortal',
 	CreateFromTemplate = 'gitops.views.createFromTemplate',
+	EnableAutoPromotion = 'gitops.autoPromotion',
+	DisableAutoPromotion = 'gitops.manualPromotion',
+	SetContextToGitopsCluster = 'gitops.views.setContextToGitopsCluster',
 }
 
 

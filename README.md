@@ -125,17 +125,37 @@ The GitOps Tools Extension depends on the [Kubernetes Tools](https://marketplace
 - Make sure you have [successfully authenticated](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli) on your `az` CLI and have access to the [correct subscription](https://docs.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az_account_set) for your AKS or ARC cluster.
 - The easiest way to get your AKS or Arc cluster visible by the GitOps and Kubernetes Extensions, is to use the `az` CLI to merge the kubeconfig for accessing your cluster onto the default `kubectl` config. Use `get-credentials` as shown in the [official CLI documentation](https://docs.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az_aks_get_credentials). In order to enable GitOps in a cluster you will likely need the `--admin` credentials.
 
-## Weave GitOps Enterprise (WGE) Templates
+## Weave GitOps Enterprise (WGE) Integration
 
-WGE users can access GitOpsTemplates directly from this extensions. Templates are provided by cluster administrators (Platform Teams) and can be used to quickly create cluster and configure applications with GitOps.
+WGE users can access GitOpsTemplates directly from this extensions. WGE integration adds another treeview that shows `GitOpsTemplate`, `Canary`, `Pipeline`, and `GitOpsSet` resources and adds new interactions to each type of resource. All WGE resources have a right-click action to open them in WGE portal.
 
-Templates are an opt-in feature that must be enabled in setting:
+GitOpsTemplates are provided by cluster administrators (Platform Teams) and can be used to quickly create cluster and configure applications with GitOps. Flagger Canaries status can be visualized and their progress tracked. Pipelines are listed with their targets and each `GitopsCluster` attached to a Pipeline can be set as the current selected cluster for quick navigation between clusters.
 
-![Enable GitOpsTemplates](docs/images/vscode-templates-config.png)
+WGE integration is an opt-in feature that must be enabled in setting:
 
-After that they can be seen in a new 'Templates' view. Right-click a template to use it:
+![Enable WGE Features](docs/images/config-enable-wge.png)
 
-![Use GitOpsTemplates](docs/images/vscode-templates-view.png)
+![Weave GitOps Treeview](docs/images/weave-gitops-treeview.png)
+
+![Create GitOps Template](docs/images/vscode-templates-view.png)
+
+### WGE Configuration
+
+For the integration to work, this extension needs a ConfigMap that provides WGE information and settings:
+
+`kubectl create configmap weave-gitops-interop --from-literal=portalUrl='https://WGE-CLUSTER-HOST' --from-literal=wgeClusterName='WGE-CLUSTER-NAME' -n flux-system``
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: weave-gitops-interop
+data:
+  portalUrl: https://mccp.howard.moomboo.space
+  wgeClusterName: howard-moomboo-space
+```
+
 
 
 

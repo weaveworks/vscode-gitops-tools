@@ -1,5 +1,5 @@
 import { redrawResourcesTreeViews, refreshResourcesTreeViews } from 'commands/refreshTreeViews';
-import { currentContextData } from 'data/contextData';
+import { currentContextData, loadContextData } from 'data/contextData';
 import { setVSCodeContext, telemetry } from 'extension';
 import { ContextId } from 'types/extensionIds';
 import { Kind } from 'types/kubernetes/kubernetesTypes';
@@ -102,5 +102,6 @@ export async function loadAvailableResourceKinds() {
 	// give proxy init callbacks time to fire
 	setTimeout(() => {
 		refreshResourcesTreeViews();
+		loadContextData();
 	}, 100);
 }

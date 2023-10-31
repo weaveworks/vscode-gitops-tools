@@ -1,6 +1,6 @@
 import { FluxWorkloadObject } from 'types/flux/object';
-import { shortenRevision } from 'utils/stringUtils';
-import { ToolkitNode } from '../source/toolkitNode';
+import { NodeContext } from 'types/nodeContext';
+import { ToolkitNode } from '../toolkitNode';
 
 /**
  * Base class for all Workload tree view items.
@@ -8,7 +8,7 @@ import { ToolkitNode } from '../source/toolkitNode';
 export class WorkloadNode extends ToolkitNode {
 	resource!: FluxWorkloadObject;
 
-	get revision() {
-		return shortenRevision(this.resource.status.lastAppliedRevision);
+	get contexts() {
+		return this.resource.spec.suspend ? [NodeContext.Suspend] : [NodeContext.NotSuspend];
 	}
 }

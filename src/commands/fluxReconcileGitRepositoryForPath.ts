@@ -14,7 +14,7 @@ export async function fluxReconcileRepositoryForPath(fileExplorerUri?: Uri) {
 	const gitInfo = await getFolderGitInfo(fileExplorerUri.fsPath);
 	const gr = await getGitRepositoryforGitInfo(gitInfo);
 
-	if(!gr?.metadata?.name || !gr.metadata?.namespace) {
+	if(!gr?.metadata.name || !gr.metadata.namespace) {
 		window.showWarningMessage(`No GitRepository with url '${gitInfo?.url}'`);
 		return;
 	}

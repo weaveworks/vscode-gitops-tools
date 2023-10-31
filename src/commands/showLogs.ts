@@ -10,11 +10,11 @@ import { getResourceUri } from 'utils/getResourceUri';
  */
 export async function showLogs(deploymentNode: ClusterDeploymentNode): Promise<void> {
 
-	const pods = await getPodsOfADeployment(deploymentNode.resource.metadata?.name, deploymentNode.resource.metadata?.namespace);
+	const pods = await getPodsOfADeployment(deploymentNode.resource.metadata.name, deploymentNode.resource.metadata.namespace);
 	const pod = pods[0];
 
 	if (!pod) {
-		window.showErrorMessage(`No pods were found from ${deploymentNode.resource.metadata?.name} deployment.`);
+		window.showErrorMessage(`No pods were found from ${deploymentNode.resource.metadata.name} deployment.`);
 		return;
 	}
 
