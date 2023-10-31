@@ -31,7 +31,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		for (const t of sortByMetadataName(templates)) {
 			const node = new GitOpsTemplateNode(t);
-			ts.children.push(node);
+			ts.addChild(node);
 		}
 
 		// CANARIES
@@ -40,7 +40,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		for (const c of sortByMetadataName(canaries)) {
 			const node = new CanaryNode(c);
-			cs.children.push(node);
+			cs.addChild(node);
 			node.updateChildren();
 		}
 		[cs.children] = await groupNodesByNamespace(cs.children, false, true);
@@ -51,7 +51,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		for (const p of sortByMetadataName(pipelines)) {
 			const node = new PipelineNode(p);
-			ps.children.push(node);
+			ps.addChild(node);
 			node.updateChildren();
 		}
 		[ps.children] = await groupNodesByNamespace(ps.children, false, true);
@@ -63,7 +63,7 @@ export class WgeDataProvider extends AsyncDataProvider {
 
 		for (const g of sortByMetadataName(gitopssets)) {
 			const node = new GitOpsSetNode(g);
-			gops.children.push(node);
+			gops.addChild(node);
 		}
 		[gops.children] = await groupNodesByNamespace(gops.children, false, true);
 

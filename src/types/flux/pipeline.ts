@@ -72,7 +72,7 @@ export declare interface Environment {
 	promotion?: Promotion;
 }
 
-declare interface Target {
+export declare interface Target {
 	namespace: string;
 	clusterRef?: CrossNamespaceClusterReference;
 }
@@ -83,7 +83,7 @@ declare interface LocalAppReference {
 	name: string;
 }
 
-declare interface CrossNamespaceClusterReference {
+export declare interface CrossNamespaceClusterReference {
 	apiVersion?: string;
 	kind: string;
 	name: string;

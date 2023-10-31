@@ -33,15 +33,10 @@ const nodeConstructors  = {
 	'Node': AnyResourceNode,
 	'Pod': AnyResourceNode,
 	'ConfigMap': AnyResourceNode,
+	'GitOpsCluster': AnyResourceNode,
 };
 
-export function makeTreeNode(object: KubernetesObject, dataProvider: SimpleDataProvider): TreeNode | undefined {
-	if(!object.kind) {
-		return;
-	}
-
+export function makeTreeNode(object: KubernetesObject, dataProvider: SimpleDataProvider): TreeNode {
 	const constructor = nodeConstructors[object.kind as Kind];
-	if(constructor) {
-		return new constructor(object as any, dataProvider);
-	}
+	return new constructor(object as any, dataProvider);
 }

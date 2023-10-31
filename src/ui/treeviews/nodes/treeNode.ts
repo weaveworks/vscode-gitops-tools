@@ -18,8 +18,16 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Reference to all the child nodes.
 	 */
-	children: TreeNode[] = [];
+	_children: TreeNode[] = [];
 
+	get children(): TreeNode[] {
+		return this.children;
+	}
+
+	set children(cs: TreeNode[]) {
+		this._children = cs;
+		this._children.forEach(c => c.parent = this);
+	}
 
 	dataProvider?: SimpleDataProvider;
 

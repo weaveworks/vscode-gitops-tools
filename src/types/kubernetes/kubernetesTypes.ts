@@ -58,6 +58,7 @@ export const enum Kind {
 	Canary = 'Canary',
 	Pipeline = 'Pipeline',
 	GitOpsSet = 'GitOpsSet',
+	GitOpsCluster = 'GitOpsCluster',
 
 	Namespace = 'Namespace',
 	Deployment = 'Deployment',
@@ -80,6 +81,7 @@ const fullKinds: Record<string, string> = {
 	Canary: 'Canaries.flagger.app',
 	Pipeline: 'Pipelines.pipelines.weave.works',
 	GitOpsSet: 'GitOpsSets.templates.weave.works',
+	GitOpsCluster: 'GitOpsClusters.gitops.weave.works',
 };
 
 export function qualifyToolkitKind(kind: string): string {

@@ -69,14 +69,13 @@ export class PipelineNode extends WgeNode {
 	async createEnvNodes(): Promise<TreeNode[]> {
 		const envNodes = [];
 		for(const env of this.resource.spec.environments) {
-			const envNode = new PipelineEnvironmentNode(env);
-			this.children.push(envNode);
+			const envNode = new PipelineEnvironmentNode(env, this.resource);
+			envNode.updateChildren();
 			envNodes.push(envNode);
 		}
 
 		return envNodes;
 	}
-
 
 
 	async createPromotionNodes() {
