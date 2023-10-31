@@ -18,7 +18,7 @@ export class PipelineEnvironmentNode extends TreeNode {
 		this.environment = environment;
 		this.pipepine = pipeline;
 
-		this.description = environment.targets.map(t => t.namespace).join(' ');
+		this.description = 'Environment';
 	}
 
 	async updateChildren() {
@@ -29,6 +29,7 @@ export class PipelineEnvironmentNode extends TreeNode {
 			targetNode.updateChildren();
 			this.addChild(targetNode);
 		}
+		this.redraw();
 	}
 
 	async getTargetCluster(target: Target): Promise<GitOpsCluster | undefined> {
@@ -61,7 +62,8 @@ export class PipelineTargetNode extends TreeNode {
 
 	async updateChildren() {
 		if(this.targetCluster) {
-			this.addChild(makeTreeNode(this.targetCluster, wgeDateProvider));
+			const gopsClusterNode = makeTreeNode(this.targetCluster, wgeDateProvider);
+			this.addChild(gopsClusterNode);
 
 			const crossClusterNsNode = new TreeNode(this.target.namespace, wgeDateProvider);
 			crossClusterNsNode.description = `Namespace in ${this.targetCluster.metadata.name}`;
@@ -73,6 +75,8 @@ export class PipelineTargetNode extends TreeNode {
 				this.addChild(makeTreeNode(localNamespace, wgeDateProvider));
 			}
 		}
+
+		this.redraw();
 	}
 
 

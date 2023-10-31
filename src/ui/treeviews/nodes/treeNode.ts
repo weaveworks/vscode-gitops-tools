@@ -18,10 +18,10 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Reference to all the child nodes.
 	 */
-	_children: TreeNode[] = [];
+	private _children: TreeNode[] = [];
 
 	get children(): TreeNode[] {
-		return this.children;
+		return this._children;
 	}
 
 	set children(cs: TreeNode[]) {

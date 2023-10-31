@@ -264,6 +264,11 @@
 				"command": "gitops.views.openInWgePortal",
 				"title": "Open in Weave Gitops Enterprise...",
 				"category": "GitOps"
+			},
+			{
+				"command": "gitops.views.setContextToGitopsCluster",
+				"title": "Set as Current Context",
+				"category": "GitOps"
 			}
 		],
 		"viewsContainers": {
@@ -505,6 +510,11 @@
 					"command": "gitops.views.openInWgePortal",
 					"group": "1",
 					"when": "view == gitops.views.wge && viewItem =~ /hasWgePortal;/"
+				},
+				{
+					"command": "gitops.views.setContextToGitopsCluster",
+					"group": "1",
+					"when": "view == gitops.views.wge && viewItem =~ /GitopsCluster;/"
 				}
 			],
 			"gitops.explorer": [
@@ -624,6 +634,10 @@
 				{
 					"command": "gitops.dev.showGlobalState",
 					"when": "gitops:isDev"
+				},
+				{
+					"command": "gitops.views.setContextToGitopsCluster",
+					"when": "never"
 				}
 			]
 		}

@@ -58,7 +58,7 @@ export const enum Kind {
 	Canary = 'Canary',
 	Pipeline = 'Pipeline',
 	GitOpsSet = 'GitOpsSet',
-	GitOpsCluster = 'GitOpsCluster',
+	GitopsCluster = 'GitopsCluster',
 
 	Namespace = 'Namespace',
 	Deployment = 'Deployment',
