@@ -131,7 +131,7 @@ WGE users can access GitOpsTemplates directly from this extensions. WGE integrat
 
 GitOpsTemplates are provided by cluster administrators (Platform Teams) and can be used to quickly create cluster and configure applications with GitOps. Flagger Canaries status can be visualized and their progress tracked. Pipelines are listed with their targets and each `GitopsCluster` attached to a Pipeline can be set as the current selected cluster for quick navigation between clusters.
 
-WGE integration is an opt-in feature that must be enabled in setting:
+WGE integration is an opt-in feature that must be enabled in settings:
 
 ![Enable WGE Features](docs/images/config-enable-wge.png)
 
