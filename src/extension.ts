@@ -17,7 +17,7 @@ import { statusBar } from './ui/statusBar';
 import { clusterDataProvider, createTreeViews, sourceDataProvider, workloadDataProvider } from './ui/treeviews/treeViews';
 
 /** Disable interactive modal dialogs, useful for testing */
-export let disableConfirmations = false;
+export let skipConfirmations = false;
 export let experimentalFlag = false;
 
 /*
@@ -61,7 +61,7 @@ export async function activate(context: ExtensionContext) {
 	// set vscode context: developing extension. test is also dev
 	setVSCodeContext(ContextId.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
 	if(context.extensionMode === ExtensionMode.Test) {
-		disableConfirmations = true;
+		skipConfirmations = true;
 	}
 
 
