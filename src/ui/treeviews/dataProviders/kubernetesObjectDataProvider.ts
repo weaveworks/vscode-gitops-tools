@@ -19,26 +19,26 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 		if(!nsName) {
 			return;
 		}
-		return this.namespaceNodeTreeItems().find(node => node.resource?.metadata?.name === nsName);
+		return this.namespaceNodeTreeItems().find(node => node.resource.metadata.name === nsName);
 	}
 
 	private findParentNamespaceNode(object: KubernetesObject): NamespaceNode | undefined {
-		const nsName = object.metadata?.namespace;
+		const nsName = object.metadata.namespace;
 		return this.findNamespaceNode(nsName);
 	}
 
 	public async add(object: KubernetesObject) {
-		if(!object.metadata?.namespace) {
+		if(!object.metadata.namespace) {
 			return;
 		}
 
 		let namespaceNode = this.findParentNamespaceNode(object);
 		if(!namespaceNode) {
-			const ns = await getNamespace(object.metadata?.namespace);
+			const ns = await getNamespace(object.metadata.namespace);
 			if(!ns) {
 				return;
 			}
-			namespaceNode = new NamespaceNode(ns);
+			namespaceNode = new NamespaceNode(ns, this);
 			this.nodes?.push(namespaceNode);
 			sortNodes(this.nodes);
 			setTimeout(() => {
@@ -56,7 +56,7 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 			return;
 		}
 
-		const resourceNode = makeTreeNode(object);
+		const resourceNode = makeTreeNode(object, this);
 		if(!resourceNode) {
 			return;
 		}
@@ -123,5 +123,12 @@ export abstract class KubernetesObjectDataProvider extends AsyncDataProvider {
 		[viewData.nodes] = await groupNodesByNamespace(resourceNodes, true, true);
 		this.redraw();
 	}
+
+
+	// async updateNodeChildren(node: TreeNode) {
+	// 	if(node instanceof Canary) {
+	// 		await node.updateChildren();
+	// 	}
+	// }
 
 }

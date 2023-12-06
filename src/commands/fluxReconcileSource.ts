@@ -24,5 +24,5 @@ export async function fluxReconcileSourceCommand(source: GitRepositoryNode | OCI
 		return;
 	}
 
-	await fluxTools.reconcile(sourceType, source.resource.metadata?.name || '', source.resource.metadata?.namespace || '');
+	await fluxTools.reconcile(sourceType, source.resource.metadata.name, source.resource.metadata.namespace || '');
 }

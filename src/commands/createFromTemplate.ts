@@ -1,4 +1,4 @@
-import { GitOpsTemplateNode } from 'ui/treeviews/nodes/gitOpsTemplateNode';
+import { GitOpsTemplateNode } from 'ui/treeviews/nodes/wge/gitOpsTemplateNode';
 import { openCreateFromTemplatePanel } from 'ui/webviews/createFromTemplate/openWebview';
 
 export async function createFromTemplate(templateNode?: GitOpsTemplateNode) {

@@ -22,7 +22,7 @@ export async function fluxReconcileWorkload(workload: KustomizationNode | HelmRe
 		return;
 	}
 
-	await fluxTools.reconcile(workloadType, workload.resource.metadata?.name || '', workload.resource.metadata?.namespace || '', withSource);
+	await fluxTools.reconcile(workloadType, workload.resource.metadata.name, workload.resource.metadata.namespace || '', withSource);
 }
 
 

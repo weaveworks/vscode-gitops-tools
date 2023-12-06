@@ -1,5 +1,5 @@
 import { KubeConfigState, kubeConfigState } from 'cli/kubernetes/kubernetesConfig';
-import { InfoNode, infoNodes } from 'utils/makeTreeviewInfoNode';
+import { InfoLabel, infoNodes } from 'utils/makeTreeviewInfoNode';
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { TreeNode } from '../nodes/treeNode';
 
@@ -10,10 +10,15 @@ import { TreeNode } from '../nodes/treeNode';
 export class SimpleDataProvider implements TreeDataProvider<TreeItem> {
 	private _nodes: TreeNode[] = [];
 
+	guid = '';
+
+	constructor() {
+		this.guid = Math.random().toString(36);
+	}
+
 	get nodes() {
 		return this._nodes;
 	}
-
 
 	protected loading = false;
 
@@ -61,10 +66,10 @@ export class SimpleDataProvider implements TreeDataProvider<TreeItem> {
 	// give nodes for vscode to render based on async data loading state
 	protected async getRootNodes(): Promise<TreeNode[]> {
 		if (this.loading || kubeConfigState === KubeConfigState.Loading) {
-			return infoNodes(InfoNode.Loading);
+			return infoNodes(InfoLabel.Loading, this);
 		}
 		if(this.nodes.length === 0) {
-			return infoNodes(InfoNode.NoResources);
+			return infoNodes(InfoLabel.NoResources, this);
 		}
 
 		return this.nodes;

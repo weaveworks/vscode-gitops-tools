@@ -1,7 +1,9 @@
-import { FluxObject } from 'types/flux/object';
-import { Condition } from 'types/kubernetes/kubernetesTypes';
+import { ToolkitObject } from 'types/flux/object';
+import { Condition, Kind } from 'types/kubernetes/kubernetesTypes';
+import { CommonIcon } from 'ui/icons';
 import { createMarkdownError, createMarkdownHr, createMarkdownTable } from 'utils/markdownUtils';
-import { TreeNode, TreeNodeIcon } from '../treeNode';
+import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
+import { KubernetesObjectNode } from './kubernetesObjectNode';
 
 export enum ReconcileState {
 	Ready,
@@ -9,14 +11,13 @@ export enum ReconcileState {
 	Progressing,
 }
 
-export class ToolkitNode extends TreeNode {
-	resource: FluxObject;
+export class ToolkitNode extends KubernetesObjectNode {
+	resource!: ToolkitObject;
 	reconcileState: ReconcileState = ReconcileState.Progressing;
 
-	constructor(resource: FluxObject) {
-		super(`${resource.kind}: ${resource.metadata?.name || 'unknown'}`);
+	constructor(resource: ToolkitObject, dataProvider: SimpleDataProvider) {
+		super(resource, `${resource.kind}: ${resource.metadata.name}`, dataProvider);
 
-		this.resource = resource;
 		this.updateStatus();
 	}
 
@@ -28,13 +29,13 @@ export class ToolkitNode extends TreeNode {
 		const condition = this.readyOrFirstCondition;
 		if (condition?.status === 'True') {
 			this.reconcileState = ReconcileState.Ready;
-			this.setIcon(TreeNodeIcon.Success);
-		} else if (condition?.reason === 'Progressing') {
+			this.setCommonIcon(CommonIcon.Success);
+		} else if (condition?.reason === 'Progressing' || condition?.reason === 'Promoting' || condition?.reason === 'Finalising') {
 			this.reconcileState = ReconcileState.Progressing;
-			this.setIcon(TreeNodeIcon.Progressing);
+			this.setCommonIcon(CommonIcon.Progressing);
 		} else {
 			this.reconcileState = ReconcileState.Failed;
-			this.setIcon(TreeNodeIcon.Error);
+			this.setCommonIcon(CommonIcon.Error);
 		}
 	}
 
@@ -74,19 +75,29 @@ export class ToolkitNode extends TreeNode {
 
 	// @ts-ignore
 	get description() {
-		const isSuspendIcon = this.resource.spec?.suspend ? '⏸ ' : '';
 		let revisionOrError = '';
 
 		if (!this.resourceIsReady) {
 			revisionOrError = `${this.readyOrFirstCondition?.reason || ''}`;
+			if(this.resource.kind === Kind.Canary) {
+				revisionOrError = `${revisionOrError} ${this.resource.status?.canaryWeight}%`;
+			}
 		} else {
 			revisionOrError = this.revision;
 		}
 
-		return `${isSuspendIcon}${revisionOrError}`;
+		return `${this.isSuspendIcon}${revisionOrError}`;
 	}
 
 	get revision(): string {
 		return 'unknown';
 	}
+
+	get isSuspendIcon(): string {
+		if(this.resource.kind !== Kind.Pipeline) {
+			return this.resource.spec?.suspend ? '⏸ ' : '';
+		}
+		return '';
+	}
+
 }
