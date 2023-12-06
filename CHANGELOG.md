@@ -4,6 +4,11 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.26.0
+
+* Add 'run flux install ?' confirmation dialog (#498)
+* Support WGE features with an enablement in Extension Settings (#496)
+
 # v0.25.4
 
 * Fix spawning and not killing `kubectl proxy` processes (#491)
