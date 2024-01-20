@@ -4,6 +4,69 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.27.0
+
+* Roll back to pre-0.25.x codebase (#504)
+
+# v0.26.0
+
+* Add 'run flux install ?' confirmation dialog (#498)
+* Support WGE features with an enablement in Extension Settings (#496)
+
+# v0.25.4
+
+* Fix spawning and not killing `kubectl proxy` processes (#491)
+* Recommend settings for log viewer (#487)
+
+# v0.25.3
+
+* Merge pull request for weaveworks/rebase-0.25-edge (#484)
+* Upgrade @vscode/extension-telemetry
+* Bump vscode engine version
+* Pin extension telemetry @ 0.6.x until we can resolve #477
+* Added kubectl apply right-click option and keyboard shortcut for open file
+* Remove extraneous console.log in case of performance impact
+* Refactoring toolkitNode
+* Added loading spinners to "Loading..."
+* No icons for nested namespaces
+* Update node labels after refresh
+
+# v0.25.2
+
+* Live update for all flux types and UI fixes (#479)
+
+# v0.25.1
+
+* README for release (#473)
+* Add a hard timeout for all processes we spawn (#460)
+* Add timeout configuration to GitOps Tools preferences
+* Allow users to disable running `flux check` in GitOps Tools preferences
+* Now works with Loft.sh (resolving HelmRelease APIService name conflict)
+* Refactor data providers to not break on context switches
+* Optimizing k8s proxy connections
+* Remove debug console.log
+* Expand all for workloads, sources
+* Namespace UI improvements
+* Update github actions workflows, Kind, Kubernetes version for testing
+* Responsive UI tested with oidc-login
+* Kubectl api-resources controls async resource treeview loading
+* Edge rebase @ 0.25.1-edge.7 (#463)
+
+# v0.25.0
+
+* Major enhancement: fork and exec/kubectl CLI is mostly removed from the main process flow.
+  * Reactive ui with client-node and kubectl proxy (#446)
+  * Closes #422 - Fork and exec is dangerous and slow
+* Refactor: treeview Sources/Workloads organization and code has been majorly reorganized.
+* Update dependencies (#449)
+* Reconcile with Source (#444)
+* Clean up Kubernetes list types (#443)
+* Improve code layout and use baseUrl for imports (#442)
+
+# v0.24.3
+
+* Fix webview dispose bug and createSecret bug (#439)
+
 # v0.24.2
 
 * Fix YouTube link in README (#436)
