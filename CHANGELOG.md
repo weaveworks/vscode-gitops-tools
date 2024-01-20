@@ -7,6 +7,9 @@ The current release notes are always published on the Releases page, by automati
 # v0.27.0
 
 * Roll back to pre-0.25.x codebase (#504, #505)
+* See: [The extension is broken since December][#503] ([#503][])
+
+[#503]: https://github.com/weaveworks/vscode-gitops-tools/issues/503
 
 # v0.26.0
 
