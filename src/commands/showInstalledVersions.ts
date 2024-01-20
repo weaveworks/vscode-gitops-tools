@@ -1,9 +1,8 @@
 import os from 'os';
 import { env, extensions, version, window } from 'vscode';
-
-import { getAzureVersion, getFluxVersion, getGitVersion, getKubectlVersion } from 'cli/checkVersions';
-import { failed } from 'types/errorable';
-import { GitOpsExtensionConstants } from 'types/extensionIds';
+import { failed } from '../errorable';
+import { GitOpsExtensionConstants } from '../extension';
+import { getAzureVersion, getFluxVersion, getGitVersion, getKubectlVersion } from '../install';
 
 /**
  * Show all installed cli versions.
