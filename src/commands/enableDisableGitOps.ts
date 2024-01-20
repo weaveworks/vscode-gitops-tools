@@ -1,14 +1,13 @@
 import { window } from 'vscode';
-
-import { azureTools, isAzureProvider } from 'cli/azure/azureTools';
-import { fluxTools } from 'cli/flux/fluxTools';
-import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
-import { skipConfirmations, telemetry } from 'extension';
-import { ClusterProvider } from 'types/kubernetes/clusterProvider';
-import { TelemetryEvent } from 'types/telemetryEventNames';
-import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
+import { azureTools, isAzureProvider } from '../azure/azureTools';
+import { failed } from '../errorable';
+import { telemetry, disableConfirmations } from '../extension';
+import { fluxTools } from '../flux/fluxTools';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { ClusterProvider } from '../kubernetes/types/kubernetesTypes';
+import { TelemetryEventNames } from '../telemetry';
+import { ClusterContextNode } from '../views/nodes/clusterContextNode';
+import { getCurrentClusterInfo, refreshAllTreeViews } from '../views/treeViews';
 
 
 
@@ -17,14 +16,23 @@ import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
  * @param clusterNode target cluster tree view item
  * @param enableGitOps Specifies if function should install or uninstall
  */
-async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableGitOps: boolean) {
-	let context = clusterNode?.context;
-	let cluster = clusterNode?.cluster;
+async function enableDisableGitOps(clusterNode: ClusterContextNode | undefined, enableGitOps: boolean) {
 
-	const contextName = context?.name || kubeConfig.getCurrentContext();
-	const clusterName = cluster?.name || kubeConfig.getCurrentCluster()?.name;
+	let contextName = clusterNode?.contextName || '';
+	let clusterName = clusterNode?.clusterName || '';
 
-	const clusterProvider = await detectClusterProvider(contextName);
+	if (!clusterNode) {
+		// was executed from the welcome view - get current context
+		const currentClusterInfo = await getCurrentClusterInfo();
+		if (failed(currentClusterInfo)) {
+		  return;
+		}
+
+		contextName = currentClusterInfo.result.contextName;
+		clusterName = currentClusterInfo.result.clusterName;
+	}
+
+	const clusterProvider = await kubernetesTools.detectClusterProvider(contextName);
 
 	if (clusterProvider === ClusterProvider.Unknown) {
 		window.showErrorMessage('Cluster provider not detected yet.');
@@ -34,30 +42,21 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
 		return;
 	}
 
-	if(!skipConfirmations) {
-		if(!enableGitOps) {
-			const confirm = await window.showWarningMessage(`Do you want to disable GitOps (run \`flux uninstall\`) on the "${clusterName}" cluster?`, {
-				modal: true,
-			}, 'Disable');
-			if (confirm !== 'Disable') {
-				return;
-			}
-		} else {
-			const confirm = await window.showInformationMessage(`Do you want to enable GitOps (run \`flux install\`) on the "${clusterName}" cluster?`, {
-				modal: true,
-			}, 'Enable');
-			if (confirm !== 'Enable') {
-				return;
-			}
+	if(!disableConfirmations && !enableGitOps ) {
+		const confirm = await window.showWarningMessage(`Do you want to disable GitOps on the "${clusterName}" cluster?`, {
+			modal: true,
+		}, 'Disable');
+		if (confirm !== 'Disable') {
+			return;
 		}
 	}
 
 	if (enableGitOps) {
-		telemetry.send(TelemetryEvent.EnableGitOps, {
+		telemetry.send(TelemetryEventNames.EnableGitOps, {
 			clusterProvider,
 		});
 	} else {
-		telemetry.send(TelemetryEvent.DisableGitOps, {
+		telemetry.send(TelemetryEventNames.DisableGitOps, {
 			clusterProvider,
 		});
 	}
@@ -78,14 +77,14 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
 	}
 
 	// Refresh now that flux is installed or uninstalled
-	refreshAllTreeViewsCommand();
+	refreshAllTreeViews();
 }
 
 /**
  * Install flux to the passed or current cluster (if first argument is undefined)
  * @param clusterNode target cluster tree node
  */
-export async function fluxEnableGitOps(clusterNode: ClusterNode | undefined) {
+export async function fluxEnableGitOps(clusterNode: ClusterContextNode | undefined) {
 	return await enableDisableGitOps(clusterNode, true);
 }
 
@@ -93,6 +92,6 @@ export async function fluxEnableGitOps(clusterNode: ClusterNode | undefined) {
  * Uninstall flux from the passed or current cluster (if first argument is undefined)
  * @param clusterNode target cluster tree node
  */
-export async function fluxDisableGitOps(clusterNode: ClusterNode | undefined) {
+export async function fluxDisableGitOps(clusterNode: ClusterContextNode | undefined) {
 	return await enableDisableGitOps(clusterNode, false);
 }

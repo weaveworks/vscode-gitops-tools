@@ -1,4 +1,4 @@
-import * as shell from 'cli/shell/exec';
+import { shell } from '../shell';
 
 /**
  * Runs `flux check --pre` command in the output view.

@@ -1,5 +1,9 @@
 import * as path from 'path';
-import { runTests } from '@vscode/test-electron';
+import which from 'which';
+import * as shelljs from 'shelljs';
+
+
+import { runTests, downloadAndUnzipVSCode, resolveCliArgsFromVSCodeExecutablePath } from '@vscode/test-electron';
 
 async function main() {
 	try {

@@ -2,20 +2,19 @@
 	"name": "vscode-gitops-tools",
 	"displayName": "GitOps Tools for Flux",
 	"description": "GitOps automation tools for continuous delivery of Kubernetes and Cloud Native applications",
-	"version": "0.26.0",
+	"version": "0.24.3",
 	"author": "Kingdon Barrett <kingdon@weave.works>",
 	"contributors": [
 		"Kingdon Barrett <kingdon@weave.works>",
 		"Juozas Gaigalas <juozasgaigalas@gmail.com>",
 		"Alexander <usernamehw@gmail.com>",
 		"Taras Novak <taras.novak@randomfractals.com>",
-		"Leonardo Murillo <leonardo@weave.works>",
-		"Seth Falco <seth@falco.fun>"
+		"Leonardo Murillo <leonardo@weave.works>"
 	],
 	"publisher": "weaveworks",
 	"icon": "resources/icons/gitops-logo.png",
 	"engines": {
-		"vscode": "^1.82.0",
+		"vscode": "^1.63.0",
 		"npm": ">=7.0.0"
 	},
 	"categories": [
@@ -99,16 +98,6 @@
 				"category": "GitOps"
 			},
 			{
-				"command": "gitops.manualPromotion",
-				"title": "Disable Automatic Promotion",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.autoPromotion",
-				"title": "Enable Automatic Promotion",
-				"category": "GitOps"
-			},
-			{
 				"command": "gitops.flux.checkPrerequisites",
 				"title": "Flux Check Prerequisites",
 				"category": "GitOps"
@@ -131,11 +120,6 @@
 			{
 				"command": "gitops.flux.reconcileRepository",
 				"title": "Reconcile GitRepository for Path",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.flux.reconcileWorkloadWithSource",
-				"title": "Reconcile with Source",
 				"category": "GitOps"
 			},
 			{
@@ -167,28 +151,14 @@
 			},
 			{
 				"command": "gitops.views.createGitRepository",
-				"title": "Create Source from Path",
+				"title": "Create GitRepository from Path",
 				"category": "GitOps"
 			},
 			{
 				"command": "gitops.createKustomization",
 				"title": "Create Kustomization from Path",
 				"icon": "$(add)",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.kubectlApplyPath",
-				"title": "Apply (kubectl apply -f)",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.kubectlDeletePath",
-				"title": "Delete (kubectl delete -f)",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.kubectlApplyKustomization",
-				"title": "Apply Kustomization Directory (kubectl apply -k)",
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled",
 				"category": "GitOps"
 			},
 			{
@@ -196,28 +166,14 @@
 				"title": "Add Source",
 				"category": "GitOps",
 				"icon": "$(add)",
-				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.addKustomization",
 				"title": "Add Kustomization",
 				"category": "GitOps",
 				"icon": "$(add)",
-				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
-			},
-			{
-				"command": "gitops.views.expandAllSources",
-				"title": "Expand All",
-				"category": "GitOps",
-				"icon": "$(expand-all)",
-				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
-			},
-			{
-				"command": "gitops.views.expandAllWorkloads",
-				"title": "Expand All",
-				"category": "GitOps",
-				"icon": "$(expand-all)",
-				"enablement": "!gitops:clusterUnreachable && !gitops:currentClusterGitOpsNotEnabled"
+				"enablement": "!gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
 			},
 			{
 				"command": "gitops.views.deleteWorkload",
@@ -242,12 +198,7 @@
 			},
 			{
 				"command": "gitops.editor.openResource",
-				"title": "Open Resource",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.editor.openKubeconfig",
-				"title": "Open Kubeconfig",
+				"title": "View Config",
 				"category": "GitOps"
 			},
 			{
@@ -268,16 +219,6 @@
 			{
 				"command": "gitops.views.createFromTemplate",
 				"title": "Create from Template",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.views.openInWgePortal",
-				"title": "Open in Weave Gitops Enterprise...",
-				"category": "GitOps"
-			},
-			{
-				"command": "gitops.views.setContextToGitopsCluster",
-				"title": "Set as Current Context",
 				"category": "GitOps"
 			}
 		],
@@ -305,8 +246,8 @@
 					"name": "Workloads"
 				},
 				{
-					"id": "gitops.views.wge",
-					"name": "Weave GitOps",
+					"id": "gitops.views.templates",
+					"name": "Templates",
 					"when": "config.gitops.weaveGitopsEnterprise"
 				},
 				{
@@ -318,54 +259,72 @@
 		"configuration": {
 			"title": "GitOps Tools",
 			"properties": {
-				"gitops.doFluxCheck": {
-					"type": "boolean",
-					"default": true,
-					"description": "Enable Flux Check (uncheck to skip flux check)"
-				},
-				"gitops.suppressDebugMessages": {
-					"type": "boolean",
-					"default": false,
-					"description": "Do not emit debug-level messages (only error, info, warn)"
-				},
 				"gitops.weaveGitopsEnterprise": {
 					"type": "boolean",
 					"default": false,
-					"description": "Enable WGE features"
-				},
-				"gitops.kubectlRequestTimeout": {
-					"type": "string",
-					"default": "10s",
-					"description": "kubectl --request-timeout"
-				},
-				"gitops.execTimeout": {
-					"type": "string",
-					"default": "60",
-					"description": "Seconds until SIGTERM for every shell exec (except `kubectl proxy`). Set to 0 for no timeout."
-				},
-				"gitops.ignoreConfigRecommendations": {
-					"type": "boolean",
-					"default": false,
-					"description": "Stop recommending changes to editor or extension settings."
+					"description": "Enable WGE GitOpsTemplates feature"
 				}
 			}
 		},
 		"viewsWelcome": [
 			{
+				"view": "gitops.views.clusters",
+				"contents": "Loading Clusters ...",
+				"when": "gitops:loadingClusters"
+			},
+			{
+				"view": "gitops.views.clusters",
+				"contents": "No clusters.",
+				"when": "!gitops:loadingClusters && gitops:noClusters"
+			},
+			{
+				"view": "gitops.views.clusters",
+				"contents": "Failed to load cluster contexts.",
+				"when": "!gitops:loadingClusters && gitops:failedToLoadClusterContexts"
+			},
+			{
 				"view": "gitops.views.sources",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Sources.",
-				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
+				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected"
+			},
+			{
+				"view": "gitops.views.sources",
+				"contents": "Loading Sources ...",
+				"when": "gitops:loadingSources && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+			},
+			{
+				"view": "gitops.views.sources",
+				"contents": "No sources.",
+				"when": "!gitops:loadingSources && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noSources"
+			},
+			{
+				"view": "gitops.views.sources",
+				"contents": "Select GitOps Cluster to view Sources.",
+				"when": "gitops:noClusterSelected"
 			},
 			{
 				"view": "gitops.views.workloads",
 				"contents": "[Enable GitOps](command:gitops.flux.install) for the selected Cluster to view Workloads.",
-				"when": "gitops:currentClusterGitOpsNotEnabled && !gitops:clusterUnreachable"
-			}
-		],
-		"submenus": [
+				"when": "gitops:currentClusterGitOpsNotEnabled"
+			},
 			{
-				"id": "gitops.explorer",
-				"label": "GitOps"
+				"view": "gitops.views.workloads",
+				"contents": "Loading Workloads ...",
+				"when": "gitops:loadingWorkloads && !gitops:noClusterSelected && !gitops:currentClusterGitOpsNotEnabled"
+			},
+			{
+				"view": "gitops.views.workloads",
+				"contents": "No workloads.",
+				"when": "!gitops:loadingWorkloads && !gitops:currentClusterGitOpsNotEnabled && !gitops:noClusterSelected && gitops:noWorkloads"
+			},
+			{
+				"view": "gitops.views.workloads",
+				"contents": "Select GitOps Cluster to view Workloads.",
+				"when": "gitops:noClusterSelected"
+			},
+			{
+				"view": "gitops.views.documentation",
+				"contents": "Loading Topics ..."
 			}
 		],
 		"menus": {
@@ -377,11 +336,6 @@
 				},
 				{
 					"command": "extension.vsKubernetesUseKubeconfig",
-					"group": "1",
-					"when": "view == gitops.views.clusters"
-				},
-				{
-					"command": "gitops.editor.openKubeconfig",
 					"group": "1",
 					"when": "view == gitops.views.clusters"
 				},
@@ -408,20 +362,10 @@
 				{
 					"command": "gitops.views.refreshResourcesTreeView",
 					"group": "navigation@1",
-					"when": "view == gitops.views.wge"
+					"when": "view == gitops.views.templates"
 				},
 				{
 					"command": "gitops.views.showWorkloadsHelpMessage",
-					"group": "navigation@1",
-					"when": "view == gitops.views.workloads"
-				},
-				{
-					"command": "gitops.views.expandAllSources",
-					"group": "navigation@2",
-					"when": "view == gitops.views.sources"
-				},
-				{
-					"command": "gitops.views.expandAllWorkloads",
 					"group": "navigation@2",
 					"when": "view == gitops.views.workloads"
 				}
@@ -454,67 +398,52 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
-					"when": "viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
-					"group": "navigation@0"
-				},
-				{
-					"command": "gitops.flux.reconcileWorkloadWithSource",
-					"when": "viewItem =~ /(Kustomization;|HelmRelease;)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@0"
 				},
 				{
 					"command": "gitops.flux.reconcileWorkload",
-					"when": "viewItem =~ /(Kustomization;|HelmRelease;)/",
-					"group": "navigation@1"
+					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
+					"group": "navigation@0"
 				},
 				{
 					"command": "gitops.suspend",
-					"when": "viewItem =~ /notSuspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository;)/ && viewItem =~ /notSuspend;/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "gitops.resume",
-					"when": "viewItem =~ /suspend;/",
+					"when": "view =~ /(gitops.views.sources|gitops.views.workloads)/ && viewItem =~ /(GitRepository;|OCIRepository;|Kustomization;|HelmRelease;|HelmRepository;)/ && viewItem =~ /suspend;/",
 					"group": "navigation@1"
 				},
 				{
-					"command": "gitops.manualPromotion",
-					"when": "viewItem =~ /autoPromotion;/",
-					"group": "1"
-				},
-				{
-					"command": "gitops.autoPromotion",
-					"when": "viewItem =~ /manualPromotion;/",
-					"group": "1"
-				},
-				{
 					"command": "gitops.views.deleteWorkload",
-					"when": "viewItem =~ /(Kustomization;|HelmRelease;)/",
+					"when": "view == gitops.views.workloads && viewItem =~ /(Kustomization;|HelmRelease;)/",
 					"group": "navigation@2"
 				},
 				{
 					"command": "gitops.views.deleteSource",
-					"when": "viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
+					"when": "view == gitops.views.sources && viewItem =~ /(GitRepository;|OCIRepository;|HelmRepository;|Bucket;)/",
 					"group": "navigation@2"
 				},
 				{
 					"command": "gitops.views.pullGitRepository",
-					"when": "viewItem =~ /GitRepository;/",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;/",
 					"group": "navigation@3"
 				},
 				{
 					"command": "gitops.addKustomization",
-					"when": "viewItem =~ /GitRepository;|OCIRepository;|Bucket;/",
+					"when": "view == gitops.views.sources && viewItem =~ /GitRepository;|OCIRepository;|Bucket;/",
 					"group": "navigation@3"
 				},
 				{
 					"command": "gitops.editor.showLogs",
-					"when": "viewItem =~ /(Deployment;)/"
+					"when": "view =~ /^(gitops.views.clusters)$/ && viewItem =~ /(Deployment;)/"
 				},
 				{
 					"command": "gitops.copyResourceName",
-					"when": "view =~ /^(gitops.views.sources|gitops.views.workloads||gitops.views.wge)$/ && !(viewItem =~ /Container;/)",
-					"group": "9"
+					"when": "view =~ /^(gitops.views.sources|gitops.views.workloads)$/",
+					"group": "navigation@9"
 				},
 				{
 					"command": "gitops.flux.trace",
@@ -524,50 +453,18 @@
 				{
 					"command": "gitops.views.createFromTemplate",
 					"group": "1",
-					"when": "viewItem =~ /GitOpsTemplate;/"
-				},
-				{
-					"command": "gitops.views.openInWgePortal",
-					"group": "1",
-					"when": "viewItem =~ /hasWgePortal;/"
-				},
-				{
-					"command": "gitops.views.setContextToGitopsCluster",
-					"group": "1",
-					"when": "viewItem =~ /GitopsCluster;/"
-				}
-			],
-			"gitops.explorer": [
-				{
-					"command": "gitops.kubectlApplyPath",
-					"group": "1"
-				},
-				{
-					"command": "gitops.kubectlDeletePath",
-					"group": "1"
-				},
-				{
-					"command": "gitops.kubectlApplyKustomization",
-					"group": "1",
-					"when": "explorerResourceIsFolder"
-				},
-				{
-					"command": "gitops.views.createGitRepository",
-					"group": "2"
-				},
-				{
-					"command": "gitops.flux.reconcileRepository",
-					"when": "explorerResourceIsFolder",
-					"group": "2"
-				},
-				{
-					"command": "gitops.createKustomization",
-					"group": "2"
+					"when": "view == gitops.views.templates"
 				}
 			],
 			"explorer/context": [
 				{
-					"submenu": "gitops.explorer"
+					"command": "gitops.views.createGitRepository"
+				},
+				{
+					"command": "gitops.flux.reconcileRepository"
+				},
+				{
+					"command": "gitops.createKustomization"
 				}
 			],
 			"commandPalette": [
@@ -584,14 +481,6 @@
 					"when": "never"
 				},
 				{
-					"command": "gitops.manualPromotion",
-					"when": "never"
-				},
-				{
-					"command": "gitops.autoPromotion",
-					"when": "never"
-				},
-				{
 					"command": "gitops.flux.check",
 					"when": "never"
 				},
@@ -605,10 +494,6 @@
 				},
 				{
 					"command": "gitops.flux.reconcileSource",
-					"when": "never"
-				},
-				{
-					"command": "gitops.flux.reconcileWorkloadWithSource",
 					"when": "never"
 				},
 				{
@@ -662,10 +547,6 @@
 				{
 					"command": "gitops.dev.showGlobalState",
 					"when": "gitops:isDev"
-				},
-				{
-					"command": "gitops.views.setContextToGitopsCluster",
-					"when": "never"
 				}
 			]
 		}
@@ -675,7 +556,6 @@
 	],
 	"devDependencies": {
 		"@types/git-url-parse": "^9.0.1",
-		"@types/is-running": "^2.1.0",
 		"@types/mocha": "^9.1.0",
 		"@types/node": "14.x",
 		"@types/semver": "^7.3.9",
@@ -690,40 +570,26 @@
 		"eslint": "^8.11.0",
 		"glob": "^7.2.0",
 		"mocha": "^9.2.2",
-		"tough-cookie": ">=4.1.3",
 		"ts-loader": "^9.2.8",
-		"tsconfig-paths-webpack-plugin": "^4.0.1",
 		"typescript": "^4.5.5",
-		"vite": ">=2.9.16",
 		"webpack": "^5.70.0",
-		"webpack-cli": "^4.9.2",
-		"word-wrap": ">=1.2.4"
+		"webpack-cli": "^4.9.2"
 	},
 	"dependencies": {
-		"@kubernetes/client-node": "^0.18.1",
-		"@types/ws": "^8.5.4",
-		"@vscode/extension-telemetry": "^0.6.0",
-		"bufferutil": "^4.0.7",
+		"@kubernetes/client-node": "^0.16.2",
+		"@vscode/extension-telemetry": "^0.4.7",
 		"change-case": "^4.1.2",
 		"extract-zip": "^2.0.1",
 		"git-url-parse": "^13.0.0",
-		"is-running": "^2.1.0",
 		"jose": ">=2.0.6",
-		"lite-deep-equal": "^1.0.6",
 		"parse-path": ">=5.0.0",
 		"parse-url": ">=8.1.0",
-		"semver": "^7.5.2",
+		"semver": "^7.3.5",
 		"shell-escape-tag": "^2.0.2",
 		"shelljs": "^0.8.5",
 		"tinytim": "^0.1.1",
-		"tough-cookie": ">=4.1.3",
-		"tree-kill": "^1.2.2",
-		"utf-8-validate": "^6.0.3",
 		"uuid": "^9.0.0",
-		"vite": ">=2.9.16",
-		"vscode-kubernetes-tools-api": "^1.3.0",
-		"vscode-uri": "^3.0.7",
-		"word-wrap": ">=1.2.4"
+		"vscode-kubernetes-tools-api": "^1.3.0"
 	},
 	"activationEvents": [],
 	"__metadata": {
