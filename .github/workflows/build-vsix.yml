@@ -235,7 +235,7 @@ jobs:
 
 #       - name: Get the version
 #         id: version
-#         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+#         run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 #         shell: bash
 #
 #       - uses: apexskier/github-semver-parse@671ddf80785e4d721e76723ec1e687317f85bfe9 # pin@v1

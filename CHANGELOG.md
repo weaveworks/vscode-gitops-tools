@@ -4,6 +4,10 @@ See [releases](https://github.com/weaveworks/vscode-gitops-tools/releases) for s
 
 The current release notes are always published on the Releases page, by automation. This `CHANGELOG` is manually curated by a release engineer from those notes for house-keeping.
 
+# v0.27.0
+
+* Roll back to pre-0.25.x codebase (#504)
+
 # v0.26.0
 
 * Add 'run flux install ?' confirmation dialog (#498)
