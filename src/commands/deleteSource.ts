@@ -1,18 +1,16 @@
 import { window } from 'vscode';
-
-import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
-import { fluxTools } from 'cli/flux/fluxTools';
-import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
-import { telemetry } from 'extension';
-import { failed } from 'types/errorable';
-import { FluxSource } from 'types/fluxCliTypes';
-import { Kind } from 'types/kubernetes/kubernetesTypes';
-import { TelemetryEvent } from 'types/telemetryEventNames';
-import { BucketNode } from 'ui/treeviews/nodes/source/bucketNode';
-import { GitRepositoryNode } from 'ui/treeviews/nodes/source/gitRepositoryNode';
-import { HelmRepositoryNode } from 'ui/treeviews/nodes/source/helmRepositoryNode';
-import { OCIRepositoryNode } from 'ui/treeviews/nodes/source/ociRepositoryNode';
-import { getCurrentClusterInfo, reloadSourcesTreeView, reloadWorkloadsTreeView } from 'ui/treeviews/treeViews';
+import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
+import { failed } from '../errorable';
+import { telemetry } from '../extension';
+import { fluxTools } from '../flux/fluxTools';
+import { FluxSource } from '../flux/fluxTypes';
+import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
+import { TelemetryEventNames } from '../telemetry';
+import { BucketNode } from '../views/nodes/bucketNode';
+import { GitRepositoryNode } from '../views/nodes/gitRepositoryNode';
+import { OCIRepositoryNode } from '../views/nodes/ociRepositoryNode';
+import { HelmRepositoryNode } from '../views/nodes/helmRepositoryNode';
+import { getCurrentClusterInfo, refreshSourcesTreeView, refreshWorkloadsTreeView } from '../views/treeViews';
 
 /**
  * Delete a source
@@ -21,14 +19,14 @@ import { getCurrentClusterInfo, reloadSourcesTreeView, reloadWorkloadsTreeView }
  */
 export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepositoryNode | HelmRepositoryNode | BucketNode) {
 
-	const sourceName = sourceNode.resource.metadata.name;
+	const sourceName = sourceNode.resource.metadata.name || '';
 	const sourceNamespace = sourceNode.resource.metadata.namespace || '';
 	const confirmButton = 'Delete';
 
-	const sourceType: FluxSource | 'unknown' = sourceNode.resource.kind === Kind.GitRepository ? 'source git' :
-		sourceNode.resource.kind === Kind.HelmRepository ? 'source helm' :
-			sourceNode.resource.kind === Kind.OCIRepository ? 'source oci' :
-				sourceNode.resource.kind === Kind.Bucket ? 'source bucket' : 'unknown';
+	const sourceType: FluxSource | 'unknown' = sourceNode.resource.kind === KubernetesObjectKinds.GitRepository ? 'source git' :
+		sourceNode.resource.kind === KubernetesObjectKinds.HelmRepository ? 'source helm' :
+			sourceNode.resource.kind === KubernetesObjectKinds.OCIRepository ? 'source oci' :
+				sourceNode.resource.kind === KubernetesObjectKinds.Bucket ? 'source bucket' : 'unknown';
 
 	if (sourceType === 'unknown') {
 		window.showErrorMessage(`Unknown Source resource kind ${sourceNode.resource.kind}`);
@@ -42,22 +40,21 @@ export async function deleteSource(sourceNode: GitRepositoryNode | OCIRepository
 		return;
 	}
 
-	telemetry.send(TelemetryEvent.DeleteSource, {
+	telemetry.send(TelemetryEventNames.DeleteSource, {
 		kind: sourceNode.resource.kind,
 	});
 
 	const currentClusterInfo = await getCurrentClusterInfo();
-	const contextName = kubeConfig.getCurrentContext();
 	if (failed(currentClusterInfo)) {
 		return;
 	}
 
 	if (currentClusterInfo.result.isAzure) {
-		await azureTools.deleteSource(sourceName, contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
-		reloadWorkloadsTreeView();
+		await azureTools.deleteSource(sourceName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		refreshWorkloadsTreeView();
 	} else {
 		await fluxTools.delete(sourceType, sourceName, sourceNamespace);
 	}
 
-	reloadSourcesTreeView();
+	refreshSourcesTreeView();
 }

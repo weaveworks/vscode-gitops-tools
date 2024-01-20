@@ -1,7 +1,6 @@
 import { env } from 'vscode';
-
-import { SourceNode } from 'ui/treeviews/nodes/source/sourceNode';
-import { WorkloadNode } from 'ui/treeviews/nodes/workload/workloadNode';
+import { SourceNode } from '../views/nodes/sourceNode';
+import { WorkloadNode } from '../views/nodes/workloadNode';
 
 /**
  * Copy to clipboard any resource node name.

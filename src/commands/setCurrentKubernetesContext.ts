@@ -1,12 +1,13 @@
-import { syncKubeConfig, setCurrentContext } from 'cli/kubernetes/kubernetesConfig';
-import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
+import { kubernetesTools } from '../kubernetes/kubernetesTools';
+import { ClusterContextNode } from '../views/nodes/clusterContextNode';
+import { refreshAllTreeViews } from '../views/treeViews';
 
 /**
  * Sets Kubernetes context and refreshes tree views if needed.
  */
-export async function setCurrentKubernetesContext(clusterContext: ClusterNode): Promise<void> {
-	const setContextResult = await setCurrentContext(clusterContext.context.name);
+export async function setCurrentKubernetesContext(clusterContext: ClusterContextNode): Promise<void> {
+	const setContextResult = await kubernetesTools.setCurrentContext(clusterContext.contextName);
 	if (setContextResult?.isChanged) {
-		await syncKubeConfig();
+		refreshAllTreeViews();
 	}
 }

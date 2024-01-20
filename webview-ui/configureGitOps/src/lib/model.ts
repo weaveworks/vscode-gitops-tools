@@ -85,7 +85,7 @@ export const [createWorkload, setCreateWorkload] = createSignal(false);
 export const [kustomization, setKustomization] = createStore({
 	name: 'podinfo',
 	namespace: 'flux-system',
-	source: '',  // Ex: GitRepository/podinfo.flux-system
+	source: '',  // Ex: GitRepo/podinfo.flux-system
 	path: '/kustomize',
 	targetNamespace: 'default',
 	serviceAccount: '',
@@ -135,7 +135,12 @@ createEffect(() => {
 
 	if(params.selectSourceTab) {
 		setCreateWorkload(true);
-		updateSelectedSource();
+
+		if(params.selectedSource && params.selectedSource !== '') {
+			setKustomization('source', params.selectedSource);
+		} else if(params.sources?.length > 0) {
+			setKustomization('source', namespacedSource(params.sources[0]));
+		}
 	}
 
 	if(params.set) {
@@ -157,7 +162,8 @@ createEffect(() => {
 	if(createSource()) {
 		setKustomization('source', `${source.kind}/${source.name}.${source.namespace}`);
 	} else {
-		updateSelectedSource();
+		const s = params.sources[0];
+		setKustomization('source', `${s.kind}/${s.name}.${s.namespace}`);
 	}
 });
 
@@ -194,14 +200,6 @@ const setters: StoreMap = {
 	setBucket,
 	setKustomization,
 };
-
-export function updateSelectedSource() {
-	if (params.selectedSource && params.selectedSource !== '') {
-		setKustomization('source', params.selectedSource);
-	} else if (params.sources?.length > 0) {
-		setKustomization('source', namespacedSource(params.sources[0]));
-	}
-}
 
 export function storeAccessors(props: any) {
 	let get: ()=> any;

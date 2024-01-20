@@ -1,8 +1,7 @@
 import { readFileSync } from 'fs';
-import { tim } from 'tinytim';
 import * as vscode from 'vscode';
-
-import { asAbsolutePath } from 'utils/asAbsolutePath';
+import { tim } from 'tinytim';
+import { asAbsolutePath } from '../extensionContext';
 
 
 export function showNewUserGuide() {
