@@ -1,9 +1,9 @@
 import { getAPIParams } from 'cli/kubernetes/apiResources';
-import { FluxObject } from 'types/flux/object';
+import { ToolkitObject } from 'types/flux/object';
 import { Kind, KubernetesListObject, Namespace } from 'types/kubernetes/kubernetesTypes';
 import { k8sCoreApi, k8sCustomApi } from './client';
 
-export async function k8sList<T extends FluxObject>(kind: Kind): Promise<T[] | undefined> {
+export async function k8sList<T extends ToolkitObject>(kind: Kind): Promise<T[] | undefined> {
 	const api = getAPIParams(kind);
 	if(!api) {
 		return;
@@ -21,6 +21,29 @@ export async function k8sList<T extends FluxObject>(kind: Kind): Promise<T[] | u
 		return;
 	}
 }
+
+
+export async function k8sGet<T extends ToolkitObject>(name: string, namespace: string, kind: Kind): Promise<T | undefined> {
+	const api = getAPIParams(kind);
+	if(!api) {
+		return;
+	}
+
+	if(!k8sCustomApi) {
+		return;
+	}
+
+	try	{
+		const result = await k8sCustomApi.getNamespacedCustomObject(api.group, api.version, namespace, api.plural, name);
+		const kbody = result.body as KubernetesListObject<T>;
+		if (kbody.items && kbody.items.length > 0) {
+			return kbody.items[0];
+		}
+	} catch (error) {
+		return;
+	}
+}
+
 
 export async function k8sListNamespaces(): Promise<Namespace[] | undefined> {
 	if(!k8sCoreApi) {

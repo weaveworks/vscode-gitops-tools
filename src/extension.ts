@@ -17,7 +17,7 @@ import { statusBar } from './ui/statusBar';
 import { clusterDataProvider, createTreeViews, sourceDataProvider, workloadDataProvider } from './ui/treeviews/treeViews';
 
 /** Disable interactive modal dialogs, useful for testing */
-export let disableConfirmations = false;
+export let skipConfirmations = false;
 export let experimentalFlag = false;
 
 /*
@@ -30,6 +30,7 @@ export let extensionContext: ExtensionContext;
 export let globalState: GlobalState;
 /** Methods to report telemetry over Application Insights (Exceptions or Custom Events). */
 export let telemetry: Telemetry | any;
+export let isActive = true;
 
 /**
  * Called when GitOps extension is activated.
@@ -60,7 +61,7 @@ export async function activate(context: ExtensionContext) {
 	// set vscode context: developing extension. test is also dev
 	setVSCodeContext(ContextId.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
 	if(context.extensionMode === ExtensionMode.Test) {
-		disableConfirmations = true;
+		skipConfirmations = true;
 	}
 
 
@@ -128,6 +129,7 @@ export function suppressDebugMessages(): boolean {
  * Called when extension is deactivated.
  */
 export function deactivate() {
+	isActive = false;
 	telemetry?.dispose();
 	statusBar?.dispose();
 	stopKubeProxy();

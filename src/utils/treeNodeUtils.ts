@@ -18,8 +18,10 @@ export async function addFluxTreeToNode(node: TreeNode, resourceTree: FluxTreeRe
 			metadata: {
 				name: resource.resource.Name,
 				namespace,
+				uid: JSON.stringify(resource.resource), // fake UID, we're using for treeview indexing only
 			},
-		});
+
+		}, node.dataProvider!);
 
 		nodes.push(childNode);
 
@@ -43,10 +45,10 @@ export async function groupNodesByNamespace(nodes: TreeNode[], expandAll = false
 
 		const nsChildNodes = filterNodesForNamespace(nodes, nsName);
 		if (nsChildNodes.length > 0) {
-			const nsNode = new NamespaceNode(ns);
+			const nsNode = new NamespaceNode(ns, nsChildNodes[0].dataProvider);
 			nsChildNodes.forEach(childNode => {
 				// Don't add the namespace node as a child of itself
-				if(!(childNode.resource?.kind === 'Namespace' && childNode.resource.metadata?.name === nsName)) {
+				if(!(childNode.resource.kind === 'Namespace' && childNode.resource.metadata.name === nsName)) {
 					 nsNode.addChild(childNode);
 				}
 			});
@@ -57,13 +59,13 @@ export async function groupNodesByNamespace(nodes: TreeNode[], expandAll = false
 		}
 	});
 
-	const clusterScopedNodes = nodes.filter(node => !node.resource?.metadata?.namespace && node.resource?.kind !== 'Namespace');
+	const clusterScopedNodes = nodes.filter(node => !node.resource.metadata.namespace && node.resource.kind !== 'Namespace');
 	return [namespaceNodes, clusterScopedNodes];
 }
 
 function filterNodesForNamespace(nodes: TreeNode[], namespace: string): TreeNode[] {
-	const belongsToNamespace = (node: TreeNode) => node.resource?.metadata?.namespace === namespace;
-	const isNamespace = (node: TreeNode) => node.resource?.kind === 'Namespace' && node.resource?.metadata?.name === namespace;
+	const belongsToNamespace = (node: TreeNode) => node.resource.metadata.namespace === namespace;
+	const isNamespace = (node: TreeNode) => node.resource.kind === 'Namespace' && node.resource.metadata.name === namespace;
 
 	return nodes.filter(node => belongsToNamespace(node) || isNamespace(node));
 }

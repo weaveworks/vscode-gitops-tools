@@ -1,6 +1,7 @@
 import { KubeConfig } from '@kubernetes/client-node';
 import { ChildProcess } from 'child_process';
 import * as shell from 'cli/shell/exec';
+import { isActive } from 'extension';
 import { createK8sClients, destroyK8sClients } from 'k8s/client';
 import { createProxyConfig } from 'k8s/createKubeProxyConfig';
 
@@ -14,7 +15,7 @@ export let kubeProxyConfig: KubeConfig | undefined;
 export function kubeProxyKeepAlive() {
 	// keep alive
 	setInterval(async () => {
-		if(!proxyProc) {
+		if(!proxyProc && isActive) {
 			destroyK8sClients();
 			await startKubeProxy();
 		}

@@ -4,6 +4,7 @@ import { ContextData } from 'data/contextData';
 import { statusBar } from 'ui/statusBar';
 import { sortByMetadataName } from 'utils/sortByMetadataName';
 import { groupNodesByNamespace } from 'utils/treeNodeUtils';
+import { makeTreeNode } from '../nodes/makeTreeNode';
 import { BucketNode } from '../nodes/source/bucketNode';
 import { GitRepositoryNode } from '../nodes/source/gitRepositoryNode';
 import { HelmRepositoryNode } from '../nodes/source/helmRepositoryNode';
@@ -27,7 +28,7 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 	async loadRootNodes() {
 		statusBar.startLoadingTree();
 
-		const sourceNodes: SourceNode[] = [];
+		const nodes: SourceNode[] = [];
 
 		// Fetch all sources asynchronously and at once
 		const [gitRepositories, ociRepositories, helmRepositories, buckets, _] = await Promise.all([
@@ -40,26 +41,26 @@ export class SourceDataProvider extends KubernetesObjectDataProvider {
 
 		// add git repositories to the tree
 		for (const gitRepository of sortByMetadataName(gitRepositories)) {
-			sourceNodes.push(new GitRepositoryNode(gitRepository));
+			nodes.push(makeTreeNode(gitRepository, this) as GitRepositoryNode);
 		}
 
 		// add oci repositories to the tree
 		for (const ociRepository of sortByMetadataName(ociRepositories)) {
-			sourceNodes.push(new OCIRepositoryNode(ociRepository));
+			nodes.push(makeTreeNode(ociRepository, this) as OCIRepositoryNode);
 		}
 
 		for (const helmRepository of sortByMetadataName(helmRepositories)) {
-			sourceNodes.push(new HelmRepositoryNode(helmRepository));
+			nodes.push(makeTreeNode(helmRepository, this) as HelmRepositoryNode);
 		}
 
 		// add buckets to the tree
 		for (const bucket of sortByMetadataName(buckets)) {
-			sourceNodes.push(new BucketNode(bucket));
+			nodes.push(makeTreeNode(bucket, this) as BucketNode);
 		}
 
 		statusBar.stopLoadingTree();
 
-		const [groupedNodes] = await groupNodesByNamespace(sourceNodes, false, true);
+		const [groupedNodes] = await groupNodesByNamespace(nodes, false, true);
 		return groupedNodes;
 	}
 }

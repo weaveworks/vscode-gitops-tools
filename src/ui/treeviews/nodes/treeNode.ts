@@ -1,29 +1,15 @@
-import { Command, MarkdownString, ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
-import { CommandId } from 'types/extensionIds';
-import { FileTypes } from 'types/fileTypes';
-import { KubernetesObject, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
+import { CommonIcon, commonIcon } from 'ui/icons';
 import { asAbsolutePath } from 'utils/asAbsolutePath';
-import { getResourceUri } from 'utils/getResourceUri';
-import { KnownTreeNodeResources, createMarkdownTable } from 'utils/markdownUtils';
-
-export const enum TreeNodeIcon {
-	Error = 'error',
-	Warning = 'warning',
-	Success = 'success',
-	Disconnected = 'disconnected',
-	Unknown = 'unknown',
-}
+import { InfoLabel, infoNode } from 'utils/makeTreeviewInfoNode';
+import { SimpleDataProvider } from '../dataProviders/simpleDataProvider';
 
 /**
  * Defines tree view item base class used by all GitOps tree views.
  */
 export class TreeNode extends TreeItem {
-
-	/**
-	 * Kubernetes resource.
-	 */
-	resource?: KubernetesObject;
+	resource?: any;
 
 	/**
 	 * Reference to the parent node (if exists).
@@ -33,14 +19,33 @@ export class TreeNode extends TreeItem {
 	/**
 	 * Reference to all the child nodes.
 	 */
-	children: TreeNode[] = [];
+	private _children: TreeNode[] = [];
+
+	get children(): TreeNode[] {
+		return this._children;
+	}
+
+	set children(cs: TreeNode[]) {
+		this._children = cs;
+		this._children.forEach(c => c.parent = this);
+	}
+
+	dataProvider: SimpleDataProvider;
+
+	/*
+	 * async load children for the node
+	 */
+	async updateChildren() {
+		// no-op
+	}
 
 	/**
 	 * Creates new tree node.
 	 * @param label Tree node label
 	 */
-	constructor(label: string) {
+	constructor(label: string, dataProvider: SimpleDataProvider) {
 		super(label, TreeItemCollapsibleState.None);
+		this.dataProvider = dataProvider;
 	}
 
 	/**
@@ -49,6 +54,11 @@ export class TreeNode extends TreeItem {
 	makeCollapsible() {
 		this.collapsibleState = TreeItemCollapsibleState.Collapsed;
 	}
+
+	makeUncollapsible() {
+		this.collapsibleState = TreeItemCollapsibleState.None;
+	}
+
 
 	/**
 	 * Expands a tree node and shows its children.
@@ -62,6 +72,11 @@ export class TreeNode extends TreeItem {
 	 */
 	updateStatus(): void {}
 
+	redraw() {
+		if(this.dataProvider) {
+			this.dataProvider.redraw(this);
+		}
+	}
 
 	/**
 	 * Sets tree view item icon.
@@ -70,18 +85,8 @@ export class TreeNode extends TreeItem {
 	 * relative file path `resouces/icons/(dark|light)/${icon}.svg`
 	 * @param icon Theme icon, uri or light/dark svg icon path.
 	 */
-	setIcon(icon: string | ThemeIcon | Uri | TreeNodeIcon | undefined) {
-		if (icon === TreeNodeIcon.Error) {
-			this.iconPath = new ThemeIcon('error', new ThemeColor('editorError.foreground'));
-		} else if (icon === TreeNodeIcon.Warning) {
-			this.iconPath = new ThemeIcon('warning', new ThemeColor('editorWarning.foreground'));
-		} else if (icon === TreeNodeIcon.Disconnected) {
-			this.iconPath = new ThemeIcon('sync-ignored', new ThemeColor('editorError.foreground'));
-		} else if (icon === TreeNodeIcon.Success) {
-			this.iconPath = new ThemeIcon('pass', new ThemeColor('terminal.ansiGreen'));
-		} else if (icon === TreeNodeIcon.Unknown) {
-			this.iconPath = new ThemeIcon('circle-large-outline');
-		} else if (typeof icon === 'string') {
+	setIcon(icon: string | ThemeIcon | Uri |undefined) {
+		if (typeof icon === 'string') {
 			this.iconPath = {
 				light: asAbsolutePath(`resources/icons/light/${icon}.svg`),
 				dark: asAbsolutePath(`resources/icons/dark/${icon}.svg`),
@@ -90,6 +95,11 @@ export class TreeNode extends TreeItem {
 			this.iconPath = icon;
 		}
 	}
+
+	setCommonIcon(icon: CommonIcon) {
+		this.iconPath = commonIcon(icon);
+	}
+
 
 	/**
 	 * Add new tree view item to the children collection.
@@ -112,16 +122,6 @@ export class TreeNode extends TreeItem {
 		this.children = this.children.filter(c => c !== child);
 	}
 
-	findChildByResource(resource: KubernetesObject): TreeNode | undefined {
-		return this.children.find(child => {
-			if (child.resource) {
-				return child.resource.metadata?.name === resource.metadata?.name &&
-					child.resource.kind === resource.kind &&
-					child.resource.metadata?.namespace === resource.metadata?.namespace;
-			}
-		});
-	}
-
 
 	/**
 	 *
@@ -141,48 +141,57 @@ export class TreeNode extends TreeItem {
 			.join('');
 	}
 
-	fullyQualifyKind(): string {
-		return qualifyToolkitKind(this.resource?.kind || '');
-	}
-
-	// @ts-ignore
-	get tooltip(): string | MarkdownString {
-		if (this.resource) {
-			return createMarkdownTable(this.resource as KnownTreeNodeResources);
-		}
-	}
-
-	// @ts-ignore
-	get command(): Command | undefined {
-		// Set click event handler to load kubernetes resource as yaml file in editor.
-		if (this.resource) {
-			let stringKind = this.fullyQualifyKind();
-			const resourceUri = getResourceUri(
-				this.resource.metadata?.namespace,
-				`${stringKind}/${this.resource.metadata?.name}`,
-				FileTypes.Yaml,
-			);
-
-			return {
-				command: CommandId.EditorOpenResource,
-				arguments: [resourceUri],
-				title: 'View Resource',
-			};
-		}
-	}
-
 	/**
 	 * VSCode contexts to use for setting {@link contextValue}
 	 * of this tree node. Used for context/inline menus.
+	 *
+	 * Contexts are used to enable/disable menu items.
 	 */
 	get contexts(): string[] {
 		return [];
 	}
 
+	/**
+	 *
+	 * Context for types of resources.
+	 */
+	get contextType(): string | undefined {
+		return;
+	}
+
 	// @ts-ignore
 	get contextValue() {
-		if (this.contexts.length) {
-			return this.joinContexts(this.contexts);
+		const cs = [...this.contexts];
+		if(this.contextType) {
+			cs.push(this.contextType);
+		}
+		if(cs.length) {
+			return this.joinContexts(cs);
 		}
 	}
+
+	// @ts-ignore
+	get tooltip(): string | MarkdownString {
+		return '';
+	}
+
+	// @ts-ignore
+	get command(): Command | undefined {}
+
+
+	get viewStateKey(): string {
+		return '';
+	}
+
+
+	infoNodes(type: InfoLabel) {
+		return [this.infoNode(type)];
+	}
+
+	infoNode(type: InfoLabel) {
+		return infoNode(type, this.dataProvider);
+	}
 }
+
+
+

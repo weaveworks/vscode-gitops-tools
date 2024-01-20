@@ -1,11 +1,11 @@
 import * as k8s from '@kubernetes/client-node';
 import { getAPIParams } from 'cli/kubernetes/apiResources';
 import { GitRepository } from 'types/flux/gitRepository';
+import { FluxSourceKinds, FluxWorkloadKinds } from 'types/flux/object';
 import { Kind, KubernetesListObject, KubernetesObject } from 'types/kubernetes/kubernetesTypes';
 import { KubernetesObjectDataProvider } from 'ui/treeviews/dataProviders/kubernetesObjectDataProvider';
 import { sourceDataProvider, workloadDataProvider } from 'ui/treeviews/treeViews';
 import { k8sCustomApi } from './client';
-import { FluxSourceKinds, FluxWorkloadKinds } from 'types/flux/object';
 
 
 let informers: k8s.Informer<KubernetesObject>[] = [];
@@ -18,7 +18,6 @@ export function createInformers(kc: k8s.KubeConfig) {
 	FluxWorkloadKinds.forEach(kind => {
 		createInformer(kc, workloadDataProvider, kind);
 	});
-
 }
 
 export function destroyInformers() {

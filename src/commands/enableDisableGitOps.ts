@@ -5,7 +5,7 @@ import { fluxTools } from 'cli/flux/fluxTools';
 import { detectClusterProvider } from 'cli/kubernetes/clusterProvider';
 import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
 import { refreshAllTreeViewsCommand } from 'commands/refreshTreeViews';
-import { disableConfirmations, telemetry } from 'extension';
+import { skipConfirmations, telemetry } from 'extension';
 import { ClusterProvider } from 'types/kubernetes/clusterProvider';
 import { TelemetryEvent } from 'types/telemetryEventNames';
 import { ClusterNode } from 'ui/treeviews/nodes/cluster/clusterNode';
@@ -34,12 +34,21 @@ async function enableDisableGitOps(clusterNode: ClusterNode | undefined, enableG
 		return;
 	}
 
-	if(!disableConfirmations && !enableGitOps ) {
-		const confirm = await window.showWarningMessage(`Do you want to disable GitOps on the "${clusterName}" cluster?`, {
-			modal: true,
-		}, 'Disable');
-		if (confirm !== 'Disable') {
-			return;
+	if(!skipConfirmations) {
+		if(!enableGitOps) {
+			const confirm = await window.showWarningMessage(`Do you want to disable GitOps (run \`flux uninstall\`) on the "${clusterName}" cluster?`, {
+				modal: true,
+			}, 'Disable');
+			if (confirm !== 'Disable') {
+				return;
+			}
+		} else {
+			const confirm = await window.showInformationMessage(`Do you want to enable GitOps (run \`flux install\`) on the "${clusterName}" cluster?`, {
+				modal: true,
+			}, 'Enable');
+			if (confirm !== 'Enable') {
+				return;
+			}
 		}
 	}
 

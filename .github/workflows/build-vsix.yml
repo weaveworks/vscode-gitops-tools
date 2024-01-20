@@ -228,7 +228,7 @@ jobs:
 
             Feature branches should still be squashed, but \`release-pr\` must always be merged to complete the release.
 
-            See the [DEVELOPMENT.md](https://github.com/weaveworks/vscode-gitops-tools/blob/main/DEVELOPMENT.md#releasing) for more information about the release process.
+            See the [CONTRIBUTING.md](https://github.com/weaveworks/vscode-gitops-tools/blob/main/CONTRIBUTING.md#releasing) for more information about the release process.
           pr_reviewer: ${{ github.actor }}
           pr_draft: false
           github_token: ${{ secrets.GITHUB_TOKEN }}

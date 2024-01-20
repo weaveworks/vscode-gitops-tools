@@ -21,8 +21,8 @@ export async function openCreateFromTemplatePanel(template: GitOpsTemplate) {
 	const folders = await window.showOpenDialog({title: 'Clusters manifests folder', canSelectFiles: false, canSelectFolders: true});
 	const folder = folders ? folders[0].fsPath : '';
 	const webviewParams = {
-		name: template.metadata?.name,
-		namespace: template.metadata?.namespace,
+		name: template.metadata.name,
+		namespace: template.metadata.namespace,
 		description: template.spec.description,
 		params: template.spec.params,
 		folder,

@@ -20,8 +20,8 @@ import { getCurrentClusterInfo, reloadWorkloadsTreeView } from 'ui/treeviews/tre
  */
 export async function deleteWorkload(workloadNode: KustomizationNode | HelmReleaseNode) {
 
-	const workloadName = workloadNode.resource.metadata?.name || '';
-	const workloadNamespace = workloadNode.resource.metadata?.namespace || '';
+	const workloadName = workloadNode.resource.metadata.name;
+	const workloadNamespace = workloadNode.resource.metadata.namespace || '';
 	const confirmButton = 'Delete';
 
 	let workloadType: FluxWorkload;
