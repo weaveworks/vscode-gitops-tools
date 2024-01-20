@@ -1,6 +1,7 @@
 import { Uri, window } from 'vscode';
-import { fluxTools } from '../flux/fluxTools';
-import { getFolderGitInfo, getGitRepositoryforGitInfo } from '../git/gitInfo';
+
+import { fluxTools } from 'cli/flux/fluxTools';
+import { getFolderGitInfo, getGitRepositoryforGitInfo } from 'cli/git/gitInfo';
 
 /**
  * Command to reconcile GitRepository for selected file
@@ -13,7 +14,7 @@ export async function fluxReconcileRepositoryForPath(fileExplorerUri?: Uri) {
 	const gitInfo = await getFolderGitInfo(fileExplorerUri.fsPath);
 	const gr = await getGitRepositoryforGitInfo(gitInfo);
 
-	if(!gr?.metadata?.name || !gr.metadata?.namespace) {
+	if(!gr?.metadata.name || !gr.metadata.namespace) {
 		window.showWarningMessage(`No GitRepository with url '${gitInfo?.url}'`);
 		return;
 	}

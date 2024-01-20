@@ -1,30 +1,36 @@
 import { commands, ExtensionContext, ExtensionMode, window, workspace } from 'vscode';
-import { CommandId, registerCommands } from './commands';
+
+import { kubeProxyKeepAlive, stopKubeProxy } from 'cli/kubernetes/kubectlProxy';
+import { syncKubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { initKubeConfigWatcher } from 'cli/kubernetes/kubernetesConfigWatcher';
+import { checkWGEVersion } from './cli/checkVersions';
+import * as shell from './cli/shell/exec';
+import { registerCommands } from './commands/commands';
 import { getExtensionVersion } from './commands/showInstalledVersions';
 import { showNewUserGuide } from './commands/showNewUserGuide';
-import { ContextTypes, setVSCodeContext } from './vscodeContext';
-import { succeeded } from './errorable';
-import { setExtensionContext } from './extensionContext';
-import { GlobalState, GlobalStateKey } from './globalState';
-import { checkFluxPrerequisites, checkWGEVersion, promptToInstallFlux } from './install';
-import { statusBar } from './statusBar';
-import { Telemetry, TelemetryEventNames } from './telemetry';
-import { createTreeViews, clusterTreeViewProvider, sourceTreeViewProvider, workloadTreeViewProvider } from './views/treeViews';
-import { shell } from './shell';
+import { GlobalState, GlobalStateKey } from './data/globalState';
+import { Telemetry } from './data/telemetry';
+import { CommandId, ContextId, GitOpsExtensionConstants } from './types/extensionIds';
+import { TelemetryEvent } from './types/telemetryEventNames';
+import { checkInstalledFluxVersion } from './ui/promptToInstallFlux';
+import { statusBar } from './ui/statusBar';
+import { clusterDataProvider, createTreeViews, sourceDataProvider, workloadDataProvider } from './ui/treeviews/treeViews';
 
 /** Disable interactive modal dialogs, useful for testing */
-export let disableConfirmations = false;
+export let skipConfirmations = false;
 export let experimentalFlag = false;
 
-
-export const enum GitOpsExtensionConstants {
-	ExtensionId = 'weaveworks.vscode-gitops-tools',
-}
+/*
+ * This is the extension runtime context. contains workspace state, subscriptions, paths, persistent state, etc.
+ Should not be confused with vscode context (like 'gitops:noClusterSelected' that's used in package.json to specify when to show/hide commands)
+ */
+export let extensionContext: ExtensionContext;
 
 /** State that is saved even between editor reloads */
 export let globalState: GlobalState;
 /** Methods to report telemetry over Application Insights (Exceptions or Custom Events). */
 export let telemetry: Telemetry | any;
+export let isActive = true;
 
 /**
  * Called when GitOps extension is activated.
@@ -32,31 +38,30 @@ export let telemetry: Telemetry | any;
  */
 export async function activate(context: ExtensionContext) {
 	// Keep a reference to the extension context
-	setExtensionContext(context);
-	listenConfigChanged();
+	extensionContext = context;
+	listenExtensionConfigChanged();
 
 	globalState = new GlobalState(context);
 
 	telemetry = new Telemetry(context, getExtensionVersion(), GitOpsExtensionConstants.ExtensionId);
 
-	// create gitops tree views
-	createTreeViews();
+	initData();
 
 	// register gitops commands
 	registerCommands(context);
 
-	telemetry.send(TelemetryEventNames.Startup);
+	telemetry.send(TelemetryEvent.Startup);
 
 	if (globalState.get(GlobalStateKey.FirstEverActivationStorageKey) === undefined) {
-		telemetry.send(TelemetryEventNames.NewInstall);
+		telemetry.send(TelemetryEvent.NewInstall);
 		showNewUserGuide();
 		globalState.set(GlobalStateKey.FirstEverActivationStorageKey, false);
 	}
 
 	// set vscode context: developing extension. test is also dev
-	setVSCodeContext(ContextTypes.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
+	setVSCodeContext(ContextId.IsDev, context.extensionMode === ExtensionMode.Development || context.extensionMode === ExtensionMode.Test );
 	if(context.extensionMode === ExtensionMode.Test) {
-		disableConfirmations = true;
+		skipConfirmations = true;
 	}
 
 
@@ -66,34 +71,40 @@ export async function activate(context: ExtensionContext) {
 	}
 
 
-	// show error notification if flux is not installed
-	const fluxFoundResult = await promptToInstallFlux();
-	if (succeeded(fluxFoundResult)) {
-		// check flux prerequisites
-		await checkFluxPrerequisites();
-	}
+	// check version and show 'Install Flux?' dialog if flux is not installed
+	checkInstalledFluxVersion();
 
 	checkWGEVersion();
 
 	let api = {
 		shell: shell,
 		data: {
-			clusterTreeViewProvider: clusterTreeViewProvider,
-			sourceTreeViewProvider: sourceTreeViewProvider,
-			workloadTreeViewProvider: workloadTreeViewProvider,
+			clusterTreeViewProvider: clusterDataProvider,
+			sourceTreeViewProvider: sourceDataProvider,
+			workloadTreeViewProvider: workloadDataProvider,
 		}};
 
 	return api;
 }
 
-function listenConfigChanged() {
+async function initData() {
+	syncKubeConfig(true);
+	initKubeConfigWatcher();
+	kubeProxyKeepAlive();
+
+	// wait for kubectl proxy to start for faster initial tree view loading
+	// setTimeout(() => {
+	createTreeViews();
+	// }, 200);
+}
+
+function listenExtensionConfigChanged() {
 	workspace.onDidChangeConfiguration(async e => {
-		if(!e.affectsConfiguration('gitops')) {
+		if(!e.affectsConfiguration('gitops.weaveGitopsEnterprise')) {
 			return;
 		}
 
 		const selected = await window.showInformationMessage('Configuration changed. Reload VS Code to apply?', 'Reload');
-		console.log(e);
 		if(selected === 'Reload') {
 			await commands.executeCommand(CommandId.VSCodeReload);
 		}
@@ -104,11 +115,28 @@ export function enabledWGE(): boolean {
 	return workspace.getConfiguration('gitops').get('weaveGitopsEnterprise') || false;
 }
 
+export function enabledFluxChecks(): boolean {
+	return workspace.getConfiguration('gitops').get('doFluxCheck') || false;
+
+}
+
+export function suppressDebugMessages(): boolean {
+	return workspace.getConfiguration('gitops').get('suppressDebugMessages') || false;
+}
+
 
 /**
  * Called when extension is deactivated.
  */
 export function deactivate() {
+	isActive = false;
 	telemetry?.dispose();
 	statusBar?.dispose();
+	stopKubeProxy();
+}
+
+
+
+export async function setVSCodeContext(context: ContextId, value: boolean) {
+	return await commands.executeCommand(CommandId.VSCodeSetContext, context, value);
 }

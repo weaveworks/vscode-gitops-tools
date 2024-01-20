@@ -1,10 +1,11 @@
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
-import { failed } from '../errorable';
-import { getFolderGitInfo, getGitRepositoryforGitInfo } from '../git/gitInfo';
-import { namespacedObject } from '../kubernetes/types/flux/object';
-import { getCurrentClusterInfo } from '../views/treeViews';
-import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
+
+import { getFolderGitInfo, getGitRepositoryforGitInfo } from 'cli/git/gitInfo';
+import { failed } from 'types/errorable';
+import { namespacedFluxObject } from 'utils/namespacedFluxObject';
+import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
+import { openConfigureGitOpsWebview } from 'ui/webviews/configureGitOps/openWebview';
 
 /**
  * Create kustomization from File Explorer context menu
@@ -53,7 +54,7 @@ export async function createKustomizationForPath(fileExplorerUri?: Uri): Promise
 	const gr = await getGitRepositoryforGitInfo(gitInfo);
 
 	const selectSource = !!gr;
-	let sourceName = namespacedObject(gr) || '';
+	let sourceName = namespacedFluxObject(gr) || '';
 
 	openConfigureGitOpsWebview(selectSource, sourceName, {
 		kustomization: {

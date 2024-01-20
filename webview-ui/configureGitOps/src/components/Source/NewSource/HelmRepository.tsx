@@ -1,6 +1,6 @@
 
 import TextInput from 'components/Common/TextInput';
-import { helmRepository, source } from '../../../lib/model';
+import { helmRepository, source } from 'lib/model';
 import Name from './Common/Name';
 import Namespace from './Common/Namespace';
 

@@ -1,14 +1,16 @@
 import { window } from 'vscode';
-import { AzureClusterProvider, azureTools, isAzureProvider } from '../azure/azureTools';
-import { failed } from '../errorable';
-import { telemetry } from '../extension';
-import { fluxTools } from '../flux/fluxTools';
-import { FluxWorkload } from '../flux/fluxTypes';
-import { KubernetesObjectKinds } from '../kubernetes/types/kubernetesTypes';
-import { TelemetryEventNames } from '../telemetry';
-import { KustomizationNode } from '../views/nodes/kustomizationNode';
-import { HelmReleaseNode } from '../views/nodes/helmReleaseNode';
-import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeViews';
+
+import { AzureClusterProvider, azureTools } from 'cli/azure/azureTools';
+import { fluxTools } from 'cli/flux/fluxTools';
+import { kubeConfig } from 'cli/kubernetes/kubernetesConfig';
+import { telemetry } from 'extension';
+import { failed } from 'types/errorable';
+import { FluxWorkload } from 'types/fluxCliTypes';
+import { Kind } from 'types/kubernetes/kubernetesTypes';
+import { TelemetryEvent } from 'types/telemetryEventNames';
+import { HelmReleaseNode } from 'ui/treeviews/nodes/workload/helmReleaseNode';
+import { KustomizationNode } from 'ui/treeviews/nodes/workload/kustomizationNode';
+import { getCurrentClusterInfo, reloadWorkloadsTreeView } from 'ui/treeviews/treeViews';
 
 
 /**
@@ -18,18 +20,18 @@ import { getCurrentClusterInfo, refreshWorkloadsTreeView } from '../views/treeVi
  */
 export async function deleteWorkload(workloadNode: KustomizationNode | HelmReleaseNode) {
 
-	const workloadName = workloadNode.resource.metadata.name || '';
+	const workloadName = workloadNode.resource.metadata.name;
 	const workloadNamespace = workloadNode.resource.metadata.namespace || '';
 	const confirmButton = 'Delete';
 
 	let workloadType: FluxWorkload;
 	switch(workloadNode.resource.kind) {
-		case KubernetesObjectKinds.Kustomization: {
+		case Kind.Kustomization: {
 			workloadType = 'kustomization';
 			break;
 		}
 
-		case KubernetesObjectKinds.HelmRelease: {
+		case Kind.HelmRelease: {
 			workloadType = 'helmrelease';
 			break;
 		}
@@ -40,7 +42,9 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 	}
 
 	const currentClusterInfo = await getCurrentClusterInfo();
-	if (failed(currentClusterInfo)) {
+	const contextName = kubeConfig.getCurrentContext();
+
+	if (failed(currentClusterInfo) || !contextName) {
 		return;
 	}
 
@@ -49,8 +53,6 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 		return;
 	}
 
-
-
 	const pressedButton = await window.showWarningMessage(`Do you want to delete ${workloadNode.resource.kind} "${workloadName}"?`, {
 		modal: true,
 	}, confirmButton);
@@ -58,7 +60,7 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 		return;
 	}
 
-	telemetry.send(TelemetryEventNames.DeleteWorkload, {
+	telemetry.send(TelemetryEvent.DeleteWorkload, {
 		kind: workloadNode.resource.kind,
 	});
 
@@ -66,10 +68,10 @@ export async function deleteWorkload(workloadNode: KustomizationNode | HelmRelea
 	if (currentClusterInfo.result.isAzure && workloadType === 'kustomization') {
 		const fluxConfigName = (workloadNode.resource.spec as any).sourceRef?.name;
 		const azResourceName = azureTools.getAzName(fluxConfigName, workloadName);
-		await azureTools.deleteKustomization(fluxConfigName, azResourceName, currentClusterInfo.result.contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
+		await azureTools.deleteKustomization(fluxConfigName, azResourceName, contextName, currentClusterInfo.result.clusterProvider as AzureClusterProvider);
 	} else {
 		await fluxTools.delete(workloadType, workloadName, workloadNamespace);
 	}
 
-	refreshWorkloadsTreeView();
+	reloadWorkloadsTreeView();
 }

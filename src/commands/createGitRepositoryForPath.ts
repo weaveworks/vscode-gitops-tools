@@ -1,10 +1,10 @@
-import gitUrlParse from 'git-url-parse';
 import { Uri, window, workspace } from 'vscode';
-import { failed } from '../errorable';
-import { getFolderGitInfo } from '../git/gitInfo';
-import { checkGitVersion } from '../install';
-import { getCurrentClusterInfo } from '../views/treeViews';
-import { openConfigureGitOpsWebview } from '../webview-backend/configureGitOps/openWebview';
+
+import { checkGitVersion } from 'cli/checkVersions';
+import { getFolderGitInfo } from 'cli/git/gitInfo';
+import { failed } from 'types/errorable';
+import { getCurrentClusterInfo } from 'ui/treeviews/treeViews';
+import { openConfigureGitOpsWebview } from 'ui/webviews/configureGitOps/openWebview';
 
 /**
  * Add git repository source whether from an opened folder

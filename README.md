@@ -1,7 +1,7 @@
 # GitOps Tools for Visual Studio Code
 
-[![VSCode Marketplace Link](https://vsmarketplacebadges.dev/version-short/weaveworks.vscode-gitops-tools.png)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
-[![Install Counter](https://vsmarketplacebadges.dev/installs/weaveworks.vscode-gitops-tools.png)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
+[![VSCode Marketplace Link](https://img.shields.io/visual-studio-marketplace/v/weaveworks.vscode-gitops-tools)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
+[![Install Counter](https://img.shields.io/visual-studio-marketplace/i/weaveworks.vscode-gitops-tools)](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools)
 
 Weaveworks [GitOps Tools Extension](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) provides an intuitive way to manage, troubleshoot and operate your Kubernetes environment following the GitOps operating model. GitOps accelerates your development lifecycle and simplifies your continuous delivery pipelines. The extension is built on Flux (a CNCF open source project). To learn more about the Flux GitOps toolkit, visit [fluxcd.io]
 
@@ -27,12 +27,15 @@ There are a few requirements before installing and using the extension:
 
 Once you have satisfied these requirements you can find and install GitOps Tools in the [Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) by searching for "**fluxcd**" or "**gitops**".
 
+### kubectl proxy
 
+This extension uses two different methods to get information from the Kubernetes cluster. It preferentially will run `kubectl proxy -p 0` for your selected cluster and will use the proxy with a javascript client for faster performance and real-time updates. This also requires `watch` RBAC for Flux resources. If the proxy client connection can't be established the extension will fall back to `kubectl get` for querying the cluster.
 
 
 # Features
 - Configure, visualize and manage Flux resources
 - Tree views for Clusters, Sources, and Workloads
+- Observe Flux resource updates in the cluster in real-time
 - Select clusters and examine installed [GitOps Toolkit components](https://fluxcd.io/docs/components/)
 - Enable and Disable GitOps (install/uninstall Flux) on clusters
 - Create, view and edit sources (git, OCI, Helm and Bucket), and workloads (Kustomization and HelmRelease)
@@ -42,6 +45,7 @@ Once you have satisfied these requirements you can find and install GitOps Tools
 - Clone GitRepository source to user machine and open them in the editor
 - Preview sources, workloads and other objects information with tooltips
 - Open remote resources as `.yaml` files in the editor
+- Open and edit the kubeconfig file
 - Trace Kubernetes objects created by workloads
 - Watch Flux controller logs and `flux` CLI commands for diagnostics
 - Documentation links for [Flux](https://fluxcd.io/docs) and [Weave GitOps](https://docs.gitops.weave.works/docs/intro/) embedded in the extension
@@ -121,17 +125,37 @@ The GitOps Tools Extension depends on the [Kubernetes Tools](https://marketplace
 - Make sure you have [successfully authenticated](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli) on your `az` CLI and have access to the [correct subscription](https://docs.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az_account_set) for your AKS or ARC cluster.
 - The easiest way to get your AKS or Arc cluster visible by the GitOps and Kubernetes Extensions, is to use the `az` CLI to merge the kubeconfig for accessing your cluster onto the default `kubectl` config. Use `get-credentials` as shown in the [official CLI documentation](https://docs.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az_aks_get_credentials). In order to enable GitOps in a cluster you will likely need the `--admin` credentials.
 
-## Weave GitOps Enterprise (WGE) Templates
+## Weave GitOps Enterprise (WGE) Integration
 
-WGE users can access GitOpsTemplates directly from this extensions. Templates are provided by cluster administrators (Platform Teams) and can be used to quickly create cluster and configure applications with GitOps.
+WGE users can access GitOpsTemplates directly from this extensions. WGE integration adds another treeview that shows `GitOpsTemplate`, `Canary`, `Pipeline`, and `GitOpsSet` resources and adds new interactions to each type of resource. All WGE resources have a right-click action to open them in WGE portal.
 
-Templates are an opt-in feature that must be enabled in setting:
+GitOpsTemplates are provided by cluster administrators (Platform Teams) and can be used to quickly create cluster and configure applications with GitOps. Flagger Canaries status can be visualized and their progress tracked. Pipelines are listed with their targets and each `GitopsCluster` attached to a Pipeline can be set as the current selected cluster for quick navigation between clusters.
 
-![Enable GitOpsTemplates](docs/images/vscode-templates-config.png)
+WGE integration is an opt-in feature that must be enabled in settings:
 
-After that they can be seen in a new 'Templates' view. Right-click a template to use it:
+![Enable WGE Features](docs/images/config-enable-wge.png)
 
-![Use GitOpsTemplates](docs/images/vscode-templates-view.png)
+![Weave GitOps Treeview](docs/images/weave-gitops-treeview.png)
+
+![Create GitOps Template](docs/images/vscode-templates-view.png)
+
+### WGE Configuration
+
+For the integration to work, this extension needs a ConfigMap that provides WGE information and settings:
+
+`kubectl create configmap weave-gitops-interop --from-literal=portalUrl='https://WGE-CLUSTER-HOST' --from-literal=wgeClusterName='WGE-CLUSTER-NAME' -n flux-system``
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: weave-gitops-interop
+data:
+  portalUrl: https://mccp.howard.moomboo.space
+  wgeClusterName: howard-moomboo-space
+```
+
 
 
 
@@ -145,10 +169,15 @@ We rely on the Kubernetes extension to discover and connect to clusters. If you 
 
 Confirm that your configuration context shows in a terminal running `kubectl config get-contexts`
 
+### _Switching from an unreachable cluster context to a working cluster_
 
+Unreachable or laggy clusters can create long running that cluster resource queries that finish after switching to a working cluster context. This can lead to the slow cluster data overwriting the current cluster treeview. **Clusters** -> **Refresh** button will reinitialize the views with current data. Timeout settings can be adjusted under **GitOps** section in VSCode Settings.
 
+### _Timeouts and flux check warnings_
 
+The extension has timeout options that can make be adjusted in VSCode settings to match your cluster network constraints. The default timeout for any data query operation is 60 seconds.
 
+`flux check` command can also be disabled in the settings. This will stop `flux check` warnings about old versions but will disable Flux controller status icons in the the Clusters treeview.
 
 
 # Data and Telemetry

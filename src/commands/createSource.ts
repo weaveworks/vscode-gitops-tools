@@ -1,8 +1,7 @@
 import gitUrlParse from 'git-url-parse';
 import { commands, env, Uri, window } from 'vscode';
-import { azureTools } from '../azure/azureTools';
-import { CommandId } from '../commands';
 
+import { CommandId } from 'types/extensionIds';
 
 /**
  * Show notifications reminding users to add a public key
