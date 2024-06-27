@@ -1,4 +1,6 @@
+import { workspace } from 'vscode';
 import { setParams } from '../params';
+const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
 
 export function debug(str: string) {
 	const e = document.getElementById('debug');
@@ -23,11 +25,11 @@ export function debugStandalone() {
 			'url': 'ssh://git@github.com/juozasg/pooodinfo.git',
 			'branch': 'master',
 		},
-		'namespaces': [ 'default', 'flux-system', 'foobar'],
+		'namespaces': [ 'default', fluxSystemNamespace', 'foobar'],
 		'sources': [
 			{'kind': 'GitRepository', metadata: {'name': 'podinfo',  'namespace': 'default'}},
 			{'kind': 'OCIRepository', metadata: {'name': 'podinfo',  'namespace': 'default'}},
-			{'kind': 'OCIRepository', metadata: {'name': 'podinfo',  'namespace': 'flux-system'}},
+			{'kind': 'OCIRepository', metadata: {'name': 'podinfo',  'namespace': fluxSystemNamespace}},
 			{'kind': 'GitRepository', metadata: {'name': 'podinfo2', 'namespace': 'default'}},
 			{'kind': 'OCIRepository', metadata: {'name': 'podinfo11',  'namespace': 'default'}}],
 		'selectSourceTab': false,
