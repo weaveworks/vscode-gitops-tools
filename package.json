@@ -347,6 +347,11 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Stop recommending changes to editor or extension settings."
+				},
+				"gitops.fluxSystemNamespace": {
+					"type": "string",
+					"default": "flux-system",
+					"description": "The namespace where Flux manifests are installed (usually flux-system)"
 				}
 			}
 		},

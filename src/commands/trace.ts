@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { window, workspace } from 'vscode';
 
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getResource } from 'cli/kubernetes/kubectlGet';
@@ -11,8 +11,10 @@ import { WorkloadNode } from 'ui/treeviews/nodes/workload/workloadNode';
  * Run flux trace for the Workloads tree view node.
  */
 export async function trace(node: AnyResourceNode | WorkloadNode) {
+	const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
+
 	const resourceName = node.resource.metadata.name;
-	const resourceNamespace = node.resource.metadata.namespace || 'flux-system';
+	const resourceNamespace = node.resource.metadata.namespace || fluxSystemNamespace;
 	const resourceKind = node.resource.kind;
 	let resourceApiVersion = node.resource.apiVersion;
 
@@ -29,7 +31,7 @@ export async function trace(node: AnyResourceNode | WorkloadNode) {
 
 	// flux tree fetched items don't have the "apiVersion" property
 	if (!resourceApiVersion) {
-		const resource = await getResource(resourceName, resourceNamespace, resourceKind as Kind);
+		const resource = await getResource(resourceName, resourceNamespace as string, resourceKind as Kind);
 		const apiVersion = resource?.apiVersion;
 		if (!apiVersion && !apiVersion) {
 			window.showErrorMessage('"apiVersion" is required to run `flux trace`');
@@ -39,5 +41,5 @@ export async function trace(node: AnyResourceNode | WorkloadNode) {
 		resourceApiVersion = apiVersion;
 	}
 
-	await fluxTools.trace(resourceName, resourceKind, resourceApiVersion, resourceNamespace);
+	await fluxTools.trace(resourceName, resourceKind, resourceApiVersion, resourceNamespace as string);
 }
