@@ -88,7 +88,7 @@ export class ViewData {
 export async function loadContextData() {
 	const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
 	const context = currentContextData();
-	const config = await getResource('weave-gitops-interop', fluxSystemNamespace, Kind.ConfigMap) as ConfigMap;
+	const config = await getResource('weave-gitops-interop', fluxSystemNamespace as string, Kind.ConfigMap) as ConfigMap;
 
 	if(config) {
 		context.portalUrl = config.data.portalUrl;
@@ -101,7 +101,7 @@ export async function loadContextData() {
 
 async function wgeHelmReleasePortalUrl() {
 	const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
-	const wgeHelmRelease = await getResource<HelmRelease>('weave-gitops-enterprise', fluxSystemNamespace, Kind.HelmRelease);
+	const wgeHelmRelease = await getResource<HelmRelease>('weave-gitops-enterprise', fluxSystemNamespace as string, Kind.HelmRelease);
 	if(!wgeHelmRelease) {
 		return;
 	}

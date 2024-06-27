@@ -31,7 +31,7 @@ export async function trace(node: AnyResourceNode | WorkloadNode) {
 
 	// flux tree fetched items don't have the "apiVersion" property
 	if (!resourceApiVersion) {
-		const resource = await getResource(resourceName, resourceNamespace, resourceKind as Kind);
+		const resource = await getResource(resourceName, resourceNamespace as string, resourceKind as Kind);
 		const apiVersion = resource?.apiVersion;
 		if (!apiVersion && !apiVersion) {
 			window.showErrorMessage('"apiVersion" is required to run `flux trace`');
@@ -41,5 +41,5 @@ export async function trace(node: AnyResourceNode | WorkloadNode) {
 		resourceApiVersion = apiVersion;
 	}
 
-	await fluxTools.trace(resourceName, resourceKind, resourceApiVersion, resourceNamespace);
+	await fluxTools.trace(resourceName, resourceKind, resourceApiVersion, resourceNamespace as string);
 }

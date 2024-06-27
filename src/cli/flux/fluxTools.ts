@@ -1,5 +1,5 @@
 import safesh from 'shell-escape-tag';
-import { window } from 'vscode';
+import { window, workspace } from 'vscode';
 
 import * as shell from 'cli/shell/exec';
 import { enabledFluxChecks, telemetry } from 'extension';
@@ -67,7 +67,8 @@ class FluxTools {
 		if (!enabledFluxChecks()) {
 			return undefined;
 		}
-		const result = await shell.execWithOutput(safesh`flux check --context ${context}`, { revealOutputView: false });
+		const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
+		const result = await shell.execWithOutput(safesh`flux check -n ${fluxSystemNamespace} --context ${context}`, { revealOutputView: false });
 
 		if (result.code !== 0) {
 			telemetry.sendError(TelemetryError.FAILED_TO_RUN_FLUX_CHECK);
