@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { window, workspace } from 'vscode';
 
 import { fluxTools } from 'cli/flux/fluxTools';
 import { getResource } from 'cli/kubernetes/kubectlGet';
@@ -11,8 +11,10 @@ import { WorkloadNode } from 'ui/treeviews/nodes/workload/workloadNode';
  * Run flux trace for the Workloads tree view node.
  */
 export async function trace(node: AnyResourceNode | WorkloadNode) {
+	const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
+
 	const resourceName = node.resource.metadata.name;
-	const resourceNamespace = node.resource.metadata.namespace || 'flux-system';
+	const resourceNamespace = node.resource.metadata.namespace || fluxSystemNamespace;
 	const resourceKind = node.resource.kind;
 	let resourceApiVersion = node.resource.apiVersion;
 

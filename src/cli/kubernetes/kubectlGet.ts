@@ -15,7 +15,7 @@ import { Pipeline } from 'types/flux/pipeline';
 import { Deployment, Kind, KubernetesObject, Pod, qualifyToolkitKind } from 'types/kubernetes/kubernetesTypes';
 import { TelemetryError } from 'types/telemetryEventNames';
 import { parseJson, parseJsonItems } from 'utils/jsonUtils';
-import { window } from 'vscode';
+import { window, workspace } from 'vscode';
 import { getAvailableResourcePlurals } from './apiResources';
 import { invokeKubectlCommand } from './kubernetesToolsKubectl';
 /**
@@ -118,7 +118,9 @@ export async function getGitOpsSet(): Promise<GitOpsSet[]> {
 export async function getFluxControllers(context?: string): Promise<Deployment[]> {
 	const contextArg = context ? safesh`--context ${context}` : '';
 
-	const fluxDeploymentShellResult = await invokeKubectlCommand(`get deployment --namespace=flux-system ${contextArg} -o json`);
+	const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
+
+	const fluxDeploymentShellResult = await invokeKubectlCommand(`get deployment --namespace=${fluxSystemNamespace} ${contextArg} -o json`);
 
 	if (fluxDeploymentShellResult?.code !== 0) {
 		console.warn(`Failed to get flux controllers: ${fluxDeploymentShellResult?.stderr}`);

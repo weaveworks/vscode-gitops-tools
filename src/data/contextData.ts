@@ -5,7 +5,7 @@ import { ConfigMap, Kind } from 'types/kubernetes/kubernetesTypes';
 import { NamespaceNode } from 'ui/treeviews/nodes/namespaceNode';
 import { TreeNode } from 'ui/treeviews/nodes/treeNode';
 import { WgeContainerNode } from 'ui/treeviews/nodes/wge/wgeNodes';
-import { TreeItemCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, workspace } from 'vscode';
 import { ApiState, KindApiParams } from '../cli/kubernetes/apiResources';
 
 // a data store for each context defined in kubeconfig.
@@ -86,8 +86,9 @@ export class ViewData {
 }
 
 export async function loadContextData() {
+	const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
 	const context = currentContextData();
-	const config = await getResource('weave-gitops-interop', 'flux-system', Kind.ConfigMap) as ConfigMap;
+	const config = await getResource('weave-gitops-interop', fluxSystemNamespace, Kind.ConfigMap) as ConfigMap;
 
 	if(config) {
 		context.portalUrl = config.data.portalUrl;
@@ -99,7 +100,8 @@ export async function loadContextData() {
 }
 
 async function wgeHelmReleasePortalUrl() {
-	const wgeHelmRelease = await getResource<HelmRelease>('weave-gitops-enterprise', 'flux-system', Kind.HelmRelease);
+	const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
+	const wgeHelmRelease = await getResource<HelmRelease>('weave-gitops-enterprise', fluxSystemNamespace, Kind.HelmRelease);
 	if(!wgeHelmRelease) {
 		return;
 	}

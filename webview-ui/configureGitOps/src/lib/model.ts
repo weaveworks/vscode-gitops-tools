@@ -1,17 +1,18 @@
-import { createEffect, createSignal, untrack } from 'solid-js';
+import { createEffect, createSignal } from 'solid-js';
 import { createStore, unwrap } from 'solid-js/store';
+import { workspace } from 'vscode';
 import { params } from './params';
-import { debug } from './utils/debug';
 import { capitalize, namespacedSource } from './utils/helpers';
 
 /* SOURCE */
 export const [createSource, setCreateSource] = createSignal(true);
+const fluxSystemNamespace = workspace.getConfiguration('gitops').get('fluxSystemNamespace');
 
 export const [source, setSource] = createStore({
 	kind: 'GitRepository',
 
 	name: 'podinfo',
-	namespace: 'flux-system',
+	namespace: fluxSystemNamespace,
 
 	interval: '1m0s',
 
@@ -84,7 +85,7 @@ export const [createWorkload, setCreateWorkload] = createSignal(false);
 
 export const [kustomization, setKustomization] = createStore({
 	name: 'podinfo',
-	namespace: 'flux-system',
+	namespace: fluxSystemNamespace,
 	source: '',  // Ex: GitRepository/podinfo.flux-system
 	path: '/kustomize',
 	targetNamespace: 'default',
